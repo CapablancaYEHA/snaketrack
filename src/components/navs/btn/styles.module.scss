@@ -1,0 +1,15 @@
+.special {
+  background-color: var(--mantine-color-yellow-8);
+  border: 1px solid var(--mantine-color-yellow-5);
+  border-radius: 8px;
+  transition:
+    border 0.3s ease-in-out,
+    box-shadow 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
+
+  &:hover {
+    background-color: var(--mantine-color-yellow-9);
+    border: 1px solid var(--mantine-color-yellow-6);
+    box-shadow: 0 2px 6px 0 rgba(230, 119, 0, 0.5);
+  }
+}

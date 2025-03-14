@@ -1,0 +1,6 @@
+@import "../../styles/mixins.scss";
+
+.scrollbox {
+  left: auto !important;
+  @include cute-scroll;
+}

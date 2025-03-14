@@ -1,0 +1,70 @@
+$max-width: 880px;
+$header-height: 50px;
+
+html {
+  background: none;
+  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  user-select: none;
+  background: none;
+  height: 100%;
+  min-height: 100%;
+}
+
+#app {
+  //   display: flex;
+  //   flex-flow: column nowrap;
+  min-height: 100%;
+}
+
+main {
+  display: flex;
+  height: 100%;
+  flex: 1 1 100%;
+  max-width: $max-width;
+  width: 100%;
+  margin: 0 auto;
+  overflow-x: auto;
+
+  & > section {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+footer {
+  margin: auto 0 0 0;
+  max-width: 100%;
+  width: 100%;
+  height: 50px;
+}
+
+svg {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+
+  &:visited {
+    color: inherit;
+  }
+}
+
+.hide {
+  display: none;
+}
+
+.mantine-Modal-root {
+  .mantine-Modal-header {
+    z-index: 3 !important;
+  }
+}
+
+.mantine-Notifications-notification {
+  min-height: 32px;
+}

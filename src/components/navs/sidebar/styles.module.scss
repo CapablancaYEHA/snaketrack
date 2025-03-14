@@ -1,0 +1,123 @@
+@import "../../../styles/global.scss";
+
+$height: 32px;
+$offset: 8px;
+
+.sidebar {
+  position: fixed;
+  z-index: 2;
+  top: $header-height;
+  width: 100%;
+  max-width: 48px;
+  height: 100%;
+  max-height: calc(100% - $header-height);
+  padding-top: 8px;
+  transition: max-width 0.3s ease-in-out;
+
+  &:hover {
+    max-width: 160px;
+    box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
+
+    & section {
+      transition:
+        max-width 0.3s ease-in-out,
+        background-color 0.4s ease-in-out;
+      max-width: calc(100% - 2 * $offset);
+      width: 100%;
+    }
+
+    & span {
+      transition:
+        opacity 0.3s ease-in-out,
+        color 0.3s ease-in-out,
+        max-width 0.3s ease-in-out;
+      opacity: 1;
+      max-width: 100%;
+    }
+  }
+}
+
+.item {
+  position: relative;
+  height: $height;
+
+  & section {
+    position: absolute;
+    z-index: auto;
+    left: $offset;
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: 0;
+    min-height: 0;
+    height: $height;
+    width: $height;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 4px;
+    pointer-events: none;
+
+    & svg {
+      position: relative;
+      left: 6px;
+      pointer-events: none;
+
+      & path {
+        transition: stroke 0.3s ease-in-out;
+        stroke: var(--mantine-color-dark-3);
+      }
+    }
+
+    &.active {
+      background-color: var(--mantine-color-dark-6);
+
+      & svg > path {
+        stroke: var(--mantine-color-dark-1);
+      }
+    }
+  }
+
+  &:hover {
+    & svg path {
+      stroke: var(--mantine-color-dark-1);
+    }
+  }
+}
+
+.link {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  height: $height;
+  padding-left: 56px;
+  z-index: 2;
+
+  & > span {
+    display: inline-block;
+    min-width: 0;
+    min-height: 0;
+    font-size: 16px;
+    line-height: 100%;
+    white-space: nowrap;
+    pointer-events: none;
+    max-width: 0;
+    color: var(--mantine-color-dark-3);
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+  }
+
+  &:hover {
+    & > span {
+      color: var(--mantine-color-white);
+    }
+  }
+
+  &.active {
+    & > span {
+      color: var(--mantine-color-yellow-7);
+    }
+  }
+}
