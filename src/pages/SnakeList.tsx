@@ -1,4 +1,4 @@
-import { Box, Flex, Loader, Stack } from "@mantine/core";
+import { Box, Flex, LoadingOverlay, Stack } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 import { useSnakesList } from "../api/hooks";
 import { useProfile } from "../api/profile/hooks";
@@ -65,7 +65,7 @@ export function SnakeList() {
         </Btn>
       </Flex>
       {/* FIXME */}
-      {isPending ? <Loader color="dark.1" size="xs" /> : dt?.regius_list == null || isEmpty(dt?.regius_list) ? <div>Змеек у вас нет</div> : d?.map((a) => <BpCard key={a.id} body={a} />)}
+      {isPending ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2 }} /> : dt?.regius_list == null || isEmpty(dt?.regius_list) ? <div>Змеек у вас нет</div> : d?.map((a) => <BpCard key={a.id} body={a} />)}
       {/* {hard?.map((a) => <BpCard key={a.id} body={a} />)} */}
     </Stack>
   );

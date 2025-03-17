@@ -1,17 +1,17 @@
 import { useEffect, useState } from "preact/hooks";
 import { Box, Title, alpha } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { useProfile } from "../../api/profile/hooks";
+import { tabletThreshold } from "./const";
 import { HeadMenu } from "./headMenu";
+import { MobileMenu } from "./mobileMenu";
 import styles from "./styles.module.scss";
 
-export function Header({ session }) {
-  //   const [id, setId] = useState<string | null>(null);
+export function Header() {
+  const userId = localStorage.getItem("USER");
+  const { data } = useProfile(userId, userId != null);
 
-  //   const { data } = useProfile(id, id != null);
-
-  //   useEffect(() => {
-  //     setId(session?.user?.id);
-  //   }, [JSON.stringify(session)]);
+  const isTablet = useMediaQuery(tabletThreshold);
 
   return (
     <Box
@@ -25,6 +25,11 @@ export function Header({ session }) {
       }}
     >
       <div>
+        {isTablet ? (
+          <Box mr="lg">
+            <MobileMenu />
+          </Box>
+        ) : null}
         <a href="/dashboard" className={styles.logo}>
           {/* <img src={""} alt="logo" /> */}
           <Title component="span" c="white" order={4}>
@@ -39,7 +44,7 @@ export function Header({ session }) {
             gap: "24px",
           }}
         >
-          <HeadMenu title={"fdwdw"} />
+          <HeadMenu accName={data?.username} />
         </nav>
       </div>
     </Box>

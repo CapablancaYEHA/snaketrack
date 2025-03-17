@@ -1,8 +1,9 @@
-import { defineConfig } from "vite";
 import preact from "@preact/preset-vite";
+import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
 
-// https://vitejs.dev/config/
+// import mkcert from "vite-plugin-mkcert";
+
 export default defineConfig({
   plugins: [preact(), eslint()],
 });

@@ -1,20 +1,20 @@
 import { FC } from "preact/compat";
-import { Button, Loader, Menu, Space, Text } from "@mantine/core";
+import { Box, Button, Menu, Space, Text } from "@mantine/core";
 import { logout } from "../../api/profile/hooks";
 
 interface IProps {
-  title?: string;
+  accName?: string;
 }
-//FIXME
 
-export const HeadMenu: FC<IProps> = ({ title }) => {
+export const HeadMenu: FC<IProps> = ({ accName }) => {
   return (
     <Menu shadow="md" width={164} transitionProps={{ transition: "rotate-left", duration: 150 }} trigger="hover" loop={false} withinPortal={false} trapFocus={false} menuItemTabIndex={0} position="bottom-end" offset={6} withArrow arrowPosition="center">
       <Menu.Target>
-        <Button variant="subtle" color="white">
-          {/* {title} */}
-          Аккаунт
-        </Button>
+        <Box pl="lg" pt="md" pb="md" style={{ cursor: "pointer" }}>
+          <Text size="md" fw={700}>
+            {accName ?? "Аккаунт"}
+          </Text>
+        </Box>
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Item href="/profile" component="a">

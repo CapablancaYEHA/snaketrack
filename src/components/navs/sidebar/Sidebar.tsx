@@ -4,6 +4,20 @@ import { sidebarLinks } from "../../route";
 import { IconSwitch } from "./icons/switch";
 import styles from "./styles.module.scss";
 
+export const renderLinks = (url, alwaysShow = false) =>
+  sidebarLinks.map((a) => (
+    <div key={a.id} class={styles.item}>
+      <a href={a.link} class={`${styles.link} ${url.includes(a.link) ? styles.active : ""} ${alwaysShow ? "" : styles.hidden}`}>
+        <Text span size="xs">
+          {a.link.slice(1)}
+        </Text>
+      </a>
+      <section class={`${url.includes(a.link) ? styles.active : ""}`}>
+        <IconSwitch icon={a.link.slice(1)} width="20" height="20" />
+      </section>
+    </div>
+  ));
+
 export const Sidebar = () => {
   const { url } = useLocation();
 
@@ -19,18 +33,7 @@ export const Sidebar = () => {
         borderRight: `1px solid ${alpha(`var(--mantine-color-yellow-6)`, 0.4)}`,
       }}
     >
-      {sidebarLinks.map((a) => (
-        <div key={a.id} class={styles.item}>
-          <a href={a.link} class={`${styles.link} ${url.includes(a.link) ? styles.active : ""}`}>
-            <Text span size="xs">
-              {a.link.slice(1)}
-            </Text>
-          </a>
-          <section class={`${url.includes(a.link) ? styles.active : ""}`}>
-            <IconSwitch icon={a.link.slice(1)} width="20" height="20" />
-          </section>
-        </div>
-      ))}
+      {renderLinks(url)}
     </Stack>
   );
 };

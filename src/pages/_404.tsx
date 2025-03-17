@@ -1,8 +1,10 @@
-import { LoadingOverlay } from "@mantine/core";
+import { useLocation } from "preact-iso";
 
-export function NotFound(props) {
-  if (props.pending) return <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2 }} />;
-  if (!props.pending && !props.session) return <div>Forbidden for Anuathorised user</div>;
+export function NotFound({ session }) {
+  const location = useLocation();
+  if (["", ".", "/"].some((a) => a === location.url)) {
+    location.route("/dashboard");
+  }
 
   return (
     <section>

@@ -33,11 +33,23 @@ export const httpUldSnPic = (file: File) => {
 /* Супабейз рекомендует при замене файлов update({upsert:true}) не перезаписывать его а создавать новый path а старый файл и путь удалять*/
 // Для лого отдельный бакет?
 // Может вместо одного бакета snakepics - сделать категории - питоны, удавы и  Бакет для логотипов заводчиков?
-
-export const httpCreateBp = (a: IReqCreateBP) => {
+export const httpCreateBp = async (a: IReqCreateBP) => {
   let d = { ...a, genes: isEmpty(a.genes) ? [{ label: "Normal", gene: "other" }] : a.genes, date_hatch: dateToSupabaseTime(a.date_hatch), last_supper: a.last_supper != null ? dateToSupabaseTime(a.last_supper) : null };
-  return supabase.from("ballpythons").insert(d).select("id").single<{ id: string }>();
+  return await supabase.from("ballpythons").insert(d).select("id").single<{ id: string }>();
 };
+
+// FIXME что делать с policy на Update, если змея переведена другому челу и новый хозяин редактирует теперь её имя как минимум
+export function useCreateBp() {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, IReqCreateBP>({
+    mutationFn: (a) => httpCreateBp(a),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["profile"],
+      });
+    },
+  });
+}
 
 // TODO нужно модиф эту функцию когда добавляются новые категории змей
 const httpGetSnakesList = async (list: string[]) => {
@@ -70,7 +82,6 @@ export function useTransferSnake() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["profile"],
-        refetchType: "all",
       });
     },
   });

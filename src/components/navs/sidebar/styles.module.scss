@@ -4,13 +4,13 @@ $height: 32px;
 $offset: 8px;
 
 .sidebar {
-  position: fixed;
+  position: absolute;
   z-index: 2;
   top: $header-height;
   width: 100%;
   max-width: 48px;
   height: 100%;
-  max-height: calc(100% - $header-height);
+  max-height: 100%;
   padding-top: 8px;
   transition: max-width 0.3s ease-in-out;
 
@@ -31,7 +31,7 @@ $offset: 8px;
         opacity 0.3s ease-in-out,
         color 0.3s ease-in-out,
         max-width 0.3s ease-in-out;
-      opacity: 1;
+      opacity: 1 !important;
       max-width: 100%;
     }
   }
@@ -95,6 +95,12 @@ $offset: 8px;
   padding-left: 56px;
   z-index: 2;
 
+  &.hidden {
+    & > span {
+      opacity: 0;
+    }
+  }
+
   & > span {
     display: inline-block;
     min-width: 0;
@@ -106,7 +112,6 @@ $offset: 8px;
     max-width: 0;
     color: var(--mantine-color-dark-3);
     transition: opacity 0.3s ease-in-out;
-    opacity: 0;
   }
 
   &:hover {

@@ -10,7 +10,7 @@ html {
 body {
   margin: 0;
   user-select: none;
-  background: none;
+  background: var(--mantine-color-dark-9);
   height: 100%;
   min-height: 100%;
 }

@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Flex, Group, NumberInput, Radio, Select, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { httpCreateBp, httpUldSnPic } from "../../../api/hooks";
+import { httpUldSnPic, useCreateBp } from "../../../api/hooks";
 import { FileUpload } from "../../../components/fileUpload";
 import { GeneSelect } from "../../../components/genetics/geneSelect";
 import { Btn } from "../../../components/navs/btn/Btn";
@@ -15,6 +15,7 @@ import { defVals, feederHardcode, schema, sexHardcode, uplErr } from "./const";
 // TODO сделать проверку родителей и что есть разнополая пара вообще
 // TODO в будущем - нужна выпадашка Статус - жива, умерла, карантин, продана ну и чето еще
 export const FormAddBp = ({ traits }) => {
+  const { mutate } = useCreateBp();
   const location = useLocation();
   const {
     register,
@@ -39,13 +40,18 @@ export const FormAddBp = ({ traits }) => {
       }
       picture = calcImgUrl(r?.fullPath!);
     }
-    const { error: err } = await httpCreateBp({ ...sbm, picture });
-    if (err) {
-      uplErr(err);
-    } else {
-      notif({ c: "green", t: "Успешно", m: "Змейка сохранена" });
-      location.route("/snakes");
-    }
+    mutate(
+      { ...sbm, picture },
+      {
+        onSuccess: () => {
+          notif({ c: "green", t: "Успешно", m: "Змейка сохранена" });
+          location.route("/snakes");
+        },
+        onError: (err) => {
+          uplErr(err);
+        },
+      },
+    );
   };
 
   return (

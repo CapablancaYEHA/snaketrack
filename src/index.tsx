@@ -20,6 +20,9 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import '@mantine/dates/styles.css';
 import "./styles/global.scss";
+import { useMediaQuery } from "@mantine/hooks";
+import { tabletThreshold } from "./components/navs/const.js";
+import { pushClient } from "./lib/client_push.js";
 
 /* FIXME policy  юзер нужно чтото сделать с select аут юзера, чтобы можно было выбирать себя полностью а у чужого юзера только 3 поля */
 
@@ -33,13 +36,17 @@ export function App() {
       setSession(a);
 	  if (a?.user?.id) localStorage.setItem("USER", a.user.id);
 	  isPending.value = false;
+	  pushClient(a?.user?.id!);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, b) => {
       setSession(b);
-	  if (b?.user?.id) localStorage.setItem("USER", b.user.id);
+	  if (b?.user?.id) {
+		localStorage.setItem("USER", b.user.id);
+	}
+
     });
 
     return () => {
@@ -48,13 +55,15 @@ export function App() {
     };
   }, []);
 
+  const isTablet = useMediaQuery(tabletThreshold);
+
   return (
     <QueryClientProvider client={queryClient}>
       <LocationProvider>
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <Notifications />
-          {session !=null ? (<Header session={session} />) : null}
-		  <Sidebar />
+          {session !=null ? (<Header />) : null}
+		  {!isTablet ? <Sidebar /> : null}
           <Box component="main" px="xl" py="lg">
 		  <Router>
 			<Route path="/login"  component={Login} />
@@ -63,7 +72,7 @@ export function App() {
 				: (['/dashboard','/profile','/snakes', '/snakes/:id', '/add/:type'].map(
 					(a) => <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />)
 				)}
-			<Route default component={NotFound} {...{pending:isPending.value, session }} />
+				{isPending.value ?  null : (<Route default component={NotFound}  />)}
 		  </Router>
           </Box>
         </MantineProvider>
