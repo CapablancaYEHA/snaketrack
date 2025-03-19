@@ -1,4 +1,4 @@
-@mixin cute-scroll {
+@mixin cute-scroll($trackStart) {
   overflow-y: auto;
   left: auto !important;
 
@@ -11,6 +11,7 @@
   }
   &::-webkit-scrollbar-track-piece:start {
     background-color: transparent;
+    margin-top: $trackStart;
   }
   &::-webkit-scrollbar-track-piece:end {
     background-color: transparent;

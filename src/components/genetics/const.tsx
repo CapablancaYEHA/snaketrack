@@ -1,7 +1,4 @@
-export interface IGenesBpComp {
-  label: string;
-  gene: "inc-dom" | "dom" | "rec" | "poly" | "other";
-}
+import { IGenesBpComp } from "@api/models";
 
 export const geneToColor = {
   dom: "#6e2585",

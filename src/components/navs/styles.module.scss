@@ -1,6 +1,12 @@
-@import "../../styles/global.scss";
+@import "@styles/global.scss";
 
 .wrap {
+  position: fixed;
+  width: 100%;
+  max-width: 100%;
+  top: 0;
+  z-index: 4;
+
   & > div {
     display: flex;
     justify-content: flex-start;

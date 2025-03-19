@@ -1,5 +1,5 @@
 import { useLocation } from "preact-iso";
-import { useEffect, useLayoutEffect } from "preact/hooks";
+import { useLayoutEffect } from "preact/hooks";
 import { Anchor, Box, PasswordInput, Space, Text, TextInput, Title } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 import { useForm } from "react-hook-form";

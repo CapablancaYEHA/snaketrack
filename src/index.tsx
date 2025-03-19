@@ -5,27 +5,26 @@ import { useEffect, useState } from "preact/hooks";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Box, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import { useMediaQuery } from "@mantine/hooks";
 
 import { Header } from "./components/navs/Header.js";
 import { Sidebar } from "./components/navs/sidebar/Sidebar.js";
 import { ProtectedRoute, protectedRoutes } from "./components/route.js";
+import { tabletThreshold } from "./components/navs/const.js";
 import { queryClient } from "./lib/client_query.js";
 import { supabase } from "./lib/client_supabase.js";
 import { NotFound } from "./pages/_404.jsx";
 import { Login } from "./pages/auth/Login.js";
 import { Register } from "./pages/auth/Register.js";
+import { UseOneSignal } from "./lib/client_push.js";
 
 import { theme } from "./styles/theme.js";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import '@mantine/dates/styles.css';
 import "./styles/global.scss";
-import { useMediaQuery } from "@mantine/hooks";
-import { tabletThreshold } from "./components/navs/const.js";
-import { pushClient } from "./lib/client_push.js";
 
-/* FIXME policy  юзер нужно чтото сделать с select аут юзера, чтобы можно было выбирать себя полностью а у чужого юзера только 3 поля */
-
+/* FIXME для просмотра другого пользователя использовать таблицу three_cols_profiles, надо её дополнить инфой о змеях на продажу */
 const isPending = signal(true);
 
 export function App() {
@@ -36,7 +35,7 @@ export function App() {
       setSession(a);
 	  if (a?.user?.id) localStorage.setItem("USER", a.user.id);
 	  isPending.value = false;
-	  pushClient(a?.user?.id!);
+	//   pushClient(a?.user?.id!);
     });
 
     const {
@@ -45,8 +44,8 @@ export function App() {
       setSession(b);
 	  if (b?.user?.id) {
 		localStorage.setItem("USER", b.user.id);
-	}
 
+	}
     });
 
     return () => {
@@ -54,6 +53,8 @@ export function App() {
       localStorage.removeItem("USER");
     };
   }, []);
+
+  UseOneSignal(session?.user?.id);
 
   const isTablet = useMediaQuery(tabletThreshold);
 
@@ -64,7 +65,7 @@ export function App() {
           <Notifications />
           {session !=null ? (<Header />) : null}
 		  {!isTablet ? <Sidebar /> : null}
-          <Box component="main" px="xl" py="lg">
+          <Box component="main" px="xl" py="lg" >
 		  <Router>
 			<Route path="/login"  component={Login} />
 			<Route path="/register"  component={Register} />

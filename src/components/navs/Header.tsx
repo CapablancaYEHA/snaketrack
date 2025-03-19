@@ -1,4 +1,3 @@
-import { useEffect, useState } from "preact/hooks";
 import { Box, Title, alpha } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useProfile } from "../../api/profile/hooks";

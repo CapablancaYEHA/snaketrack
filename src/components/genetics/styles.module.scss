@@ -1,6 +1,24 @@
-@import "../../styles/mixins.scss";
+@import "@styles/mixins.scss";
 
 .scrollbox {
   left: auto !important;
-  @include cute-scroll;
+  @include cute-scroll(0px);
+}
+
+@keyframes option-animation {
+  from {
+    opacity: 0;
+    transform: translateX(rem(-20px, 50px));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animateOption {
+  opacity: 0;
+  animation: option-animation 200ms ease;
+  animation-fill-mode: forwards;
 }

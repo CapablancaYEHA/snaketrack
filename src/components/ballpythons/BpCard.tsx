@@ -6,7 +6,7 @@ import { GenePill } from "../genetics/geneSelect";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
 import { TransferSnake } from "../transferSnake/transfer";
 
-const isOpen = signal(false);
+const curId = signal(undefined);
 
 export const BpCard: FC<any> = ({ body }) => {
   return (
@@ -24,24 +24,44 @@ export const BpCard: FC<any> = ({ body }) => {
           <GenePill key={a.label} item={a} />
         ))}
       </Stack>
-
       <Stack gap="xs">
-        <Text size="md">Текущий вес: {body.weight ? `${body.weight}г` : "Нет данных"}</Text>
-        <Text size="md">Последнее кормление: {body.feeding ? `${getDate(body.last_supper)}` : "Нет данных"}</Text>
+        <Text size="sm">Текущий вес: {body.weight ? `${body.weight}г` : "Нет данных"}</Text>
+        <Text size="sm">Последнее кормление: {body.feeding ? `${getDate(body.last_supper)}` : "Нет данных"}</Text>
       </Stack>
-
       <div>
-        <Menu shadow="md" width={164} transitionProps={{ transition: "rotate-left", duration: 150 }} trigger="click" loop={false} withinPortal={false} trapFocus={false} menuItemTabIndex={0} position="bottom-end" offset={6} withArrow arrowPosition="center">
+        <Menu
+          shadow="md"
+          width={164}
+          transitionProps={{ transition: "rotate-left", duration: 150 }}
+          trigger="click"
+          loop={false}
+          withinPortal={false}
+          trapFocus={false}
+          menuItemTabIndex={0}
+          position="bottom-end"
+          offset={6}
+          withArrow
+          arrowPosition="center"
+          closeOnClickOutside
+        >
           <Menu.Target>
-            <Button leftSection={<IconSwitch icon="kebab" />} variant="default" size="compact-xs" w={32} />
+            <Button
+              styles={{
+                section: { margin: 0 },
+              }}
+              leftSection={<IconSwitch icon="kebab" />}
+              variant="default"
+              size="compact-xs"
+              w={22}
+            />
           </Menu.Target>
           <Menu.Dropdown>
             <Menu.Item>Редактировать</Menu.Item>
-            <Menu.Item onClick={() => (isOpen.value = true)}>Передать</Menu.Item>
+            <Menu.Item onClick={() => (curId.value = body.id)}>Передать</Menu.Item>
           </Menu.Dropdown>
         </Menu>
       </div>
-      <TransferSnake opened={isOpen.value} close={() => (isOpen.value = false)} snekId={body.id} snekName={body.snake_name} />
+      <TransferSnake opened={curId.value === body.id} close={() => (curId.value = undefined)} snekId={body.id} snekName={body.snake_name} />
     </Flex>
   );
 };

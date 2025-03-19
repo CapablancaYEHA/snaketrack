@@ -15,17 +15,17 @@ type IProp = {
   sex?: string;
 };
 
-export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, sex }) => {
+export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName }) => {
   const [search, setSearch] = useState("");
   const [breeder, setBreeder] = useState<ComboboxItem | null>(null);
 
   const { data } = useUserSuggestion(search);
   const sugg = (data ?? [])?.map((a) => ({ label: a.username, value: a.createdat }));
 
-  const { mutate } = useTransferSnake();
-  const submit = () => {
+  const { mutate, isPending } = useTransferSnake();
+  const subm = () => {
     mutate(
-      { username: breeder?.label, snekId },
+      { username: breeder?.label!, snekId },
       {
         onSuccess: () => {
           notif({ c: "green", t: "Ура!", m: `Змейка ${snekName} уже у нового владельца!` });
@@ -51,6 +51,7 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, sex 
         будет бридер
       </Text>
       <Select
+        data-autofocus
         value={breeder ? breeder.value : null}
         onChange={(_, option) => setBreeder(option)}
         placeholder="Поиск бридера"
@@ -66,12 +67,12 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, sex 
             <Text size="sm" fw={500}>
               {it.option.label}
             </Text>
-            <Text size="xs">аккаунт от {getDate((it.option as any).date)}</Text>
+            <Text size="xs">аккаунт от {getDate((it.option as any).value)}</Text>
           </Flex>
         )}
       />
       <Space h="xl" />
-      <Btn onClick={submit} disabled={isEmpty(breeder)}>
+      <Btn onClick={subm} disabled={isEmpty(breeder)} loading={isPending}>
         Передать
       </Btn>
     </Modal>

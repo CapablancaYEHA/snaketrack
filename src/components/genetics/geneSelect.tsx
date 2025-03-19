@@ -1,7 +1,9 @@
 import { FC } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
+import { IGenesBpComp } from "@/api/models";
 import { CheckIcon, Combobox, Group, Pill, PillsInput, useCombobox } from "@mantine/core";
-import { IGenesBpComp, geneToColor, redef } from "./const";
+import cx from "clsx";
+import { geneToColor, redef } from "./const";
 import styles from "./styles.module.scss";
 
 export const GenePill: FC<any> = ({ item, onRemove }) => (
@@ -17,15 +19,22 @@ export const GenePill: FC<any> = ({ item, onRemove }) => (
   </Pill>
 );
 
-//TODO
 interface IProp {
   outer: any[];
   onChange: (a) => void;
 }
+
 export const GeneSelect: FC<IProp> = ({ outer, onChange }) => {
+  const [animating, setAnimating] = useState(false);
   const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
-    onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
+    onDropdownClose: () => {
+      setAnimating(false);
+      combobox.resetSelectedOption();
+    },
+    onDropdownOpen: () => {
+      setAnimating(true);
+      combobox.updateSelectedOptionIndex("active");
+    },
   });
 
   const [search, setSearch] = useState("");
@@ -39,8 +48,8 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange }) => {
 
   const options = [...(outer ?? [])]
     .filter((item) => item.label.toLowerCase().includes(search.trim().toLowerCase()))
-    .map((item) => (
-      <Combobox.Option value={item as any} key={item.label} active={value.includes(item)}>
+    .map((item, index) => (
+      <Combobox.Option value={item as any} key={item.label} active={value.includes(item)} className={cx({ [styles.animateOption]: animating })} style={{ animationDelay: `${index * 100}ms` }}>
         <Group gap="sm">
           {value.some((a) => a.label === item.label) ? <CheckIcon size={12} /> : null}
           <span>{item.label}</span>
@@ -76,6 +85,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange }) => {
                     handleValueRemove(value[value.length - 1]);
                   }
                 }}
+                pointer
               />
             </Combobox.EventsTarget>
           </Pill.Group>

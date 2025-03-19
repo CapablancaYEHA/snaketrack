@@ -16,19 +16,19 @@ module.exports = {
   rules: {
     "max-lines": 0,
     // OFF
+    "no-unused-vars": "off",
     "no-throw-literal": "off",
     "react/jsx-props-no-spreading": "off",
     "newline-before-return": "off",
     "import/order": "off",
-    "@typescript-eslint/no-unused-vars": "off",
     "one-var": "off",
     "prefer-arrow-callback": "off",
     "no-magic-numbers": "off",
     "no-shadow": "off",
     "jest/no-deprecated-functions": "off",
     // WARN RULES
-    "no-unused-vars": "warn",
     "react-hooks/exhaustive-deps": "warn",
+    "@typescript-eslint/no-unused-vars": "warn",
     // ERROR RULES
     "@typescript-eslint/no-shadow": "error",
     "react-hooks/rules-of-hooks": "error",

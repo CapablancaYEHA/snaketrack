@@ -1,4 +1,21 @@
-import { IGenesBpComp } from "../components/genetics/const";
+export const enum ESupabase {
+  snakepics = "snakepics",
+  bpgenes = "bpgenes",
+  ballpythons = "ballpythons",
+  profiles = "profiles",
+  three_cols_profiles = "three_cols_profiles",
+}
+
+export const enum EQuKeys {
+  PROFILE = "profile",
+  COMP_BP = "pb_genes",
+  LIST_BP = "bp_list",
+}
+
+export interface IGenesBpComp {
+  label: string;
+  gene: "inc-dom" | "dom" | "rec" | "poly" | "other";
+}
 
 export interface ISupabaseErr {
   message: string;
@@ -21,10 +38,20 @@ export interface IReqCreateBP {
   feeding: string | null;
   feed_weight: number | null;
   picture: string | null;
+  last_action?: "create" | "transfer" | "update" | "delete";
 }
 
 export interface IResSnakesList extends IReqCreateBP {
   id: string;
   owner_name: string;
   status: string;
+}
+
+export interface IResProfile {
+  id: string;
+  usermail: string;
+  createdat: string;
+  username: string;
+  role: "free" | "premium";
+  regius_list: string[] | null;
 }

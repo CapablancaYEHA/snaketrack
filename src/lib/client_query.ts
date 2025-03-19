@@ -7,9 +7,6 @@ export const queryClient = new QueryClient({
       structuralSharing: true,
       refetchOnWindowFocus: false,
       retry: 1,
-      //   refetchOnWindowFocus: false,
-      //   staleTime: Infinity,
-      //   gcTime: Infinity,
     },
   },
 });

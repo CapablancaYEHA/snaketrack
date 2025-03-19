@@ -7,7 +7,22 @@ export const MobileMenu = () => {
   const { url } = useLocation();
   const [opened, { toggle }] = useDisclosure();
   return (
-    <Menu shadow="md" width={164} transitionProps={{ transition: "rotate-left", duration: 150 }} trigger="hover" loop={false} withinPortal={false} trapFocus={false} menuItemTabIndex={0} position="bottom-end" offset={18} withArrow arrowPosition="center">
+    <Menu
+      shadow="md"
+      width={164}
+      transitionProps={{ transition: "rotate-left", duration: 150 }}
+      trigger="click-hover"
+      loop={false}
+      withinPortal={false}
+      trapFocus={false}
+      menuItemTabIndex={0}
+      position="bottom-end"
+      offset={18}
+      withArrow
+      arrowPosition="center"
+      closeOnClickOutside
+      onClose={toggle}
+    >
       <Menu.Target>
         <Burger opened={opened} onClick={toggle} aria-label="Toggle navigation" />
       </Menu.Target>

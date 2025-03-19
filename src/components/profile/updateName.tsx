@@ -10,9 +10,8 @@ interface IProp {
   initName: string;
 }
 
-/* FIXME Supabase чел в Profiles должен моч только менять свое имя - нельзя менять дату регистрации и тем более Роль
-В будущем надо сделать view - чтоб сторонний пользователь мог запросить профиль чела - имя, дату реги, змеи на продажу
-*/
+/* FIXME Supabase чел в Profiles должен моч только менять свое имя - нельзя менять дату регистрации и тем более Роль (free\premium)
+ */
 export const ModalChangeName: FC<IProp> = ({ opened, close, sbmtCallback, title = "Задать имя аккаунта", initName }) => {
   const {
     register,
@@ -63,6 +62,7 @@ export const ModalChangeName: FC<IProp> = ({ opened, close, sbmtCallback, title 
           })}
           label="Отображаемое имя"
           error={errors.userName && <span>От 3 до 50 символов (разрешены - и _)</span>}
+          data-autofocus
         />
         <Space h="lg" />
         <Button type="submit" size="xs">

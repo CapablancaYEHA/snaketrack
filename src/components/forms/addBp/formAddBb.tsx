@@ -15,7 +15,7 @@ import { defVals, feederHardcode, schema, sexHardcode, uplErr } from "./const";
 // TODO сделать проверку родителей и что есть разнополая пара вообще
 // TODO в будущем - нужна выпадашка Статус - жива, умерла, карантин, продана ну и чето еще
 export const FormAddBp = ({ traits }) => {
-  const { mutate } = useCreateBp();
+  const { mutate, isPending } = useCreateBp();
   const location = useLocation();
   const {
     register,
@@ -176,7 +176,7 @@ export const FormAddBp = ({ traits }) => {
             );
           }}
         />
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)}>
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending}>
           Сохранить
         </Btn>
       </Flex>

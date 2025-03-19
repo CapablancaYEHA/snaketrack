@@ -18,14 +18,21 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    // "baseUrl": "./src",
+    "baseUrl": ".",
     "typeRoots": ["@types", "node_modules/@types"],
     "noImplicitAny": false,
     "pretty": true,
     "useUnknownInCatchVariables": false,
     "paths": {
       "react": ["./node_modules/preact/compat/"],
-      "react-dom": ["./node_modules/preact/compat/"]
+      "react-dom": ["./node_modules/preact/compat/"],
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@assets/*": ["src/assets/*"],
+      "@api/*": ["src/api/*"],
+      "@pages/*": ["src/pages/*"],
+      "@utils/*": ["src/utils/*"],
+      "@styles/*": ["src/styles/*"]
     }
   },
   "include": ["node_modules/vite/client.d.ts", "**/*"]

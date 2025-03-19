@@ -1,7 +1,7 @@
 import { useEffect } from "preact/hooks";
+import { useProfile, useUpdName } from "@/api/profile/hooks";
 import { Loader, Space, Stack } from "@mantine/core";
 import { signal } from "@preact/signals";
-import { useProfile, useUpdName } from "../../api/profile/hooks";
 import { Btn } from "../../components/navs/btn/Btn";
 import { ModalChangeName } from "../../components/profile/updateName";
 import { notif } from "../../utils/notif";
@@ -14,7 +14,7 @@ export function Profile() {
 
   const { data, error, isError, isPending } = useProfile(userId, userId != null);
 
-  const { mutate } = useUpdName();
+  const { mutate, isPending: isPend } = useUpdName();
 
   useEffect(() => {
     if (isError) {
@@ -40,13 +40,14 @@ export function Profile() {
           <ModalChangeName
             opened={isOpen.value}
             close={() => (isOpen.value = false)}
-            initName={data?.username}
+            initName={data?.username ?? ""}
             sbmtCallback={(a) =>
               mutate(
-                { name: a, id: userId },
+                { name: a, id: userId! },
                 {
                   onSuccess: () => {
                     notif({ c: "green", t: "Успешно", m: "Имя аккаунта сохранено" });
+                    isOpen.value = false;
                   },
                   onError: (e) => {
                     notif({ c: "red", t: "Проблема", m: "Имя занято", code: e.code });
@@ -55,7 +56,7 @@ export function Profile() {
               )
             }
           />
-          <Btn fullWidth={false} style={{ width: "min-content" }} onClick={() => (isOpen.value = true)} size="xs">
+          <Btn fullWidth={false} style={{ width: "min-content" }} onClick={() => (isOpen.value = true)} size="xs" loading={isPend}>
             Сменить имя
           </Btn>
         </>

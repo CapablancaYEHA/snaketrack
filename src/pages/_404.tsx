@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
 
-export function NotFound({ session }) {
+export function NotFound() {
   const location = useLocation();
   if (["", ".", "/"].some((a) => a === location.url)) {
     location.route("/dashboard");

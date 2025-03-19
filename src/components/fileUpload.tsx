@@ -1,5 +1,5 @@
-import { FC, forwardRef } from "preact/compat";
-import { Button, FileButton, Flex, Space, Stack, Text } from "@mantine/core";
+import { forwardRef } from "preact/compat";
+import { Button, FileButton, Space, Stack, Text } from "@mantine/core";
 import { IconSwitch } from "./navs/sidebar/icons/switch";
 
 interface IProp {
@@ -18,7 +18,9 @@ export const FileUpload = forwardRef<any, IProp>(({ onUpload, url, err, clearFil
               <Stack align="flex-start" justify="flex-start">
                 <Text {...props} fw="bold" size="sm">
                   Фото
-                  <span style={{ height: 109, display: "block" }}> {url ? <img src={url} width={196} height={110} alt="uploaded_snake_pic" style={{ objectFit: "contain", objectPosition: "bottom left" }} /> : <IconSwitch icon="img" width="64" height="64" />}</span>
+                  <span style={{ height: 109, display: "block" }}>
+                    {url ? <img src={url} width={196} height={110} alt="uploaded_snake_pic" style={{ objectFit: "contain", objectPosition: "bottom left" }} /> : <IconSwitch icon="img" width="64" height="64" />}
+                  </span>
                 </Text>
               </Stack>
             )}

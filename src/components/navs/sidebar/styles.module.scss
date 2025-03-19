@@ -1,11 +1,11 @@
-@import "../../../styles/global.scss";
+@import "@styles/global.scss";
 
 $height: 32px;
 $offset: 8px;
 
 .sidebar {
-  position: absolute;
-  z-index: 2;
+  position: fixed;
+  z-index: 4;
   top: $header-height;
   width: 100%;
   max-width: 48px;
