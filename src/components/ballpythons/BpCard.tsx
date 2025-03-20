@@ -1,4 +1,5 @@
 import { FC } from "preact/compat";
+import fallback from "@assets/placeholder.png";
 import { Button, Flex, Image, Menu, Stack, Text } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { getAge, getDate } from "../../utils/time";
@@ -12,7 +13,7 @@ export const BpCard: FC<any> = ({ body }) => {
   return (
     <Flex columnGap="md" w="100%" maw="100%" justify="space-between" wrap="wrap">
       <Stack gap="xs">
-        <Image src={body.picture} fit="cover" radius="md" w={196} h={110} fallbackSrc="src/assets/placeholder.png" loading="eager" />
+        <Image src={body.picture} fit="cover" radius="md" w={196} h={110} fallbackSrc={fallback} loading="eager" />
         <Flex gap="xs" align="center">
           <IconSwitch icon={body.sex} width="24" height="24" />
           <Text size="lg">{body.snake_name}</Text>
