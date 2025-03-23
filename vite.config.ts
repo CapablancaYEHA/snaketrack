@@ -19,11 +19,4 @@ export default defineConfig({
     },
   },
   plugins: [preact(), eslint()],
-  build: {
-    rollupOptions: {
-      output: {
-        preserveModules: true,
-      },
-    },
-  },
 });
