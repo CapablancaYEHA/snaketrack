@@ -44,9 +44,10 @@ export const schema = yup.object<Schema>().shape({
   origin: yup.string().required(),
   parents: yup.mixed().nullable(),
   price: yup.number().nullable(),
-  last_supper: yup.string().nullable(),
-  feeding: yup.string().nullable(),
+  feed_last_at: yup.string().nullable(),
   feed_weight: yup.number().nullable(),
+  feed_ko: yup.string().nullable(),
+  feed_comment: yup.string().nullable(),
   picture: yup
     .mixed<File>()
     .test("fileSize", "Вес фото более 3Мb", (v) => (!v ? true : v.size <= 3145728))
@@ -62,9 +63,10 @@ export const defVals = {
   origin: "purchase",
   parents: null,
   price: null,
-  last_supper: null,
-  feeding: null,
+  feed_last_at: null,
+  feed_ko: null,
   feed_weight: null,
+  feed_comment: null,
   picture: null,
 };
 

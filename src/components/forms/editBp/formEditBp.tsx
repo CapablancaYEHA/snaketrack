@@ -1,32 +1,30 @@
-import { useLocation } from "preact-iso";
 import { useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Flex, Group, NumberInput, Radio, Select, Text, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { Controller, useForm, useWatch } from "react-hook-form";
-import { httpUldSnPic, useCreateBp } from "../../../api/hooks";
-import { FileUpload } from "../../../components/fileUpload";
-import { GeneSelect } from "../../../components/genetics/geneSelect";
-import { Btn } from "../../../components/navs/btn/Btn";
-import { notif } from "../../../utils/notif";
-import { calcImgUrl, compressImage } from "../../../utils/supabaseImg";
-import { defVals, feederHardcode, schema, sexHardcode, uplErr } from "./const";
+import { FileUpload } from "@/components/fileUpload";
+import { GeneSelect } from "@/components/genetics/geneSelect";
+import { Btn } from "@/components/navs/btn/Btn";
+import { httpUldSnPic, useCreateBp } from "@/api/hooks";
+import { notif } from "@/utils/notif";
+import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
+import { makeDefault, schema, sexHardcode, uplErr } from "./const";
 
-// TODO сделать проверку родителей и что есть разнополая пара вообще
-// TODO в будущем - нужна выпадашка Статус - жива, умерла, карантин, продана ну и чето еще
-export const FormAddBp = ({ traits }) => {
+// FIXME !!!!!
+export const FormEditBp = ({ traits, init }) => {
   const { mutate, isPending } = useCreateBp();
-  const location = useLocation();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     control,
   } = useForm({
-    defaultValues: defVals,
+    defaultValues: makeDefault(init),
     resolver: yupResolver(schema as any),
   });
-  const [img, setImg] = useState<string | null>(null);
+
+  const [img, setImg] = useState<string | null>(init.picture);
   const [wOrigin] = useWatch({ control, name: ["origin"] });
   const resetRef = useRef<() => void>(null);
 
@@ -40,28 +38,25 @@ export const FormAddBp = ({ traits }) => {
       }
       picture = calcImgUrl(r?.fullPath!);
     }
-    mutate(
-      { ...sbm, picture },
-      {
-        onSuccess: () => {
-          notif({ c: "green", t: "Успешно", m: "Змейка сохранена" });
-          location.route("/snakes");
-        },
-        onError: (err) => {
-          notif({
-            c: "red",
-            m: err.message,
-            code: err.code || err.statusCode,
-          });
-        },
-      },
-    );
+    // mutate(
+    //   { ...sbm, picture },
+    //   {
+    //     onSuccess: () => {
+    //       notif({ c: "green", t: "Успешно", m: "Змейка сохранена" });
+    //       location.route("/snakes");
+    //     },
+    //     onError: (err) => {
+    //        notif({ c: "red",  m: err.message});
+    //     },
+    //   },
+    // );
   };
 
+  console.log("errors", errors);
   return (
     <>
       <Text size="md" fw={500} c="yellow.4">
-        Добавить Королевского питона
+        Редактирование данных
       </Text>
       <Flex gap="lg" wrap="wrap">
         <TextInput {...register("snake_name")} required label="Кличка змеи" error={errors?.snake_name?.message} />
@@ -77,13 +72,20 @@ export const FormAddBp = ({ traits }) => {
         <Controller
           name="genes"
           control={control}
-          render={({ field: { onChange } }) => {
-            return <GeneSelect onChange={(a) => onChange(a)} outer={traits} />;
+          render={({ field: { onChange, value } }) => {
+            return <GeneSelect onChange={(a) => onChange(a)} outer={traits} init={value} />;
           }}
         />
-        <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса" placeholder="Нет данных" hideControls />
+        <Controller
+          name="weight"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <NumberInput rightSection="г" label="Масса" placeholder="Нет данных" hideControls error={error} value={isNaN(value) ? null : value} onChange={onChange} />;
+          }}
+        />
       </Flex>
       <Flex gap="lg" wrap="wrap">
+        1
         <Controller
           name="date_hatch"
           control={control}
@@ -115,53 +117,16 @@ export const FormAddBp = ({ traits }) => {
 
       <Flex gap="lg" wrap="wrap">
         {wOrigin === "purchase" ? (
-          <NumberInput
-            {...(register("price") as any,
-            {
-              setValueAs: (value) => value || null,
-            })}
-            rightSection="₽"
-            label="Цена покупки"
-            placeholder="Без цены"
-            hideControls
-            thousandSeparator=" "
+          <Controller
+            name="price"
+            control={control}
+            render={({ field: { onChange, value }, fieldState: { error } }) => {
+              return <NumberInput rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value || null} onChange={onChange} />;
+            }}
           />
         ) : null}
         {/* FIX здесь нужно проверка на наличие разнополой пары */}
         {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null}
-      </Flex>
-
-      <Flex gap="lg" wrap="wrap">
-        <Controller
-          name="feed_last_at"
-          control={control}
-          render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return (
-              <>
-                <DatePickerInput label="Последнее кормление" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Нет данных" />
-                {error ? <span>{error?.message}</span> : null}
-              </>
-            );
-          }}
-        />
-        <Controller
-          name="feed_ko"
-          control={control}
-          render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <Select data={feederHardcode} value={value} onChange={onChange} label="Кормовой объект" error={error?.message} placeholder="Нет данных" />;
-          }}
-        />
-        <NumberInput
-          {...(register("feed_weight") as any,
-          {
-            setValueAs: (value) => value || null,
-          })}
-          rightSection="г"
-          label="Масса КО"
-          placeholder="Нет данных"
-          hideControls
-        />
-        <TextInput {...register("feed_comment")} label="Комментарий" error={errors?.feed_comment} />
       </Flex>
 
       <Flex align="flex-start" maw="100%" w="100%">
@@ -184,8 +149,8 @@ export const FormAddBp = ({ traits }) => {
             );
           }}
         />
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending}>
-          Добавить
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending} disabled={!isDirty}>
+          Сохранить
         </Btn>
       </Flex>
     </>

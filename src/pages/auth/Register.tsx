@@ -40,6 +40,11 @@ export function Register() {
         code: error?.code,
       });
     } else {
+      notif({
+        c: "green",
+        t: "Успешнао",
+        m: "Подтвердите регистрацию в письме на почте",
+      });
       location.route("/login");
     }
   }
@@ -67,6 +72,7 @@ export function Register() {
           })}
           label="Email"
           error={errors.userMail && <p>Формат мыла неверный</p>}
+          data-autofocus
         />
         <Space h="lg" />
         <PasswordInput

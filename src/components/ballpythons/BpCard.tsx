@@ -1,33 +1,30 @@
 import { FC } from "preact/compat";
 import fallback from "@assets/placeholder.png";
 import { Button, Flex, Image, Menu, Stack, Text } from "@mantine/core";
-import { signal } from "@preact/signals";
 import { getAge, getDate } from "../../utils/time";
 import { GenePill } from "../genetics/geneSelect";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
-import { TransferSnake } from "../transferSnake/transfer";
 
-const curId = signal(undefined);
-
-export const BpCard: FC<any> = ({ body }) => {
+// FIXME typing
+export const BpCard: FC<any> = ({ body, onTransClick, onEditClick }) => {
   return (
     <Flex columnGap="md" w="100%" maw="100%" justify="space-between" wrap="wrap">
-      <Stack gap="xs">
-        <Image src={body.picture} fit="cover" radius="md" w={196} h={110} fallbackSrc={fallback} loading="eager" />
+      <Stack gap="xs" flex="0 1 196px">
+        <Image src={body.picture} fit="cover" radius="md" mih={110} w="auto" maw="100%" h="100%" fallbackSrc={fallback} loading="lazy" />
         <Flex gap="xs" align="center">
           <IconSwitch icon={body.sex} width="24" height="24" />
           <Text size="lg">{body.snake_name}</Text>
         </Flex>
         <Text size="md">⌛ {getAge(body.date_hatch)}</Text>
       </Stack>
-      <Stack gap="xs">
+      <Stack gap="xs" flex="0 1 90px">
         {body.genes.map((a) => (
           <GenePill key={a.label} item={a} />
         ))}
       </Stack>
       <Stack gap="xs">
         <Text size="sm">Текущий вес: {body.weight ? `${body.weight}г` : "Нет данных"}</Text>
-        <Text size="sm">Последнее кормление: {body.feeding ? `${getDate(body.last_supper)}` : "Нет данных"}</Text>
+        <Text size="sm">Последнее кормление: {body.feeding[0]?.feed_last_at ? `${getDate(body.feeding[0]?.feed_last_at)}` : "Нет данных"}</Text>
       </Stack>
       <div>
         <Menu
@@ -57,12 +54,11 @@ export const BpCard: FC<any> = ({ body }) => {
             />
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item>Редактировать</Menu.Item>
-            <Menu.Item onClick={() => (curId.value = body.id)}>Передать</Menu.Item>
+            <Menu.Item onClick={onEditClick}>Редактировать</Menu.Item>
+            <Menu.Item onClick={onTransClick}>Передать</Menu.Item>
           </Menu.Dropdown>
         </Menu>
       </div>
-      <TransferSnake opened={curId.value === body.id} close={() => (curId.value = undefined)} snekId={body.id} snekName={body.snake_name} />
     </Flex>
   );
 };

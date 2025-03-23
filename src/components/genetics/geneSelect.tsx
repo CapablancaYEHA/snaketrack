@@ -1,8 +1,8 @@
 import { FC } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
-import { IGenesBpComp } from "@/api/models";
 import { CheckIcon, Combobox, Group, Pill, PillsInput, useCombobox } from "@mantine/core";
 import cx from "clsx";
+import { IGenesBpComp } from "@/api/models";
 import { geneToColor, redef } from "./const";
 import styles from "./styles.module.scss";
 
@@ -22,9 +22,10 @@ export const GenePill: FC<any> = ({ item, onRemove }) => (
 interface IProp {
   outer: any[];
   onChange: (a) => void;
+  init?: IGenesBpComp[];
 }
 
-export const GeneSelect: FC<IProp> = ({ outer, onChange }) => {
+export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
   const [animating, setAnimating] = useState(false);
   const combobox = useCombobox({
     onDropdownClose: () => {
@@ -58,6 +59,10 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange }) => {
     ));
 
   useEffect(() => {
+    if (init) setValue(init);
+  }, []);
+
+  useEffect(() => {
     onChange(value);
     setSearch("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,7 +79,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange }) => {
                 onFocus={() => combobox.openDropdown()}
                 onBlur={() => combobox.closeDropdown()}
                 value={search}
-                placeholder="Normal, no Het"
+                placeholder={value.length ? undefined : "Normal, no Het"}
                 onChange={(event) => {
                   combobox.updateSelectedOptionIndex();
                   setSearch(event.currentTarget.value);

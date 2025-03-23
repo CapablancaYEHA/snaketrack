@@ -1,10 +1,11 @@
 import { Route, useLocation } from "preact-iso";
 import { isEmpty } from "lodash-es";
-import { AddSnake } from "../pages/AddSnake";
-import { Dashboard } from "../pages/Dashboard";
-import { Snake } from "../pages/Snake";
-import { SnakeList } from "../pages/SnakeList";
-import { Profile } from "../pages/auth/Profile";
+import { AddSnake } from "@/pages/AddSnake";
+import { Dashboard } from "@/pages/Dashboard";
+import { EditSnake } from "@/pages/EditSnake";
+import { Snake } from "@/pages/Snake";
+import { SnakeList } from "@/pages/SnakeList";
+import { Profile } from "@/pages/auth/Profile";
 
 export const ProtectedRoute = (props) => {
   const location = useLocation();
@@ -32,6 +33,7 @@ export const protectedRoutes = {
   "/snakes": SnakeList,
   "/snakes/:id": Snake,
   "/add/:type": AddSnake,
+  "/edit/:type?id=:id": EditSnake,
 };
 
 export const sidebarLinks = [

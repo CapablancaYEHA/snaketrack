@@ -1,7 +1,7 @@
 {
   "printWidth": 260,
   "plugins": ["@trivago/prettier-plugin-sort-imports"],
-  "importOrder": ["^preact", "<THIRD_PARTY_MODULES>", "^components/(.*)$", "^.(css|scss)$", "^[./]"],
+  "importOrder": ["^preact", "<THIRD_PARTY_MODULES>", "@/components/(.*)$", "@/api/(.*)$", "@/pages/(.*)$", "@/utils/(.*)$", "@/assets/(.*)$", "^.(css|scss)$", "^[./]"],
   "importOrderSeparation": false,
   "importOrderSortSpecifiers": true
 }

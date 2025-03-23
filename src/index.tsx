@@ -70,7 +70,7 @@ export function App() {
 			<Route path="/login"  component={Login} />
 			<Route path="/register"  component={Register} />
 				{isPending.value ? (null as any)
-				: (['/dashboard','/profile','/snakes', '/snakes/:id', '/add/:type'].map(
+				: (['/dashboard','/profile','/snakes', '/snakes/:id', '/add/:type','/edit/:type?id=:id'].map(
 					(a) => <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />)
 				)}
 				{isPending.value ?  null : (<Route default component={NotFound}  />)}

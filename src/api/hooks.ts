@@ -30,7 +30,25 @@ export const httpUldSnPic = (file: File) => {
 // Для лого отдельный бакет?
 // Может вместо одного бакета snakepics - сделать категории - питоны, удавы и  Бакет для логотипов заводчиков?
 export const httpCreateBp = async (a: IReqCreateBP) => {
-  let d = { ...a, genes: isEmpty(a.genes) ? [{ label: "Normal", gene: "other" }] : a.genes, date_hatch: dateToSupabaseTime(a.date_hatch), last_supper: a.last_supper != null ? dateToSupabaseTime(a.last_supper) : null };
+  let genes = isEmpty(a.genes) ? [{ label: "Normal", gene: "other" }] : a.genes;
+  let l = a.feed_last_at != null ? dateToSupabaseTime(a.feed_last_at) : null;
+  let d = {
+    ...a,
+    genes,
+    date_hatch: dateToSupabaseTime(a.date_hatch),
+    feeding: [
+      {
+        feed_last_at: l,
+        feed_weight: a.feed_weight,
+        feed_ko: a.feed_ko,
+        feed_comment: a.feed_comment,
+      },
+    ],
+  };
+  delete d.feed_last_at;
+  delete d.feed_weight;
+  delete d.feed_ko;
+  delete d.feed_comment;
   return await supabase.from(ESupabase.ballpythons).insert(d).select("id").single<{ id: string }>();
 };
 
@@ -62,6 +80,19 @@ export function useSnakesList(list: string[], isEnabled: boolean) {
     queryKey: [EQuKeys.LIST_BP, list],
     queryFn: () => httpGetSnakesList(list),
     enabled: isEnabled,
+  });
+}
+
+const httpGetSingleSnake = async (id: string) => {
+  let a = await supabase.from(ESupabase.ballpythons).select("*").eq("id", id).limit(1).single();
+  return a.data;
+};
+
+export function useSnake(id: string) {
+  return useQuery<any, ISupabaseErr, IResSnakesList[]>({
+    queryKey: [EQuKeys.LIST_BP, id],
+    queryFn: () => httpGetSingleSnake(id),
+    enabled: true,
   });
 }
 

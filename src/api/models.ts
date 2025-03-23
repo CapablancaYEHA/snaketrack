@@ -34,9 +34,10 @@ export interface IReqCreateBP {
   origin: string;
   parents: []; // TODO ?????
   price: number | null;
-  last_supper: string | null;
-  feeding: string | null;
-  feed_weight: number | null;
+  feed_last_at?: string | null;
+  feed_weight?: string | null;
+  feed_ko?: string | null;
+  feed_comment?: string;
   picture: string | null;
   last_action?: "create" | "transfer" | "update" | "delete";
 }
@@ -45,6 +46,7 @@ export interface IResSnakesList extends IReqCreateBP {
   id: string;
   owner_name: string;
   status: string;
+  feeding: any;
 }
 
 export interface IResProfile {

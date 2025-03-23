@@ -65,6 +65,7 @@ export function Login() {
           })}
           label="Email"
           error={errors.userMail && <p>Формат мыла неверный</p>}
+          data-autofocus
           style={{ width: "100%" }}
         />
         <Space h="lg" />
