@@ -6,7 +6,7 @@ import { HeadMenu } from "./headMenu";
 import { MobileMenu } from "./mobileMenu";
 import styles from "./styles.module.scss";
 
-export function Header() {
+export function Header({ session }) {
   const userId = localStorage.getItem("USER");
   const { data } = useProfile(userId, userId != null);
 
@@ -35,16 +35,18 @@ export function Header() {
             HsssStats 🐍
           </Title>
         </a>
-        <nav
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "24px",
-          }}
-        >
-          <HeadMenu accName={data?.username} />
-        </nav>
+        {session != null ? (
+          <nav
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "24px",
+            }}
+          >
+            <HeadMenu accName={data?.username} />
+          </nav>
+        ) : null}
       </div>
     </Box>
   );

@@ -22,7 +22,7 @@ export function SnakeList() {
         <Box h={60} bd="1px solid rgba(255,255,255,0.1)" flex="1 1 auto" p="md">
           филтры, поиск
         </Box>
-        <Btn fullWidth={false} component="a" href="/add/ballpython">
+        <Btn fullWidth={false} component="a" href="/snakes/add/ballpython">
           Добавить
         </Btn>
       </Flex>
@@ -34,7 +34,7 @@ export function SnakeList() {
       ) : dt?.regius_list == null || isEmpty(dt?.regius_list) ? (
         <Text fw={500}>Змеек у вас нет</Text>
       ) : (
-        d?.map((a) => <BpCard key={a.id} body={a} onTransClick={() => (curId.value = a.id)} onEditClick={() => location.route(`/edit/ballpython?id=${a.id}`)} />)
+        d?.map((a) => <BpCard key={a.id} body={a} onTransClick={() => (curId.value = a.id)} onEditClick={() => location.route(`/snakes/edit/ballpython?id=${a.id}`)} />)
       )}
       <TransferSnake opened={curId.value != null} close={() => (curId.value = undefined)} snekId={curId.value!} snekName={d?.find((b) => b.id === curId.value)?.snake_name ?? ""} />
     </Stack>

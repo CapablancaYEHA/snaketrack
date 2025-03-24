@@ -2,6 +2,7 @@ import { supabase } from "@/lib/client_supabase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isEmpty } from "lodash-es";
 import { nanoid } from "nanoid";
+import { toDataUrl } from "@/utils/supabaseImg";
 import { dateToSupabaseTime } from "../utils/time";
 import { EQuKeys, ESupabase, IReqCreateBP, IResSnakesList, ISupabaseErr } from "./models";
 
@@ -107,7 +108,7 @@ const httpGetSingleSnake = async (id: string) => {
 };
 
 export function useSnake(id: string) {
-  return useQuery<any, ISupabaseErr, IResSnakesList[]>({
+  return useQuery<any, ISupabaseErr, IResSnakesList>({
     queryKey: [EQuKeys.LIST_BP, id],
     queryFn: () => httpGetSingleSnake(id),
     enabled: true,
@@ -135,5 +136,13 @@ export function useTransferSnake() {
         queryKey: [EQuKeys.PROFILE],
       });
     },
+  });
+}
+
+export function useBase64(url: string, flag: boolean) {
+  return useQuery<any, ISupabaseErr, string>({
+    queryKey: ["base64", url],
+    queryFn: () => toDataUrl(url),
+    enabled: flag,
   });
 }

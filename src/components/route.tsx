@@ -32,8 +32,8 @@ export const protectedRoutes = {
   "/profile": Profile,
   "/snakes": SnakeList,
   "/snakes/:id": Snake,
-  "/add/:type": AddSnake,
-  "/edit/:type?id=:id": EditSnake,
+  "/snakes/add/:type": AddSnake,
+  "/snakes/edit/:type?id=:id": EditSnake,
 };
 
 export const sidebarLinks = [

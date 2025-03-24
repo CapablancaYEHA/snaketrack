@@ -63,14 +63,14 @@ export function App() {
       <LocationProvider>
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <Notifications />
-          {session !=null ? (<Header />) : null}
+          <Header session={session} />
 		  {!isTablet ? <Sidebar /> : null}
           <Box component="main" px="xl" py="lg" >
 		  <Router>
 			<Route path="/login"  component={Login} />
 			<Route path="/register"  component={Register} />
 				{isPending.value ? (null as any)
-				: (['/dashboard','/profile','/snakes', '/snakes/:id', '/add/:type','/edit/:type?id=:id'].map(
+				: (['/dashboard','/profile','/snakes', '/snakes/:id', '/snakes/add/:type','/snakes/edit/:type?id=:id'].map(
 					(a) => <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />)
 				)}
 				{isPending.value ?  null : (<Route default component={NotFound}  />)}

@@ -24,3 +24,21 @@ export const compressImage = async (pic: File, handleChange, handleState) => {
 };
 
 export const calcImgUrl = (fullPath: string) => `${import.meta.env.VITE_REACT_APP_SUPABASE_URL}/storage/v1/object/public/${fullPath}`;
+
+export const toDataUrl = async (url) => {
+  if (!url) return null;
+
+  const data = await fetch(url);
+  const blob = await data.blob();
+  let step = new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = () => {
+      const base64data = reader.result;
+      resolve(base64data);
+    };
+    reader.onerror = reject;
+  });
+  let param = await step;
+  return imageCompression.getFilefromDataUrl(param as string, "предыдущее фото");
+};

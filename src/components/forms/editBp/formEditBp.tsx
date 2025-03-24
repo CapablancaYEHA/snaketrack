@@ -24,7 +24,7 @@ export const FormEditBp = ({ traits, init }) => {
     resolver: yupResolver(schema as any),
   });
 
-  const [img, setImg] = useState<string | undefined>(init.picture);
+  const [img, setImg] = useState<string | undefined>(init.blob);
   const [wOrigin] = useWatch({ control, name: ["origin"] });
   const resetRef = useRef<() => void>(null);
 
