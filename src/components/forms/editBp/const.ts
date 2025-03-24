@@ -18,11 +18,17 @@ export const schema = yup.object<Schema>().shape({
     .required(),
   sex: yup.string(),
   genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
-  weight: yup.number().notRequired().nullable(),
+  weight: yup
+    .number()
+    .transform((v) => (!v || Number.isNaN(v) ? undefined : v))
+    .nullable(),
   date_hatch: yup.string().nullable().required("Хотя бы примерно"),
   origin: yup.string().required(),
   parents: yup.mixed().nullable(),
-  price: yup.number().nullable(),
+  price: yup
+    .number()
+    .transform((v) => (!v || Number.isNaN(v) ? undefined : v))
+    .nullable(),
   picture: yup
     .mixed<File>()
     .test("fileSize", "Вес фото более 3Мb", (v) => (!v ? true : v.size <= 3145728))
@@ -43,3 +49,11 @@ export const uplErr = (e: any) =>
     m: e.message,
     code: e.code || e.statusCode,
   });
+
+export const filterSubmitByDirty = (subm, dirty) => {
+  const res = {};
+  for (let key in subm) {
+    if (dirty[key]) res[key] = subm[key];
+  }
+  return res;
+};

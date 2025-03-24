@@ -42,11 +42,18 @@ export interface IReqCreateBP {
   last_action?: "create" | "transfer" | "update" | "delete";
 }
 
-export interface IResSnakesList extends IReqCreateBP {
+type IFeed = {
+  feed_last_at?: string | null;
+  feed_weight?: string | null;
+  feed_ko?: string | null;
+  feed_comment?: string;
+};
+
+export interface IResSnakesList extends Pick<IReqCreateBP, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture"> {
   id: string;
   owner_name: string;
   status: string;
-  feeding: any;
+  feeding?: IFeed[];
 }
 
 export interface IResProfile {

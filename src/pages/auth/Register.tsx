@@ -69,6 +69,7 @@ export function Register() {
           {...register("userMail", {
             required: true,
             pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            setValueAs: (v) => v.trim(),
           })}
           label="Email"
           error={errors.userMail && <p>Формат мыла неверный</p>}

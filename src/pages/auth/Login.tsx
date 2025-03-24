@@ -10,7 +10,7 @@ import styles from "./styles.module.scss";
 
 export function Login() {
   const location = useLocation();
-  //   const { setAuth } = useAuth();
+
   const {
     register,
     handleSubmit,

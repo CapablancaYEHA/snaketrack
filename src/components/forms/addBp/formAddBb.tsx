@@ -61,7 +61,7 @@ export const FormAddBp = ({ traits }) => {
   return (
     <>
       <Text size="md" fw={500} c="yellow.4">
-        Добавить Королевского питона
+        Добавить Региуса
       </Text>
       <Flex gap="lg" wrap="wrap">
         <TextInput {...register("snake_name")} required label="Кличка змеи" error={errors?.snake_name?.message} />

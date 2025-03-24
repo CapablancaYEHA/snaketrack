@@ -12,7 +12,7 @@ export const HeadMenu: FC<IProps> = ({ accName }) => {
       shadow="md"
       width={164}
       transitionProps={{ transition: "rotate-left", duration: 150 }}
-      trigger="click"
+      trigger="click-hover"
       loop={false}
       withinPortal={false}
       trapFocus={false}

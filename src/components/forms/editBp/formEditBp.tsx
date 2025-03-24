@@ -1,3 +1,4 @@
+import { useLocation } from "preact-iso";
 import { useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Flex, Group, NumberInput, Radio, Select, Text, TextInput } from "@mantine/core";
@@ -6,27 +7,28 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { FileUpload } from "@/components/fileUpload";
 import { GeneSelect } from "@/components/genetics/geneSelect";
 import { Btn } from "@/components/navs/btn/Btn";
-import { httpUldSnPic, useCreateBp } from "@/api/hooks";
+import { httpUldSnPic, useUpdateBp } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
-import { makeDefault, schema, sexHardcode, uplErr } from "./const";
+import { filterSubmitByDirty, makeDefault, schema, sexHardcode, uplErr } from "./const";
 
-// FIXME !!!!!
 export const FormEditBp = ({ traits, init }) => {
-  const { mutate, isPending } = useCreateBp();
+  const location = useLocation();
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, dirtyFields },
     control,
   } = useForm({
     defaultValues: makeDefault(init),
     resolver: yupResolver(schema as any),
   });
 
-  const [img, setImg] = useState<string | null>(init.picture);
+  const [img, setImg] = useState<string | undefined>(init.picture);
   const [wOrigin] = useWatch({ control, name: ["origin"] });
   const resetRef = useRef<() => void>(null);
+
+  const { mutate, isPending } = useUpdateBp();
 
   const onSub = async (sbm) => {
     let picture: string | null = null;
@@ -38,25 +40,27 @@ export const FormEditBp = ({ traits, init }) => {
       }
       picture = calcImgUrl(r?.fullPath!);
     }
-    // mutate(
-    //   { ...sbm, picture },
-    //   {
-    //     onSuccess: () => {
-    //       notif({ c: "green", t: "Успешно", m: "Змейка сохранена" });
-    //       location.route("/snakes");
-    //     },
-    //     onError: (err) => {
-    //        notif({ c: "red",  m: err.message});
-    //     },
-    //   },
-    // );
+
+    const submitBody = filterSubmitByDirty(sbm, dirtyFields);
+
+    mutate(
+      { upd: { ...submitBody, picture: picture ? picture : undefined }, id: location.query.id },
+      {
+        onSuccess: () => {
+          notif({ c: "green", t: "Успешно", m: "Запись изменена" });
+          location.route("/snakes");
+        },
+        onError: (err) => {
+          notif({ c: "red", m: err.message });
+        },
+      },
+    );
   };
 
-  console.log("errors", errors);
   return (
     <>
       <Text size="md" fw={500} c="yellow.4">
-        Редактирование данных
+        Редактирование Региуса
       </Text>
       <Flex gap="lg" wrap="wrap">
         <TextInput {...register("snake_name")} required label="Кличка змеи" error={errors?.snake_name?.message} />
@@ -80,12 +84,11 @@ export const FormEditBp = ({ traits, init }) => {
           name="weight"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <NumberInput rightSection="г" label="Масса" placeholder="Нет данных" hideControls error={error} value={isNaN(value) ? null : value} onChange={onChange} />;
+            return <NumberInput rightSection="г" label="Масса" placeholder="Нет данных" hideControls error={error} value={value} onChange={onChange} />;
           }}
         />
       </Flex>
       <Flex gap="lg" wrap="wrap">
-        1
         <Controller
           name="date_hatch"
           control={control}
@@ -121,7 +124,7 @@ export const FormEditBp = ({ traits, init }) => {
             name="price"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value || null} onChange={onChange} />;
+              return <NumberInput rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value} onChange={onChange} />;
             }}
           />
         ) : null}
@@ -138,13 +141,14 @@ export const FormEditBp = ({ traits, init }) => {
               <FileUpload
                 ref={resetRef}
                 clearFile={() => {
-                  setImg(null);
+                  setImg(undefined);
                   resetRef.current?.();
                   onChange(null);
                 }}
                 onUpload={async (a) => await compressImage(a!, onChange, setImg)}
-                url={img}
+                url={img || null}
                 err={error?.message}
+                withRemove={false}
               />
             );
           }}

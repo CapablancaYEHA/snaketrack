@@ -52,7 +52,6 @@ export const httpCreateBp = async (a: IReqCreateBP) => {
   return await supabase.from(ESupabase.ballpythons).insert(d).select("id").single<{ id: string }>();
 };
 
-// FIXME что делать с policy на Update, если змея переведена другому челу и новый хозяин редактирует теперь её имя как минимум
 export function useCreateBp() {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, IReqCreateBP>({
@@ -60,6 +59,25 @@ export function useCreateBp() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [EQuKeys.PROFILE],
+      });
+    },
+  });
+}
+type IUpdReq = {
+  upd: Partial<IReqCreateBP>;
+  id: string;
+};
+export const httpUpdateBp = async (a: IUpdReq) => {
+  return await supabase.from(ESupabase.ballpythons).update(a.upd).eq("id", a.id);
+};
+
+export function useUpdateBp() {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, IUpdReq>({
+    mutationFn: (o) => httpUpdateBp(o),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EQuKeys.LIST_BP],
       });
     },
   });

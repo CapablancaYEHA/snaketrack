@@ -7,8 +7,9 @@ interface IProp {
   url: string | null;
   err?: string | null;
   clearFile?: () => void;
+  withRemove?: boolean;
 }
-export const FileUpload = forwardRef<any, IProp>(({ onUpload, url, err, clearFile }, ref) => {
+export const FileUpload = forwardRef<any, IProp>(({ onUpload, url, err, clearFile, withRemove = true }, ref) => {
   return (
     <>
       <Stack gap="sm" align="flex-start" justify="flex-start">
@@ -35,7 +36,7 @@ export const FileUpload = forwardRef<any, IProp>(({ onUpload, url, err, clearFil
           ) : null}
         </div>
         <div>
-          {url ? (
+          {url && withRemove ? (
             <Button color="red" onClick={clearFile} size="compact-xs" mt={18}>
               Убрать
             </Button>
