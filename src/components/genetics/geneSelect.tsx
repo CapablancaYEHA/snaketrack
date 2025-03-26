@@ -1,9 +1,9 @@
 import { FC } from "preact/compat";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import { CheckIcon, Combobox, Group, Pill, PillsInput, useCombobox } from "@mantine/core";
-import cx from "clsx";
+import { debounce } from "lodash-es";
 import { IGenesBpComp } from "@/api/models";
-import { geneToColor, redef } from "./const";
+import { checkGeneConflict, geneToColor, redef, upgAlias, upgradeOptions } from "./const";
 import styles from "./styles.module.scss";
 
 export const GenePill: FC<any> = ({ item, onRemove }) => (
@@ -20,43 +20,41 @@ export const GenePill: FC<any> = ({ item, onRemove }) => (
 );
 
 interface IProp {
-  outer: any[];
+  outer: IGenesBpComp[];
   onChange: (a) => void;
   init?: IGenesBpComp[];
 }
 
 export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
-  const [animating, setAnimating] = useState(false);
   const combobox = useCombobox({
     onDropdownClose: () => {
-      setAnimating(false);
       combobox.resetSelectedOption();
     },
     onDropdownOpen: () => {
-      setAnimating(true);
       combobox.updateSelectedOptionIndex("active");
     },
   });
 
   const [search, setSearch] = useState("");
+  const debSearch = debounce(setSearch, 300);
   const [value, setValue] = useState<IGenesBpComp[]>([]);
 
-  const handleValueSelect = (val: IGenesBpComp) => setValue((current) => (current.some((a) => a.label === val.label) ? current.filter((v) => v.label !== val.label) : [...current, val]));
+  const handleValueSelect = (val: IGenesBpComp) => setValue((current) => (current.some((a) => a.label === val.label) ? current.filter((v) => v.label !== val.label) : checkGeneConflict(current, val)));
 
   const handleValueRemove = (val: IGenesBpComp) => setValue((current) => current.filter((v) => v.label !== val.label));
 
   const values = value.map((item) => <GenePill item={item} key={item.label} onRemove={handleValueRemove} />);
 
-  const options = [...(outer ?? [])]
-    .filter((item) => item.label.toLowerCase().includes(search.trim().toLowerCase()))
-    .map((item, index) => (
-      <Combobox.Option value={item as any} key={item.label} active={value.includes(item)} className={cx({ [styles.animateOption]: animating })} style={{ animationDelay: `${index * 100}ms` }}>
-        <Group gap="sm">
-          {value.some((a) => a.label === item.label) ? <CheckIcon size={12} /> : null}
-          <span>{item.label}</span>
-        </Group>
-      </Combobox.Option>
-    ));
+  const opsWithAlias = useMemo(() => upgAlias([...(outer ?? [])]), []);
+
+  const options = upgradeOptions(opsWithAlias, search).map((item) => (
+    <Combobox.Option value={item as any} key={item.label} active={value.includes(item)}>
+      <Group gap="sm">
+        {value.some((a) => a.label === item.label) ? <CheckIcon size={12} /> : null}
+        <span>{item.label}</span>
+      </Group>
+    </Combobox.Option>
+  ));
 
   useEffect(() => {
     if (init) setValue(init);
@@ -82,7 +80,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
                 placeholder={value.length ? undefined : "Normal, no Het"}
                 onChange={(event) => {
                   combobox.updateSelectedOptionIndex();
-                  setSearch(event.currentTarget.value);
+                  debSearch(event.currentTarget.value);
                 }}
                 onKeyDown={(event) => {
                   if (event.key === "Backspace" && search.length === 0) {

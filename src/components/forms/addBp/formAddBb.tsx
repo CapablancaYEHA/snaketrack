@@ -1,9 +1,11 @@
 import { useLocation } from "preact-iso";
+import { FC } from "preact/compat";
 import { useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Flex, Group, NumberInput, Radio, Select, Text, TextInput } from "@mantine/core";
+import { Box, Flex, Group, NumberInput, Radio, Select, Text, TextInput, Textarea } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { IGenesBpComp } from "@/api/models";
 import { httpUldSnPic, useCreateBp } from "../../../api/hooks";
 import { FileUpload } from "../../../components/fileUpload";
 import { GeneSelect } from "../../../components/genetics/geneSelect";
@@ -14,7 +16,10 @@ import { defVals, feederHardcode, schema, sexHardcode, uplErr } from "./const";
 
 // TODO сделать проверку родителей и что есть разнополая пара вообще
 // TODO в будущем - нужна выпадашка Статус - жива, умерла, карантин, продана ну и чето еще
-export const FormAddBp = ({ traits }) => {
+type IProp = {
+  traits: IGenesBpComp[];
+};
+export const FormAddBp: FC<IProp> = ({ traits }) => {
   const { mutate, isPending } = useCreateBp();
   const location = useLocation();
   const {
@@ -161,10 +166,12 @@ export const FormAddBp = ({ traits }) => {
           placeholder="Нет данных"
           hideControls
         />
-        <TextInput {...register("feed_comment")} label="Комментарий" error={errors?.feed_comment} />
+        <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.feed_comment} />
       </Flex>
-
-      <Flex align="flex-start" maw="100%" w="100%">
+      <Box w="100%" maw="100%">
+        <Textarea {...register("notes")} label="Заметки, примечания" resize="vertical" w="100%" maw="100%" />
+      </Box>
+      <Flex align="flex-start" maw="100%" w="100%" gap="xl">
         <Controller
           name="picture"
           control={control}

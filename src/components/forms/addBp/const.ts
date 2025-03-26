@@ -52,6 +52,7 @@ export const schema = yup.object<Schema>().shape({
     .mixed<File>()
     .test("fileSize", "Вес фото более 3Мb", (v) => (!v ? true : v.size <= 3145728))
     .nullable(),
+  notes: yup.string().nullable(),
 });
 
 export const defVals = {
@@ -68,6 +69,7 @@ export const defVals = {
   feed_weight: null,
   feed_comment: null,
   picture: null,
+  notes: null,
 };
 
 export const uplErr = (e: any) =>

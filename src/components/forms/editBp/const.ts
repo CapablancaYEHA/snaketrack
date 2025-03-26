@@ -33,6 +33,7 @@ export const schema = yup.object<Schema>().shape({
     .mixed<File>()
     .test("fileSize", "Вес фото более 3Мb", (v) => (!v ? true : v.size <= 3145728))
     .nullable(),
+  notes: yup.string().nullable(),
 });
 
 export const makeDefault = (raw) => {

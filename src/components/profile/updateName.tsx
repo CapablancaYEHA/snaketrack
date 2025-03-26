@@ -10,7 +10,7 @@ interface IProp {
   initName: string;
 }
 
-/* FIXME Supabase чел в Profiles должен моч только менять свое имя - нельзя менять дату регистрации и тем более Роль (free\premium)
+/* FIXME Supabase чел в Profiles должен мочь только менять свое имя - нельзя менять дату регистрации и тем более Роль (free\premium)
  */
 export const ModalChangeName: FC<IProp> = ({ opened, close, sbmtCallback, title = "Задать имя аккаунта", initName }) => {
   const {

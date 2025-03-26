@@ -15,6 +15,10 @@ export const enum EQuKeys {
 export interface IGenesBpComp {
   label: string;
   gene: "inc-dom" | "dom" | "rec" | "poly" | "other";
+  hasSuper: boolean;
+  alias?: string | null;
+  hasHet: boolean;
+  possible?: boolean;
 }
 
 export interface ISupabaseErr {
@@ -39,6 +43,7 @@ export interface IReqCreateBP {
   feed_ko?: string | null;
   feed_comment?: string;
   picture: string | null;
+  notes: string | null;
   last_action?: "create" | "transfer" | "update" | "delete";
 }
 
@@ -49,7 +54,7 @@ type IFeed = {
   feed_comment?: string;
 };
 
-export interface IResSnakesList extends Pick<IReqCreateBP, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture"> {
+export interface IResSnakesList extends Pick<IReqCreateBP, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture" | "notes" | "last_action"> {
   id: string;
   owner_name: string;
   status: string;

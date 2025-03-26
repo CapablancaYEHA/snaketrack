@@ -27,7 +27,7 @@ export const httpUldSnPic = (file: File) => {
   return supabase.storage.from(ESupabase.snakepics).upload(`${userId}/${nanoid(8)}`, file);
 };
 
-/* Супабейз рекомендует при замене файлов update({upsert:true}) не перезаписывать его а создавать новый path а старый файл и путь удалять*/
+/* FIXME Супабейз рекомендует при замене файлов update({upsert:true}) не перезаписывать его а создавать новый path а старый файл и путь удалять*/
 // Для лого отдельный бакет?
 // Может вместо одного бакета snakepics - сделать категории - питоны, удавы и  Бакет для логотипов заводчиков?
 export const httpCreateBp = async (a: IReqCreateBP) => {

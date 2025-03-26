@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Flex, Group, NumberInput, Radio, Select, Text, TextInput } from "@mantine/core";
+import { Box, Flex, Group, NumberInput, Radio, Select, Text, TextInput, Textarea } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { FileUpload } from "@/components/fileUpload";
@@ -44,7 +44,7 @@ export const FormEditBp = ({ traits, init }) => {
     const submitBody = filterSubmitByDirty(sbm, dirtyFields);
 
     mutate(
-      { upd: { ...submitBody, picture: picture ? picture : undefined }, id: location.query.id },
+      { upd: { ...submitBody, picture: picture ? picture : undefined, last_action: "update" }, id: location.query.id },
       {
         onSuccess: () => {
           notif({ c: "green", t: "Успешно", m: "Запись изменена" });
@@ -131,7 +131,9 @@ export const FormEditBp = ({ traits, init }) => {
         {/* FIX здесь нужно проверка на наличие разнополой пары */}
         {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null}
       </Flex>
-
+      <Box w="100%" maw="100%">
+        <Textarea {...register("notes")} label="Заметки, примечания" resize="vertical" w="100%" maw="100%" />
+      </Box>
       <Flex align="flex-start" maw="100%" w="100%">
         <Controller
           name="picture"
