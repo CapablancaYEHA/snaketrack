@@ -3,8 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isEmpty } from "lodash-es";
 import { nanoid } from "nanoid";
 import { toDataUrl } from "@/utils/supabaseImg";
-import { dateToSupabaseTime } from "../utils/time";
-import { EQuKeys, ESupabase, IReqCreateBP, IResSnakesList, ISupabaseErr } from "./models";
+import { dateToSupabaseTime, nowToSbTime } from "../utils/time";
+import { EQuKeys, ESupabase, IFeed, IReqCreateBP, IResSnakesList, ISupabaseErr } from "./models";
 
 const httpGetGenes = async () => {
   let a = await supabase.from(ESupabase.bpgenes).select("*");
@@ -33,6 +33,15 @@ export const httpUldSnPic = (file: File) => {
 export const httpCreateBp = async (a: IReqCreateBP) => {
   let genes = isEmpty(a.genes) ? [{ label: "Normal", gene: "other" }] : a.genes;
   let l = a.feed_last_at != null ? dateToSupabaseTime(a.feed_last_at) : null;
+  let w =
+    a.weight == null
+      ? null
+      : [
+          {
+            weight: a.weight,
+            date: nowToSbTime(),
+          },
+        ];
   let d = {
     ...a,
     genes,
@@ -45,12 +54,13 @@ export const httpCreateBp = async (a: IReqCreateBP) => {
         feed_comment: a.feed_comment,
       },
     ],
+    weight: w,
   };
   delete d.feed_last_at;
   delete d.feed_weight;
   delete d.feed_ko;
   delete d.feed_comment;
-  return await supabase.from(ESupabase.ballpythons).insert(d).select("id").single<{ id: string }>();
+  return await supabase.from(ESupabase.ballpythons).insert(d).select("id").single<{ id: string }>().throwOnError();
 };
 
 export function useCreateBp() {
@@ -84,6 +94,44 @@ export function useUpdateBp() {
   });
 }
 
+export const httpUpdFeeding = async (id, fd) => {
+  let l = dateToSupabaseTime(fd.feed_last_at);
+  let w = fd.weight;
+  // eslint-disable-next-line no-param-reassign
+  delete fd.weight;
+
+  const { data, error } = await supabase.rpc("append_feeding_ballpython", {
+    trg_snake: id,
+    feeding_obj: fd,
+    weight_obj: {
+      date: l,
+      weight: w,
+    },
+    action: "update",
+  });
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+type IFeedReq = {
+  id: string;
+  feeding: IFeed;
+};
+
+export function useUpdateFeeding() {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, IFeedReq>({
+    mutationFn: ({ id, feeding }) => httpUpdFeeding(id, feeding),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EQuKeys.LIST_BP],
+      });
+    },
+  });
+}
+
 // TODO нужно модиф эту функцию когда появятся новые категории змей
 const httpGetSnakesList = async (list: string[]) => {
   let a = await supabase.from(ESupabase.ballpythons).select().in("id", list);
@@ -103,8 +151,11 @@ export function useSnakesList(list: string[], isEnabled: boolean) {
 }
 
 const httpGetSingleSnake = async (id: string) => {
-  let a = await supabase.from(ESupabase.ballpythons).select("*").eq("id", id).limit(1).single();
-  return a.data;
+  const { data, error } = await supabase.from(ESupabase.ballpythons).select("*").eq("id", id).limit(1).single();
+  if (error) {
+    throw error;
+  }
+  return data.data;
 };
 
 export function useSnake(id: string) {
@@ -120,12 +171,17 @@ type IReqTransfer = {
   snekId: string;
 };
 
-export const httpTransferSnake = async (username: string, snekId: string) =>
-  supabase.rpc("transfer_snake", {
+export const httpTransferSnake = async (username: string, snekId: string) => {
+  const { data, error } = await supabase.rpc("transfer_snake", {
     trg_user: username,
     trg_snake: snekId,
     action: "transfer",
   });
+  if (error) {
+    throw error;
+  }
+  return data;
+};
 
 export function useTransferSnake() {
   const queryClient = useQueryClient();

@@ -52,10 +52,11 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
           notif({ c: "green", t: "Успешно", m: "Змейка сохранена" });
           location.route("/snakes");
         },
-        onError: (err) => {
+        onError: async (err) => {
           notif({
             c: "red",
-            m: err.message,
+            t: "Ошибка",
+            m: JSON.stringify(err),
             code: err.code || err.statusCode,
           });
         },
@@ -79,14 +80,24 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
         />
       </Flex>
       <Flex gap="lg" wrap="wrap">
+        {traits?.length === 0 ? (
+          <TextInput label="Набор генов" placeholder="Normal, no Het" disabled />
+        ) : (
+          <Controller
+            name="genes"
+            control={control}
+            render={({ field: { onChange } }) => {
+              return <GeneSelect onChange={(a) => onChange(a)} outer={traits} />;
+            }}
+          />
+        )}
         <Controller
-          name="genes"
+          name="weight"
           control={control}
-          render={({ field: { onChange } }) => {
-            return <GeneSelect onChange={(a) => onChange(a)} outer={traits} />;
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <NumberInput onChange={onChange} value={value as any} name="weight" rightSection="г" label="Масса" placeholder="Нет данных" hideControls error={error?.message} />;
           }}
         />
-        <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса" placeholder="Нет данных" hideControls />
       </Flex>
       <Flex gap="lg" wrap="wrap">
         <Controller
@@ -119,19 +130,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
       </Flex>
 
       <Flex gap="lg" wrap="wrap">
-        {wOrigin === "purchase" ? (
-          <NumberInput
-            {...(register("price") as any,
-            {
-              setValueAs: (value) => value || null,
-            })}
-            rightSection="₽"
-            label="Цена покупки"
-            placeholder="Без цены"
-            hideControls
-            thousandSeparator=" "
-          />
-        ) : null}
+        {wOrigin === "purchase" ? <NumberInput {...(register("price") as any)} rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " /> : null}
         {/* FIX здесь нужно проверка на наличие разнополой пары */}
         {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null}
       </Flex>
@@ -143,7 +142,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DatePickerInput label="Последнее кормление" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Нет данных" />
+                <DatePickerInput label="Последнее кормление" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Нет данных" maxDate={new Date()} />
                 {error ? <span>{error?.message}</span> : null}
               </>
             );
@@ -156,16 +155,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
             return <Select data={feederHardcode} value={value} onChange={onChange} label="Кормовой объект" error={error?.message} placeholder="Нет данных" />;
           }}
         />
-        <NumberInput
-          {...(register("feed_weight") as any,
-          {
-            setValueAs: (value) => value || null,
-          })}
-          rightSection="г"
-          label="Масса КО"
-          placeholder="Нет данных"
-          hideControls
-        />
+        <NumberInput {...(register("feed_weight") as any)} name="feed_weight" rightSection="г" label="Масса КО" placeholder="Нет данных" hideControls />
         <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.feed_comment} />
       </Flex>
       <Box w="100%" maw="100%">

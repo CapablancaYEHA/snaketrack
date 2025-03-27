@@ -27,6 +27,8 @@ export const feederHardcode = [
   { label: "🐀Крыса взрослая живая", value: "live_rat_adult" },
 ];
 
+export const reverseFeeder = (arr) => arr.reduce((tot, cur) => ({ ...tot, [cur.value]: cur.label }), {});
+
 type Schema = {
   file: File;
 };
@@ -39,7 +41,7 @@ export const schema = yup.object<Schema>().shape({
     .required(),
   sex: yup.string(),
   genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
-  weight: yup.number().nullable(),
+  weight: yup.number().nullable().max(5000, "Это региус-рекордсмен?"),
   date_hatch: yup.string().nullable().required("Хотя бы примерно"),
   origin: yup.string().required(),
   parents: yup.mixed().nullable(),

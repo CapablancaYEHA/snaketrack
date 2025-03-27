@@ -11,7 +11,7 @@ interface IProp {
 export const notif = ({ c = "green", m = "Что-то пошло не так", t, close = 5000, code }: IProp) =>
   notifications.show({
     title: t,
-    message: code ? codeToMsg[code] : m,
+    message: code && codeToMsg[code] != null ? codeToMsg[code] : m,
     color: c,
     autoClose: close,
     withBorder: true,
@@ -23,4 +23,5 @@ const codeToMsg = {
   23505: "Данное имя пользователя уже занято",
   409: "Фото с таким именем уже существует",
   42501: "Недостаточно прав",
+  PGRST116: "Такой змеи не существует",
 };

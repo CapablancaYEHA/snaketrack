@@ -73,20 +73,17 @@ export const FormEditBp = ({ traits, init }) => {
         />
       </Flex>
       <Flex gap="lg" wrap="wrap">
-        <Controller
-          name="genes"
-          control={control}
-          render={({ field: { onChange, value } }) => {
-            return <GeneSelect onChange={(a) => onChange(a)} outer={traits} init={value} />;
-          }}
-        />
-        <Controller
-          name="weight"
-          control={control}
-          render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <NumberInput rightSection="г" label="Масса" placeholder="Нет данных" hideControls error={error} value={value} onChange={onChange} />;
-          }}
-        />
+        {traits?.length === 0 ? (
+          <TextInput label="Набор генов" placeholder="Normal, no Het" disabled />
+        ) : (
+          <Controller
+            name="genes"
+            control={control}
+            render={({ field: { onChange, value } }) => {
+              return <GeneSelect onChange={(a) => onChange(a)} outer={traits} init={value} />;
+            }}
+          />
+        )}
       </Flex>
       <Flex gap="lg" wrap="wrap">
         <Controller

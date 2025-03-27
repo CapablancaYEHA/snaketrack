@@ -28,11 +28,11 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName }) =>
       { username: breeder?.label!, snekId },
       {
         onSuccess: () => {
-          notif({ c: "green", t: "Ура!", m: `Змейка ${snekName} уже у нового владельца!` });
+          notif({ c: "green", t: "Успех!", m: `Змейка ${snekName} уже у нового владельца!` });
           close();
         },
         onError: (e) => {
-          notif({ c: "red", t: "Ошибка", m: "Не удалось подарить змею", code: e.code });
+          notif({ c: "red", t: "Ошибка", m: e.message, code: e.code });
         },
       },
     );

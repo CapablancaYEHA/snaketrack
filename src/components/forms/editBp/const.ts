@@ -18,10 +18,10 @@ export const schema = yup.object<Schema>().shape({
     .required(),
   sex: yup.string(),
   genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
-  weight: yup
-    .number()
-    .transform((v) => (!v || Number.isNaN(v) ? undefined : v))
-    .nullable(),
+  //   weight: yup
+  //     .number()
+  //     .transform((v) => (!v || Number.isNaN(v) ? undefined : v))
+  //     .nullable(),
   date_hatch: yup.string().nullable().required("Хотя бы примерно"),
   origin: yup.string().required(),
   parents: yup.mixed().nullable(),

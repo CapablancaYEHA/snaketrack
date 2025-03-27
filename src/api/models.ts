@@ -33,7 +33,7 @@ export interface IReqCreateBP {
   snake_name: string;
   sex: string;
   genes: IGenesBpComp[];
-  weight: number | null;
+  weight: { date: string; weight: number }[] | null;
   date_hatch: string;
   origin: string;
   parents: []; // TODO ?????
@@ -47,9 +47,9 @@ export interface IReqCreateBP {
   last_action?: "create" | "transfer" | "update" | "delete";
 }
 
-type IFeed = {
+export type IFeed = {
   feed_last_at?: string | null;
-  feed_weight?: string | null;
+  feed_weight?: number | null;
   feed_ko?: string | null;
   feed_comment?: string;
 };

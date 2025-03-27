@@ -35,9 +35,9 @@ export const upgradeOptions = (arr: IGenesBpComp[], search: string) => {
           let res = fullHet.map((a) => ({ ...cur, label: `${a} ${cur.label}` }));
           return tot.concat(cur).concat(res);
         }
-        if (inp.toLowerCase().includes("po")) {
-          return tot.concat(cur).concat({ ...cur, label: `Pos Het ${cur.label}` });
-        }
+        // if (inp.toLowerCase().includes("po")) {
+        //   return tot.concat(cur).concat({ ...cur, label: `Pos Het ${cur.label}` });
+        // }
         if (inp.indexOf("6") === 0) {
           return tot.concat(cur).concat({ ...cur, label: `66% Het ${cur.label}` });
         }
@@ -57,13 +57,13 @@ export const upgradeOptions = (arr: IGenesBpComp[], search: string) => {
     });
 };
 
-const fullHet = ["50% Het", "66% Het", "Het", "Pos Het"];
+const fullHet = ["50% Het", "66% Het", "Het"];
 const reSup = /(?<=super\s)[\w\s]+/i;
-const rePosHet = /(?<=pos\shet\s)[\w\s]+/i;
+// const rePosHet = /(?<=pos\shet\s)[\w\s]+/i;
 const reHet = /(?<=het\s)[\w\s]+/i;
 const re50het = /(?<=50het\s)[\w\s]+/i;
 const re66het = /(?<=66het\s)[\w\s]+/i;
-const reArr = [rePosHet, reHet, re50het, re66het];
+const reArr = [reHet, re50het, re66het];
 
 export const checkGeneConflict = (current: IGenesBpComp[], val: IGenesBpComp) => {
   if (val.hasSuper) {
