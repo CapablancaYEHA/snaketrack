@@ -3,7 +3,7 @@ import { Box, Flex, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { BpCard } from "@/components/ballpythons/BpCard";
-import { FeedSnake } from "@/components/feedSnake/feed";
+import { FeedSnake } from "@/components/forms/feedSnake/formFeedSnake";
 import { Btn } from "@/components/navs/btn/Btn";
 import { TransferSnake } from "@/components/transferSnake/transfer";
 import { useSnakesList } from "@/api/hooks";

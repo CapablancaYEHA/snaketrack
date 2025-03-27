@@ -60,7 +60,9 @@ export const BpCard: FC<IProp> = ({ body, handleTrans, handleEdit, handleFeed })
             />
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item onClick={handleFeed}>Покормить/Взвесить</Menu.Item>
+            <Menu.Item onClick={handleFeed} style={{ whiteSpace: "nowrap" }}>
+              Покормить, взвесить
+            </Menu.Item>
             <Menu.Item onClick={handleEdit}>Редактировать</Menu.Item>
             <Menu.Item onClick={handleTrans}>Передать</Menu.Item>
           </Menu.Dropdown>

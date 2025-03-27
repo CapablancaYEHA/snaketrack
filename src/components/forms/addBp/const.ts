@@ -1,4 +1,7 @@
+import { isEmpty } from "lodash-es";
 import * as yup from "yup";
+import { IReqCreateBP } from "@/api/models";
+import { dateToSupabaseTime, nowToSbTime } from "@/utils/time";
 import { notif } from "../../../utils/notif";
 
 export const sexHardcode = [
@@ -81,3 +84,36 @@ export const uplErr = (e: any) =>
     m: e.message,
     code: e.code || e.statusCode,
   });
+
+export const prepareForSubmit = (a): Omit<IReqCreateBP, "picture"> => {
+  let genes = isEmpty(a.genes) ? [{ label: "Normal", gene: "other" }] : a.genes;
+  let l = a.feed_last_at != null ? dateToSupabaseTime(a.feed_last_at) : null;
+  let w =
+    a.weight == null
+      ? null
+      : [
+          {
+            weight: a.weight,
+            date: nowToSbTime(),
+          },
+        ];
+  let d = {
+    ...a,
+    genes,
+    date_hatch: dateToSupabaseTime(a.date_hatch),
+    feeding: [
+      {
+        feed_last_at: l,
+        feed_weight: a.feed_weight,
+        feed_ko: a.feed_ko,
+        feed_comment: a.feed_comment,
+      },
+    ],
+    weight: w,
+  };
+  delete d.feed_last_at;
+  delete d.feed_weight;
+  delete d.feed_ko;
+  delete d.feed_comment;
+  return d;
+};

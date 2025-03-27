@@ -5,12 +5,12 @@ import { DatePickerInput } from "@mantine/dates";
 import { Controller, useForm } from "react-hook-form";
 import { useUpdateFeeding } from "@/api/hooks";
 import { IResSnakesList } from "@/api/models";
-import { notif } from "../../utils/notif";
-import { getDate } from "../../utils/time";
-import { SexName } from "../common/sexName";
-import { feederHardcode, reverseFeeder } from "../forms/addBp/const";
-import { Btn } from "../navs/btn/Btn";
-import { defVals, schema } from "./const";
+import { notif } from "../../../utils/notif";
+import { getDate } from "../../../utils/time";
+import { SexName } from "../../common/sexName";
+import { Btn } from "../../navs/btn/Btn";
+import { feederHardcode, reverseFeeder } from "../addBp/const";
+import { defVals, prepareForSubmit, schema } from "./const";
 
 const feederToString = reverseFeeder(feederHardcode);
 type IProp = {
@@ -33,16 +33,20 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
     resolver: yupResolver(schema as any),
   });
 
+  const fullClose = () => {
+    reset();
+    close();
+  };
+
   const { mutate, isPending } = useUpdateFeeding();
 
   const onSub = async (sbm) => {
+    const { feed, mass } = prepareForSubmit(sbm);
     mutate(
-      { id: snake?.id!, feeding: sbm },
+      { id: snake?.id!, feed, mass },
       {
         onSuccess: () => {
           notif({ c: "green", t: "Успешно", m: "Кормление добавлено" });
-          reset();
-          close();
         },
         onError: (err) => {
           notif({
@@ -56,7 +60,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
   };
 
   return (
-    <Modal opened={opened} onClose={close} centered transitionProps={{ transition: "fade", duration: 200 }} title={<Title order={3}>Новое кормление</Title>}>
+    <Modal opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Новое кормление</Title>}>
       <Flex gap="sm" align="center">
         <Text>Кормим региуса</Text>
         <SexName sex={snake?.sex!} name={snake?.snake_name ?? ""} />
@@ -69,12 +73,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         name="feed_last_at"
         control={control}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return (
-            <>
-              <DatePickerInput label="Дата кормления" required value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} />
-              {error ? <span>{error?.message}</span> : null}
-            </>
-          );
+          return <DatePickerInput label="Дата кормления" required value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} />;
         }}
       />
       <Space h="lg" />
@@ -82,7 +81,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         name="feed_ko"
         control={control}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <Select data={feederHardcode} value={value} onChange={onChange} label="Кормовой объект" error={error?.message} placeholder="Не выбран" />;
+          return <Select data={feederHardcode} data-scroll-locked={0} value={value} onChange={onChange} label="Кормовой объект" error={error?.message} placeholder="Нет данных" />;
         }}
       />
       <Space h="lg" />

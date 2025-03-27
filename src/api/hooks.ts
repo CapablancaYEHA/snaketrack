@@ -1,9 +1,7 @@
 import { supabase } from "@/lib/client_supabase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { isEmpty } from "lodash-es";
 import { nanoid } from "nanoid";
 import { toDataUrl } from "@/utils/supabaseImg";
-import { dateToSupabaseTime, nowToSbTime } from "../utils/time";
 import { EQuKeys, ESupabase, IFeed, IReqCreateBP, IResSnakesList, ISupabaseErr } from "./models";
 
 const httpGetGenes = async () => {
@@ -31,36 +29,7 @@ export const httpUldSnPic = (file: File) => {
 // Для лого отдельный бакет?
 // Может вместо одного бакета snakepics - сделать категории - питоны, удавы и  Бакет для логотипов заводчиков?
 export const httpCreateBp = async (a: IReqCreateBP) => {
-  let genes = isEmpty(a.genes) ? [{ label: "Normal", gene: "other" }] : a.genes;
-  let l = a.feed_last_at != null ? dateToSupabaseTime(a.feed_last_at) : null;
-  let w =
-    a.weight == null
-      ? null
-      : [
-          {
-            weight: a.weight,
-            date: nowToSbTime(),
-          },
-        ];
-  let d = {
-    ...a,
-    genes,
-    date_hatch: dateToSupabaseTime(a.date_hatch),
-    feeding: [
-      {
-        feed_last_at: l,
-        feed_weight: a.feed_weight,
-        feed_ko: a.feed_ko,
-        feed_comment: a.feed_comment,
-      },
-    ],
-    weight: w,
-  };
-  delete d.feed_last_at;
-  delete d.feed_weight;
-  delete d.feed_ko;
-  delete d.feed_comment;
-  return await supabase.from(ESupabase.ballpythons).insert(d).select("id").single<{ id: string }>().throwOnError();
+  return await supabase.from(ESupabase.ballpythons).insert(a).select("id").single<{ id: string }>().throwOnError();
 };
 
 export function useCreateBp() {
@@ -94,19 +63,11 @@ export function useUpdateBp() {
   });
 }
 
-export const httpUpdFeeding = async (id, fd) => {
-  let l = dateToSupabaseTime(fd.feed_last_at);
-  let w = fd.weight;
-  // eslint-disable-next-line no-param-reassign
-  delete fd.weight;
-
+export const httpUpdFeeding = async (id, feed, mass) => {
   const { data, error } = await supabase.rpc("append_feeding_ballpython", {
     trg_snake: id,
-    feeding_obj: fd,
-    weight_obj: {
-      date: l,
-      weight: w,
-    },
+    feeding_obj: feed,
+    weight_obj: mass,
     action: "update",
   });
   if (error) {
@@ -117,13 +78,14 @@ export const httpUpdFeeding = async (id, fd) => {
 
 type IFeedReq = {
   id: string;
-  feeding: IFeed;
+  feed: IFeed;
+  mass: { date: string; weight: number };
 };
 
 export function useUpdateFeeding() {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, IFeedReq>({
-    mutationFn: ({ id, feeding }) => httpUpdFeeding(id, feeding),
+    mutationFn: ({ id, feed, mass }) => httpUpdFeeding(id, feed, mass),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [EQuKeys.LIST_BP],
@@ -155,7 +117,7 @@ const httpGetSingleSnake = async (id: string) => {
   if (error) {
     throw error;
   }
-  return data.data;
+  return data;
 };
 
 export function useSnake(id: string) {

@@ -12,7 +12,7 @@ import { GeneSelect } from "../../../components/genetics/geneSelect";
 import { Btn } from "../../../components/navs/btn/Btn";
 import { notif } from "../../../utils/notif";
 import { calcImgUrl, compressImage } from "../../../utils/supabaseImg";
-import { defVals, feederHardcode, schema, sexHardcode, uplErr } from "./const";
+import { defVals, feederHardcode, prepareForSubmit, schema, sexHardcode, uplErr } from "./const";
 
 // TODO сделать проверку родителей и что есть разнополая пара вообще
 // TODO в будущем - нужна выпадашка Статус - жива, умерла, карантин, продана ну и чето еще
@@ -46,7 +46,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
       picture = calcImgUrl(r?.fullPath!);
     }
     mutate(
-      { ...sbm, picture },
+      { ...prepareForSubmit(sbm), picture },
       {
         onSuccess: () => {
           notif({ c: "green", t: "Успешно", m: "Змейка сохранена" });
@@ -142,8 +142,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DatePickerInput label="Последнее кормление" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Нет данных" maxDate={new Date()} />
-                {error ? <span>{error?.message}</span> : null}
+                <DatePickerInput label="Последнее кормление" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Нет данных" maxDate={new Date()} error={error?.message} />
               </>
             );
           }}
@@ -152,7 +151,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
           name="feed_ko"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <Select data={feederHardcode} value={value} onChange={onChange} label="Кормовой объект" error={error?.message} placeholder="Нет данных" />;
+            return <Select data={feederHardcode} value={value} onChange={onChange} label="Кормовой объект" error={error?.message} placeholder="Нет данных" searchable />;
           }}
         />
         <NumberInput {...(register("feed_weight") as any)} name="feed_weight" rightSection="г" label="Масса КО" placeholder="Нет данных" hideControls />

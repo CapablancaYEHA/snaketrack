@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { dateToSupabaseTime } from "@/utils/time";
 
 export const defVals = {
   weight: null,
@@ -15,3 +16,16 @@ export const schema = yup.object().shape({
   feed_ko: yup.string().nullable(),
   feed_comment: yup.string().nullable(),
 });
+
+export const prepareForSubmit = (fd) => {
+  let time = dateToSupabaseTime(fd.feed_last_at);
+
+  let mass = {
+    date: time,
+    weight: fd.weight,
+  };
+  // eslint-disable-next-line no-param-reassign
+  delete fd.weight;
+
+  return { feed: fd, mass };
+};
