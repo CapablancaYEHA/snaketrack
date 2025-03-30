@@ -25,15 +25,18 @@ body {
 main {
   display: flex;
   height: 100%;
-  flex: 1 1 100%;
+  min-width: 0;
   max-width: $max-width;
   width: 100%;
   margin: $header-height auto 0 auto;
   overflow-x: auto;
 
   & > section {
+    min-width: 0;
+    flex: 0 1 auto;
     width: 100%;
-    max-width: 100%;
+    // width: 100%;
+    // max-width: 100%;
   }
 }
 

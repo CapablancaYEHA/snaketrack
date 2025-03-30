@@ -86,6 +86,7 @@ const defaultOptions = {
     title: {
       display: true,
       text: "График изменения массы Животного и КО",
+      color: "rgba(178,178,178,0.9)",
     },
     tooltip: {
       interaction: {
@@ -148,46 +149,57 @@ export const makeOptions = (val) => {
   };
 };
 
-export const makeChartData = (rawData: any) => {
-  if (rawData.length === 0)
+const dataKO = {
+  type: "line",
+  yAxisID: "y1",
+  id: 2,
+  label: "Корм",
+  borderColor: "rgb(153, 102, 255)",
+  backgroundColor: "rgb(153, 102, 255)",
+  borderWidth: 2,
+  tension: 0.2,
+  pointRadius: 2,
+};
+
+const dataSnake = {
+  type: "line",
+  yAxisID: "y",
+  id: 1,
+  label: "Животное",
+  borderColor: "rgb(255, 159, 64)",
+  backgroundColor: "rgb(255, 159, 64)",
+  borderWidth: 2,
+  tension: 0.2,
+  pointRadius: 2,
+};
+
+export const makeChartData = (weight, feed, view: "ko" | "snake" | "both") => {
+  if (view === "both" && feed.length === 0 && weight.length === 0) {
     return {
       datasets: [],
     };
-  const animData = rawData.w.map((a) => ({ y: a.weight, x: a.date }));
-  const koData = rawData.f.map((a) => ({ y: a.feed_weight, x: a.feed_last_at }));
+  }
+  let res: any[] = [];
+  const koSet = {
+    ...dataSnake,
+    data: (feed ?? [])?.map((a) => ({ y: a.feed_weight, x: a.feed_last_at })),
+  };
+  const snakeSet = {
+    ...dataKO,
+    data: (weight ?? [])?.map((a) => ({ y: a.weight, x: a.date })),
+  };
+
+  if (view === "both") {
+    res = res.concat(koSet).concat(snakeSet);
+  }
+  if (view === "ko") {
+    res = res.concat(koSet);
+  }
+  if (view === "snake") {
+    res = res.concat(snakeSet);
+  }
 
   return {
-    datasets: [
-      {
-        type: "line",
-        yAxisID: "y",
-        id: 1,
-        label: "Животное",
-        data: animData,
-        // pointBorderColor: "rgb(255, 159, 64)",
-        // pointBackgroundColor: "rgb(255, 159, 64)",
-        borderColor: "rgb(255, 159, 64)",
-        backgroundColor: "rgb(255, 159, 64)",
-        // pointHoverBorderColor: "rgb(255, 159, 64)",
-        borderWidth: 2,
-        tension: 0.2,
-        pointRadius: 2,
-      },
-      {
-        type: "line",
-        yAxisID: "y1",
-        id: 2,
-        label: "Корм",
-        data: koData,
-        // pointBorderColor: "rgb(153, 102, 255)",
-        // pointBackgroundColor: "rgb(153, 102, 255)",
-        borderColor: "rgb(153, 102, 255)",
-        backgroundColor: "rgb(153, 102, 255)",
-        // pointHoverBorderColor: "rgb(153, 102, 255)",
-        borderWidth: 2,
-        tension: 0.2,
-        pointRadius: 2,
-      },
-    ],
+    datasets: res,
   };
 };

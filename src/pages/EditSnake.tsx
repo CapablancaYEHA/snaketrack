@@ -19,7 +19,7 @@ export function EditSnake() {
   }, [isError, error]);
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="lg">
+    <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
       {isPending && isPen ? <Loader color="dark.1" size="lg" /> : isError ? <span>Редактирование невозможно</span> : <FormEditBp traits={data} init={def} />}
     </Stack>
   );

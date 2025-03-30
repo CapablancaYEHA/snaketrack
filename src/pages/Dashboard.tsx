@@ -2,7 +2,7 @@ import { Stack } from "@mantine/core";
 
 export function Dashboard() {
   return (
-    <Stack>
+    <Stack component="section">
       Здесь будет сводка
       <span>сколько рептилий</span>
       <span>распределине по полам</span>
