@@ -3,7 +3,7 @@ import { signal } from "@preact/signals";
 import { LocationProvider, Route, Router } from "preact-iso";
 import { useEffect, useState } from "preact/hooks";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Box, MantineProvider } from "@mantine/core";
+import { Box, LoadingOverlay, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -69,11 +69,11 @@ export function App() {
 		  <Router>
 			<Route path="/login"  component={Login} />
 			<Route path="/register"  component={Register} />
-				{isPending.value ? (null as any)
-				: (['/dashboard','/profile','/snakes', '/snakes/:id', '/snakes/add/:type','/snakes/edit/:type?id=:id'].map(
+				{isPending.value ? (<LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 1.0 }} />)
+				: (['/dashboard','/profile','/snakes', '/snakes/:type?id=:id', '/snakes/add/:type','/snakes/edit/:type?id=:id'].map(
 					(a) => <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />)
 				)}
-				{isPending.value ?  null : (<Route default component={NotFound}  />)}
+				{isPending.value ? ( null as any) : (<Route default component={NotFound}  />)}
 		  </Router>
           </Box>
         </MantineProvider>

@@ -31,7 +31,7 @@ export const protectedRoutes = {
   "/dashboard": Dashboard,
   "/profile": Profile,
   "/snakes": SnakeList,
-  "/snakes/:id": Snake,
+  "/snakes/:type?id=:id": Snake,
   "/snakes/add/:type": AddSnake,
   "/snakes/edit/:type?id=:id": EditSnake,
 };

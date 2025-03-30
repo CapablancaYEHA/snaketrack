@@ -59,7 +59,7 @@ export const FormEditBp = ({ traits, init }) => {
 
   return (
     <>
-      <Text size="md" fw={500} c="yellow.4">
+      <Text size="md" fw={500} c="yellow.6">
         Редактирование Региуса
       </Text>
       <Flex gap="lg" wrap="wrap">

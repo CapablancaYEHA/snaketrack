@@ -1,9 +1,11 @@
+import { useLocation } from "preact-iso";
 import { FC } from "preact/compat";
 import fallback from "@assets/placeholder.png";
 import { Button, Flex, Image, Menu, Stack, Text } from "@mantine/core";
 import { IResSnakesList } from "@/api/models";
 import { getAge, getDate } from "../../utils/time";
 import { SexName } from "../common/sexName";
+import { sortBpGenes } from "../genetics/const";
 import { GenePill } from "../genetics/geneSelect";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
 
@@ -14,18 +16,19 @@ interface IProp {
   handleFeed: () => void;
 }
 export const BpCard: FC<IProp> = ({ body, handleTrans, handleEdit, handleFeed }) => {
+  const location = useLocation();
   const lastWeight = body.weight?.[body.weight?.length - 1];
   const lastFeed = body.feeding?.[body.feeding.length - 1];
   return (
     <Flex columnGap="md" w="100%" maw="100%" justify="space-between" wrap="wrap">
-      <Stack gap="xs" flex="0 0 196px">
-        <Image src={body.picture} flex="0 0 0px" fit="cover" radius="md" mih={110} w="auto" maw="100%" h="100%" fallbackSrc={fallback} loading="lazy" />
+      <Stack gap="xs" flex="0 0 196px" onClick={() => location.route(`/snakes/ballpython?id=${body.id}`)} style={{ cursor: "pointer" }}>
+        <Image src={body.picture} flex="0 0 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
         <SexName sex={body.sex} name={body.snake_name} />
         <Text size="md">⌛ {getAge(body.date_hatch)}</Text>
       </Stack>
       <Stack gap="xs" flex="0 1 90px">
-        {body.genes.map((a) => (
-          <GenePill key={a.label} item={a} />
+        {sortBpGenes(body.genes).map((a) => (
+          <GenePill key={`${a.label}_${a.id}`} item={a} />
         ))}
       </Stack>
       <Stack gap="xs">

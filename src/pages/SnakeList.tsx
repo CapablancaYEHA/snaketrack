@@ -22,7 +22,7 @@ export function SnakeList() {
   const target = d?.find((b) => b.id === curId.value);
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
+    <Stack align="flex-start" justify="flex-start" gap="xl" component="section">
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
         <Box h={60} bd="1px solid rgba(255,255,255,0.1)" flex="1 1 auto" p="md">
           фильтры, поиск

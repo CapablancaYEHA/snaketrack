@@ -1,4 +1,4 @@
-import { FC } from "preact/compat";
+import { CSSProperties, FC } from "preact/compat";
 import { DashIcon } from "./Dash";
 import { FemaleIcon } from "./Female";
 import { ImgIcon } from "./Img";
@@ -10,9 +10,10 @@ interface IProp {
   icon: string;
   width?: string;
   height?: string;
+  style?: CSSProperties;
 }
 
-export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20" }) => {
+export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style }) => {
   switch (icon) {
     case "dashboard":
       return <DashIcon width={width} height={height} />;
@@ -21,9 +22,9 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20" }) => 
     case "img":
       return <ImgIcon width={width} height={height} />;
     case "male":
-      return <MaleIcon width={width} height={height} />;
+      return <MaleIcon width={width} height={height} style={style} />;
     case "female":
-      return <FemaleIcon width={width} height={height} />;
+      return <FemaleIcon width={width} height={height} style={style} />;
     case "kebab":
       return <KebabIcon width={width} height={height} />;
     default:

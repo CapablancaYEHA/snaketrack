@@ -30,8 +30,7 @@ export function Header({ session }) {
           </Box>
         ) : null}
         <a href="/dashboard" className={styles.logo}>
-          {/* <img src={""} alt="logo" /> */}
-          <Title component="span" c="white" order={4}>
+          <Title component="span" c="dark.1" order={4}>
             HsssStats 🧬
           </Title>
         </a>

@@ -87,6 +87,7 @@ export function useUpdateFeeding() {
   return useMutation<any, ISupabaseErr, IFeedReq>({
     mutationFn: ({ id, feed, mass }) => httpUpdFeeding(id, feed, mass),
     onSuccess: () => {
+      // FIXME Когда на индивид странице рега, тоже надо делать
       queryClient.invalidateQueries({
         queryKey: [EQuKeys.LIST_BP],
       });

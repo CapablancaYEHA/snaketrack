@@ -1,4 +1,5 @@
 import { IGenesBpComp } from "@api/models";
+import { sortBy } from "lodash-es";
 import { notif } from "@/utils/notif";
 
 export const geneToColor = {
@@ -10,8 +11,8 @@ export const geneToColor = {
 };
 
 export const redef = {
-  "--pill-radius": "8px",
-  color: "white",
+  "--pill-radius": "6px",
+  color: "#efefef",
   width: "fit-content",
 };
 
@@ -129,33 +130,25 @@ const notifSameHet = () =>
     m: "Уже выбран визуал, невозможно добавить Het",
   });
 
-export const mock: IGenesBpComp[] = [
-  {
-    label: "GHI",
-    gene: "inc-dom",
-    hasSuper: true,
-    alias: null,
-    hasHet: false,
-  },
-  {
-    label: "Lesser",
-    gene: "inc-dom",
-    hasSuper: true,
-    alias: "Butter",
-    hasHet: false,
-  },
-  {
-    label: "Piebald",
-    gene: "rec",
-    hasSuper: false,
-    alias: null,
-    hasHet: true,
-  },
-  {
-    label: "Hypo",
-    gene: "rec",
-    hasSuper: false,
-    alias: "Ghost",
-    hasHet: true,
-  },
-];
+const priority = {
+  het: 2,
+  "66%": 3,
+  "50%": 4,
+};
+
+export const sortBpGenes = (arr: IGenesBpComp[]): IGenesBpComp[] => {
+  let kek = arr.sort((a, b) => {
+    if (a.gene !== b.gene && a.gene === "rec") {
+      return -1;
+    }
+    if (a.gene === "inc-dom" && b.gene === "dom") {
+      return -1;
+    }
+    if (a.gene === "dom" && b.gene === "inc-dom") {
+      return 1;
+    }
+    return 0;
+  });
+
+  return sortBy(kek, [(o) => priority[o.label.substring(0, 3).toLowerCase()] ?? 0]);
+};

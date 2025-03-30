@@ -6,18 +6,21 @@ import { IGenesBpComp } from "@/api/models";
 import { checkGeneConflict, geneToColor, redef, upgAlias, upgradeOptions } from "./const";
 import styles from "./styles.module.scss";
 
-export const GenePill: FC<any> = ({ item, onRemove }) => (
-  <Pill
-    styles={{
-      root: { ...redef, backgroundColor: geneToColor[item.gene] },
-    }}
-    key={item.label}
-    withRemoveButton={onRemove}
-    onRemove={onRemove ? () => onRemove(item) : () => undefined}
-  >
-    {item.label}
-  </Pill>
-);
+export const GenePill: FC<any> = ({ item, onRemove }) => {
+  const isHet = item.label.toLowerCase().includes("het");
+  return (
+    <Pill
+      styles={{
+        root: { ...redef, backgroundColor: isHet ? "var(--mantine-color-dark-9)" : geneToColor[item.gene], boxShadow: `0 0 0 1px ${geneToColor[item.gene]}` },
+      }}
+      key={item.label}
+      withRemoveButton={onRemove}
+      onRemove={onRemove ? () => onRemove(item) : () => undefined}
+    >
+      {item.label}
+    </Pill>
+  );
+};
 
 interface IProp {
   outer: IGenesBpComp[];
@@ -43,7 +46,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
 
   const handleValueRemove = (val: IGenesBpComp) => setValue((current) => current.filter((v) => v.label !== val.label));
 
-  const values = value.map((item) => <GenePill item={item} key={item.label} onRemove={handleValueRemove} />);
+  const values = value.map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} />);
 
   const opsWithAlias = useMemo(() => upgAlias([...(outer ?? [])]), []);
 

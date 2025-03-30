@@ -13,6 +13,7 @@ export const enum EQuKeys {
 }
 
 export interface IGenesBpComp {
+  id: number;
   label: string;
   gene: "inc-dom" | "dom" | "rec" | "poly" | "other";
   hasSuper: boolean;

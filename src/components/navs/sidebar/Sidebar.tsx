@@ -4,9 +4,9 @@ import { sidebarLinks } from "../../route";
 import { IconSwitch } from "./icons/switch";
 import styles from "./styles.module.scss";
 
-export const renderLinks = (url, alwaysShow = false) =>
+export const renderLinks = (url, alwaysShow = false, callback = undefined) =>
   sidebarLinks.map((a) => (
-    <div key={a.id} class={styles.item}>
+    <div key={a.id} class={styles.item} onClick={callback}>
       <a href={a.link} class={`${styles.link} ${url.includes(a.link) ? styles.active : ""} ${alwaysShow ? "" : styles.hidden}`}>
         <Text span size="xs">
           {a.link.slice(1)}

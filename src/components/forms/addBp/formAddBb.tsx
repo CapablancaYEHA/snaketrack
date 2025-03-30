@@ -66,7 +66,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
 
   return (
     <>
-      <Text size="md" fw={500} c="yellow.4">
+      <Text size="md" fw={500} c="yellow.6">
         Добавить Региуса
       </Text>
       <Flex gap="lg" wrap="wrap">

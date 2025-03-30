@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
+import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
@@ -10,8 +11,13 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
+dayjs.extend(advancedFormat);
 
 export const getDate = (a: string) => dayjs(a).locale("ru").format("D MMMM YYYY");
+export function adapterLocale() {
+  dayjs.locale("ru");
+}
+export const getDateShort = (a: string) => dayjs(a).locale("ru").format("D.MM.YY");
 export const getDateHours = (a: string) => dayjs(a).locale("ru").format("D MMMM YYYY HH:mm:ss");
 
 export const dateToSupabaseTime = (a: any): string => dayjs(a).format("YYYY-MM-DD HH:mm:ss.SSSZZ");
