@@ -21,7 +21,6 @@
     "dayjs": "^1.11.13",
     "lodash-es": "^4.17.21",
     "nanoid": "^5.1.2",
-    "npm": "^11.2.0",
     "preact": "^10.13.1",
     "preact-iso": "^2.9.0",
     "preact-render-to-string": "^6.5.13",
