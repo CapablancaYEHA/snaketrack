@@ -159,6 +159,7 @@ const dataKO = {
   borderWidth: 2,
   tension: 0.2,
   pointRadius: 2,
+  spanGaps: true,
 };
 
 const dataSnake = {
@@ -171,6 +172,7 @@ const dataSnake = {
   borderWidth: 2,
   tension: 0.2,
   pointRadius: 2,
+  spanGaps: true,
 };
 
 export const makeChartData = (weight, feed, view: "ko" | "snake" | "both") => {
@@ -181,11 +183,12 @@ export const makeChartData = (weight, feed, view: "ko" | "snake" | "both") => {
   }
   let res: any[] = [];
   const koSet = {
-    ...dataSnake,
+    ...dataKO,
+
     data: (feed ?? [])?.map((a) => ({ y: a.feed_weight, x: a.feed_last_at })),
   };
   const snakeSet = {
-    ...dataKO,
+    ...dataSnake,
     data: (weight ?? [])?.map((a) => ({ y: a.weight, x: a.date })),
   };
 

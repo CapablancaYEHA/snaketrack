@@ -48,7 +48,7 @@ type IUpdReq = {
   id: string;
 };
 export const httpUpdateBp = async (a: IUpdReq) => {
-  return await supabase.from(ESupabase.ballpythons).update(a.upd).eq("id", a.id);
+  return await supabase.from(ESupabase.ballpythons).update(a.upd).eq("id", a.id).throwOnError();
 };
 
 export function useUpdateBp() {
@@ -97,8 +97,11 @@ export function useUpdateFeeding() {
 
 // TODO нужно модиф эту функцию когда появятся новые категории змей
 const httpGetSnakesList = async (list: string[]) => {
-  let a = await supabase.from(ESupabase.ballpythons).select().in("id", list);
-  return a.data;
+  const { data, error } = await supabase.from(ESupabase.ballpythons).select().in("id", list);
+  if (error) {
+    throw error;
+  }
+  return data;
 };
 
 /* FIXME? нужно ли создать view для этой таблицы?

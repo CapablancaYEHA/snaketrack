@@ -25,8 +25,11 @@ export function useUpdName() {
 }
 
 const httpGetProfile = async (a: string) => {
-  let d = await supabase.from(ESupabase.profiles).select("*").eq("id", a).limit(1).single();
-  return d.data;
+  const { data, error } = await supabase.from(ESupabase.profiles).select("*").eq("id", a).limit(1).single();
+  if (error) {
+    throw error;
+  }
+  return data;
 };
 
 export function useProfile(id, isEnabled = false) {
@@ -38,8 +41,11 @@ export function useProfile(id, isEnabled = false) {
 }
 
 const httpGetUsersBySubstring = async (a: string) => {
-  let d = await supabase.from(ESupabase.three_cols_profiles).select("username,createdat").ilike("username", `%${a}%`);
-  return d.data;
+  const { data, error } = await supabase.from(ESupabase.three_cols_profiles).select("username,createdat").ilike("username", `%${a}%`);
+  if (error) {
+    throw error;
+  }
+  return data;
 };
 
 type IBreederSuggest = Pick<IResProfile, "createdat" | "username">;

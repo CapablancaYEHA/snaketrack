@@ -98,7 +98,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
         </PillsInput>
       </Combobox.DropdownTarget>
       <Combobox.Dropdown mah={160} style={{ overflowY: "auto" }} className={styles.scrollbox}>
-        <Combobox.Options>{search.trim().length === 0 ? <Combobox.Empty>Начните печатать</Combobox.Empty> : search.trim().length > 0 && options.length > 0 ? options : <Combobox.Empty>Нет совпадений</Combobox.Empty>}</Combobox.Options>
+        <Combobox.Options>{search.trim().length === 0 ? <Combobox.Empty>Начните печатать</Combobox.Empty> : options.length > 0 ? options : <Combobox.Empty>Нет совпадений</Combobox.Empty>}</Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>
   );

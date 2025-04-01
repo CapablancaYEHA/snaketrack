@@ -10,6 +10,7 @@ import { Btn } from "@/components/navs/btn/Btn";
 import { httpUldSnPic, useUpdateBp } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
+import { dateToSupabaseTime } from "@/utils/time";
 import { filterSubmitByDirty, makeDefault, schema, sexHardcode, uplErr } from "./const";
 
 export const FormEditBp = ({ traits, init }) => {
@@ -44,7 +45,15 @@ export const FormEditBp = ({ traits, init }) => {
     const submitBody = filterSubmitByDirty(sbm, dirtyFields);
 
     mutate(
-      { upd: { ...submitBody, picture: picture ? picture : undefined, last_action: "update" }, id: location.query.id },
+      {
+        upd: {
+          ...submitBody,
+          picture: picture || undefined,
+          last_action: "update",
+          date_hatch: dateToSupabaseTime(sbm.date_hatch),
+        },
+        id: location.query.id,
+      },
       {
         onSuccess: () => {
           notif({ c: "green", t: "Успешно", m: "Запись изменена" });
@@ -129,7 +138,7 @@ export const FormEditBp = ({ traits, init }) => {
         {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null}
       </Flex>
       <Box w="100%" maw="100%">
-        <Textarea {...register("notes")} label="Заметки, примечания" resize="vertical" w="100%" maw="100%" />
+        <Textarea {...register("notes")} label="Заметки, примечания" autosize w="100%" maw="100%" />
       </Box>
       <Flex align="flex-start" maw="100%" w="100%">
         <Controller
