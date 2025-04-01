@@ -1,9 +1,9 @@
 import { FC } from "preact/compat";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { CheckIcon, Combobox, Group, Pill, PillsInput, useCombobox } from "@mantine/core";
 import { debounce } from "lodash-es";
 import { IGenesBpComp } from "@/api/models";
-import { checkGeneConflict, geneToColor, redef, upgAlias, upgradeOptions } from "./const";
+import { checkGeneConflict, geneToColor, redef, upgradeOptions } from "./const";
 import styles from "./styles.module.scss";
 
 export const GenePill: FC<any> = ({ item, onRemove }) => {
@@ -23,7 +23,7 @@ export const GenePill: FC<any> = ({ item, onRemove }) => {
 };
 
 interface IProp {
-  outer: IGenesBpComp[];
+  outer?: IGenesBpComp[];
   onChange: (a) => void;
   init?: IGenesBpComp[];
 }
@@ -39,7 +39,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
   });
 
   const [search, setSearch] = useState("");
-  const debSearch = debounce(setSearch, 300);
+  const debSearch = debounce(setSearch, 400);
   const [value, setValue] = useState<IGenesBpComp[]>([]);
 
   const handleValueSelect = (val: IGenesBpComp) => setValue((current) => (current.some((a) => a.label === val.label) ? current.filter((v) => v.label !== val.label) : checkGeneConflict(current, val)));
@@ -48,9 +48,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
 
   const values = value.map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} />);
 
-  const opsWithAlias = useMemo(() => upgAlias([...(outer ?? [])]), []);
-
-  const options = upgradeOptions(opsWithAlias, search).map((item) => (
+  const options = upgradeOptions(outer ?? [], search).map((item) => (
     <Combobox.Option value={item as any} key={item.label} active={value.includes(item)}>
       <Group gap="sm">
         {value.some((a) => a.label === item.label) ? <CheckIcon size={12} /> : null}
@@ -70,7 +68,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
   }, [value.length]);
 
   return (
-    <Combobox store={combobox} onOptionSubmit={handleValueSelect as any} withinPortal={false}>
+    <Combobox store={combobox} onOptionSubmit={handleValueSelect as any} withinPortal={false} disabled={outer?.length === 0}>
       <Combobox.DropdownTarget>
         <PillsInput onClick={() => combobox.openDropdown()} label="Набор генов">
           <Pill.Group>

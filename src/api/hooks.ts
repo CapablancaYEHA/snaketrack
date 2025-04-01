@@ -1,12 +1,16 @@
 import { supabase } from "@/lib/client_supabase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
+import { upgAlias } from "@/components/genetics/const";
 import { toDataUrl } from "@/utils/supabaseImg";
 import { EQuKeys, ESupabase, IFeed, IReqCreateBP, IResSnakesList, ISupabaseErr } from "./models";
 
 const httpGetGenes = async () => {
-  let a = await supabase.from(ESupabase.bpgenes).select("*");
-  return a.data;
+  const { data, error } = await supabase.from(ESupabase.bpgenes).select("*").throwOnError();
+  if (error) {
+    throw error;
+  }
+  return upgAlias(data);
 };
 
 export function useGenes() {
@@ -14,6 +18,7 @@ export function useGenes() {
     queryKey: [EQuKeys.COMP_BP],
     queryFn: () => httpGetGenes(),
     enabled: true,
+    staleTime: 60000 * 60 * 4,
   });
 }
 
