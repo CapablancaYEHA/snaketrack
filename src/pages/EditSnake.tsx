@@ -9,8 +9,8 @@ export function EditSnake() {
   const location = useLocation();
   const { data } = useGenes();
   const { data: init, isPending, isError, error } = useSnake(location.query.id);
-  const { data: d, isPending: isPen } = useBase64(init?.picture!, init?.picture != null && !isPending);
-  let def = { ...init, blob: init?.picture, picture: d };
+  const { data: base64, isPending: isPen } = useBase64(init?.picture!, init?.picture != null && !isPending);
+  let def = { ...init, blob: init?.picture, picture: base64 };
 
   useEffect(() => {
     if (isError) {

@@ -7,7 +7,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { FileUpload } from "@/components/fileUpload";
 import { GeneSelect } from "@/components/genetics/geneSelect";
 import { Btn } from "@/components/navs/btn/Btn";
-import { httpUldSnPic, useUpdateBp } from "@/api/hooks";
+import { httpReplacePic, httpUldSnPic, useUpdateBp } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
 import { dateToSupabaseTime } from "@/utils/time";
@@ -34,12 +34,21 @@ export const FormEditBp = ({ traits, init }) => {
   const onSub = async (sbm) => {
     let picture: string | null = null;
     if (sbm.picture != null) {
-      const { data: r, error: e } = await httpUldSnPic(sbm.picture);
-      if (e) {
-        uplErr(e);
-        return;
+      if (init.blob != null) {
+        const { data: rep, error: er } = await httpReplacePic(init.blob, sbm.picture);
+        if (er) {
+          uplErr(er);
+          return;
+        }
+        picture = calcImgUrl(rep?.fullPath!);
+      } else {
+        const { data: upl, error: e } = await httpUldSnPic(sbm.picture);
+        if (e) {
+          uplErr(e);
+          return;
+        }
+        picture = calcImgUrl(upl?.fullPath!);
       }
-      picture = calcImgUrl(r?.fullPath!);
     }
 
     const submitBody = filterSubmitByDirty(sbm, dirtyFields);

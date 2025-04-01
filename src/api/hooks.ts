@@ -30,8 +30,13 @@ export const httpUldSnPic = (file: File) => {
   return supabase.storage.from(ESupabase.snakepics).upload(`${userId}/${nanoid(8)}`, file);
 };
 
-/* FIXME Супабейз рекомендует при замене файлов update({upsert:true}) не перезаписывать его а создавать новый path а старый файл и путь удалять*/
-// Для лого отдельный бакет?
+export const httpReplacePic = async (url: string, file: File) => {
+  const userId: string = localStorage.getItem("USER")!;
+  const { data, error } = await supabase.storage.from(ESupabase.snakepics).remove([`${userId}/${url.split("/").slice(-1)}`]);
+  if (data?.length === 0 || error) throw { message: "Не удалось обновить картинку" };
+  return supabase.storage.from(ESupabase.snakepics).upload(`${userId}/${nanoid(8)}`, file);
+};
+
 // Может вместо одного бакета snakepics - сделать категории - питоны, удавы и  Бакет для логотипов заводчиков?
 export const httpCreateBp = async (a: IReqCreateBP) => {
   return await supabase.from(ESupabase.ballpythons).insert(a).select("id").single<{ id: string }>().throwOnError();
