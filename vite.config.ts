@@ -19,4 +19,16 @@ export default defineConfig({
     },
   },
   plugins: [preact(), eslint()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          const HugeLibraries = ["chart.js", "@mantine", "@supabase"];
+          if (HugeLibraries.some((libName) => id.includes(`node_modules/${libName}`))) {
+            return id.toString().split("node_modules/")[1].split("/")[0].toString();
+          }
+        },
+      },
+    },
+  },
 });
