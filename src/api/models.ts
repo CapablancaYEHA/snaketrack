@@ -60,6 +60,7 @@ export interface IResSnakesList extends Pick<IReqCreateBP, "snake_name" | "sex" 
   owner_name: string;
   status: string;
   feeding?: IFeed[];
+  shed: string[] | null;
 }
 
 export interface IResProfile {

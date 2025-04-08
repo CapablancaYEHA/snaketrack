@@ -20,18 +20,12 @@ export function UseOneSignal(uid) {
           promptOptions: {
             slidedown: {
               prompts: [
-                // {
-                //   autoPrompt: true,
-                //   delay: {
-                //     pageViews: 1,
-                //     timeDelay: 10,
-                //   },
-                // },
                 {
-                  type: "push",
                   autoPrompt: true,
-                  title: "Пук",
-                  delay: { pageViews: 0, timeDelay: 0 },
+                  delay: {
+                    pageViews: 2,
+                    timeDelay: 10,
+                  },
                 },
               ],
             },

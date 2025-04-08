@@ -19,6 +19,7 @@ export const BpCard: FC<IProp> = ({ body, handleTrans, handleEdit, handleFeed })
   const location = useLocation();
   const lastWeight = body.weight?.[body.weight?.length - 1];
   const lastFeed = body.feeding?.[body.feeding.length - 1];
+  const lastShed = body.shed?.[body.shed.length - 1];
   return (
     <Flex columnGap="md" w="100%" maw="100%" justify="space-between" wrap="wrap">
       <Stack gap="xs" flex="0 0 196px" onClick={() => location.route(`/snakes/ballpython?id=${body.id}`)} style={{ cursor: "pointer" }}>
@@ -34,6 +35,7 @@ export const BpCard: FC<IProp> = ({ body, handleTrans, handleEdit, handleFeed })
       <Stack gap="xs">
         <Text size="sm">Текущий вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text>
         <Text size="sm">Последнее кормление: {lastFeed?.feed_last_at != null ? `${getDate(lastFeed.feed_last_at!)}` : "Нет данных"}</Text>
+        <Text size="sm">Последняя линька: {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text>
       </Stack>
       <div>
         <Menu
@@ -64,7 +66,7 @@ export const BpCard: FC<IProp> = ({ body, handleTrans, handleEdit, handleFeed })
           </Menu.Target>
           <Menu.Dropdown>
             <Menu.Item onClick={handleFeed} style={{ whiteSpace: "nowrap" }}>
-              Покормить, взвесить
+              Добавить событие
             </Menu.Item>
             <Menu.Item onClick={handleEdit}>Редактировать</Menu.Item>
             <Menu.Item onClick={handleTrans}>Передать</Menu.Item>

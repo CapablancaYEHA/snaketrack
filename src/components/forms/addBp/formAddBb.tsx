@@ -155,7 +155,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
           }}
         />
         <NumberInput {...(register("feed_weight") as any)} name="feed_weight" rightSection="г" label="Масса КО" placeholder="Нет данных" hideControls />
-        <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.feed_comment} />
+        <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.["feed_comment"]?.message} />
       </Flex>
       <Box w="100%" maw="100%">
         <Textarea {...register("notes")} label="Заметки, примечания" resize="vertical" w="100%" maw="100%" />

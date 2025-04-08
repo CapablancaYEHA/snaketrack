@@ -1,4 +1,4 @@
-import { adapterLocale } from "@/utils/time";
+import { adapterLocale, getDate } from "@/utils/time";
 
 adapterLocale();
 
@@ -43,7 +43,7 @@ const timeByString = {
   weeks: {
     unit: "day",
     displayFormats: {
-      day: "MM.YY",
+      day: "D.MM.YY",
     },
     tooltipFormat: "DD MMM YYYY",
   },
@@ -79,22 +79,6 @@ const defaultOptions = {
   responsive: true,
   maintainAspectRatio: false,
   clip: false,
-  plugins: {
-    legend: {
-      display: true,
-    },
-    title: {
-      display: true,
-      text: "График изменения массы Животного и КО",
-      color: "rgba(178,178,178,0.9)",
-    },
-    tooltip: {
-      interaction: {
-        mode: "nearest",
-      },
-      position: "nearest",
-    },
-  },
   interaction: {
     mode: "nearest",
     intersect: false,
@@ -104,9 +88,25 @@ const defaultOptions = {
   },
 };
 
-export const makeOptions = (val) => {
+export const makeLineOptions = (val) => {
   return {
     ...defaultOptions,
+    plugins: {
+      legend: {
+        display: true,
+      },
+      title: {
+        display: true,
+        text: "График изменения массы Животного и КО",
+        color: "rgba(178,178,178,0.9)",
+      },
+      tooltip: {
+        interaction: {
+          mode: "nearest",
+        },
+        position: "nearest",
+      },
+    },
     scales: {
       x: {
         type: "time",
@@ -166,7 +166,7 @@ const dataSnake = {
   type: "line",
   yAxisID: "y",
   id: 1,
-  label: "Животное",
+  label: "Питомец",
   borderColor: "rgb(255, 159, 64)",
   backgroundColor: "rgb(255, 159, 64)",
   borderWidth: 2,
@@ -175,7 +175,7 @@ const dataSnake = {
   spanGaps: true,
 };
 
-export const makeChartData = (weight, feed, view: "ko" | "snake" | "both") => {
+export const makeLineData = (weight, feed, view: "ko" | "snake" | "both") => {
   if (view === "both" && feed.length === 0 && weight.length === 0) {
     return {
       datasets: [],
@@ -204,5 +204,89 @@ export const makeChartData = (weight, feed, view: "ko" | "snake" | "both") => {
 
   return {
     datasets: res,
+  };
+};
+
+const func = (a) => {
+  return ` ${getDate(a.raw.x)}`;
+};
+
+export const bubbleOptions = {
+  ...defaultOptions,
+  plugins: {
+    legend: {
+      display: false,
+    },
+    title: {
+      display: true,
+      text: "Периодичность линьки",
+      color: "rgba(178,178,178,0.9)",
+    },
+    tooltip: {
+      interaction: {
+        mode: "nearest",
+      },
+      position: "nearest",
+      callbacks: {
+        label: func,
+      },
+    },
+  },
+  tooltip: {
+    enabled: true,
+  },
+  scales: {
+    x: {
+      type: "time",
+      time: {
+        unit: "day",
+        displayFormats: {
+          day: "MM.YY",
+        },
+        tooltipFormat: "DD MMM YYYY",
+      },
+      ticks: {
+        stepSize: 7,
+        source: "data",
+        color: "rgba(178,178,178,0.9)",
+      },
+      adapters: {
+        date: {
+          locale: "ru",
+        },
+      },
+      grid: {
+        tickColor: "rgba(178,178,178,0.3)",
+      },
+    },
+    y: {
+      display: false,
+      title: {
+        display: false,
+      },
+      ticks: {
+        precision: 0,
+      },
+    },
+  },
+};
+
+const dataShed = {
+  borderColor: "#82c91e",
+  backgroundColor: "#82c91e",
+  borderWidth: 2,
+  pointRadius: 2,
+  spanGaps: true,
+};
+
+export const makeBubbleData = (arr: string[]) => {
+  const a = arr.map((b) => ({ x: b, y: 0 }));
+  return {
+    datasets: [
+      {
+        ...dataShed,
+        data: a,
+      },
+    ],
   };
 };

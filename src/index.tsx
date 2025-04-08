@@ -22,6 +22,7 @@ import { theme } from "./styles/theme.js";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import '@mantine/dates/styles.css';
+import 'mantine-datatable/styles.css';
 import "./styles/global.scss";
 
 /* FIXME для просмотра другого пользователя использовать таблицу three_cols_profiles, надо её дополнить инфой о змеях на продажу */
@@ -44,7 +45,6 @@ export function App() {
       setSession(b);
 	  if (b?.user?.id) {
 		localStorage.setItem("USER", b.user.id);
-
 	}
     });
 

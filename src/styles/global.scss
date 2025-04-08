@@ -55,7 +55,7 @@ a {
   text-decoration: none;
 
   &:visited {
-    color: inherit;
+    @extend a;
   }
 }
 

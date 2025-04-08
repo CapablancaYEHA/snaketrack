@@ -31,6 +31,7 @@ export const feederHardcode = [
 ];
 
 export const reverseFeeder = (arr) => arr.reduce((tot, cur) => ({ ...tot, [cur.value]: cur.label }), {});
+export const feederToString = reverseFeeder(feederHardcode);
 
 type Schema = {
   file: File;
@@ -52,7 +53,7 @@ export const schema = yup.object<Schema>().shape({
   feed_last_at: yup.string().nullable(),
   feed_weight: yup.number().nullable(),
   feed_ko: yup.string().nullable(),
-  feed_comment: yup.string().nullable(),
+  feed_comment: yup.string().max(150, "Ограничение 150 символов").nullable(),
   picture: yup
     .mixed<File>()
     .test("fileSize", "Вес фото более 3Мb", (v) => (!v ? true : v.size <= 3145728))

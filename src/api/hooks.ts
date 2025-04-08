@@ -73,11 +73,12 @@ export function useUpdateBp() {
   });
 }
 
-export const httpUpdFeeding = async (id, feed, mass) => {
+export const httpUpdFeeding = async (id, feed, mass, shed) => {
   const { data, error } = await supabase.rpc("append_feeding_ballpython", {
     trg_snake: id,
     feeding_obj: feed,
     weight_obj: mass,
+    new_shed: shed,
     action: "update",
   });
   if (error) {
@@ -88,14 +89,15 @@ export const httpUpdFeeding = async (id, feed, mass) => {
 
 type IFeedReq = {
   id: string;
-  feed: IFeed;
-  mass: { date: string; weight: number };
+  feed: IFeed | null;
+  mass: { date: string; weight: number } | null;
+  shed: string | null;
 };
 
 export function useUpdateFeeding() {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, IFeedReq>({
-    mutationFn: ({ id, feed, mass }) => httpUpdFeeding(id, feed, mass),
+    mutationFn: ({ id, feed, mass, shed }) => httpUpdFeeding(id, feed, mass, shed),
     onSuccess: () => {
       // FIXME Когда на индивид странице рега, тоже надо делать
       queryClient.invalidateQueries({

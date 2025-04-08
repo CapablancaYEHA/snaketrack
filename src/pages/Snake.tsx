@@ -1,13 +1,19 @@
 import { useLocation } from "preact-iso";
-import { useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
-import { Box, Flex, Image, LoadingOverlay, Paper, SegmentedControl, Select, Stack, Text, Title } from "@mantine/core";
-import { ChartLine } from "@/components/common/Chart/ChartLine";
+import { Box, Button, Flex, Image, LoadingOverlay, Paper, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { signal } from "@preact/signals";
+import { bpColumns, detailsDict, subjectDict } from "@/components/ballpythons/const";
+import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
+import { Table } from "@/components/common/Table/table";
 import { SexName } from "@/components/common/sexName";
+import { FeedSnake } from "@/components/forms/feedSnake/formFeedSnake";
 import { sortBpGenes } from "@/components/genetics/const";
 import { GenePill } from "@/components/genetics/geneSelect";
 import { useSnake } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
+
+const isFeedOpen = signal<boolean>(false);
 
 export function Snake() {
   const location = useLocation();
@@ -15,6 +21,8 @@ export function Snake() {
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
   const { data, isPending, isError } = useSnake(location.query.id);
+
+  const feedTable = useMemo(() => data?.feeding ?? [], [data?.feeding?.length]);
 
   if (isPending) return <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />;
 
@@ -30,6 +38,14 @@ export function Snake() {
       <Title component="span" order={4} c="yellow.6">
         Подробная информация о змее
       </Title>
+      <Flex gap="sm">
+        <Button size="compact-xs" component="a" href={`/snakes/edit/ballpython?id=${location.query.id}`}>
+          Редактировать
+        </Button>
+        <Button size="compact-xs" onClick={() => (isFeedOpen.value = true)}>
+          Добавить событие
+        </Button>
+      </Flex>
       <Box m="0 auto">
         <SegmentedControl
           value={value}
@@ -40,7 +56,6 @@ export function Snake() {
           ]}
         />
       </Box>
-
       <Flex align="flex-start" justify="space-between" columnGap="md" w="100%">
         <Stack>
           <Flex align="flex-start" justify="flex-start" gap="xs">
@@ -49,7 +64,6 @@ export function Snake() {
           </Flex>
           <Image src={data.picture} flex="0 0 0px" fit="cover" radius="md" mih={110} w="auto" maw="100%" h={200} fallbackSrc={fallback} loading="lazy" />
         </Stack>
-
         <Stack>
           <Text size="md">Дата рождения — {getDate(data.date_hatch)}</Text>
           <Text size="md">⌛ {getAge(data.date_hatch)}</Text>
@@ -60,39 +74,29 @@ export function Snake() {
           <GenePill item={a} key={`${a.label}_${a.id}`} />
         ))}
       </Flex>
-      <Paper shadow="sm" radius="lg" p="xl" w="100%">
+      <Paper shadow="sm" radius="md" p="sm" w="100%">
         <Text size="xs" c="dark.3">
           Ваше примечание
         </Text>
+        <Space h="sm" />
         <Text size="sm">{data.notes ?? "Пусто"}</Text>
       </Paper>
-
-      <Flex justify="space-between" w="100%">
-        <Select
-          label="Детализация графика"
-          data={[
-            { label: "Год", value: "years" },
-            { label: "Сезон", value: "seasons" },
-            { label: "Квартал", value: "quarters" },
-            { label: "Месяц", value: "months" },
-            { label: "Неделя", value: "weeks" },
-            { label: "День", value: "days" },
-          ]}
-          value={scale}
-          onChange={setScale as any}
-        />
-        <Select
-          label="Отображать график для"
-          data={[
-            { label: "КО", value: "ko" },
-            { label: "Животного", value: "snake" },
-            { label: "Обоих", value: "both" },
-          ]}
-          value={view}
-          onChange={setView as any}
-        />
+      <Flex justify="space-between" w="100%" gap="sm">
+        <Select label="Детализация графика" data={detailsDict} value={scale} onChange={setScale as any} />
+        <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} />
       </Flex>
       <ChartLine weightData={data?.weight} feedData={data.feeding} scaleX={scale} view={view} />
+      <Table rows={feedTable as any} columns={bpColumns} />
+      <Space h="lg" />
+      <FeedSnake
+        opened={isFeedOpen.value}
+        close={() => {
+          isFeedOpen.value = false;
+        }}
+        snake={data}
+      />
+      <ChartBubble shedData={data.shed} />
+      <Space h="lg" />
     </Stack>
   );
 }
