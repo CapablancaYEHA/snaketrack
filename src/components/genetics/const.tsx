@@ -1,4 +1,4 @@
-import { IGenesBpComp } from "@api/models";
+import { IGenesBpComp, IMMTrait } from "@api/models";
 import { sortBy } from "lodash-es";
 import { notif } from "@/utils/notif";
 
@@ -136,8 +136,8 @@ const priority = {
   "50%": 4,
 };
 
-export const sortBpGenes = (arr: IGenesBpComp[]): IGenesBpComp[] => {
-  let kek = arr.sort((a, b) => {
+export const sortBpGenes = (arr: IGenesBpComp[] | null): IGenesBpComp[] => {
+  let kek = (arr ?? []).sort((a, b) => {
     if (a.gene !== b.gene && a.gene === "rec") {
       return -1;
     }
@@ -151,4 +151,18 @@ export const sortBpGenes = (arr: IGenesBpComp[]): IGenesBpComp[] => {
   });
 
   return sortBy(kek, [(o) => priority[o.label.substring(0, 3).toLowerCase()] ?? 0]);
+};
+
+export const fromMMtoPill = (m: IMMTrait): IGenesBpComp => {
+  const gene = m.class_label.includes("rec") ? "rec" : "inc-dom";
+  const label = m.name;
+  const hasHet = !m.class_label.includes("vis-rec");
+
+  return {
+    id: m.id,
+    label,
+    gene,
+    hasSuper: false,
+    hasHet,
+  };
 };

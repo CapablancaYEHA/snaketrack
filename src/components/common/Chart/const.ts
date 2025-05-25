@@ -280,7 +280,7 @@ const dataShed = {
 };
 
 export const makeBubbleData = (arr: string[]) => {
-  const a = arr.map((b) => ({ x: b, y: 0 }));
+  const a = arr?.map((b) => ({ x: b, y: 0 }));
   return {
     datasets: [
       {

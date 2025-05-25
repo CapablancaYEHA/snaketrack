@@ -1,5 +1,10 @@
 import { CSSProperties, FC } from "preact/compat";
+import { ArrBidirectIcon } from "./ArrBidirect";
+import { ArrUpIcon } from "./ArrUp";
+import { BinIcon } from "./Bin";
+import { CheckIcon } from "./Check";
 import { DashIcon } from "./Dash";
+import { EggIcon } from "./Egg";
 import { FemaleIcon } from "./Female";
 import { ImgIcon } from "./Img";
 import { KebabIcon } from "./Kebab";
@@ -27,6 +32,17 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <FemaleIcon width={width} height={height} style={style} />;
     case "kebab":
       return <KebabIcon width={width} height={height} />;
+    case "breeding":
+      return <EggIcon width={width} height={height} />;
+    case "check":
+      return <CheckIcon width={width} height={height} />;
+    case "bin":
+      return <BinIcon width={width} height={height} style={style} />;
+    case "arr-up":
+      return <ArrUpIcon width={width} height={height} style={style} />;
+
+    case "arr-bi":
+      return <ArrBidirectIcon width={width} height={height} style={style} />;
     default:
       return <DashIcon width={width} height={height} />;
   }

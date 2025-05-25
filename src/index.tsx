@@ -25,7 +25,7 @@ import '@mantine/dates/styles.css';
 import 'mantine-datatable/styles.css';
 import "./styles/global.scss";
 
-/* FIXME для просмотра другого пользователя использовать таблицу three_cols_profiles, надо её дополнить инфой о змеях на продажу */
+/* TODO для просмотра другого пользователя использовать таблицу three_cols_profiles, надо её дополнить инфой о змеях на продажу? */
 const isPending = signal(true);
 
 export function App() {
@@ -36,7 +36,6 @@ export function App() {
       setSession(a);
 	  if (a?.user?.id) localStorage.setItem("USER", a.user.id);
 	  isPending.value = false;
-	//   pushClient(a?.user?.id!);
     });
 
     const {
@@ -70,7 +69,7 @@ export function App() {
 			<Route path="/login"  component={Login} />
 			<Route path="/register"  component={Register} />
 				{isPending.value ? (<LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 1.0 }} />)
-				: (['/dashboard','/profile','/snakes', '/snakes/:type?id=:id', '/snakes/add/:type','/snakes/edit/:type?id=:id'].map(
+				: (['/dashboard','/profile','/snakes', '/snakes/:type?id=:id', '/snakes/add/:type','/snakes/edit/:type?id=:id', '/breeding','/breeding/add/:type','/breeding/:type?id=:id'].map(
 					(a) => <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />)
 				)}
 				{isPending.value ? ( null as any) : (<Route default component={NotFound}  />)}

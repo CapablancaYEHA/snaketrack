@@ -3,6 +3,7 @@ import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
 import { Box, Button, Flex, Image, LoadingOverlay, Paper, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
+import { toString } from "lodash-es";
 import { bpColumns, detailsDict, subjectDict } from "@/components/ballpythons/const";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
 import { Table } from "@/components/common/Table/table";
@@ -22,7 +23,7 @@ export function Snake() {
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
   const { data, isPending, isError } = useSnake(location.query.id);
 
-  const feedTable = useMemo(() => data?.feeding ?? [], [data?.feeding?.length]);
+  const feedTable = useMemo(() => data?.feeding ?? [], [toString(data?.feeding)]);
 
   if (isPending) return <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />;
 

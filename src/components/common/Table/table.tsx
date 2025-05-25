@@ -11,9 +11,12 @@ export const Table = ({ rows, columns }) => {
   const [records, setRecords] = useState(sortBy(rows, "feed_last_at"));
 
   useEffect(() => {
-    const data = sortBy(rows, sortStatus.columnAccessor) as any[];
+    const data = sortBy(
+      rows.filter((a) => Object.values(a)?.some((b) => b != null)),
+      sortStatus.columnAccessor,
+    ) as any[];
     setRecords(sortStatus.direction === "desc" ? data.reverse() : data);
-  }, [sortStatus]);
+  }, [sortStatus, rows]);
 
   return (
     <DataTable

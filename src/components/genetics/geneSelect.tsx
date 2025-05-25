@@ -1,12 +1,17 @@
 import { FC } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
-import { CheckIcon, Combobox, Group, Pill, PillsInput, useCombobox } from "@mantine/core";
+import { CheckIcon, Combobox, Group, MantineSize, Pill, PillsInput, useCombobox } from "@mantine/core";
 import { debounce } from "lodash-es";
 import { IGenesBpComp } from "@/api/models";
 import { checkGeneConflict, geneToColor, redef, upgradeOptions } from "./const";
 import styles from "./styles.module.scss";
 
-export const GenePill: FC<any> = ({ item, onRemove }) => {
+type IPill = {
+  onRemove?: (a) => void;
+  item: IGenesBpComp;
+  size?: MantineSize;
+};
+export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm" }) => {
   const isHet = item.label.toLowerCase().includes("het");
   return (
     <Pill
@@ -14,8 +19,9 @@ export const GenePill: FC<any> = ({ item, onRemove }) => {
         root: { ...redef, backgroundColor: isHet ? "var(--mantine-color-dark-9)" : geneToColor[item.gene], boxShadow: `0 0 0 1px ${geneToColor[item.gene]}` },
       }}
       key={item.label}
-      withRemoveButton={onRemove}
+      withRemoveButton={onRemove != null}
       onRemove={onRemove ? () => onRemove(item) : () => undefined}
+      size={size}
     >
       {item.label}
     </Pill>

@@ -26,6 +26,7 @@ module.exports = {
     "no-magic-numbers": "off",
     "no-shadow": "off",
     "jest/no-deprecated-functions": "off",
+    "no-prototype-builtins": "off",
     // WARN RULES
     "react-hooks/exhaustive-deps": "warn",
     "@typescript-eslint/no-unused-vars": "warn",

@@ -1,0 +1,38 @@
+.table {
+  max-width: 100%;
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    tr {
+      max-width: 100%;
+      width: 100%;
+    }
+    th {
+      user-select: none;
+      font-weight: 500;
+      text-align: left;
+
+      & div {
+        margin-bottom: 16px;
+      }
+    }
+  }
+  tbody {
+    tr {
+      max-width: 100%;
+      width: 100%;
+      & td {
+        padding: 8px;
+      }
+      &:hover {
+        background-color: rgba(178, 178, 178, 0.1);
+      }
+    }
+  }
+}
+
+.pointer {
+  cursor: pointer;
+  user-select: none;
+}
