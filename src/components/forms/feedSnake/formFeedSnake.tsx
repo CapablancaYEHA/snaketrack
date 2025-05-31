@@ -1,4 +1,4 @@
-import { FC } from "preact/compat";
+import { FC, useEffect } from "preact/compat";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Accordion, Checkbox, Flex, Modal, NumberInput, Select, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
@@ -30,6 +30,8 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
   } = useForm({
     defaultValues: defVals,
     resolver: yupResolver(schema as any),
+    mode: "onSubmit",
+    reValidateMode: "onChange",
   });
 
   const fullClose = () => {
@@ -46,7 +48,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
       { id: snake?.id!, feed, mass, shed },
       {
         onSuccess: () => {
-          notif({ c: "green", t: "Успешно", m: "Кормление добавлено" });
+          notif({ c: "green", t: "Успешно", m: "Событие добавлено" });
           fullClose();
         },
         onError: (err) => {
@@ -60,14 +62,15 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
     );
   };
 
+  const errObj = errors?.["shed"] || errors?.["refuse"] || errors?.["regurgitation"];
+
   return (
-    <Modal opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Новое событие</Title>}>
+    <Modal opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Региус. Новое событие</Title>}>
       <Flex gap="sm" align="center">
-        <Text size="sm">Кормление, взвешивание, линька региуса</Text>
         <SexName sex={snake?.sex!} name={snake?.snake_name ?? ""} />
       </Flex>
       <Space h="sm" />
-      <Flex rowGap="lg" columnGap="md" align="end">
+      <Flex>
         <Controller
           name="feed_last_at"
           control={control}
@@ -75,18 +78,23 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
             return <DatePickerInput label="Дата" required value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} style={{ flex: "1 1 auto" }} />;
           }}
         />
-        <Checkbox label="Линька" {...(register("shed") as any)} />
       </Flex>
-      {errors?.["shed"]?.message ? (
+      <Space h="sm" />
+      <Flex rowGap="lg" columnGap="md">
+        <Checkbox label="Линька" value="shed" {...(register("shed") as any)} />
+        <Checkbox label="Отказ" value="refuse" {...register("refuse")} />
+        <Checkbox label="Срыг" value="regurgitation" {...register("regurgitation")} />
+      </Flex>
+      {errObj != null ? (
         <>
           <Space h="xs" />
           <Text size="xs" c="var(--mantine-color-error)">
-            {errors?.["shed"]?.message}
+            {errObj.message}
           </Text>
         </>
       ) : null}
       <Space h="lg" />
-      <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса питомца" placeholder="Нет заполнено" hideControls error={errors?.["weight"]?.message} />
+      <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса питомца" required placeholder="Нет заполнено" hideControls error={errors?.["weight"]?.message} />
       <Space h="lg" />
       <Controller
         name="feed_ko"
@@ -96,22 +104,28 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         }}
       />
       <Space h="lg" />
-      <NumberInput {...(register("feed_weight") as any)} rightSection="г" label="Масса КО" placeholder="Не выбрано" hideControls error={errors?.["feed_weight"]?.message} />
+      <NumberInput {...(register("feed_weight") as any)} rightSection="г" label="Масса КО" required placeholder="Не выбрано" hideControls error={errors?.["feed_weight"]?.message} />
       <Space h="lg" />
-      <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.["feed_comment"]?.message} />
+      <TextInput {...register("feed_comment")} label="Коммент к событию" error={errors?.["feed_comment"]?.message} />
       <Space h="lg" />
       <Accordion variant="separated" radius="xl" defaultValue="Apples">
         <Accordion.Item value={"kek"}>
-          <Accordion.Control>Предыдущее кормление</Accordion.Control>
+          <Accordion.Control>Предыдущая запись</Accordion.Control>
           <Accordion.Panel>
             <Stack gap="md">
               <Flex justify="space-between">
-                <Text size="sm">Масса питомца: {lastWeight?.weight ? `${lastWeight?.weight}г` : "Нет данных"}</Text>
                 <Text size="sm">Дата: {lastFeed?.feed_last_at ? `${getDate(lastFeed.feed_last_at!)}` : "Нет данных"}</Text>
+                <Text size="sm">Масса питомца: {lastWeight?.weight ? `${lastWeight?.weight}г` : "Нет данных"}</Text>
               </Flex>
               <Flex justify="space-between">
                 <Text size="sm">Кормовой объект: {lastFeed?.feed_ko ? feederToString[lastFeed.feed_ko] : "Нет данных"}</Text>
                 <Text size="sm">Вес КО: {lastFeed?.feed_weight ? `${lastFeed.feed_weight}г` : "Нет данных"}</Text>
+                {lastFeed?.regurgitation ? (
+                  <Text size="sm" c="var(--mantine-color-error)">
+                    Срыг
+                  </Text>
+                ) : null}
+                {lastFeed?.refuse ? <Text size="sm">Отказ от еды</Text> : null}
               </Flex>
               <Text size="sm">Комментарий: {lastFeed?.feed_comment ? lastFeed.feed_comment : "Пусто"}</Text>
             </Stack>

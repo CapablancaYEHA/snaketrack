@@ -9,34 +9,43 @@ export const defVals = {
   feed_weight: null,
   feed_comment: null,
   shed: null,
+  refuse: null,
+  regurgitation: null,
 };
-const incor = "Укажите линьку, массу питомца, либо массу КО";
+const incor = "Отметьте линьку/срыг/отказ, либо укажите массу питомца";
 export const schema = yup.object().shape(
   {
     feed_last_at: yup.string().nullable().required("Дата обязательна"),
     feed_ko: yup.string().nullable(),
     feed_comment: yup.string().max(150, "Ограничение 150 символов").nullable(),
-    weight: yup.number().when(["feed_weight", "shed"], ([feed_weight, shed], self) => {
-      return feed_weight == null && !shed ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required(incor) : self.transform((v) => (!v || Number.isNaN(v) ? null : v)).nullable();
+    weight: yup.number().when(["refuse", "regurgitation", "shed"], ([refuse, regurgitation, shed], self) => {
+      return !shed && !refuse && !regurgitation ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required(incor) : self.transform((v) => (!v || Number.isNaN(v) ? null : v)).nullable();
     }),
-    feed_weight: yup.number().when(["weight", "shed"], ([weight, shed], self) => {
-      return weight == null && !shed ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required(incor) : self.transform((v) => (!v || Number.isNaN(v) ? null : v)).nullable();
+    feed_weight: yup
+      .number()
+      .transform((v) => (!v || Number.isNaN(v) ? null : v))
+      .nullable(),
+    shed: yup.boolean().when(["weight"], ([weight], self) => {
+      return !weight ? self.required(incor) : self.nullable();
     }),
-    shed: yup.boolean().when(["weight", "feed_weight"], ([weight, feed_weight], self) => {
-      return weight == null || feed_weight == null ? self.required(incor) : self.nullable();
+    refuse: yup.boolean().when(["weight"], ([weight], self) => {
+      return !weight ? self.required(incor) : self.nullable();
+    }),
+    regurgitation: yup.boolean().when(["weight"], ([weight], self) => {
+      return !weight ? self.required(incor) : self.nullable();
     }),
   },
   [
-    ["feed_weight", "weight"],
-    ["shed", "weight"],
-    ["shed", "feed_weight"],
+    ["weight", "shed"],
+    ["weight", "refuse"],
+    ["weight", "regurgitation"],
   ],
 );
 
 export const prepareForSubmit = (fd) => {
   let time = dateToSupabaseTime(fd.feed_last_at);
 
-  let feed = fd.feed_weight ? { ...fd, feed_last_at: time } : null;
+  let feed = fd.feed_weight || fd.refuse || fd.regurgitation ? { ...fd, feed_last_at: time } : null;
   let mass = fd.weight
     ? {
         date: time,
@@ -44,8 +53,8 @@ export const prepareForSubmit = (fd) => {
       }
     : null;
   let shed = fd.shed ? time : null;
-  delete fd.weight;
-  delete fd.shed;
+  delete feed.weight;
+  delete feed.shed;
 
   return { feed, mass, shed };
 };

@@ -97,7 +97,7 @@ export const makeLineOptions = (val) => {
       },
       title: {
         display: true,
-        text: "График изменения массы Животного и КО",
+        text: "График изменения массы Змеи и статистика кормлений",
         color: "rgba(178,178,178,0.9)",
       },
       tooltip: {
@@ -105,6 +105,9 @@ export const makeLineOptions = (val) => {
           mode: "nearest",
         },
         position: "nearest",
+        callbacks: {
+          label: lineLabelFunc,
+        },
       },
     },
     scales: {
@@ -153,9 +156,18 @@ const dataKO = {
   type: "line",
   yAxisID: "y1",
   id: 2,
-  label: "Корм",
-  borderColor: "rgb(153, 102, 255)",
+  label: "Кормления",
   backgroundColor: "rgb(153, 102, 255)",
+  pointBackgroundColor: (context) => {
+    const index = context.dataIndex;
+    const value = context.dataset.data[index];
+    return value?.regurgitation ? "#e03131" : value?.refuse ? "#00FFC0" : "rgb(153, 102, 255)";
+  },
+  borderColor: (context) => {
+    const index = context.dataIndex;
+    const value = context.dataset.data[index];
+    return value && value?.regurgitation ? "#e03131" : value && value?.refuse ? "#00FFC0" : "rgb(153, 102, 255)";
+  },
   borderWidth: 2,
   tension: 0.2,
   pointRadius: 2,
@@ -166,13 +178,20 @@ const dataSnake = {
   type: "line",
   yAxisID: "y",
   id: 1,
-  label: "Питомец",
+  label: "Змея",
   borderColor: "rgb(255, 159, 64)",
   backgroundColor: "rgb(255, 159, 64)",
   borderWidth: 2,
   tension: 0.2,
   pointRadius: 2,
   spanGaps: true,
+};
+
+const findLastValid = (ind: number, arr: any[]) => {
+  if (ind < 0) {
+    return 0;
+  }
+  return arr[ind].feed_weight ? arr[ind].feed_weight : findLastValid(ind - 1, arr);
 };
 
 export const makeLineData = (weight, feed, view: "ko" | "snake" | "both") => {
@@ -185,7 +204,10 @@ export const makeLineData = (weight, feed, view: "ko" | "snake" | "both") => {
   const koSet = {
     ...dataKO,
 
-    data: (feed ?? [])?.map((a) => ({ y: a.feed_weight, x: a.feed_last_at })),
+    data: (feed ?? [])?.map((a, ind, self) => {
+      const lastValid = a.feed_weight ?? findLastValid(ind - 1, self);
+      return { y: lastValid, x: a.feed_last_at, regurgitation: a.regurgitation || false, refuse: a.refuse || false };
+    }),
   };
   const snakeSet = {
     ...dataSnake,
@@ -207,8 +229,18 @@ export const makeLineData = (weight, feed, view: "ko" | "snake" | "both") => {
   };
 };
 
-const func = (a) => {
+const bubbleLabelFunc = (a) => {
   return ` ${getDate(a.raw.x)}`;
+};
+
+const lineLabelFunc = (a) => {
+  if (a.raw.regurgitation) {
+    return " Срыг";
+  }
+  if (a.raw.refuse) {
+    return " Отказ";
+  }
+  return ` ${a.formattedValue}`;
 };
 
 export const bubbleOptions = {
@@ -228,7 +260,7 @@ export const bubbleOptions = {
       },
       position: "nearest",
       callbacks: {
-        label: func,
+        label: bubbleLabelFunc,
       },
     },
   },
@@ -241,7 +273,7 @@ export const bubbleOptions = {
       time: {
         unit: "day",
         displayFormats: {
-          day: "MM.YY",
+          day: "MMMM YY",
         },
         tooltipFormat: "DD MMM YYYY",
       },

@@ -37,7 +37,7 @@ export function Snake() {
   return (
     <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
       <Title component="span" order={4} c="yellow.6">
-        Подробная информация о змее
+        Подробная информация о региусе
       </Title>
       <Flex gap="sm">
         <Button size="compact-xs" component="a" href={`/snakes/edit/ballpython?id=${location.query.id}`}>

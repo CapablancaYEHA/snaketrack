@@ -56,6 +56,8 @@ export type IFeed = {
   feed_weight?: number | null;
   feed_ko?: string | null;
   feed_comment?: string;
+  refuse?: boolean;
+  regurgitation?: boolean;
 };
 
 export interface IResSnakesList extends Pick<IReqCreateBP, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture" | "notes" | "last_action"> {

@@ -1,9 +1,9 @@
 import { Button, Flex, Menu, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IResBpBreedingList } from "@/api/models";
-import { GenePill } from "../genetics/geneSelect";
-import { IconSwitch } from "../navs/sidebar/icons/switch";
-import { bStToLabel, breedToColor } from "./const";
+import { bStToLabel, breedToColor } from "../../ballpythons/const";
+import { GenePill } from "../../genetics/geneSelect";
+import { IconSwitch } from "../../navs/sidebar/icons/switch";
 
 const columnHelper = createColumnHelper<IResBpBreedingList>();
 

@@ -2,13 +2,33 @@ import { useLocation } from "preact-iso";
 import { FC } from "preact/compat";
 import fallback from "@assets/placeholder.png";
 import { Button, Flex, Image, Menu, Stack, Text } from "@mantine/core";
-import { IResSnakesList } from "@/api/models";
+import { IFeed, IResSnakesList } from "@/api/models";
 import { getAge, getDate } from "../../utils/time";
 import { SexName } from "../common/sexName";
 import { sortBpGenes } from "../genetics/const";
 import { GenePill } from "../genetics/geneSelect";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
 
+const calcFeedEvent = (feed?: IFeed) => {
+  if (feed?.refuse) {
+    return (
+      <Text fw={500} component="span" c="#00FFC0">
+        Отказ
+      </Text>
+    );
+  }
+  if (feed?.regurgitation) {
+    return (
+      <Text fw={500} component="span" c="var(--mantine-color-error)">
+        Срыг
+      </Text>
+    );
+  }
+  if (feed?.feed_last_at != null) {
+    return getDate(feed.feed_last_at);
+  }
+  return "Нет данных";
+};
 interface IProp {
   body: IResSnakesList;
   handleTrans: () => void;
@@ -29,7 +49,7 @@ export const BpCard: FC<IProp> = ({ body, handleTrans, handleEdit, handleFeed })
       </Stack>
       <Stack gap="xs">
         <Text size="sm">Текущий вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text>
-        <Text size="sm">Последнее кормление: {lastFeed?.feed_last_at != null ? `${getDate(lastFeed.feed_last_at!)}` : "Нет данных"}</Text>
+        <Text size="sm">Последнее кормление: {calcFeedEvent(lastFeed)}</Text>
         <Text size="sm">Последняя линька: {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text>
         <Flex wrap="wrap" gap="xs">
           {sortBpGenes(body.genes).map((a) => (

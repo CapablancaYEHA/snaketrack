@@ -22,7 +22,12 @@ interface ILine {
 
 export const ChartLine: FC<ILine> = ({ weightData, feedData, scaleX = "weeks", view = "both" }) => {
   const chartData = makeLineData(weightData ?? [], feedData ?? [], view);
-  return (
+
+  return !weightData && feedData?.every((a) => Object.values(a)?.every((b) => b == null)) ? (
+    <Text size="md" fw={500} ta="center" w="100%">
+      Информация об изменении веса\кормлениях отсутствует
+    </Text>
+  ) : (
     <div style={{ position: "relative", width: "100%" }}>
       <Line options={makeLineOptions(scaleX) as any} data={chartData as any} height={420} />
     </div>

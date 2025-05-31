@@ -1,3 +1,4 @@
+import { Text } from "@mantine/core";
 import { IGenesBpComp, IResBpBreedingList } from "@/api/models";
 import { getDateShort } from "@/utils/time";
 import { feederToString } from "../forms/addBp/const";
@@ -13,9 +14,21 @@ export const bpColumns = [
   },
   {
     accessor: "feed_ko",
-    title: "КО",
-    render: ({ feed_ko }) => feederToString[feed_ko],
-    sortable: true,
+    title: "КО / Проблема",
+    render: ({ feed_ko, regurgitation, refuse }) => {
+      return regurgitation ? (
+        <Text fw={500} component="span" c="var(--mantine-color-error)">
+          Срыг
+        </Text>
+      ) : refuse ? (
+        <Text fw={500} component="span" c="#00FFC0">
+          Отказ
+        </Text>
+      ) : (
+        feederToString[feed_ko]
+      );
+    },
+    sortable: false,
     width: 160,
   },
   {
@@ -42,9 +55,9 @@ export const detailsDict = [
 ];
 
 export const subjectDict = [
-  { label: "КО", value: "ko" },
-  { label: "Питомец", value: "snake" },
-  { label: "Питомец и КО", value: "both" },
+  { label: "Кормления", value: "ko" },
+  { label: "Вес", value: "snake" },
+  { label: "Вес и Кормления", value: "both" },
 ];
 
 export const calcProjGenes = (arr?: IGenesBpComp[]) => {
