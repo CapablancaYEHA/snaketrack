@@ -14,6 +14,7 @@ export function Header({ session }) {
 
   return (
     <Box
+      id="layouthdr"
       bg="dark.8"
       component="header"
       h="50"

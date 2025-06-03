@@ -1,5 +1,5 @@
 import { useLocation } from "preact-iso";
-import { useLayoutEffect } from "preact/hooks";
+import { useLayoutEffect, useState } from "preact/hooks";
 import { Anchor, Box, Button, PasswordInput, Space, Text, TextInput, Title } from "@mantine/core";
 import { useForm } from "react-hook-form";
 import { supabase } from "../../lib/client_supabase";
@@ -8,6 +8,7 @@ import styles from "./styles.module.scss";
 
 export function Register() {
   const location = useLocation();
+  const [show, setShow] = useState(false);
   useLayoutEffect(() => {
     let trg = document.getElementById("layoutsdbr");
     trg?.classList.add("hide");
@@ -17,6 +18,7 @@ export function Register() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm();
 
@@ -42,10 +44,24 @@ export function Register() {
     } else {
       notif({
         c: "green",
-        t: "Успешнао",
+        t: "Аккаунт создан",
         m: "Подтвердите регистрацию в письме на почте",
       });
       location.route("/login");
+    }
+  }
+
+  async function resetPass(email): Promise<void> {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://snaketrack.ru/reset",
+    });
+    if (error) {
+      notif({
+        c: "red",
+        t: "Что-то пошло не так",
+        m: error?.message,
+        code: error?.code,
+      });
     }
   }
 
@@ -95,6 +111,37 @@ export function Register() {
         <Button variant="light" type="submit" fullWidth={false} style={{ alignSelf: "center", width: "min-content" }}>
           Создать аккаунт
         </Button>
+        <Space h="xl" />
+        <Text component="a" size="md" onClick={() => setShow(true)} style={{ cursor: "pointer", textDecoration: "underline" }}>
+          Яна, как ты могла забыть пароль? (((
+        </Text>
+        <Space h="md" />
+        {show ? (
+          <>
+            <TextInput
+              {...register("mailReset", {
+                required: true,
+                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                setValueAs: (v) => v.trim(),
+              })}
+              label="Email аккаунта"
+              error={errors.mailReset && <p>Формат мыла неверный</p>}
+            />
+            <Space h="md" />
+            <Button
+              variant="light"
+              type="button"
+              fullWidth={false}
+              style={{ alignSelf: "center", width: "min-content" }}
+              onClick={(e) => {
+                e.preventDefault();
+                resetPass(getValues("mailReset"));
+              }}
+            >
+              Сбросить пароль
+            </Button>
+          </>
+        ) : null}
       </form>
     </Box>
   );
