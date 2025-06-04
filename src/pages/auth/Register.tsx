@@ -62,6 +62,12 @@ export function Register() {
         m: error?.message,
         code: error?.code,
       });
+    } else {
+      notif({
+        c: "green",
+        t: "Письмо отправлено",
+        m: "Для сброса пароля перейдите по ссылке в письме",
+      });
     }
   }
 
@@ -112,7 +118,7 @@ export function Register() {
           Создать аккаунт
         </Button>
         <Space h="xl" />
-        <Text component="a" size="md" onClick={() => setShow(true)} style={{ cursor: "pointer", textDecoration: "underline" }}>
+        <Text size="md" onClick={() => setShow(true)} style={{ cursor: "pointer", textDecoration: "underline" }}>
           Яна, как ты могла забыть пароль? (((
         </Text>
         <Space h="md" />

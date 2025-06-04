@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
-import { useEffect, useLayoutEffect, useState } from "preact/hooks";
-import { Anchor, Box, Button, PasswordInput, Space, Text, TextInput, Title } from "@mantine/core";
+import { useEffect, useLayoutEffect } from "preact/hooks";
+import { Box, Button, PasswordInput, Space, Title } from "@mantine/core";
 import { useForm } from "react-hook-form";
 import { supabase } from "../../lib/client_supabase";
 import { notif } from "../../utils/notif";
@@ -8,6 +8,8 @@ import styles from "./styles.module.scss";
 
 export function Reset() {
   const location = useLocation();
+  const token = location.query.token;
+
   useLayoutEffect(() => {
     let trg = document.getElementById("layoutsdbr");
     let trgH = document.getElementById("layouthdr");
@@ -19,6 +21,26 @@ export function Reset() {
       trgH?.classList.remove("hide");
     };
   }, []);
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      const { error } = await supabase.auth.verifyOtp({
+        type: "recovery",
+        token_hash: token,
+      });
+
+      if (error) {
+        notif({
+          c: "red",
+          t: "Что-то пошло не так",
+          m: "Проблема с токеном",
+          code: error?.code,
+        });
+      }
+    };
+
+    if (token) verifyToken();
+  }, [token]);
 
   const {
     register,
