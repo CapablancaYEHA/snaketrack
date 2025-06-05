@@ -147,7 +147,7 @@ export const FormEditBp = ({ traits, init }) => {
         {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null}
       </Flex>
       <Box w="100%" maw="100%">
-        <Textarea {...register("notes")} label="Заметки, примечания" autosize w="100%" maw="100%" />
+        <Textarea {...register("notes")} label="Заметки, примечания" w="100%" maw="100%" autosize id="txarea_helper" />
       </Box>
       <Flex align="flex-start" maw="100%" w="100%">
         <Controller

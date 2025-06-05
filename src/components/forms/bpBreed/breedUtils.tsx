@@ -36,7 +36,8 @@ export const breedColumns = [
   columnHelper.accessor("female_name", {
     header: () => "Самка",
     filterFn: "arrIncludesSome",
-    size: "auto" as unknown as number,
+    size: 100,
+    maxSize: "none" as unknown as number,
   }),
   columnHelper.accessor("male_names", {
     header: () => "Самцы",
@@ -69,11 +70,13 @@ export const breedColumns = [
       </Text>
     ),
     filterFn: "arrIncludesSome",
-    size: "auto" as unknown as number,
+    size: 100,
+    maxSize: "none" as unknown as number,
   }),
   columnHelper.display({
     id: "action",
     cell: ({ row }) => <ControlMenu id={row.original.id} />,
-    size: "auto" as unknown as number,
+    size: 40,
+    maxSize: 40,
   }),
 ];

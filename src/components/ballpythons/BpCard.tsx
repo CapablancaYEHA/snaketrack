@@ -2,6 +2,7 @@ import { useLocation } from "preact-iso";
 import { FC } from "preact/compat";
 import fallback from "@assets/placeholder.png";
 import { Button, Flex, Image, Menu, Stack, Text } from "@mantine/core";
+import { signal } from "@preact/signals";
 import { IFeed, IResSnakesList } from "@/api/models";
 import { getAge, getDate } from "../../utils/time";
 import { SexName } from "../common/sexName";
@@ -57,42 +58,84 @@ export const BpCard: FC<IProp> = ({ body, handleTrans, handleEdit, handleFeed })
           ))}
         </Flex>
       </Stack>
-      <div style={{ margin: "0 0 0 auto" }}>
-        <Menu
-          shadow="md"
-          width={164}
-          transitionProps={{ transition: "rotate-left", duration: 150 }}
-          trigger="click"
-          loop={false}
-          withinPortal={false}
-          trapFocus={false}
-          menuItemTabIndex={0}
-          position="bottom-end"
-          offset={6}
-          withArrow
-          arrowPosition="center"
-          closeOnClickOutside
-        >
-          <Menu.Target>
-            <Button
-              styles={{
-                section: { margin: 0 },
-              }}
-              leftSection={<IconSwitch icon="kebab" />}
-              variant="default"
-              size="compact-xs"
-              w={22}
-            />
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item onClick={handleFeed} style={{ whiteSpace: "nowrap" }}>
-              Добавить событие
-            </Menu.Item>
-            <Menu.Item onClick={handleEdit}>Редактировать</Menu.Item>
-            <Menu.Item onClick={handleTrans}>Передать</Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-      </div>
     </Flex>
+  );
+};
+
+export const BpGenes = ({ genes }) => (
+  <Flex wrap="wrap" gap="xs">
+    {sortBpGenes(genes).map((a) => (
+      <GenePill key={`${a.label}_${a.id}`} item={a} />
+    ))}
+  </Flex>
+);
+
+export const BpEventsBlock = ({ feeding, weight, shed }) => {
+  const lastWeight = weight?.[weight?.length - 1];
+  const lastFeed = feeding?.[feeding.length - 1];
+  const lastShed = shed?.[shed.length - 1];
+
+  return (
+    <Stack gap="xs">
+      <Text size="sm">Текущий вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text>
+      <Text size="sm">Последнее кормление: {calcFeedEvent(lastFeed)}</Text>
+      <Text size="sm">Последняя линька: {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text>
+    </Stack>
+  );
+};
+
+export const BpControls = ({ id, openFeed, openTrans }) => {
+  return (
+    <Menu
+      shadow="md"
+      width={164}
+      transitionProps={{ transition: "rotate-left", duration: 150 }}
+      trigger="click"
+      loop={false}
+      withinPortal={false}
+      trapFocus={false}
+      menuItemTabIndex={0}
+      position="bottom-end"
+      offset={6}
+      withArrow
+      arrowPosition="center"
+      closeOnClickOutside
+      keepMounted={false}
+    >
+      <Menu.Target>
+        <Button
+          onClick={(e) => e.stopPropagation()}
+          styles={{
+            section: { margin: 0 },
+          }}
+          leftSection={<IconSwitch icon="kebab" />}
+          variant="default"
+          size="compact-xs"
+          w={22}
+        />
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item
+          onClick={(e) => {
+            e.stopPropagation();
+            openFeed(id);
+          }}
+          style={{ whiteSpace: "nowrap" }}
+        >
+          Добавить событие
+        </Menu.Item>
+        <Menu.Item component="a" href={`/snakes/edit/ballpython?id=${id}`}>
+          Редактировать
+        </Menu.Item>
+        <Menu.Item
+          onClick={(e) => {
+            e.stopPropagation();
+            openTrans(id);
+          }}
+        >
+          Передать
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
   );
 };

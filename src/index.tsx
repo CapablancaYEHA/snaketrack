@@ -24,7 +24,6 @@ import { theme } from "./styles/theme.js";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import '@mantine/dates/styles.css';
-import 'mantine-datatable/styles.css';
 import "./styles/global.scss";
 
 

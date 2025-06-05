@@ -1,29 +1,52 @@
 .table {
+  display: grid;
   max-width: 100%;
   width: 100%;
-  border-collapse: collapse;
-
+  //   border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(178, 178, 178, 0.3);
   thead {
+    display: grid;
     tr {
+      display: grid;
       max-width: 100%;
       width: 100%;
-    }
-    th {
-      user-select: none;
-      font-weight: 500;
-      text-align: left;
-
-      & div {
-        margin-bottom: 16px;
+      & th {
+        display: block;
+        padding: 8px;
+        border-bottom: 1px solid rgba(178, 178, 178, 0.3);
+        user-select: none;
+        font-weight: 500;
+        text-align: left;
       }
     }
   }
   tbody {
+    display: grid;
     tr {
+      display: grid;
+      width: 100%;
       max-width: 100%;
       width: 100%;
+
+      &:not(:last-of-type) {
+        border-bottom: 1px solid rgba(178, 178, 178, 0.3);
+        & td {
+          display: flex;
+          &:not(:last-of-type) {
+            border-right: 1px solid rgba(178, 178, 178, 0.3);
+          }
+        }
+      }
       & td {
+        display: block;
         padding: 8px;
+
+        &:not(:last-of-type) {
+          border-right: 1px solid rgba(178, 178, 178, 0.3);
+        }
       }
       &:hover {
         background-color: rgba(178, 178, 178, 0.1);
@@ -35,4 +58,10 @@
 .pointer {
   cursor: pointer;
   user-select: none;
+}
+
+.empty {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
 }

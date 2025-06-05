@@ -158,7 +158,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
         <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.["feed_comment"]?.message} />
       </Flex>
       <Box w="100%" maw="100%">
-        <Textarea {...register("notes")} label="Заметки, примечания" resize="vertical" w="100%" maw="100%" />
+        <Textarea {...register("notes")} label="Заметки, примечания" resize="vertical" w="100%" maw="100%" size="lg" />
       </Box>
       <Flex align="flex-start" maw="100%" w="100%" gap="xl">
         <Controller

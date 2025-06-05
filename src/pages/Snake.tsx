@@ -4,9 +4,9 @@ import fallback from "@assets/placeholder.png";
 import { Box, Button, Flex, Image, LoadingOverlay, Paper, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { toString } from "lodash-es";
-import { bpColumns, detailsDict, subjectDict } from "@/components/ballpythons/const";
+import { bpFeedColumns, detailsDict, subjectDict } from "@/components/ballpythons/const";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
-import { Table } from "@/components/common/Table/table";
+import { StackTable } from "@/components/common/StackTable/StackTable";
 import { SexName } from "@/components/common/sexName";
 import { FeedSnake } from "@/components/forms/feedSnake/formFeedSnake";
 import { sortBpGenes } from "@/components/genetics/const";
@@ -23,7 +23,7 @@ export function Snake() {
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
   const { data, isPending, isError } = useSnake(location.query.id);
 
-  const feedTable = useMemo(() => data?.feeding ?? [], [toString(data?.feeding)]);
+  const feedTable = useMemo(() => data?.feeding?.filter((a) => Object.values(a)?.some((b) => b != null)), [toString(data?.feeding)]);
 
   if (isPending) return <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />;
 
@@ -63,7 +63,7 @@ export function Snake() {
             <Text>👑Королевский питон</Text>
             <SexName sex={data.sex} name={data.snake_name} />
           </Flex>
-          <Image src={data.picture} flex="0 0 0px" fit="cover" radius="md" mih={110} w="auto" maw="100%" h={200} fallbackSrc={fallback} loading="lazy" />
+          <Image src={data.picture} fit="cover" radius="md" mih={110} w="auto" maw="100%" h={140} fallbackSrc={fallback} loading="lazy" />
         </Stack>
         <Stack>
           <Text size="md">Дата рождения — {getDate(data.date_hatch)}</Text>
@@ -87,7 +87,7 @@ export function Snake() {
         <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} />
       </Flex>
       <ChartLine weightData={data?.weight} feedData={data.feeding} scaleX={scale} view={view} />
-      <Table rows={feedTable as any} columns={bpColumns} />
+      <StackTable data={feedTable ?? []} columns={bpFeedColumns} />
       <Space h="lg" />
       <FeedSnake
         opened={isFeedOpen.value}

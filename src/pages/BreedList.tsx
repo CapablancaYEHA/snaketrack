@@ -1,4 +1,3 @@
-import { useLocation } from "preact-iso";
 import { useState } from "preact/hooks";
 import { Flex, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { isEmpty } from "lodash-es";
@@ -17,17 +16,12 @@ interface IBreedExt extends IResBpBreedingList {
 }
 
 export function BreedList() {
-  const location = useLocation();
   const userId = localStorage.getItem("USER");
   const [filt, setFilt] = useState<any[]>([]);
   const { data: dt, isError } = useProfile(userId, userId != null);
   const { data: breed, isPending, isError: isBreedErr } = useBpBreedingList(dt?.breeding_regius_list!, !isEmpty(dt));
 
   const tableData: IBreedExt[] = (breed ?? [])?.map((m) => ({ ...m, traits: calcProjGenes(m.female_genes.concat(m.male_genes.flat())) }));
-
-  const handleRowClick = (id) => {
-    location.route(`/ballpython?id=${id}`);
-  };
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="xl" component="section">
@@ -51,13 +45,7 @@ export function BreedList() {
             <MaxSelectedMulti label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "traits")} data={calcTraitsOptions(breed)} />
             <MaxSelectedMulti label="Статус" onChange={(a: any) => tableFiltMulti(setFilt, a, "breed_status")} data={calcStatusOptions()} />
           </Flex>
-          <StackTable
-            data={tableData}
-            columns={breedColumns}
-            columnFilters={filt}
-            //   onRowClick={handleRowClick}
-            setColumnFilters={setFilt}
-          />
+          <StackTable data={tableData} columns={breedColumns} columnFilters={filt} setColumnFilters={setFilt} />
         </>
       )}
     </Stack>

@@ -1,4 +1,4 @@
-import { FC, useEffect } from "preact/compat";
+import { FC } from "preact/compat";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Accordion, Checkbox, Flex, Modal, NumberInput, Select, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
@@ -65,7 +65,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
   const errObj = errors?.["shed"] || errors?.["refuse"] || errors?.["regurgitation"];
 
   return (
-    <Modal opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Региус. Новое событие</Title>}>
+    <Modal size="lg" opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Региус. Новое событие</Title>}>
       <Flex gap="sm" align="center">
         <SexName sex={snake?.sex!} name={snake?.snake_name ?? ""} />
       </Flex>
@@ -125,7 +125,11 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
                     Срыг
                   </Text>
                 ) : null}
-                {lastFeed?.refuse ? <Text size="sm">Отказ от еды</Text> : null}
+                {lastFeed?.refuse ? (
+                  <Text size="sm" c="#00FFC0">
+                    Отказ от еды
+                  </Text>
+                ) : null}
               </Flex>
               <Text size="sm">Комментарий: {lastFeed?.feed_comment ? lastFeed.feed_comment : "Пусто"}</Text>
             </Stack>

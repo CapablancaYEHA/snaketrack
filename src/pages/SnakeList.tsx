@@ -1,8 +1,10 @@
 import { useLocation } from "preact-iso";
+import { useMemo } from "preact/hooks";
 import { Box, Flex, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { signal } from "@preact/signals";
-import { isEmpty } from "lodash-es";
-import { BpCard } from "@/components/ballpythons/BpCard";
+import { isEmpty, toString } from "lodash-es";
+import { makeBpCardColumns } from "@/components/ballpythons/const";
+import { StackTable } from "@/components/common/StackTable/StackTable";
 import { FeedSnake } from "@/components/forms/feedSnake/formFeedSnake";
 import { Btn } from "@/components/navs/btn/Btn";
 import { TransferSnake } from "@/components/transferSnake/transfer";
@@ -19,7 +21,23 @@ export function SnakeList() {
   const { data: dt, isError } = useProfile(userId, userId != null);
   const { data: d, isPending } = useSnakesList(dt?.regius_list!, !isEmpty(dt));
 
+  const tdata = useMemo(() => d, [toString(d)]);
+
+  const columns = makeBpCardColumns({
+    openFeed: (uuid) => {
+      isFeedOpen.value = true;
+      curId.value = uuid;
+    },
+    openTrans: (uuid) => {
+      isTransOpen.value = true;
+      curId.value = uuid;
+    },
+  });
+
   const target = d?.find((b) => b.id === curId.value);
+  const handleRowClick = (id) => {
+    location.route(`/snakes/edit/ballpython?id=${id}`);
+  };
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="xl" component="section">
@@ -39,21 +57,7 @@ export function SnakeList() {
       ) : dt?.regius_list == null || isEmpty(dt?.regius_list) ? (
         <Text fw={500}>Змеек у вас нет</Text>
       ) : (
-        d?.map((a) => (
-          <BpCard
-            key={a.id}
-            body={a}
-            handleTrans={() => {
-              curId.value = a.id;
-              isTransOpen.value = true;
-            }}
-            handleFeed={() => {
-              curId.value = a.id;
-              isFeedOpen.value = true;
-            }}
-            handleEdit={() => location.route(`/snakes/edit/ballpython?id=${a.id}`)}
-          />
-        ))
+        <StackTable data={tdata!} columns={columns} onRowClick={handleRowClick} />
       )}
       <TransferSnake
         opened={isTransOpen.value}
