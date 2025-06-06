@@ -1,10 +1,9 @@
-import { useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
-import { Flex, Stack } from "@mantine/core";
-import { signal } from "@preact/signals";
+import { useMemo } from "preact/hooks";
+import { Stack, alpha } from "@mantine/core";
 import { ColumnDef, ColumnFiltersState, OnChangeFn, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import styles from "./styles.module.scss";
-import { calcGridLayout } from "./utils";
+import { calcColumn } from "./utils";
 
 interface IProp<T> {
   columns: ColumnDef<T, any>[];
@@ -13,8 +12,6 @@ interface IProp<T> {
   columnFilters?: ColumnFiltersState;
   onRowClick?: (v) => void;
 }
-
-const trStyles = signal<string>("");
 
 export const StackTable = <T extends object>({ columns, data, setColumnFilters, columnFilters, onRowClick }: IProp<T>) => {
   const cols: ColumnDef<T>[] = useMemo<ColumnDef<T, unknown>[]>(() => columns, []);
@@ -38,13 +35,13 @@ export const StackTable = <T extends object>({ columns, data, setColumnFilters, 
 
   return (
     <table className={styles.table}>
-      <thead>
+      <thead style={{ background: `${alpha(`var(--mantine-color-dark-7)`, 0.5)}` }}>
         {table.getHeaderGroups().map((headerGroup) => {
           return (
-            <tr key={headerGroup.id} style={{ gridTemplateColumns: trStyles.value }}>
+            <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <th key={header.id}>
+                  <th key={header.id} style={calcColumn(header as any)}>
                     {header.isPlaceholder ? null : (
                       <div className={header.column.getCanSort() ? styles.pointer : ""} onClick={header.column.getToggleSortingHandler()}>
                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -75,13 +72,14 @@ export const StackTable = <T extends object>({ columns, data, setColumnFilters, 
           </Stack>
         ) : (
           table.getRowModel().rows.map((row) => {
-            const r = calcGridLayout(row.getVisibleCells());
-            trStyles.value = r;
-
             return (
-              <tr key={row.id} onClick={() => onRowClick?.((row.original as any).id)} className={onRowClick != null ? styles.pointer : ""} style={{ gridTemplateColumns: r }}>
+              <tr key={row.id} onClick={() => onRowClick?.((row.original as any).id)} className={onRowClick != null ? styles.pointer : ""}>
                 {row.getVisibleCells().map((cell) => {
-                  return <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>;
+                  return (
+                    <td key={cell.id} style={calcColumn(cell)}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  );
                 })}
               </tr>
             );

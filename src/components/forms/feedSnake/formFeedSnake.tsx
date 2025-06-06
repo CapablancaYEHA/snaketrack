@@ -81,9 +81,9 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
       </Flex>
       <Space h="sm" />
       <Flex rowGap="lg" columnGap="md">
-        <Checkbox label="Линька" value="shed" {...(register("shed") as any)} />
-        <Checkbox label="Отказ" value="refuse" {...register("refuse")} />
-        <Checkbox label="Срыг" value="regurgitation" {...register("regurgitation")} />
+        <Checkbox label="Линька" value="true" {...(register("shed") as any)} />
+        <Checkbox label="Отказ" value="true" {...register("refuse")} />
+        <Checkbox label="Срыг" value="true" {...register("regurgitation")} />
       </Flex>
       {errObj != null ? (
         <>

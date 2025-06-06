@@ -1,4 +1,4 @@
-import { Button, Flex, Menu, Text } from "@mantine/core";
+import { ActionIcon, Button, Flex, Menu, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IResBpBreedingList } from "@/api/models";
 import { bStToLabel, breedToColor } from "../../ballpythons/const";
@@ -11,15 +11,9 @@ const ControlMenu = ({ id }) => {
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>
-        <Button
-          styles={{
-            section: { margin: 0 },
-          }}
-          leftSection={<IconSwitch icon="kebab" />}
-          variant="default"
-          size="compact-xs"
-          w={22}
-        />
+        <ActionIcon size="sm" variant="transparent" color="gray" aria-label="Table Action Kebab">
+          <IconSwitch icon="kebab" />
+        </ActionIcon>
       </Menu.Target>
 
       <Menu.Dropdown>
@@ -36,8 +30,8 @@ export const breedColumns = [
   columnHelper.accessor("female_name", {
     header: () => "Самка",
     filterFn: "arrIncludesSome",
-    size: 100,
-    maxSize: "none" as unknown as number,
+    size: 1,
+    maxSize: 1,
   }),
   columnHelper.accessor("male_names", {
     header: () => "Самцы",
@@ -48,7 +42,8 @@ export const breedColumns = [
         .join(", "),
     enableSorting: false,
     filterFn: "arrIncludesSome",
-    size: "auto" as unknown as number,
+    size: 2,
+    maxSize: 2,
   }),
   columnHelper.accessor("traits" as any, {
     header: () => "Набор генов",
@@ -60,7 +55,8 @@ export const breedColumns = [
       </Flex>
     ),
     filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => row.original.traits.map((b) => b.label).includes(a)),
-    size: "auto" as unknown as number,
+    size: 4,
+    maxSize: 5,
   }),
   columnHelper.accessor("breed_status", {
     header: () => "Последний статус",
@@ -70,13 +66,13 @@ export const breedColumns = [
       </Text>
     ),
     filterFn: "arrIncludesSome",
-    size: 100,
-    maxSize: "none" as unknown as number,
+    size: 9,
+    maxSize: 3,
   }),
   columnHelper.display({
     id: "action",
     cell: ({ row }) => <ControlMenu id={row.original.id} />,
-    size: 40,
-    maxSize: 40,
+    size: 12,
+    maxSize: 1,
   }),
 ];

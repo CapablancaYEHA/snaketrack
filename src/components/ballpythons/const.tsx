@@ -14,8 +14,8 @@ export const bpFeedColumns = [
   columnHelper.accessor("feed_last_at", {
     header: () => "Дата",
     cell: ({ cell }) => getDateShort(cell.getValue()!),
-    size: 100,
-    maxSize: "none" as unknown as number,
+    size: 1,
+    maxSize: 2,
   }),
   columnHelper.accessor("feed_ko", {
     header: () => "КО / Проблема",
@@ -34,18 +34,18 @@ export const bpFeedColumns = [
         ""
       ),
     enableSorting: false,
-    size: 160,
-    maxSize: "none" as unknown as number,
+    size: 3,
+    maxSize: 4,
   }),
   columnHelper.accessor("feed_weight" as any, {
     header: () => "Вес КО",
-    size: 80,
-    maxSize: "none" as unknown as number,
+    size: 7,
+    maxSize: 1,
   }),
   columnHelper.accessor("feed_comment", {
     header: () => "Коммент",
-    size: "auto" as unknown as number,
-    maxSize: "none" as unknown as number,
+    size: 8,
+    maxSize: 13,
   }),
 ];
 
@@ -54,38 +54,39 @@ export const makeBpCardColumns = ({ openTrans, openFeed }) => {
     colHelper.accessor("picture", {
       header: () => " ",
       cell: ({ cell, row }) => (
-        <Stack gap="xs" flex="0 0 196px">
-          <Image src={cell.getValue()} fit="cover" radius="md" w="auto" maw="fit-content" h={110} fallbackSrc={fallback} loading="lazy" />
+        <Stack gap="xs" flex="0 1 196px">
+          <Image src={cell.getValue() ?? fallback} fit="cover" radius="md" w="100%" maw="fit-content" h={110} fallbackSrc={fallback} loading="lazy" />
           <SexName sex={row.original.sex} name={row.original.snake_name} />
         </Stack>
       ),
       enableSorting: false,
-      size: 100,
-      maxSize: "max-content" as unknown as number,
+      size: 1,
+      maxSize: 3,
     }),
     colHelper.accessor("date_hatch", {
       header: () => "Возраст",
       cell: ({ cell }) => <Text size="md">{getAge(cell.getValue())}</Text>,
-      size: 100,
-      maxSize: 200,
+      size: 4,
+      maxSize: 2,
     }),
     colHelper.accessor("feeding", {
       header: () => "События",
       cell: ({ cell, row }) => <BpEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} />,
       enableSorting: false,
-      size: 100,
-      maxSize: "none" as unknown as number,
+      size: 6,
+      maxSize: 2,
     }),
     colHelper.accessor("genes", {
       header: () => "Гены",
       cell: ({ cell }) => <BpGenes genes={cell.getValue()} />,
-      maxSize: "none" as unknown as number,
+      size: 8,
+      maxSize: 4,
     }),
     colHelper.display({
       id: "action",
       cell: ({ row }) => <BpControls id={row.original.id} openTrans={openTrans} openFeed={openFeed} />,
-      size: 40,
-      maxSize: 40,
+      size: 12,
+      maxSize: 1,
     }),
   ];
 };

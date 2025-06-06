@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { FC } from "preact/compat";
 import fallback from "@assets/placeholder.png";
-import { Button, Flex, Image, Menu, Stack, Text } from "@mantine/core";
+import { ActionIcon, Button, Flex, Image, Menu, Stack, Text } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { IFeed, IResSnakesList } from "@/api/models";
 import { getAge, getDate } from "../../utils/time";
@@ -103,16 +103,9 @@ export const BpControls = ({ id, openFeed, openTrans }) => {
       keepMounted={false}
     >
       <Menu.Target>
-        <Button
-          onClick={(e) => e.stopPropagation()}
-          styles={{
-            section: { margin: 0 },
-          }}
-          leftSection={<IconSwitch icon="kebab" />}
-          variant="default"
-          size="compact-xs"
-          w={22}
-        />
+        <ActionIcon size="sm" variant="transparent" color="gray" aria-label="Table Action Kebab" onClick={(e) => e.stopPropagation()}>
+          <IconSwitch icon="kebab" />
+        </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Item

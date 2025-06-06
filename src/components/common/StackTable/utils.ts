@@ -14,19 +14,4 @@ export const tableFiltMulti = (handler: (value: StateUpdater<any[]>) => void, a:
   });
 };
 
-const msToCol = {
-  none: "auto",
-  "max-content": "max-content",
-  "min-content": "min-content",
-};
-
-export const calcGridLayout = <T>(headers: Cell<T, unknown>[]): string => {
-  return headers
-    .map((h) => {
-      const min = h.column.columnDef.size;
-      const max = h.column.columnDef.maxSize;
-
-      return min?.toString() !== "auto" ? `minmax(${min}px, ${(max && msToCol[max.toString()]) ?? `${max}px`})` : "1fr";
-    })
-    .join(" ");
-};
+export const calcColumn = <T>(header: Cell<T, unknown>): CSSProperties => ({ gridColumn: `${header.column.columnDef.size} / span ${header.column.columnDef.maxSize}` });

@@ -36,7 +36,7 @@ export function SnakeList() {
 
   const target = d?.find((b) => b.id === curId.value);
   const handleRowClick = (id) => {
-    location.route(`/snakes/edit/ballpython?id=${id}`);
+    location.route(`/snakes/ballpython?id=${id}`);
   };
 
   return (
