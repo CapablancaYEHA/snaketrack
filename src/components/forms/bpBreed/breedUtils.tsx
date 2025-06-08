@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Flex, Menu, Text } from "@mantine/core";
+import { ActionIcon, Flex, Menu, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IResBpBreedingList } from "@/api/models";
 import { bStToLabel, breedToColor } from "../../ballpythons/const";
@@ -32,6 +32,7 @@ export const breedColumns = [
     filterFn: "arrIncludesSome",
     size: 1,
     maxSize: 1,
+    minSize: 72,
   }),
   columnHelper.accessor("male_names", {
     header: () => "Самцы",
@@ -44,6 +45,7 @@ export const breedColumns = [
     filterFn: "arrIncludesSome",
     size: 2,
     maxSize: 2,
+    minSize: 144,
   }),
   columnHelper.accessor("traits" as any, {
     header: () => "Набор генов",
@@ -57,6 +59,7 @@ export const breedColumns = [
     filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => row.original.traits.map((b) => b.label).includes(a)),
     size: 4,
     maxSize: 5,
+    minSize: 220,
   }),
   columnHelper.accessor("breed_status", {
     header: () => "Последний статус",
@@ -68,11 +71,13 @@ export const breedColumns = [
     filterFn: "arrIncludesSome",
     size: 9,
     maxSize: 3,
+    minSize: 180,
   }),
   columnHelper.display({
     id: "action",
     cell: ({ row }) => <ControlMenu id={row.original.id} />,
     size: 12,
     maxSize: 1,
+    minSize: 36,
   }),
 ];

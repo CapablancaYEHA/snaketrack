@@ -1,10 +1,6 @@
-import { useLocation } from "preact-iso";
-import { FC } from "preact/compat";
-import fallback from "@assets/placeholder.png";
-import { ActionIcon, Flex, Image, Menu, Stack, Text } from "@mantine/core";
-import { IFeed, IResSnakesList } from "@/api/models";
-import { getAge, getDate } from "../../utils/time";
-import { SexName } from "../common/sexName";
+import { ActionIcon, Flex, Menu, Stack, Text } from "@mantine/core";
+import { IFeed } from "@/api/models";
+import { getDate } from "../../utils/time";
 import { sortBpGenes } from "../genetics/const";
 import { GenePill } from "../genetics/geneSelect";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
@@ -28,37 +24,6 @@ const calcFeedEvent = (feed?: IFeed) => {
     return getDate(feed.feed_last_at);
   }
   return "Нет данных";
-};
-interface IProp {
-  body: IResSnakesList;
-  handleTrans: () => void;
-  handleEdit: () => void;
-  handleFeed: () => void;
-}
-export const BpCard: FC<IProp> = ({ body, handleTrans, handleEdit, handleFeed }) => {
-  const location = useLocation();
-  const lastWeight = body.weight?.[body.weight?.length - 1];
-  const lastFeed = body.feeding?.[body.feeding.length - 1];
-  const lastShed = body.shed?.[body.shed.length - 1];
-  return (
-    <Flex columnGap="xl" rowGap="md" w="100%" maw="100%" wrap="nowrap">
-      <Stack gap="xs" flex="0 0 196px" onClick={() => location.route(`/snakes/ballpython?id=${body.id}`)} style={{ cursor: "pointer" }}>
-        <Image src={body.picture} flex="0 0 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
-        <SexName sex={body.sex} name={body.snake_name} />
-        <Text size="md">⌛ {getAge(body.date_hatch)}</Text>
-      </Stack>
-      <Stack gap="xs">
-        <Text size="sm">Текущий вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text>
-        <Text size="sm">Последнее кормление: {calcFeedEvent(lastFeed)}</Text>
-        <Text size="sm">Последняя линька: {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text>
-        <Flex wrap="wrap" gap="xs">
-          {sortBpGenes(body.genes).map((a) => (
-            <GenePill key={`${a.label}_${a.id}`} item={a} />
-          ))}
-        </Flex>
-      </Stack>
-    </Flex>
-  );
 };
 
 export const BpGenes = ({ genes }) => (

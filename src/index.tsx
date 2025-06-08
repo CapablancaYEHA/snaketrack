@@ -67,7 +67,7 @@ export function App() {
           <Notifications />
           <Header session={session} />
 		  {!isMwTablet ? <Sidebar /> : null}
-          <Box component="main" px="xl" py="lg" >
+          <Box component="main" px={{ base: 'md', sm: "xl" }} py={{ base: 'sm', sm: "lg" }} >
 		  <Router>
 			<Route path="/login"  component={Login} />
 			<Route path="/register"  component={Register} />

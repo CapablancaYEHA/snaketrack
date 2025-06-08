@@ -1,3 +1,13 @@
+@import "@styles/mixins.scss";
+
+// TODO нужно прокидывать в миксин текущее значение ширины колонки
+.cont {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  @include cute-scroll-horis(140px);
+}
+
 .table {
   display: grid;
   max-width: 100%;
@@ -26,7 +36,11 @@
         user-select: none;
         font-weight: 500;
         text-align: left;
-        // max-width: 100px;
+
+        &:first-of-type {
+          border-top-left-radius: var(--mantine-radius-md);
+        }
+
         & > * {
           display: flex;
           align-items: center;
@@ -38,15 +52,21 @@
   tbody {
     display: grid;
     tr {
-      border-radius: var(--mantine-radius-md);
       & td {
         align-items: baseline;
         display: flex;
         padding: 8px;
-        // max-width: 100px;
       }
       &:hover {
         background-color: var(--mantine-color-dark-8);
+      }
+      &:nth-child(2n) {
+        background-color: var(--mantine-color-dark-light-hover);
+      }
+      &:last-of-type {
+        & td:first-of-type {
+          border-bottom-left-radius: var(--mantine-radius-md);
+        }
       }
     }
   }

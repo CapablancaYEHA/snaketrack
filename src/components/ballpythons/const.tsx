@@ -1,5 +1,5 @@
 import fallback from "@assets/placeholder.png";
-import { Box, Image, Stack, Text } from "@mantine/core";
+import { Box, Flex, Image, Stack, Text } from "@mantine/core";
 import { Row, createColumnHelper } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
 import { IFeed, IGenesBpComp, IResBpBreedingList, IResSnakesList } from "@/api/models";
@@ -17,33 +17,34 @@ export const bpFeedColumns = [
     cell: ({ cell }) => getDateShort(cell.getValue()!),
     size: 1,
     maxSize: 2,
+    minSize: 72,
   }),
   columnHelper.accessor("feed_ko", {
     header: () => "КО / Проблема",
     cell: ({ row, cell }) => {
       const res = feederToString[cell.getValue() as any];
       return row.original.regurgitation ? (
-        <>
+        <Flex gap="md" wrap="wrap">
           <Text fw={500} component="span" c="var(--mantine-color-error)">
             Срыг{" "}
           </Text>
           {res ? (
-            <Text component="span" size="xs" style={{ alignSelf: "center" }} ml="xs">
+            <Text component="span" size="xs" style={{ alignSelf: "center", whiteSpace: "nowrap" }}>
               {res}
             </Text>
           ) : null}
-        </>
+        </Flex>
       ) : row.original.refuse ? (
-        <>
+        <Flex gap="md" wrap="wrap">
           <Text fw={500} component="span" c="#00FFC0">
             Отказ{" "}
           </Text>
           {res ? (
-            <Text component="span" size="xs" style={{ alignSelf: "center" }} ml="xs">
+            <Text component="span" size="xs" style={{ alignSelf: "center", whiteSpace: "nowrap" }}>
               {res}
             </Text>
           ) : null}
-        </>
+        </Flex>
       ) : cell.getValue() != null ? (
         feederToString[cell.getValue()!]
       ) : (
@@ -53,16 +54,19 @@ export const bpFeedColumns = [
     enableSorting: false,
     size: 3,
     maxSize: 4,
+    minSize: 200,
   }),
   columnHelper.accessor("feed_weight" as any, {
     header: () => "Вес КО",
     size: 7,
-    maxSize: 1,
+    maxSize: 2,
+    minSize: 88,
   }),
   columnHelper.accessor("feed_comment", {
     header: () => "Коммент",
-    size: 8,
+    size: 9,
     maxSize: 13,
+    minSize: 168,
   }),
 ];
 
@@ -98,15 +102,15 @@ export const makeBpCardColumns = ({ openTrans, openFeed }) => {
     colHelper.accessor("picture", {
       header: () => " ",
       cell: ({ cell, row }) => (
-        <Stack gap="xs" flex="1 0 140px">
+        <Stack gap="xs" flex="1 1 140px">
           <Image src={cell.getValue() ?? fallback} fit="cover" radius="md" w="100%" maw="fit-content" fallbackSrc={fallback} loading="lazy" />
-          <SexName sex={row.original.sex} name={row.original.snake_name} />
+          <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
         </Stack>
       ),
       enableSorting: false,
       size: 1,
       maxSize: 3,
-      minSize: 100,
+      minSize: 140,
     }),
     colHelper.accessor((row: any) => row.snake_name, {
       id: "names",
@@ -124,7 +128,7 @@ export const makeBpCardColumns = ({ openTrans, openFeed }) => {
       cell: ({ cell }) => <Text size="md">{getAge(cell.getValue())}</Text>,
       size: 4,
       maxSize: 2,
-      minSize: 100,
+      minSize: 150,
       filterFn: hatchFIltFn,
     }),
     colHelper.accessor("feeding", {
@@ -133,14 +137,14 @@ export const makeBpCardColumns = ({ openTrans, openFeed }) => {
       enableSorting: false,
       size: 6,
       maxSize: 2,
-      minSize: 100,
+      minSize: 150,
     }),
     colHelper.accessor("genes", {
       header: () => "Гены",
       cell: ({ cell }) => <BpGenes genes={cell.getValue()} />,
       size: 8,
       maxSize: 4,
-      minSize: 100,
+      minSize: 200,
       filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => row.original.genes.map((b) => b.label).includes(a)),
     }),
     colHelper.display({
@@ -148,7 +152,7 @@ export const makeBpCardColumns = ({ openTrans, openFeed }) => {
       cell: ({ row }) => <BpControls id={row.original.id} openTrans={openTrans} openFeed={openFeed} />,
       size: 12,
       maxSize: 1,
-      minSize: 100,
+      minSize: 36,
     }),
   ];
 };

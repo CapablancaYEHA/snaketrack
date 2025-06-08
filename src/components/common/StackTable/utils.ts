@@ -1,7 +1,10 @@
 import { CSSProperties } from "preact/compat";
 import { StateUpdater } from "preact/hooks";
+import { darken } from "@mantine/core";
 import { Cell, Column } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
+
+export const bgGrad = darken("var(--mantine-color-dark-4)", 0.5);
 
 export const tableFiltMulti = (handler: (value: StateUpdater<any[]>) => void, a: string[], accessor: string) => {
   handler((s) => {
@@ -18,14 +21,13 @@ export const calcColumn = <T>(header: Cell<T, unknown>): CSSProperties => ({ gri
 
 export const getCommonPinningStyles = <T>(column: Column<T>): CSSProperties => {
   const isPinned = column.getIsPinned();
-  const isLastLeftPinnedColumn = isPinned === "left" && column.getIsLastColumn("left");
-  const isFirstRightPinnedColumn = isPinned === "right" && column.getIsFirstColumn("right");
+  //   const isLastLeftPinnedColumn = isPinned === "left" && column.getIsLastColumn("left");
+  //   const isFirstRightPinnedColumn = isPinned === "right" && column.getIsFirstColumn("right");
 
   return {
-    boxShadow: isLastLeftPinnedColumn ? "-4px 0 4px -4px gray inset" : isFirstRightPinnedColumn ? "4px 0 4px -4px gray inset" : undefined,
+    // boxShadow: isLastLeftPinnedColumn ? "-4px 0 4px -4px white inset" : isFirstRightPinnedColumn ? "4px 0 4px -4px white inset" : undefined,
     left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
     right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
-    opacity: isPinned ? 0.95 : 1,
     position: isPinned ? "sticky" : "relative",
     zIndex: isPinned ? 1 : 0,
   };

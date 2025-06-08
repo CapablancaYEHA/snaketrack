@@ -34,10 +34,8 @@ export const getAge = (a: string) => {
 };
 
 export const isOlderThan = (birthDate: string | Dayjs, targetAge: number) => {
-  console.log("isOlderThan", dayjs().diff(dayjs(birthDate), "month"), targetAge);
   return dayjs().diff(dayjs(birthDate), "month") > targetAge;
 };
 export const isYoungerThan = (birthDate: string | Dayjs, targetAge: number) => {
-  console.log("isYoungerThan", dayjs().diff(dayjs(birthDate), "month"), targetAge);
   return dayjs().diff(dayjs(birthDate), "month") < targetAge;
 };
