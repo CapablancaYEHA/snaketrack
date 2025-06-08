@@ -1,8 +1,7 @@
 import { useLocation } from "preact-iso";
 import { FC } from "preact/compat";
 import fallback from "@assets/placeholder.png";
-import { ActionIcon, Button, Flex, Image, Menu, Stack, Text } from "@mantine/core";
-import { signal } from "@preact/signals";
+import { ActionIcon, Flex, Image, Menu, Stack, Text } from "@mantine/core";
 import { IFeed, IResSnakesList } from "@/api/models";
 import { getAge, getDate } from "../../utils/time";
 import { SexName } from "../common/sexName";

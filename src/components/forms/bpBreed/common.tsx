@@ -125,3 +125,8 @@ export const renderSelectOption = (option, checked) => (
     {option.label}
   </Group>
 );
+
+export const sexHardcode = [
+  { label: "Самец", value: "male" },
+  { label: "Самка", value: "female" },
+];

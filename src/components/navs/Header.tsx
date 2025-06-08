@@ -1,7 +1,7 @@
+import { tabletThreshold } from "@/styles/theme";
 import { Box, Title, alpha } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useProfile } from "../../api/profile/hooks";
-import { tabletThreshold } from "./const";
 import { HeadMenu } from "./headMenu";
 import { MobileMenu } from "./mobileMenu";
 import styles from "./styles.module.scss";
@@ -10,7 +10,7 @@ export function Header({ session }) {
   const userId = localStorage.getItem("USER");
   const { data } = useProfile(userId, userId != null);
 
-  const isTablet = useMediaQuery(tabletThreshold);
+  const isMwTablet = useMediaQuery(tabletThreshold);
 
   return (
     <Box
@@ -25,7 +25,7 @@ export function Header({ session }) {
       }}
     >
       <div>
-        {isTablet ? (
+        {isMwTablet ? (
           <Box mr="lg">
             <MobileMenu />
           </Box>

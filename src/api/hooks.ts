@@ -4,7 +4,7 @@ import { UseQueryResult, useMutation, useQueries, useQuery, useQueryClient } fro
 import { nanoid } from "nanoid";
 import { upgAlias } from "@/components/genetics/const";
 import { toDataUrl } from "@/utils/supabaseImg";
-import { EQuKeys, ESupabase, IFeed, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IResBpBreedingList, IResSnakesList, ISupabaseErr } from "./models";
+import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IResBpBreedingList, IResSnakesList, ISupabaseErr } from "./models";
 
 const httpGetGenes = async () => {
   const { data, error } = await supabase.from(ESupabase.bpgenes).select("*").throwOnError();
@@ -15,7 +15,7 @@ const httpGetGenes = async () => {
 };
 
 export function useGenes() {
-  return useQuery<any, ISupabaseErr>({
+  return useQuery<IGenesBpComp[], ISupabaseErr>({
     queryKey: [EQuKeys.COMP_BP],
     queryFn: () => httpGetGenes(),
     enabled: true,

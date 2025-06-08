@@ -10,7 +10,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { Header } from "./components/navs/Header.js";
 import { Sidebar } from "./components/navs/sidebar/Sidebar.js";
 import { ProtectedRoute, protectedRoutes } from "./components/route.js";
-import { tabletThreshold } from "./components/navs/const.js";
+
 import { queryClient } from "./lib/client_query.js";
 import { supabase } from "./lib/client_supabase.js";
 import { UseOneSignal } from "./lib/client_push.js";
@@ -20,14 +20,14 @@ import { Register } from "./pages/auth/Register.js";
 import { Reset } from "./pages/auth/Reset.js";
 
 
-import { theme } from "./styles/theme.js";
+import { tabletThreshold, theme } from "./styles/theme.js";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import '@mantine/dates/styles.css';
 import "./styles/global.scss";
 
 
-
+// TODO нужна возможность зайти на страницу змеи по ID но она должна иметь другой презентационный вид, нежели сам пользователь её видит
 /* TODO для просмотра другого пользователя использовать таблицу three_cols_profiles, надо её дополнить инфой о змеях на продажу? */
 const isPending = signal(true);
 
@@ -58,7 +58,7 @@ export function App() {
 
   UseOneSignal(session?.user?.id);
 
-  const isTablet = useMediaQuery(tabletThreshold);
+  const isMwTablet = useMediaQuery(tabletThreshold);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -66,7 +66,7 @@ export function App() {
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <Notifications />
           <Header session={session} />
-		  {!isTablet ? <Sidebar /> : null}
+		  {!isMwTablet ? <Sidebar /> : null}
           <Box component="main" px="xl" py="lg" >
 		  <Router>
 			<Route path="/login"  component={Login} />

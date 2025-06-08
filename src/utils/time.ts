@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/ru";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
@@ -31,4 +31,13 @@ export const getAge = (a: string) => {
   return `${years ? `${declWord(years, ["год", "года", "лет"])}` : ""}
   ${months ? `${declWord(months, ["месяц", "месяца", "месяцев"])}` : ""}
   ${days ? `${declWord(days, ["день", "дня", "дней"])}` : ""}`;
+};
+
+export const isOlderThan = (birthDate: string | Dayjs, targetAge: number) => {
+  console.log("isOlderThan", dayjs().diff(dayjs(birthDate), "month"), targetAge);
+  return dayjs().diff(dayjs(birthDate), "month") > targetAge;
+};
+export const isYoungerThan = (birthDate: string | Dayjs, targetAge: number) => {
+  console.log("isYoungerThan", dayjs().diff(dayjs(birthDate), "month"), targetAge);
+  return dayjs().diff(dayjs(birthDate), "month") < targetAge;
 };

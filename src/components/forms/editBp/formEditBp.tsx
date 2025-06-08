@@ -11,7 +11,8 @@ import { httpReplacePic, httpUldSnPic, useUpdateBp } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
 import { dateToSupabaseTime } from "@/utils/time";
-import { filterSubmitByDirty, makeDefault, schema, sexHardcode, uplErr } from "./const";
+import { sexHardcode } from "../bpBreed/common";
+import { filterSubmitByDirty, makeDefault, schema, uplErr } from "./const";
 
 export const FormEditBp = ({ traits, init }) => {
   const location = useLocation();

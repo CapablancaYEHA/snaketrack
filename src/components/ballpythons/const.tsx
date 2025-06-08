@@ -1,8 +1,9 @@
 import fallback from "@assets/placeholder.png";
-import { Image, Stack, Text } from "@mantine/core";
-import { createColumnHelper } from "@tanstack/react-table";
+import { Box, Image, Stack, Text } from "@mantine/core";
+import { Row, createColumnHelper } from "@tanstack/react-table";
+import { isEmpty } from "lodash-es";
 import { IFeed, IGenesBpComp, IResBpBreedingList, IResSnakesList } from "@/api/models";
-import { getAge, getDateShort } from "@/utils/time";
+import { getAge, getDateShort, isOlderThan, isYoungerThan } from "@/utils/time";
 import { SexName } from "../common/sexName";
 import { feederToString } from "../forms/addBp/const";
 import { BpControls, BpEventsBlock, BpGenes } from "./BpCard";
@@ -19,20 +20,36 @@ export const bpFeedColumns = [
   }),
   columnHelper.accessor("feed_ko", {
     header: () => "КО / Проблема",
-    cell: ({ row, cell }) =>
-      row.original.regurgitation ? (
-        <Text fw={500} component="span" c="var(--mantine-color-error)">
-          Срыг
-        </Text>
+    cell: ({ row, cell }) => {
+      const res = feederToString[cell.getValue() as any];
+      return row.original.regurgitation ? (
+        <>
+          <Text fw={500} component="span" c="var(--mantine-color-error)">
+            Срыг{" "}
+          </Text>
+          {res ? (
+            <Text component="span" size="xs" style={{ alignSelf: "center" }} ml="xs">
+              {res}
+            </Text>
+          ) : null}
+        </>
       ) : row.original.refuse ? (
-        <Text fw={500} component="span" c="#00FFC0">
-          Отказ
-        </Text>
+        <>
+          <Text fw={500} component="span" c="#00FFC0">
+            Отказ{" "}
+          </Text>
+          {res ? (
+            <Text component="span" size="xs" style={{ alignSelf: "center" }} ml="xs">
+              {res}
+            </Text>
+          ) : null}
+        </>
       ) : cell.getValue() != null ? (
         feederToString[cell.getValue()!]
       ) : (
         ""
-      ),
+      );
+    },
     enableSorting: false,
     size: 3,
     maxSize: 4,
@@ -49,25 +66,66 @@ export const bpFeedColumns = [
   }),
 ];
 
+const hatchFIltFn = (row: Row<IResSnakesList>, columnId: string, filterValue: any[]) => {
+  const younger: number[] = [];
+  const older: number[] = [];
+  filterValue.forEach((a) => {
+    const [direction, val] = a.split("_");
+    if (["older"].includes(direction)) {
+      older.push(parseInt(val, 10));
+    } else {
+      younger.push(parseInt(val, 10));
+    }
+  });
+  const brth = row.original.date_hatch;
+  if (!isEmpty(younger) && !isEmpty(older)) {
+    return younger.every((y) => isYoungerThan(brth, y)) && older.every((o) => isOlderThan(brth, o));
+  }
+  if (!isEmpty(younger) && isEmpty(older)) {
+    return younger.every((y) => isYoungerThan(brth, y));
+  }
+  if (isEmpty(younger) && !isEmpty(older)) {
+    return older.every((o) => isOlderThan(brth, o));
+  }
+  if (isEmpty(younger) && isEmpty(older)) {
+    return true;
+  }
+  return false;
+};
+
 export const makeBpCardColumns = ({ openTrans, openFeed }) => {
   return [
     colHelper.accessor("picture", {
       header: () => " ",
       cell: ({ cell, row }) => (
-        <Stack gap="xs" flex="0 1 196px">
-          <Image src={cell.getValue() ?? fallback} fit="cover" radius="md" w="100%" maw="fit-content" h={110} fallbackSrc={fallback} loading="lazy" />
+        <Stack gap="xs" flex="1 0 140px">
+          <Image src={cell.getValue() ?? fallback} fit="cover" radius="md" w="100%" maw="fit-content" fallbackSrc={fallback} loading="lazy" />
           <SexName sex={row.original.sex} name={row.original.snake_name} />
         </Stack>
       ),
       enableSorting: false,
       size: 1,
       maxSize: 3,
+      minSize: 100,
+    }),
+    colHelper.accessor((row: any) => row.snake_name, {
+      id: "names",
+      header: undefined,
+      cell: undefined,
+    }),
+    colHelper.accessor((row: any) => row.sex, {
+      id: "sex",
+      header: undefined,
+      cell: undefined,
+      filterFn: (row: any, columnId, filterValue) => (!filterValue[0] ? true : filterValue.includes(row.original.sex)),
     }),
     colHelper.accessor("date_hatch", {
       header: () => "Возраст",
       cell: ({ cell }) => <Text size="md">{getAge(cell.getValue())}</Text>,
       size: 4,
       maxSize: 2,
+      minSize: 100,
+      filterFn: hatchFIltFn,
     }),
     colHelper.accessor("feeding", {
       header: () => "События",
@@ -75,18 +133,22 @@ export const makeBpCardColumns = ({ openTrans, openFeed }) => {
       enableSorting: false,
       size: 6,
       maxSize: 2,
+      minSize: 100,
     }),
     colHelper.accessor("genes", {
       header: () => "Гены",
       cell: ({ cell }) => <BpGenes genes={cell.getValue()} />,
       size: 8,
       maxSize: 4,
+      minSize: 100,
+      filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => row.original.genes.map((b) => b.label).includes(a)),
     }),
     colHelper.display({
       id: "action",
       cell: ({ row }) => <BpControls id={row.original.id} openTrans={openTrans} openFeed={openFeed} />,
       size: 12,
       maxSize: 1,
+      minSize: 100,
     }),
   ];
 };
@@ -125,7 +187,7 @@ export const calcProjGenes = (arr?: IGenesBpComp[]) => {
   return [...new Set(pre)];
 };
 
-export const calcTraitsOptions = (all: IResBpBreedingList[] | undefined) => {
+export const calcBreedTraits = (all: IResBpBreedingList[] | undefined) => {
   if (!all) return [];
   let res = all.map((a) => a.female_genes.concat(a.male_genes.flat())).flat();
   let resmore = calcProjGenes(res).map((a) => a.label);
@@ -151,3 +213,38 @@ export const breedToColor = {
 };
 
 export const calcStatusOptions = () => Object.keys(bStToLabel);
+
+export const maturityDict = [
+  {
+    label: "Младше 2 месяцев",
+    value: "younger_2",
+  },
+  {
+    label: "Младше полугода",
+    value: "younger_6",
+  },
+  {
+    label: "Младше года",
+    value: "younger_12",
+  },
+  {
+    label: "Младше 2-х лет",
+    value: "younger_24",
+  },
+  {
+    label: "Старше полугода",
+    value: "older_6",
+  },
+  {
+    label: "Старше года",
+    value: "older_12",
+  },
+  {
+    label: "Старше 2-х лет",
+    value: "older_24",
+  },
+  {
+    label: "Старше 3-х лет",
+    value: "older_36",
+  },
+];

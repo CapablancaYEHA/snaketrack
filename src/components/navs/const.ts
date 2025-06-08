@@ -1,5 +1,3 @@
-export const tabletThreshold = "(max-width: 915px)";
-
 export const footLinks = [
   {
     name: "контакты",

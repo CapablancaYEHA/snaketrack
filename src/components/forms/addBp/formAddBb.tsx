@@ -12,7 +12,8 @@ import { GeneSelect } from "../../../components/genetics/geneSelect";
 import { Btn } from "../../../components/navs/btn/Btn";
 import { notif } from "../../../utils/notif";
 import { calcImgUrl, compressImage } from "../../../utils/supabaseImg";
-import { defVals, feederHardcode, prepareForSubmit, schema, sexHardcode, uplErr } from "./const";
+import { sexHardcode } from "../bpBreed/common";
+import { defVals, feederHardcode, prepareForSubmit, schema, uplErr } from "./const";
 
 // TODO сделать проверку родителей и что есть разнополая пара вообще
 // TODO в будущем - нужна выпадашка Статус - жива, умерла, карантин, продана ну и чето еще

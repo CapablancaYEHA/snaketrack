@@ -82,11 +82,20 @@ export function Snake() {
         <Space h="sm" />
         <Text size="sm">{data.notes ?? "Пусто"}</Text>
       </Paper>
-      <Flex justify="space-between" w="100%" gap="sm">
-        <Select label="Детализация графика" data={detailsDict} value={scale} onChange={setScale as any} />
-        <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} />
-      </Flex>
-      <ChartLine weightData={data?.weight} feedData={data.feeding} scaleX={scale} view={view} />
+      {!data?.weight && data.feeding?.every((a) => Object.values(a)?.every((b) => b == null)) ? (
+        <Text size="md" fw={500} ta="center" w="100%">
+          Информация об изменении веса\кормлениях отсутствует
+        </Text>
+      ) : (
+        <>
+          {" "}
+          <Flex justify="space-between" w="100%" gap="sm">
+            <Select label="Детализация графика" data={detailsDict} value={scale} onChange={setScale as any} />
+            <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} />
+          </Flex>
+          <ChartLine weightData={data?.weight} feedData={data.feeding} scaleX={scale} view={view} />
+        </>
+      )}
       <StackTable data={feedTable ?? []} columns={bpFeedColumns} />
       <Space h="lg" />
       <FeedSnake

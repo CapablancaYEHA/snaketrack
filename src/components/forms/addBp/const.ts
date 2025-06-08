@@ -4,11 +4,6 @@ import { IReqCreateBP } from "@/api/models";
 import { dateToSupabaseTime, nowToSbTime } from "@/utils/time";
 import { notif } from "../../../utils/notif";
 
-export const sexHardcode = [
-  { label: "Самец", value: "male" },
-  { label: "Самка", value: "female" },
-];
-
 export const feederHardcode = [
   { label: "❄️Мышь голая", value: "ft_mouse_pinkie" },
   { label: "❄️Мышь опушенок", value: "ft_mouse_fuzzy" },

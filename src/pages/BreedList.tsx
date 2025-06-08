@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import { Flex, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { isEmpty } from "lodash-es";
-import { calcProjGenes, calcStatusOptions, calcTraitsOptions } from "@/components/ballpythons/const";
+import { calcBreedTraits, calcProjGenes, calcStatusOptions } from "@/components/ballpythons/const";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { tableFiltMulti } from "@/components/common/StackTable/utils";
@@ -42,7 +42,7 @@ export function BreedList() {
           <Flex gap="sm" wrap="wrap" direction="row">
             <MaxSelectedMulti label="Самки в проектах" onChange={(a) => tableFiltMulti(setFilt, a, "female_name")} data={[...new Set(breed?.map((a) => a.female_name))]} />
             <MaxSelectedMulti label="Самцы в проектах" onChange={(a) => tableFiltMulti(setFilt, a, "male_names")} data={[...new Set(breed?.map((a) => a.male_names).flat())]} />
-            <MaxSelectedMulti label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "traits")} data={calcTraitsOptions(breed)} />
+            <MaxSelectedMulti label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "traits")} data={calcBreedTraits(breed)} />
             <MaxSelectedMulti label="Статус" onChange={(a: any) => tableFiltMulti(setFilt, a, "breed_status")} data={calcStatusOptions()} />
           </Flex>
           <StackTable data={tableData} columns={breedColumns} columnFilters={filt} setColumnFilters={setFilt} />

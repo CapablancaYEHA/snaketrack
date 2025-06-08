@@ -26,9 +26,11 @@
         user-select: none;
         font-weight: 500;
         text-align: left;
+        // max-width: 100px;
         & > * {
           display: flex;
           align-items: center;
+          gap: 4px;
         }
       }
     }
@@ -38,8 +40,10 @@
     tr {
       border-radius: var(--mantine-radius-md);
       & td {
+        align-items: baseline;
         display: flex;
         padding: 8px;
+        // max-width: 100px;
       }
       &:hover {
         background-color: var(--mantine-color-dark-8);

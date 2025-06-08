@@ -12,6 +12,7 @@ import { MaleIcon } from "./Male";
 import { NoDataIcon } from "./NoData";
 import { NoFilterIcon } from "./NoFilter";
 import { PackIcon } from "./Pack";
+import { SearchIcon } from "./Search";
 
 interface IProp {
   icon: string;
@@ -48,6 +49,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <NoDataIcon width={width} height={height} />;
     case "no-filter":
       return <NoFilterIcon width={width} height={height} />;
+    case "search":
+      return <SearchIcon width={width} height={height} />;
     default:
       return <DashIcon width={width} height={height} />;
   }

@@ -1,11 +1,6 @@
 import * as yup from "yup";
 import { notif } from "@/utils/notif";
 
-export const sexHardcode = [
-  { label: "Самец", value: "male" },
-  { label: "Самка", value: "female" },
-];
-
 type Schema = {
   file: File;
 };

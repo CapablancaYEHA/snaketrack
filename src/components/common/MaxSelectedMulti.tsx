@@ -1,19 +1,29 @@
 import { useState } from "preact/hooks";
-import { CheckIcon, Combobox, Group, Input, Pill, PillsInput, useCombobox } from "@mantine/core";
+import { CheckIcon, Combobox, Group, Pill, PillsInput, useCombobox } from "@mantine/core";
+import { debounce } from "lodash-es";
 
+type IDt = {
+  label: string;
+  value: string;
+};
 const MAX_DISPLAYED_VALUES = 1;
 interface IProp {
   label: string;
-  data: any[];
+  data: (IDt | string)[];
   onChange: (v: string[]) => void;
+  isDataHasLabel?: boolean;
+  [key: string]: any;
 }
-export function MaxSelectedMulti({ data, label, onChange }: IProp) {
+
+export function MaxSelectedMulti({ data, label, onChange, isDataHasLabel, ...rest }: IProp) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
   });
 
-  const [value, setValue] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
+  const debSearch = debounce(setSearch, 400);
+  const [value, setValue] = useState<any[]>([]);
 
   const handleValueSelect = (val: string) => {
     setValue((current) => {
@@ -29,55 +39,68 @@ export function MaxSelectedMulti({ data, label, onChange }: IProp) {
     });
   };
 
-  const handleValueRemove = (val: string) => {
+  const handleValueRemove = (val: any) => {
     setValue((current) => {
-      let res = current.filter((v) => v !== val);
+      const isObj = typeof current[0] === "object";
+      const trg = isObj ? current.map((c) => c.value) : current;
+      let res = trg.filter((v) => v !== (isObj ? val.value : val));
       onChange?.(res);
       return res;
     });
   };
 
   const values = value.slice(0, MAX_DISPLAYED_VALUES).map((item: any) => {
-    const isObj = typeof item === "object";
     return (
-      <Pill key={isObj ? item.value : item} withRemoveButton onRemove={() => handleValueRemove(isObj ? item.value : item)}>
-        {isObj ? item.label : item}
+      <Pill key={item} withRemoveButton onRemove={() => handleValueRemove(item)}>
+        {isDataHasLabel ? (data as any).find((f) => (f as any).value === item)?.label : item}
       </Pill>
     );
   });
 
-  const options = data.map((item) => {
-    const isObj = typeof item === "object";
-    return (
-      <Combobox.Option value={item} key={isObj ? item.value : item} active={value.includes(isObj ? item.value : item)}>
-        <Group gap="sm">
-          {value.includes(isObj ? item.value : item) ? <CheckIcon size={12} /> : null}
-          <span>{isObj ? item.label : item}</span>
-        </Group>
-      </Combobox.Option>
-    );
-  });
+  const options = data
+    .filter((a) => {
+      const str = search.trim().toLowerCase();
+      if (typeof a === "object") {
+        return a.label.toLowerCase().includes(str);
+      }
+      return a.toLowerCase().includes(str);
+    })
+    .map((item) => {
+      const isObj = typeof item === "object";
+      return (
+        <Combobox.Option value={isObj ? item.value : item} key={isObj ? item.value : item} active={value.includes(isObj ? item.value : item)}>
+          <Group gap="sm">
+            {value.includes(isObj ? item.value : item) ? <CheckIcon size={12} /> : null}
+            <span>{isObj ? item.label : item}</span>
+          </Group>
+        </Combobox.Option>
+      );
+    });
 
   return (
     <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false}>
       <Combobox.DropdownTarget>
-        <PillsInput pointer onClick={() => combobox.toggleDropdown()} label={label} miw={150}>
+        <PillsInput pointer onClick={() => combobox.openDropdown()} label={label} miw={150}>
           <Pill.Group>
             {value.length > 0 ? (
               <>
                 {values}
                 {value.length > MAX_DISPLAYED_VALUES && <Pill>+ ещё {value.length - MAX_DISPLAYED_VALUES}</Pill>}
               </>
-            ) : (
-              <Input.Placeholder>Мультивыбор</Input.Placeholder>
-            )}
+            ) : null}
 
-            <Combobox.EventsTarget>
+            <Combobox.EventsTarget {...rest}>
               <PillsInput.Field
-                type="hidden"
                 onBlur={() => combobox.closeDropdown()}
+                onFocus={() => combobox.openDropdown()}
+                placeholder={(value.length > 0 && undefined) || "Мультивыбор"}
+                value={search}
+                onChange={(event) => {
+                  combobox.updateSelectedOptionIndex();
+                  debSearch(event.currentTarget.value);
+                }}
                 onKeyDown={(event) => {
-                  if (event.key === "Backspace") {
+                  if (event.key === "Backspace" && search.length === 0) {
                     event.preventDefault();
                     handleValueRemove(value[value.length - 1]);
                   }
@@ -87,9 +110,8 @@ export function MaxSelectedMulti({ data, label, onChange }: IProp) {
           </Pill.Group>
         </PillsInput>
       </Combobox.DropdownTarget>
-
-      <Combobox.Dropdown>
-        <Combobox.Options>{options}</Combobox.Options>
+      <Combobox.Dropdown mah={212} style={{ overflowY: "auto" }}>
+        <Combobox.Options>{options.length > 0 ? options : <Combobox.Empty>Нет совпадений</Combobox.Empty>}</Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>
   );
