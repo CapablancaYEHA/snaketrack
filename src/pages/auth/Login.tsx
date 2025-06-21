@@ -32,7 +32,7 @@ export function Login() {
       });
     }
     if (!isEmpty(data?.session)) {
-      location.route("/dashboard");
+      location.route("/snakes");
     }
   };
 

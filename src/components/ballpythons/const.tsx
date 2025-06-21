@@ -16,8 +16,8 @@ export const bpFeedColumns = [
     header: () => "Дата",
     cell: ({ cell }) => getDateShort(cell.getValue()!),
     size: 1,
-    maxSize: 2,
-    minSize: 72,
+    maxSize: 1,
+    minSize: 40,
   }),
   columnHelper.accessor("feed_ko", {
     header: () => "КО / Проблема",
@@ -52,7 +52,7 @@ export const bpFeedColumns = [
       );
     },
     enableSorting: false,
-    size: 3,
+    size: 2,
     maxSize: 4,
     minSize: 200,
   }),

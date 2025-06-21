@@ -9,7 +9,7 @@ interface IIcon {
 }
 
 export const BinIcon: FC<IIcon> = ({ width, height, style }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24" opacity="0.4" stroke="red" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" preserveAspectRatio="xMidYMid meet" style={style}>
+  <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24" opacity="0.4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" preserveAspectRatio="xMidYMid meet" style={style}>
     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
     <path d="M4 7h16" />
     <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />

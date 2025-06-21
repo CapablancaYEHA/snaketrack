@@ -1,15 +1,25 @@
 import { useState } from "preact/hooks";
 import { Flex, LoadingOverlay, Stack, Text } from "@mantine/core";
+import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { calcBreedTraits, calcProjGenes, calcStatusOptions } from "@/components/ballpythons/const";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { tableFiltMulti } from "@/components/common/StackTable/utils";
-import { breedColumns } from "@/components/forms/bpBreed/breedUtils";
+import { makeBpBreedColumns } from "@/components/forms/bpBreed/breedUtils";
+import { BreedDelete } from "@/components/forms/bpBreed/subcomponents";
 import { Btn } from "@/components/navs/btn/Btn";
 import { useBpBreedingList } from "@/api/hooks";
 import { IResBpBreedingList } from "@/api/models";
 import { useProfile } from "@/api/profile/hooks";
+
+const breedId = signal<string | undefined>(undefined);
+
+const columns = makeBpBreedColumns({
+  setBreedId: (uuid) => {
+    breedId.value = uuid;
+  },
+});
 
 interface IBreedExt extends IResBpBreedingList {
   traits: { label: string; gene: string }[];
@@ -45,9 +55,16 @@ export function BreedList() {
             <MaxSelectedMulti label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "traits")} data={calcBreedTraits(breed)} />
             <MaxSelectedMulti label="Статус" onChange={(a: any) => tableFiltMulti(setFilt, a, "breed_status")} data={calcStatusOptions()} />
           </Flex>
-          <StackTable data={tableData} columns={breedColumns} columnFilters={filt} setColumnFilters={setFilt} />
+          <StackTable data={tableData} columns={columns} columnFilters={filt} setColumnFilters={setFilt} />
         </>
       )}
+      <BreedDelete
+        opened={breedId.value != null}
+        close={() => {
+          breedId.value = undefined;
+        }}
+        breedId={breedId.value}
+      />
     </Stack>
   );
 }

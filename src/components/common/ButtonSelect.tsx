@@ -31,7 +31,7 @@ export const ButtonSelect: FC<any> = ({ options, handleSelect, label }) => {
       size="xs"
     >
       <Combobox.Target>
-        <Button size="compact-sm" onClick={() => combobox.toggleDropdown()}>
+        <Button size="compact-xs" onClick={() => combobox.toggleDropdown()}>
           {label}
         </Button>
       </Combobox.Target>

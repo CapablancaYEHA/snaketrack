@@ -119,7 +119,7 @@ export function Register() {
         </Button>
         <Space h="xl" />
         <Text size="md" onClick={() => setShow(true)} style={{ cursor: "pointer", textDecoration: "underline" }}>
-          Яна, как ты могла забыть пароль? (((
+          Забыли пароль?
         </Text>
         <Space h="md" />
         {show ? (

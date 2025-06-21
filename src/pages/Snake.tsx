@@ -37,7 +37,7 @@ export function Snake() {
   return (
     <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
       <Title component="span" order={4} c="yellow.6">
-        Подробная информация о региусе
+        Подробная информация о змее
       </Title>
       <Flex gap="sm">
         <Button size="compact-xs" component="a" href={`/snakes/edit/ballpython?id=${location.query.id}`}>
@@ -60,7 +60,7 @@ export function Snake() {
       <Flex align="flex-start" justify="space-between" columnGap="md" w="100%">
         <Stack>
           <Flex align="flex-start" justify="flex-start" gap="xs">
-            <Text>👑Королевский питон</Text>
+            <Text>Региус</Text>
             <SexName sex={data.sex} name={data.snake_name} />
           </Flex>
           <Image src={data.picture} fit="cover" radius="md" mih={110} w="auto" maw="100%" h={140} fallbackSrc={fallback} loading="lazy" />

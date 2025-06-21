@@ -4,7 +4,7 @@ import { UseQueryResult, useMutation, useQueries, useQuery, useQueryClient } fro
 import { nanoid } from "nanoid";
 import { upgAlias } from "@/components/genetics/const";
 import { toDataUrl } from "@/utils/supabaseImg";
-import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IResBpBreedingList, IResSnakesList, ISupabaseErr } from "./models";
+import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IResBpBreedDelete, IResBpBreedingList, IResSnakesList, ISupabaseErr } from "./models";
 
 const httpGetGenes = async () => {
   const { data, error } = await supabase.from(ESupabase.bpgenes).select("*").throwOnError();
@@ -231,7 +231,6 @@ export function useCreateBpBreed() {
   });
 }
 
-// FIXME Вернуть актуал
 const httpCalcOdds = async (p1: string[], p2: string[]): Promise<IMorphOddsRes> => {
   let res;
   //   eslint-disable-next-line no-useless-catch
@@ -279,13 +278,29 @@ export type IUpdBreedReq = {
   upd: Partial<IReqCreateBPBreed>;
   id: string;
 };
+
 export const httpUpdateBpBreed = async (a: IUpdBreedReq) => {
   return await supabase.from(ESupabase.bp_breeding).update(a.upd).eq("id", a.id).throwOnError();
 };
+
 export function useUpdateBpBreed() {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, IUpdBreedReq>({
     mutationFn: (a) => httpUpdateBpBreed(a),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EQuKeys.LIST_BP_BREED],
+      });
+    },
+  });
+}
+
+export const httpDeleteBpBreed = async (breedId: string) => await supabase.from(ESupabase.bp_breeding).delete().eq("id", breedId).throwOnError();
+
+export function useDeleteBpBreed() {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, string>({
+    mutationFn: (a) => httpDeleteBpBreed(a),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [EQuKeys.LIST_BP_BREED],

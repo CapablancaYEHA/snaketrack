@@ -4,7 +4,7 @@ import { darken } from "@mantine/core";
 import { Cell, Column } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
 
-export const bgGrad = darken("var(--mantine-color-dark-4)", 0.5);
+export const bgDark = darken("var(--mantine-color-dark-4)", 0.5);
 
 export const tableFiltMulti = (handler: (value: StateUpdater<any[]>) => void, a: string[], accessor: string) => {
   handler((s) => {

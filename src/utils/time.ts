@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from "dayjs";
+import dayjs, { Dayjs, QUnitType } from "dayjs";
 import "dayjs/locale/ru";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
@@ -13,7 +13,7 @@ dayjs.extend(relativeTime);
 dayjs.extend(duration);
 dayjs.extend(advancedFormat);
 
-export const getDate = (a: string) => dayjs(a).locale("ru").format("D MMMM YYYY");
+export const getDate = (a: string | Dayjs) => dayjs(a).locale("ru").format("D MMMM YYYY");
 export function adapterLocale() {
   dayjs.locale("ru");
 }
@@ -32,6 +32,13 @@ export const getAge = (a: string) => {
   ${months ? `${declWord(months, ["месяц", "месяца", "месяцев"])}` : ""}
   ${days ? `${declWord(days, ["день", "дня", "дней"])}` : ""}`;
 };
+
+export const dateTimeDiff = (trg: string | Dayjs, unit: QUnitType) => {
+  const res = dayjs(trg).diff(dayjs(), unit);
+  return res <= 0 ? 0 : res;
+};
+
+export const dateAddDays = (a: string | Dayjs, days: number) => dayjs(a).add(days, "day");
 
 export const isOlderThan = (birthDate: string | Dayjs, targetAge: number) => {
   return dayjs().diff(dayjs(birthDate), "month") > targetAge;

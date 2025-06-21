@@ -3,7 +3,7 @@ import { useLocation } from "preact-iso";
 export function NotFound() {
   const location = useLocation();
   if (["", ".", "/"].some((a) => a === location.url)) {
-    location.route("/dashboard");
+    location.route("/snakes");
   }
 
   return (

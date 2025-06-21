@@ -3,7 +3,6 @@ import { isEmpty } from "lodash-es";
 import { AddBreed } from "@/pages/AddBreed";
 import { AddSnake } from "@/pages/AddSnake";
 import { BreedList } from "@/pages/BreedList";
-import { Dashboard } from "@/pages/Dashboard";
 import { EditBreed } from "@/pages/EditBreed";
 import { EditSnake } from "@/pages/EditSnake";
 import { Snake } from "@/pages/Snake";
@@ -24,14 +23,13 @@ export const RedirectiveRoute = (props) => {
   const location = useLocation();
 
   if (props.session && !isEmpty(props.session?.user)) {
-    location.route("/dashboard");
+    location.route("/snakes");
   }
 
   return <div />;
 };
 
 export const protectedRoutes = {
-  "/dashboard": Dashboard,
   "/profile": Profile,
   "/snakes": SnakeList,
   "/snakes/:type?id=:id": Snake,
@@ -43,7 +41,6 @@ export const protectedRoutes = {
 };
 
 export const sidebarLinks = [
-  { id: 1, link: "/dashboard" },
   { id: 2, link: "/snakes" },
   { id: 3, link: "/breeding" },
 ];

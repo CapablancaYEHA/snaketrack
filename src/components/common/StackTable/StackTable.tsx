@@ -3,7 +3,7 @@ import { Stack, alpha, darken, lighten } from "@mantine/core";
 import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import styles from "./styles.module.scss";
-import { bgGrad, calcColumn, getCommonPinningStyles } from "./utils";
+import { bgDark, calcColumn, getCommonPinningStyles } from "./utils";
 
 interface IProp<T> {
   columns: ColumnDef<T, any>[];
@@ -58,7 +58,7 @@ export const StackTable = <T extends object>({ columns, data, setColumnFilters, 
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return header.column.columnDef.header ? (
-                    <th key={header.id} style={{ ...calcColumn(header as any), ...getCommonPinningStyles(header.column), minWidth: header.column.columnDef.minSize, background: header.column.getIsPinned() ? bgGrad : "transparent" }}>
+                    <th key={header.id} style={{ ...calcColumn(header as any), ...getCommonPinningStyles(header.column), minWidth: header.column.columnDef.minSize, background: header.column.getIsPinned() ? bgDark : "transparent" }}>
                       {header.isPlaceholder ? null : (
                         <div className={header.column.getCanSort() ? styles.pointer : ""} onClick={header.column.getToggleSortingHandler()}>
                           {flexRender(header.column.columnDef.header, header.getContext())}
@@ -93,7 +93,7 @@ export const StackTable = <T extends object>({ columns, data, setColumnFilters, 
                 <tr key={row.id} onClick={() => onRowClick?.((row.original as any).id)} className={onRowClick != null ? styles.pointer : ""}>
                   {row.getVisibleCells().map((cell) => {
                     return cell.column.columnDef.cell ? (
-                      <td key={cell.id} style={{ ...calcColumn(cell), ...getCommonPinningStyles(cell.column), minWidth: cell.column.columnDef.minSize, background: cell.column.getIsPinned() ? bgGrad : "transparent" }}>
+                      <td key={cell.id} style={{ ...calcColumn(cell), ...getCommonPinningStyles(cell.column), minWidth: cell.column.columnDef.minSize, background: cell.column.getIsPinned() ? bgDark : "transparent" }}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ) : null;

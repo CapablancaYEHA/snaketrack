@@ -30,7 +30,7 @@ export function Header({ session }) {
             <MobileMenu />
           </Box>
         ) : null}
-        <a href="/dashboard" className={styles.logo}>
+        <a href="/snakes" className={styles.logo}>
           <Title component="span" c="dark.1" order={4}>
             HsssStats 🧬
           </Title>

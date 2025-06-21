@@ -39,7 +39,7 @@ export const FormEditBpBreed = ({ initData, owned_bp_list }) => {
         Детализация бридинг плана
       </Title>
       <FormProvider {...formInstance}>
-        <FormComposedBody owned_bp_list={owned_bp_list} onSub={onSub} btnText="Внести изменения" />
+        <FormComposedBody owned_bp_list={owned_bp_list} onSub={onSub} btnText="Сохранить изменения" />
       </FormProvider>
     </>
   );
