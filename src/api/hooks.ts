@@ -4,7 +4,7 @@ import { UseQueryResult, useMutation, useQueries, useQuery, useQueryClient } fro
 import { nanoid } from "nanoid";
 import { upgAlias } from "@/components/genetics/const";
 import { toDataUrl } from "@/utils/supabaseImg";
-import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IResBpBreedDelete, IResBpBreedingList, IResSnakesList, ISupabaseErr } from "./models";
+import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IResBpBreedingList, IResSnakesList, ISupabaseErr } from "./models";
 
 const httpGetGenes = async () => {
   const { data, error } = await supabase.from(ESupabase.bpgenes).select("*").throwOnError();

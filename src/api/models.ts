@@ -125,11 +125,6 @@ export interface IResBpBreedingList {
   clutch_id?: string | null; // uuid кладки, если проект завершился ей
 }
 
-export interface IResBpBreedDelete {
-  status: number; //204
-  statusText: string;
-}
-
 export interface IMorphOddsReq {
   p1: string[];
   p2: string[];
