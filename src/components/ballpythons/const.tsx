@@ -2,7 +2,7 @@ import fallback from "@assets/placeholder.png";
 import { Box, Flex, Image, Stack, Text } from "@mantine/core";
 import { Row, createColumnHelper } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
-import { IFeed, IGenesBpComp, IResBpBreedingList, IResSnakesList } from "@/api/models";
+import { EBreedStat, IFeed, IGenesBpComp, IResBpBreedingList, IResSnakesList } from "@/api/models";
 import { getAge, getDateShort, isOlderThan, isYoungerThan } from "@/utils/time";
 import { SexName } from "../common/sexName";
 import { feederToString } from "../forms/addBp/const";
@@ -17,7 +17,7 @@ export const bpFeedColumns = [
     cell: ({ cell }) => getDateShort(cell.getValue()!),
     size: 1,
     maxSize: 1,
-    minSize: 40,
+    minSize: 82,
   }),
   columnHelper.accessor("feed_ko", {
     header: () => "КО / Проблема",
@@ -103,7 +103,7 @@ export const makeBpCardColumns = ({ openTrans, openFeed }) => {
       header: () => " ",
       cell: ({ cell, row }) => (
         <Stack gap="xs" flex="1 1 140px">
-          <Image src={cell.getValue() ?? fallback} fit="cover" radius="md" w="100%" maw="fit-content" fallbackSrc={fallback} loading="lazy" />
+          <Image src={cell.getValue() ?? fallback} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
           <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
         </Stack>
       ),
@@ -163,7 +163,6 @@ export const detailsDict = [
   { label: "Квартал", value: "quarters" },
   { label: "Месяц", value: "months" },
   { label: "Неделя", value: "weeks" },
-  { label: "День", value: "days" },
 ];
 
 export const subjectDict = [
@@ -199,24 +198,24 @@ export const calcBreedTraits = (all: IResBpBreedingList[] | undefined) => {
 };
 
 export const bStToLabel = {
-  plan: "Планирование",
-  woo: "Ухаживание",
-  lock: "Лок",
-  ovul: "Овуляция",
-  shed: "Предродовая линька",
-  clutch: "Кладка",
+  [EBreedStat.PLAN]: "Планирование",
+  [EBreedStat.WOO]: "Ухаживание",
+  [EBreedStat.LOCK]: "Лок",
+  [EBreedStat.OVUL]: "Овуляция",
+  [EBreedStat.SHED]: "Предродовая линька",
+  [EBreedStat.CLUTCH]: "Кладка",
 };
 
 export const breedToColor = {
-  plan: "#2E5A88",
-  woo: "#FFB6C1",
-  lock: "#8B0000",
-  ovul: "#FFDAB9",
-  shed: "#4E9525",
-  clutch: "#F5F5DC",
+  [EBreedStat.PLAN]: "#2E5A88",
+  [EBreedStat.WOO]: "#FFB6C1",
+  [EBreedStat.LOCK]: "#8B0000",
+  [EBreedStat.OVUL]: "#FFDAB9",
+  [EBreedStat.SHED]: "#4E9525",
+  [EBreedStat.CLUTCH]: "#F5F5DC",
 };
 
-export const calcStatusOptions = () => Object.keys(bStToLabel);
+export const calcStatusOptions = () => Object.entries(bStToLabel).map(([key, val]) => ({ label: val, value: key }));
 
 export const maturityDict = [
   {

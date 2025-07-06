@@ -3,7 +3,9 @@ export const enum ESupabase {
   bpgenes = "bpgenes",
   ballpythons = "ballpythons",
   bp_breeding = "bp_breeding",
+  bp_clutch = "bp_clutch",
   bp_breeding_joined = "user_breeding_view",
+  bp_clutch_joined = "clutch_view",
   profiles = "profiles",
   three_cols_profiles = "three_cols_profiles",
 }
@@ -13,6 +15,7 @@ export const enum EQuKeys {
   COMP_BP = "pb_genes",
   LIST_BP = "bp_list",
   LIST_BP_BREED = "bp_list_breed",
+  LIST_BP_CLUTCH = "bp_list_clutch",
 }
 
 export interface IGenesBpComp {
@@ -89,7 +92,15 @@ type IDate = {
   date: string;
 };
 
-type IBreedStat = "plan" | "woo" | "lock" | "ovul" | "shed" | "clutch";
+export enum EBreedStat {
+  PLAN = "plan",
+  WOO = "woo",
+  LOCK = "lock",
+  OVUL = "ovul",
+  SHED = "shed",
+  CLUTCH = "clutch",
+}
+export type IBreedStat = `${EBreedStat}`;
 export interface IReqCreateBPBreed {
   males_events?: {
     [key: string]: (IEv & IDate)[];
@@ -101,6 +112,7 @@ export interface IReqCreateBPBreed {
   males_ids: string[];
   notes?: string;
   status?: IBreedStat;
+  clutch_id?: string;
 }
 
 export interface IResBpBreedingList {
@@ -148,4 +160,38 @@ export interface IMorphOddsRes {
     morph_name: string;
     morph_link: null;
   }[];
+}
+
+export interface IReqCreateBpClutch {
+  males_ids: string[];
+  female_id: string;
+  date_laid: string;
+  owner_id: string;
+  date_hatch?: string;
+  eggs?: number;
+  slugs?: number;
+  infertile_eggs?: number;
+  status?: "laid" | "hatched";
+  picture?: string;
+  traits?: Partial<IGenesBpComp>[];
+}
+
+export type IReqUpdateBpClutch = Partial<IReqCreateBpClutch> & {};
+
+export interface IResBpClutch {
+  owner_id: string;
+  males_ids: string[];
+  female_id: string;
+  date_laid: string;
+  date_hatch: string | null;
+  eggs: number | null;
+  slugs: number | null;
+  infertile_eggs: number | null;
+  status: "laid" | "hatched";
+  picture: string | null;
+  clutch_babies: string[] | null;
+  female_picture: string | null;
+  male_pictures: string | null;
+  male_genes: IGenesBpComp[][];
+  female_genes: IGenesBpComp[];
 }

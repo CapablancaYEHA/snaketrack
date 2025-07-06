@@ -21,11 +21,11 @@ export const calcColumn = <T>(header: Cell<T, unknown>): CSSProperties => ({ gri
 
 export const getCommonPinningStyles = <T>(column: Column<T>): CSSProperties => {
   const isPinned = column.getIsPinned();
-  //   const isLastLeftPinnedColumn = isPinned === "left" && column.getIsLastColumn("left");
-  //   const isFirstRightPinnedColumn = isPinned === "right" && column.getIsFirstColumn("right");
+  const isLastLeftPinnedColumn = isPinned === "left" && column.getIsLastColumn("left");
+  const isFirstRightPinnedColumn = isPinned === "right" && column.getIsFirstColumn("right");
 
   return {
-    // boxShadow: isLastLeftPinnedColumn ? "-4px 0 4px -4px white inset" : isFirstRightPinnedColumn ? "4px 0 4px -4px white inset" : undefined,
+    boxShadow: isLastLeftPinnedColumn ? "4px 0px 7px 0px rgba(20, 20, 20, 1)" : isFirstRightPinnedColumn ? "4px 0px -7px 0px rgba(20, 20, 20, 1)" : undefined,
     left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
     right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
     position: isPinned ? "sticky" : "relative",

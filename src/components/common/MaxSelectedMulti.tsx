@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import { CheckIcon, Combobox, Group, Pill, PillsInput, useCombobox } from "@mantine/core";
+import { CheckIcon, Combobox, Group, MantineStyleProps, Pill, PillsInput, useCombobox } from "@mantine/core";
 import { debounce } from "lodash-es";
 
 type IDt = {
@@ -13,9 +13,10 @@ interface IProp {
   onChange: (v: string[]) => void;
   isDataHasLabel?: boolean;
   [key: string]: any;
+  flex?: MantineStyleProps["flex"];
 }
 
-export function MaxSelectedMulti({ data, label, onChange, isDataHasLabel, ...rest }: IProp) {
+export function MaxSelectedMulti({ data, label, onChange, isDataHasLabel, flex, ...rest }: IProp) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
@@ -80,7 +81,7 @@ export function MaxSelectedMulti({ data, label, onChange, isDataHasLabel, ...res
   return (
     <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false}>
       <Combobox.DropdownTarget>
-        <PillsInput pointer onClick={() => combobox.openDropdown()} label={label} miw={150}>
+        <PillsInput pointer onClick={() => combobox.openDropdown()} label={label} miw={150} flex={flex}>
           <Pill.Group>
             {value.length > 0 ? (
               <>

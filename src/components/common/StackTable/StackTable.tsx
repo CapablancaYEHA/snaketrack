@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef } from "preact/hooks";
-import { Stack, alpha, darken, lighten } from "@mantine/core";
+import { Stack } from "@mantine/core";
 import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import styles from "./styles.module.scss";
 import { bgDark, calcColumn, getCommonPinningStyles } from "./utils";
 
 interface IProp<T> {
+  height?: number;
   columns: ColumnDef<T, any>[];
   data: T[];
   setColumnFilters?: OnChangeFn<ColumnFiltersState>;
@@ -15,7 +16,7 @@ interface IProp<T> {
   onRowClick?: (v) => void;
 }
 
-export const StackTable = <T extends object>({ columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter }: IProp<T>) => {
+export const StackTable = <T extends object>({ height, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter }: IProp<T>) => {
   const isMount = useRef(false);
   const cols: ColumnDef<T>[] = useMemo<ColumnDef<T, unknown>[]>(() => columns, []);
 
@@ -50,9 +51,9 @@ export const StackTable = <T extends object>({ columns, data, setColumnFilters, 
   const isFilteredOut = table.options.data.length > 0 && table.getRowModel().rows.length === 0;
 
   return (
-    <div className={styles.cont}>
+    <div className={styles.cont} style={height ? { height: `${height}px` } : {}}>
       <table className={styles.table}>
-        <thead style={{ background: `${alpha(`var(--mantine-color-dark-7)`, 0.5)}` }}>
+        <thead style={{ background: "#1c1c1c" }}>
           {table.getHeaderGroups().map((headerGroup) => {
             return (
               <tr key={headerGroup.id}>

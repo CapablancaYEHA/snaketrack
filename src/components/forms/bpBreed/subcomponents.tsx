@@ -5,7 +5,6 @@ import fallback from "@assets/placeholder.png";
 import { Accordion, ActionIcon, Box, Button, Divider, Drawer, Flex, Group, Image, Loader, LoadingOverlay, Menu, Modal, Progress, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
-import { signal } from "@preact/signals";
 import { Controller, FormProvider, useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { ButtonSelect } from "@/components/common/ButtonSelect";
 import { SexName } from "@/components/common/sexName";
@@ -16,9 +15,9 @@ import { useCalcOdds, useDeleteBpBreed } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { dateToSupabaseTime, getAge } from "@/utils/time";
 import { calcEstimatedDate, calcTimeleft, daysAfterOvul, daysAfterShed, getPercentage } from "./breedUtils";
-import { eventsOpts, prepForMm, renderSelectOption, useUtilsBreed } from "./common";
+import { IBreedScheme, eventsOpts, prepForMm, renderSelectOption, useUtilsBreed } from "./common";
 
-export const MaleEvent = ({ id }) => {
+export const MaleEvent = ({ id, disabled }) => {
   const { control } = useFormContext();
   const { fields, update, remove } = useFieldArray({ name: `malesEvents.${id}`, control });
 
@@ -32,6 +31,7 @@ export const MaleEvent = ({ id }) => {
             render={({ field: { value }, fieldState: { error } }) => {
               return (
                 <Select
+                  disabled={disabled}
                   data={eventsOpts}
                   data-scroll-locked={0}
                   value={value as any}
@@ -53,6 +53,7 @@ export const MaleEvent = ({ id }) => {
               return (
                 <>
                   <DatePickerInput
+                    disabled={disabled}
                     value={value ? new Date(value) : value}
                     onChange={(v) => {
                       onChange(v);
@@ -72,18 +73,19 @@ export const MaleEvent = ({ id }) => {
               );
             }}
           />
-          <div style={{ flex: "1 0 auto", alignSelf: "center", color: "red", cursor: "pointer" }} onClick={() => remove(ind)}>
-            <IconSwitch icon="bin" width="24" height="24" />
-          </div>
+          {disabled ? null : (
+            <div style={{ flex: "1 0 auto", alignSelf: "center", color: "red", cursor: "pointer" }} onClick={() => remove(ind)}>
+              <IconSwitch icon="bin" width="24" height="24" />
+            </div>
+          )}
         </Flex>
       ))}
     </Stack>
   );
 };
 
-export const FemaleEvent = () => {
+export const FemaleEvent = ({ isClutchMade, shed, ovul }) => {
   const { control, setValue } = useFormContext();
-  const [wOvul, wShed] = useWatch({ control, name: ["female_ovulation_date", "female_prelay_shed_date"] });
 
   return (
     <Stack w="100%" maw="100%" gap="sm">
@@ -98,6 +100,7 @@ export const FemaleEvent = () => {
             return (
               <>
                 <DatePickerInput
+                  disabled={isClutchMade}
                   rightSection={
                     value ? (
                       <div onClick={() => setValue("female_prelay_shed_date", null, { shouldDirty: true })} style={{ cursor: "pointer" }}>
@@ -134,6 +137,7 @@ export const FemaleEvent = () => {
             return (
               <>
                 <DatePickerInput
+                  disabled={isClutchMade}
                   size="xs"
                   rightSection={
                     value ? (
@@ -163,8 +167,7 @@ export const FemaleEvent = () => {
           }}
         />
       </Flex>
-
-      {wShed || wOvul ? <TimeLeft shedDate={wShed} ovulDate={wOvul} /> : null}
+      {shed || ovul ? <TimeLeft shedDate={shed} ovulDate={ovul} /> : null}
     </Stack>
   );
 };
@@ -189,15 +192,6 @@ const TimeLeft = ({ shedDate, ovulDate }) => {
           </Progress.Root>
         </Box>
       </Group>
-
-      {left <= 5 ? (
-        <>
-          <Space h="md" />
-          <Button variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="xs">
-            Зарегистрировать кладку
-          </Button>
-        </>
-      ) : null}
     </Box>
   );
 };
@@ -205,7 +199,7 @@ const TimeLeft = ({ shedDate, ovulDate }) => {
 export const BriefInfo = ({ snake }) => (
   <Stack>
     <Flex wrap="nowrap" gap="md" direction={{ base: "column", md: "row" }}>
-      <Image src={snake?.picture} flex="0 0 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
+      <Image src={snake?.picture} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
       <Stack gap="xs" flex="0 1 auto">
         <SexName sex={snake?.sex} name={snake?.snake_name} />
         <Text size="md">⌛ {getAge(snake?.date_hatch)}</Text>
@@ -228,7 +222,13 @@ export const OddsInfo = ({ female, male }) => {
     }
   }, [female, male, mutate]);
 
-  if (isPending) return <Loader color="dark.1" size="lg" d="block" w="100%" />;
+  if (isPending)
+    return (
+      <>
+        <Space h="md" />
+        <Loader color="dark.1" size="sm" d="block" w="100%" />
+      </>
+    );
   if (isError || !data) return null;
 
   return isMwTablet ? (
@@ -281,8 +281,8 @@ export const OddsInfo = ({ female, male }) => {
   );
 };
 
-export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохранить" }) => {
-  const innerInstance = useFormContext();
+export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохранить", onFinalize }) => {
+  const innerInstance = useFormContext<IBreedScheme>();
 
   const selectedFem = useWatch({
     control: innerInstance.control,
@@ -292,6 +292,7 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
     control: innerInstance.control,
     name: "malesEvents",
   });
+  const [wOvul, wShed] = useWatch({ control: innerInstance.control, name: ["female_ovulation_date", "female_prelay_shed_date"] });
 
   const {
     fields: fetchFields,
@@ -305,6 +306,10 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
 
   const { isListPen, isQuePen, isAddAllowed, femData, malesData, regFems, regMales } = useUtilsBreed({ owned_bp_list, fem: selectedFem, fetchFields });
 
+  const isClutchMade = innerInstance.getValues("breed_status") === "clutch";
+
+  const { left } = calcTimeleft(wOvul, wShed);
+
   return (
     <>
       {isListPen || isQuePen ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
@@ -317,7 +322,7 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
             name="female_id"
             control={innerInstance.control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <Select data={regFems} value={value} onChange={onChange} error={error?.message} required />;
+              return <Select data={regFems} value={value} onChange={onChange} error={error?.message} required disabled={isClutchMade} />;
             }}
           />
           <Box w="100%" maw="100%">
@@ -326,7 +331,7 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
                 <BriefInfo snake={femData} />
                 <Space h="md" />
                 <FormProvider {...innerInstance}>
-                  <FemaleEvent />
+                  <FemaleEvent isClutchMade={isClutchMade} ovul={wOvul} shed={wShed} />
                 </FormProvider>
               </>
             ) : null}
@@ -353,6 +358,7 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
                       updateFetch(0, { snake: v });
                     }}
                     required
+                    disabled={isClutchMade}
                   />
                 );
               }}
@@ -362,22 +368,26 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
                 <Box style={{ width: "100%", maxWidth: "100%" }}>
                   <BriefInfo snake={male} />
                   <Space h="md" />
-                  <ButtonSelect
-                    options={eventsOpts}
-                    label="Добавить событие"
-                    handleSelect={(v) => {
-                      const newArr = [
-                        ...(malesEvents?.[male?.id] || []),
-                        {
-                          event: v,
-                          date: null,
-                        },
-                      ];
-                      innerInstance.setValue(`malesEvents.${male?.id}` as any, newArr);
-                    }}
-                  />
-                  <Space h="md" />
-                  <FormProvider {...innerInstance}>{malesEvents && malesEvents.hasOwnProperty(male?.id) ? <MaleEvent id={male?.id} /> : null}</FormProvider>
+                  {isClutchMade ? null : (
+                    <>
+                      <ButtonSelect
+                        options={eventsOpts}
+                        label="Добавить событие"
+                        handleSelect={(v) => {
+                          const newArr = [
+                            ...(malesEvents?.[male?.id] || []),
+                            {
+                              event: v,
+                              date: null,
+                            },
+                          ];
+                          innerInstance.setValue(`malesEvents.${male?.id}` as any, newArr);
+                        }}
+                      />
+                      <Space h="md" />
+                    </>
+                  )}
+                  <FormProvider {...innerInstance}>{malesEvents && malesEvents.hasOwnProperty(male?.id) ? <MaleEvent id={male?.id} disabled={isClutchMade} /> : null}</FormProvider>
                   <OddsInfo female={femData} male={male} />
                   <div>
                     {fetchFields?.slice(1)[ind] != null ? (
@@ -386,13 +396,14 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
                         <Controller
                           name={`males_ids.${ind + 1}.snake`}
                           control={innerInstance.control}
-                          render={({ field: { onChange, value }, fieldState: { error } }) => {
+                          render={({ fieldState: { error } }) => {
                             return (
                               <Select
+                                disabled={isClutchMade}
                                 searchable
                                 renderOption={(o) => renderSelectOption(o.option, fetchFields?.find((f) => f.snake === o.option.value) != null)}
                                 data={regMales}
-                                value={value}
+                                value={fetchFields?.[ind + 1]?.snake}
                                 error={error?.message}
                                 comboboxProps={{
                                   onOptionSubmit: (v) =>
@@ -408,16 +419,17 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
                             );
                           }}
                         />
-                        <Button size="compact-xs" onClick={() => removeFetch(ind + 1)}>
+                        <Button size="compact-xs" onClick={() => removeFetch(ind + 1)} disabled={isClutchMade}>
                           Удалить
                         </Button>
                       </Group>
                     ) : null}
                   </div>
 
-                  {isAddAllowed ? (
-                    <Box pos="relative" mt="md">
-                      <Button size="compact-sm" pos="absolute" right={0} onClick={() => appendFetch({ snake: undefined })}>
+                  {isAddAllowed && !isClutchMade ? (
+                    <Box style={{ justifySelf: "flex-end" }}>
+                      <Space h="md" />
+                      <Button size="compact-sm" right={0} onClick={() => appendFetch({ snake: undefined })}>
                         Добавить самца
                       </Button>
                     </Box>
@@ -429,9 +441,18 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
         </Flex>
       </Group>
       {innerInstance.formState.errors?.["malesEvents"] ? <span>{JSON.stringify(innerInstance.formState.errors?.["malesEvents"].message)}</span> : null}
-      <Button type="submit" onClick={innerInstance.handleSubmit(onSub)} mt="lg" disabled={!innerInstance.formState.isDirty}>
-        {btnText}
-      </Button>
+      <Flex gap="xl" align="center" mt="lg">
+        <Button type="submit" onClick={innerInstance.handleSubmit(onSub)} disabled={!innerInstance.formState.isDirty || isClutchMade} size="xs">
+          {btnText}
+        </Button>
+        {left <= 5 && !isClutchMade ? (
+          <Button type="submit" onClick={innerInstance.handleSubmit(onFinalize)} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="xs">
+            Зарегистрировать кладку
+          </Button>
+        ) : isClutchMade ? (
+          <div>У вас есть кладка</div>
+        ) : null}
+      </Flex>
     </>
   );
 };

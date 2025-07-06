@@ -19,7 +19,6 @@ import { Login } from "./pages/auth/Login.js";
 import { Register } from "./pages/auth/Register.js";
 import { Reset } from "./pages/auth/Reset.js";
 
-
 import { tabletThreshold, theme } from "./styles/theme.js";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
@@ -73,7 +72,8 @@ export function App() {
 			<Route path="/register"  component={Register} />
 			<Route path="/reset"  component={Reset} />
 				{isPending.value ? (<LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 1.0 }} />)
-				: (['/profile','/snakes', '/snakes/:type?id=:id', '/snakes/add/:type','/snakes/edit/:type?id=:id', '/breeding','/breeding/add/:type','/breeding/:type?id=:id'].map(
+				: (['/profile','/snakes', '/snakes/:type?id=:id', '/snakes/add/:type','/snakes/edit/:type?id=:id','/breeding',
+					'/breeding/add/:type','/breeding/:type?id=:id', '/clutches','/clutches/add','/clutches/edit'].map(
 					(a) => <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />)
 				)}
 				{isPending.value ? ( null as any) : (<Route default component={NotFound}  />)}

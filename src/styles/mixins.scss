@@ -1,4 +1,4 @@
-@mixin cute-scroll($trackStart) {
+@mixin cute-scroll($trackStart, $colored: false) {
   overflow-y: auto;
   left: auto !important;
 
@@ -22,13 +22,21 @@
     height: 6px;
     background-color: transparent;
   }
+  @if $colored {
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--mantine-color-yellow-8);
+    }
+  } @else {
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--mantine-color-dark-4);
+    }
+  }
   &::-webkit-scrollbar-thumb {
-    background-color: var(--mantine-color-yellow-8);
     border-radius: 4px;
   }
 }
 
-@mixin cute-scroll-horis($trackStart) {
+@mixin cute-scroll-horis($trackStart, $colored: false) {
   overflow-x: auto;
   top: auto !important;
 
@@ -52,8 +60,13 @@
     height: 6px;
     background-color: transparent;
   }
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--mantine-color-yellow-8);
-    border-radius: 4px;
+  @if $colored {
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--mantine-color-yellow-8);
+    }
+  } @else {
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--mantine-color-dark-4);
+    }
   }
 }

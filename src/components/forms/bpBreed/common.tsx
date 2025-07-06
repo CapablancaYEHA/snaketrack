@@ -2,9 +2,10 @@
 import { Group } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 import * as yup from "yup";
+import { calcProjGenes } from "@/components/ballpythons/const";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IUpdBreedReq, TSnakeQueue, useSnake as useFemale, useSnakeQueue, useSnakesList } from "@/api/hooks";
-import { IReqCreateBPBreed, IResSnakesList } from "@/api/models";
+import { IBreedStat, IReqCreateBPBreed, IResSnakesList } from "@/api/models";
 
 interface IInit {
   owned_bp_list: string[];
@@ -18,7 +19,7 @@ export function useUtilsBreed({ owned_bp_list, fem, fetchFields }: IInit) {
   const { data: femData } = useFemale(fem ?? "", fem != null);
   const { data: malesData, isPending } = useSnakeQueue(fetchFields?.filter((a) => a.snake != null)?.map((a) => a.snake)) as TSnakeQueue;
 
-  const isAddAllowed = regMales?.length !== fetchFields?.length;
+  const isAddAllowed = regMales?.length !== fetchFields?.length && (regMales?.length || 0) <= 3;
 
   return { isListPen, isQuePen: isPending, isAddAllowed, femData, malesData, regFems, regMales };
 }
@@ -55,7 +56,10 @@ export const breedSchema = yup.object().shape({
   }),
   female_prelay_shed_date: yup.string().nullable(),
   female_ovulation_date: yup.string().nullable(),
+  breed_status: yup.string().nullable().optional(),
 });
+
+export type IBreedScheme = yup.InferType<typeof breedSchema>;
 
 export const defaultVals = {
   female_id: null,
@@ -80,7 +84,7 @@ export const prepForMm = (parent: IResSnakesList) => {
   });
 };
 
-export const prepForCreate = (submit): IReqCreateBPBreed => {
+export const prepForCreate = (submit, status?: IBreedStat): IReqCreateBPBreed => {
   const userId: string = localStorage.getItem("USER")!;
 
   return {
@@ -90,7 +94,7 @@ export const prepForCreate = (submit): IReqCreateBPBreed => {
     female_ovulation_date: submit.female_ovulation_date,
     female_id: submit.female_id,
     males_ids: submit.males_ids.map((a) => a.snake),
-    status: calcStatus(submit),
+    status: status || calcStatus(submit),
   };
 };
 
@@ -103,13 +107,14 @@ export const prepForUpdate = (sub, dirtyObject, breed_id): IUpdBreedReq => {
       upd[k] = sub[k];
     }
   }
+  const ids = sub.males_ids.map((a) => a.snake);
   return {
-    upd: { ...upd, males_events: sub.malesEvents, status: calcStatus(sub) },
+    upd: { ...upd, males_ids: ids, males_events: sub.malesEvents, status: calcStatus(sub) },
     id: breed_id,
   };
 };
 
-const calcStatus = (submit: yup.InferType<typeof breedSchema>) => {
+const calcStatus = (submit: IBreedScheme): IBreedStat => {
   if (submit.female_prelay_shed_date != null) return "shed";
   if (submit.female_ovulation_date != null) return "ovul";
   if (submit.malesEvents && !isEmpty(submit.malesEvents)) {
@@ -117,6 +122,7 @@ const calcStatus = (submit: yup.InferType<typeof breedSchema>) => {
 
     return o.some((a: any) => a.event === "lock") ? "lock" : "woo";
   }
+  return "plan";
 };
 
 export const renderSelectOption = (option, checked) => (

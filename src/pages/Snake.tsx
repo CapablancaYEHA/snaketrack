@@ -3,7 +3,7 @@ import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
 import { Box, Button, Flex, Image, LoadingOverlay, Paper, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
-import { toString } from "lodash-es";
+import { isEmpty, toString } from "lodash-es";
 import { bpFeedColumns, detailsDict, subjectDict } from "@/components/ballpythons/const";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
 import { StackTable } from "@/components/common/StackTable/StackTable";
@@ -57,13 +57,13 @@ export function Snake() {
           ]}
         />
       </Box>
-      <Flex align="flex-start" justify="space-between" columnGap="md" w="100%">
-        <Stack>
-          <Flex align="flex-start" justify="flex-start" gap="xs">
+      <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
+        <Stack flex={{ base: "1", sm: "0 1 50%" }}>
+          <Flex justify="flex-start" gap="xs" align="center">
             <Text>Региус</Text>
             <SexName sex={data.sex} name={data.snake_name} />
           </Flex>
-          <Image src={data.picture} fit="cover" radius="md" mih={110} w="auto" maw="100%" h={140} fallbackSrc={fallback} loading="lazy" />
+          <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "220px", sm: "none" }} />
         </Stack>
         <Stack>
           <Text size="md">Дата рождения — {getDate(data.date_hatch)}</Text>
@@ -82,13 +82,12 @@ export function Snake() {
         <Space h="sm" />
         <Text size="sm">{data.notes ?? "Пусто"}</Text>
       </Paper>
-      {!data?.weight && data.feeding?.every((a) => Object.values(a)?.every((b) => b == null)) ? (
+      {!data?.weight && !isEmpty(data.feeding) && data.feeding?.every((a) => Object.values(a)?.every((b) => b == null)) ? (
         <Text size="md" fw={500} ta="center" w="100%">
           Информация об изменении веса\кормлениях отсутствует
         </Text>
       ) : (
         <>
-          {" "}
           <Flex justify="space-between" w="100%" gap="sm">
             <Select label="Детализация графика" data={detailsDict} value={scale} onChange={setScale as any} />
             <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} />
@@ -96,7 +95,7 @@ export function Snake() {
           <ChartLine weightData={data?.weight} feedData={data.feeding} scaleX={scale} view={view} />
         </>
       )}
-      <StackTable data={feedTable ?? []} columns={bpFeedColumns} />
+      <StackTable data={feedTable ?? []} columns={bpFeedColumns} height={302} />
       <Space h="lg" />
       <FeedSnake
         opened={isFeedOpen.value}

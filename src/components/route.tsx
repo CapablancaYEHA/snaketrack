@@ -1,9 +1,12 @@
 import { Route, useLocation } from "preact-iso";
 import { isEmpty } from "lodash-es";
 import { AddBreed } from "@/pages/AddBreed";
+import { AddClutch } from "@/pages/AddClutch";
 import { AddSnake } from "@/pages/AddSnake";
 import { BreedList } from "@/pages/BreedList";
+import { ClutchList } from "@/pages/ClutchList";
 import { EditBreed } from "@/pages/EditBreed";
+import { EditClutch } from "@/pages/EditClutch";
 import { EditSnake } from "@/pages/EditSnake";
 import { Snake } from "@/pages/Snake";
 import { SnakeList } from "@/pages/SnakeList";
@@ -38,9 +41,13 @@ export const protectedRoutes = {
   "/breeding": BreedList,
   "/breeding/add/:type": AddBreed,
   "/breeding/:type?id=:id": EditBreed,
+  "/clutches": ClutchList,
+  "/clutches/add": AddClutch,
+  "/clutches/edit": EditClutch,
 };
 
 export const sidebarLinks = [
   { id: 2, link: "/snakes" },
   { id: 3, link: "/breeding" },
+  { id: 4, link: "/clutches" },
 ];

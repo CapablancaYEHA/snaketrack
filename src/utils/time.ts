@@ -12,11 +12,12 @@ dayjs.extend(timezone);
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
 dayjs.extend(advancedFormat);
-
-export const getDate = (a: string | Dayjs) => dayjs(a).locale("ru").format("D MMMM YYYY");
 export function adapterLocale() {
   dayjs.locale("ru");
 }
+
+export const getDate = (a: string | Dayjs) => dayjs(a).locale("ru").format("D MMMM YYYY");
+
 export const getDateShort = (a: string) => dayjs(a).locale("ru").format("D.MM.YY");
 export const getDateHours = (a: string) => dayjs(a).locale("ru").format("D MMMM YYYY HH:mm:ss");
 

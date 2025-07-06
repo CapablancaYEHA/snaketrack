@@ -1,7 +1,8 @@
 import { tabletThreshold } from "@/styles/theme";
-import { Box, Title, alpha } from "@mantine/core";
+import { Box, Flex, Image, Title, alpha } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useProfile } from "../../api/profile/hooks";
+import { logoUri } from "./const";
 import { HeadMenu } from "./headMenu";
 import { MobileMenu } from "./mobileMenu";
 import styles from "./styles.module.scss";
@@ -32,8 +33,9 @@ export function Header({ session }) {
         ) : null}
         <a href="/snakes" className={styles.logo}>
           <Title component="span" c="dark.1" order={4}>
-            HsssStats 🧬
+            HsssStats
           </Title>
+          <Image src={logoUri} fit="cover" w="24" h="24" />
         </a>
         {session != null ? (
           <nav

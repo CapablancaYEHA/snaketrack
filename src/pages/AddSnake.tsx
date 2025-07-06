@@ -6,7 +6,7 @@ export function AddSnake() {
   const { data } = useGenes();
   return (
     <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
-      <FormAddBp traits={data} />
+      <FormAddBp traits={data!} />
     </Stack>
   );
 }

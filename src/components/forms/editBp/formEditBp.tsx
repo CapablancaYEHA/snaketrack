@@ -12,7 +12,8 @@ import { notif } from "@/utils/notif";
 import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
 import { dateToSupabaseTime } from "@/utils/time";
 import { sexHardcode } from "../bpBreed/common";
-import { filterSubmitByDirty, makeDefault, schema, uplErr } from "./const";
+import { filterSubmitByDirty, uplErr } from "../common";
+import { makeDefault, schema } from "./const";
 
 export const FormEditBp = ({ traits, init }) => {
   const location = useLocation();

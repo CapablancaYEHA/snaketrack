@@ -12,6 +12,7 @@ import { MaleIcon } from "./Male";
 import { NoDataIcon } from "./NoData";
 import { NoFilterIcon } from "./NoFilter";
 import { PackIcon } from "./Pack";
+import { RelatedIcon } from "./Related";
 import { SearchIcon } from "./Search";
 
 interface IProp {
@@ -35,8 +36,10 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <FemaleIcon width={width} height={height} style={style} />;
     case "kebab":
       return <KebabIcon width={width} height={height} />;
-    case "breeding":
+    case "clutches":
       return <EggIcon width={width} height={height} />;
+    case "breeding":
+      return <RelatedIcon width={width} height={height} />;
     case "check":
       return <CheckIcon width={width} height={height} />;
     case "bin":

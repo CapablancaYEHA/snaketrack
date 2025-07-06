@@ -49,11 +49,11 @@ export function BreedList() {
         <Text fw={500}>Не запланировано ни одного проекта. Самое время начать!</Text>
       ) : (
         <>
-          <Flex gap="sm" wrap="wrap" direction="row">
-            <MaxSelectedMulti label="Самки в проектах" onChange={(a) => tableFiltMulti(setFilt, a, "female_name")} data={[...new Set(breed?.map((a) => a.female_name))]} />
-            <MaxSelectedMulti label="Самцы в проектах" onChange={(a) => tableFiltMulti(setFilt, a, "male_names")} data={[...new Set(breed?.map((a) => a.male_names).flat())]} />
-            <MaxSelectedMulti label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "traits")} data={calcBreedTraits(breed)} />
-            <MaxSelectedMulti label="Статус" onChange={(a: any) => tableFiltMulti(setFilt, a, "breed_status")} data={calcStatusOptions()} />
+          <Flex gap="sm" wrap="wrap" direction="row" maw="100%" w="100%">
+            <MaxSelectedMulti flex="0 1 auto" label="Самки в проектах" onChange={(a) => tableFiltMulti(setFilt, a, "female_name")} data={[...new Set(breed?.map((a) => a.female_name))]} />
+            <MaxSelectedMulti flex="0 1 auto" label="Самцы в проектах" onChange={(a) => tableFiltMulti(setFilt, a, "male_names")} data={[...new Set(breed?.map((a) => a.male_names).flat())]} />
+            <MaxSelectedMulti flex="0 1 auto" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "traits")} data={calcBreedTraits(breed)} />
+            <MaxSelectedMulti flex="0 1 auto" label="Статус" onChange={(a: any) => tableFiltMulti(setFilt, a, "breed_status")} data={calcStatusOptions()} />
           </Flex>
           <StackTable data={tableData} columns={columns} columnFilters={filt} setColumnFilters={setFilt} />
         </>

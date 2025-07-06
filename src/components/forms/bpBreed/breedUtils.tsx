@@ -35,7 +35,7 @@ export const makeBpBreedColumns = ({ setBreedId }) => {
       minSize: 144,
     }),
     columnHelper.accessor("traits" as any, {
-      header: () => "Набор генов",
+      header: () => "Гены в проекте",
       cell: ({ cell }) => (
         <Flex gap="4px" wrap="wrap">
           {cell.getValue().map((a, ind) => (
@@ -70,7 +70,7 @@ export const makeBpBreedColumns = ({ setBreedId }) => {
   ];
 };
 
-export const calcTimeleft = (ovul: string | null, shed: string | null) => {
+export const calcTimeleft = (ovul?: string | null, shed?: string | null) => {
   const left = shed ? dateTimeDiff(dateAddDays(shed, daysAfterShed), "days") : dateTimeDiff(dateAddDays(ovul!, daysAfterOvul), "days");
   const words = declWord(left, ["день", "дня", "дней"]);
 
