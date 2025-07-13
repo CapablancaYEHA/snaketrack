@@ -18,7 +18,7 @@ const isFeedOpen = signal<boolean>(false);
 
 export function Snake() {
   const location = useLocation();
-  const [value, setValue] = useState("common");
+  //   const [value, setValue] = useState("common");
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
   const { data, isPending, isError } = useSnake(location.query.id);
@@ -47,7 +47,7 @@ export function Snake() {
           Добавить событие
         </Button>
       </Flex>
-      <Box m="0 auto">
+      {/* <Box m="0 auto">
         <SegmentedControl
           value={value}
           onChange={setValue}
@@ -56,14 +56,14 @@ export function Snake() {
             { label: "Семейное древо", value: "tree", disabled: true },
           ]}
         />
-      </Box>
+      </Box> */}
       <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
         <Stack flex={{ base: "1", sm: "0 1 50%" }}>
           <Flex justify="flex-start" gap="xs" align="center">
             <Text>Региус</Text>
             <SexName sex={data.sex} name={data.snake_name} />
           </Flex>
-          <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "220px", sm: "none" }} />
+          <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "180px", sm: "260px" }} />
         </Stack>
         <Stack>
           <Text size="md">Дата рождения — {getDate(data.date_hatch)}</Text>

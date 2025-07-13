@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import { upgAlias } from "@/components/genetics/const";
 import { toDataUrl } from "@/utils/supabaseImg";
 import { dateToSupabaseTime } from "@/utils/time";
-import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IReqCreateBpClutch, IResBpBreedingList, IResBpClutch, IResSnakesList, ISupabaseErr } from "./models";
+import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IReqCreateBpClutch, IResBpBreedingList, IResBpClutch, IResSnakesList, ISupabaseErr, IUpdClutchReq } from "./models";
 
 const httpGetGenes = async () => {
   const { data, error } = await supabase.from(ESupabase.bpgenes).select("*").throwOnError();
@@ -426,5 +426,22 @@ export function useBpClutches(owner_id: string, isEnabled = true) {
     queryKey: [EQuKeys.LIST_BP_CLUTCH, owner_id],
     queryFn: () => httpGetClutchesList(owner_id),
     enabled: isEnabled,
+  });
+}
+
+// Update Clutch
+const httpUpdateBpClutch = async (a: IUpdClutchReq) => {
+  return await supabase.from(ESupabase.bp_clutch).update(a.upd).eq("id", a.id).throwOnError();
+};
+
+export function useUpdateBpClutch() {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, IUpdClutchReq>({
+    mutationFn: (a) => httpUpdateBpClutch(a),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EQuKeys.LIST_BP_CLUTCH],
+      });
+    },
   });
 }

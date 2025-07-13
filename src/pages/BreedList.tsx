@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import { Flex, LoadingOverlay, Stack, Text } from "@mantine/core";
+import { Flex, LoadingOverlay, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { calcBreedTraits, calcProjGenes, calcStatusOptions } from "@/components/ballpythons/const";
@@ -35,8 +35,11 @@ export function BreedList() {
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="xl" component="section">
+      <Title component="span" order={4} c="yellow.6">
+        Планы спариваний
+      </Title>
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
-        <Btn fullWidth={false} component="a" href="/breeding/add/ballpython">
+        <Btn fullWidth={false} component="a" href="/breeding/add/ballpython" ml="auto">
           Добавить
         </Btn>
       </Flex>

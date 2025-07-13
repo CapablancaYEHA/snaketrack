@@ -62,7 +62,7 @@ export const makeBpBreedColumns = ({ setBreedId }) => {
     }),
     columnHelper.display({
       id: "action",
-      cell: ({ row }) => <ControlMenu id={row.original.id} onDelete={setBreedId} />,
+      cell: ({ row }) => <ControlMenu id={row.original.id} onDelete={setBreedId} clutchId={row.original.clutch_id} />,
       size: 12,
       maxSize: 1,
       minSize: 36,
@@ -76,7 +76,7 @@ export const calcTimeleft = (ovul?: string | null, shed?: string | null) => {
 
   return {
     left,
-    words: `Осталось ~${words}`,
+    words: `До конца инкубации ~${words}`,
   };
 };
 

@@ -38,7 +38,7 @@ export const FormAddBbBreed = ({ owned_bp_list }) => {
     mutate(prepForCreate(sub, "clutch"), {
       onSuccess: (resp) => {
         notif({ c: "green", t: "Успешно", m: "План сохранен.\nКладка зарегистрирована" });
-        location.route(`/clutches/edit?id=${resp.id}`);
+        location.route(`/clutches/edit/ballpython?id=${resp.id}`);
       },
       onError: async (err) => {
         notif({

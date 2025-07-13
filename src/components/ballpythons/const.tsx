@@ -199,7 +199,7 @@ export const calcBreedTraits = (all: IResBpBreedingList[] | undefined) => {
 
 export const bStToLabel = {
   [EBreedStat.PLAN]: "Планирование",
-  [EBreedStat.WOO]: "Ухаживание",
+  [EBreedStat.WOO]: "Ухаживания",
   [EBreedStat.LOCK]: "Лок",
   [EBreedStat.OVUL]: "Овуляция",
   [EBreedStat.SHED]: "Предродовая линька",

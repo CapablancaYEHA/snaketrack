@@ -9,12 +9,12 @@ import { useSnake } from "@/api/hooks";
 import { IResBpClutch } from "@/api/models";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff, getAge, getDate } from "@/utils/time";
-import { getPercentage } from "../../bpBreed/breedUtils";
+import { getPercentage } from "../bpBreed/breedUtils";
 
 export const SCard = ({ clutch, onPicClick, className }: { clutch: IResBpClutch; onPicClick: Function; className?: string }) => {
   const pics = [clutch.female_picture].concat(clutch.male_pictures);
   const ids = [clutch.female_id].concat(clutch.males_ids);
-  const left = dateTimeDiff(dateAddDays(clutch.date_laid, 60), "days");
+
   return (
     <Flex gap="xl" flex="1 1 auto" className={className} mih={324}>
       <Stack gap="md" justify="space-between">
@@ -35,38 +35,15 @@ export const SCard = ({ clutch, onPicClick, className }: { clutch: IResBpClutch;
           </Flex>
         ))}
       </Stack>
-      <Stack gap="md" flex="0 1 40%">
-        <Flex gap="lg" justify="space-between">
-          <Title order={6}>
-            Дата кладки
-            <Text size="sm" fw={500}>
-              {getDate(clutch.date_laid)}
-            </Text>
-          </Title>
-          <Title order={6}>
-            Ожидаем
-            <Text size="sm" fw={500}>
-              ~{getDate(dateAddDays(clutch.date_laid, 60))}
-            </Text>
-          </Title>
-        </Flex>
-        <Flex>
-          <Box w="100%" maw="100%">
-            <Progress.Root size="lg">
-              <Progress.Section value={getPercentage(60, left)} color="green" animated striped />
-            </Progress.Root>
-          </Box>
-        </Flex>
-        <Flex justify="center">
-          <Title order={6}>Осталось ~{declWord(left, ["день", "дня", "дней"])}</Title>
-        </Flex>
+      <Stack gap="md" flex="1 1 auto">
+        <ClutchProgress date_laid={clutch.date_laid} />
         <Space h="lg" />
-        <Flex gap="lg">
+        <Flex gap="xl">
           <Stack gap="xs">
             <Title order={6}>
               Яйца
               <Text size="sm" fw={500}>
-                {clutch.eggs || "Не указано"}
+                {clutch.eggs ?? "Не указано"}
               </Text>
             </Title>
           </Stack>
@@ -74,28 +51,73 @@ export const SCard = ({ clutch, onPicClick, className }: { clutch: IResBpClutch;
             <Title order={6}>
               Жировики
               <Text size="sm" fw={500}>
-                {clutch.slugs || "Не указано"}
+                {clutch.slugs ?? "Не указано"}
+              </Text>
+            </Title>
+          </Stack>
+          <Stack gap="xs">
+            <Title order={6}>
+              Неоплоды
+              <Text size="sm" fw={500}>
+                {clutch.infertile_eggs ?? "Не указано"}
               </Text>
             </Title>
           </Stack>
         </Flex>
-        <Title order={6}>Гены в проекте</Title>
-        <Flex gap="4px" wrap="wrap">
-          {calcProjGenes(clutch.female_genes.concat(clutch.male_genes.flat())).map((a, ind) => (
-            <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="xs" />
-          ))}
-        </Flex>
+        <Stack gap="xs">
+          <Title order={6}>Гены в проекте</Title>
+          <Flex gap="4px" wrap="wrap">
+            {calcProjGenes(clutch.female_genes.concat(clutch.male_genes.flat())).map((a, ind) => (
+              <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="xs" />
+            ))}
+          </Flex>
+        </Stack>
       </Stack>
     </Flex>
   );
 };
 
-export const MiniInfo = ({ opened, close, selectedSnake }) => {
-  const { data, isPending, isError } = useSnake(selectedSnake.id, selectedSnake.id != null);
+export const ClutchProgress = ({ date_laid, barOnly = false }) => {
+  const left = dateTimeDiff(dateAddDays(date_laid, 60), "days");
 
   return (
-    <Modal centered opened={opened} onClose={close} size="xs" mih={260} title={<Title order={4}>{selectedSnake.sex || ""} в кладке</Title>}>
-      <Stack gap="md">
+    <>
+      {barOnly ? null : (
+        <Flex gap="sm" justify="space-between">
+          <Title order={6}>
+            Дата кладки
+            <Text size="sm" fw={500}>
+              {getDate(date_laid)}
+            </Text>
+          </Title>
+          <Title order={6} ta="right">
+            Ожидаем
+            <Text size="sm" fw={500}>
+              ~{getDate(dateAddDays(date_laid, 60))}
+            </Text>
+          </Title>
+        </Flex>
+      )}
+      <Flex>
+        <Box w="100%" maw="100%">
+          <Progress.Root size="lg">
+            <Progress.Section value={getPercentage(60, left)} color="green" animated striped />
+          </Progress.Root>
+        </Box>
+      </Flex>
+      <Flex justify="center">
+        <Title order={6}>До конца инкубации ~{declWord(left, ["день", "дня", "дней"])}</Title>
+      </Flex>
+    </>
+  );
+};
+
+export const MiniInfo = ({ opened, close, snakeId, sex, withTitle = true }) => {
+  const { data, isPending, isError } = useSnake(snakeId, snakeId != null);
+
+  return (
+    <Modal centered opened={opened} onClose={close} size="xs" title={withTitle ? <Title order={4}>{sex || ""} в кладке</Title> : undefined}>
+      <Stack gap="md" mih={260}>
         {isPending ? (
           <Loader color="dark.1" size="lg" style={{ alignSelf: "center" }} />
         ) : isError ? (

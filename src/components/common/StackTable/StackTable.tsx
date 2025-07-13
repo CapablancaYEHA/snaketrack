@@ -31,7 +31,7 @@ export const StackTable = <T extends object>({ height, columns, data, setColumnF
     onColumnFiltersChange: (columnFilters && setColumnFilters) || undefined,
     onGlobalFilterChange: (globalFilter && setGlobalFilter) || undefined,
 
-    debugTable: true,
+    debugTable: import.meta.env.DEV,
     state: {
       columnFilters,
       globalFilter,
@@ -50,33 +50,37 @@ export const StackTable = <T extends object>({ height, columns, data, setColumnF
   const isEmpty = isMount.current && table.options.data.length === 0;
   const isFilteredOut = table.options.data.length > 0 && table.getRowModel().rows.length === 0;
 
+  const headGroups = table.getHeaderGroups();
+
   return (
-    <div className={styles.cont} style={height ? { height: `${height}px` } : {}}>
+    <div className={styles.cont} style={height && !isEmpty ? { height: `${height}px` } : {}}>
       <table className={styles.table}>
-        <thead style={{ background: "#1c1c1c" }}>
-          {table.getHeaderGroups().map((headerGroup) => {
-            return (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return header.column.columnDef.header ? (
-                    <th key={header.id} style={{ ...calcColumn(header as any), ...getCommonPinningStyles(header.column), minWidth: header.column.columnDef.minSize, background: header.column.getIsPinned() ? bgDark : "transparent" }}>
-                      {header.isPlaceholder ? null : (
-                        <div className={header.column.getCanSort() ? styles.pointer : ""} onClick={header.column.getToggleSortingHandler()}>
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                          {header.column.getCanSort() && !header.column.getIsSorted() ? <IconSwitch icon="arr-bi" width="14" height="14" style={{ display: "inline-block" }} /> : null}
-                          {{
-                            asc: <IconSwitch icon="arr-up" width="14" height="14" style={{ display: "inline-block" }} />,
-                            desc: <IconSwitch icon="arr-up" width="14" height="14" style={{ display: "inline-block", transform: "rotate(180deg)" }} />,
-                          }[header.column.getIsSorted() as string] ?? null}
-                        </div>
-                      )}
-                    </th>
-                  ) : null;
-                })}
-              </tr>
-            );
-          })}
-        </thead>
+        {headGroups[0]?.headers.length <= 1 ? null : (
+          <thead style={{ background: "#1c1c1c" }}>
+            {headGroups.map((headerGroup) => {
+              return (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => {
+                    return header.column.columnDef.header ? (
+                      <th key={header.id} style={{ ...calcColumn(header as any), ...getCommonPinningStyles(header.column), minWidth: header.column.columnDef.minSize, background: header.column.getIsPinned() ? bgDark : "transparent" }}>
+                        {header.isPlaceholder ? null : (
+                          <div className={header.column.getCanSort() ? styles.pointer : ""} onClick={header.column.getToggleSortingHandler()}>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {header.column.getCanSort() && !header.column.getIsSorted() ? <IconSwitch icon="arr-bi" width="14" height="14" style={{ display: "inline-block" }} /> : null}
+                            {{
+                              asc: <IconSwitch icon="arr-up" width="14" height="14" style={{ display: "inline-block" }} />,
+                              desc: <IconSwitch icon="arr-up" width="14" height="14" style={{ display: "inline-block", transform: "rotate(180deg)" }} />,
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </div>
+                        )}
+                      </th>
+                    ) : null;
+                  })}
+                </tr>
+              );
+            })}
+          </thead>
+        )}
         <tbody>
           {isEmpty ? (
             <Stack align="center" justify="center" w="100%" maw="100%" gap="sm" pb="md" pt="md">

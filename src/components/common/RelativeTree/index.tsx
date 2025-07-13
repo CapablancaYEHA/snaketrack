@@ -1,14 +1,16 @@
 import { ReactNode, useCallback, useState } from "preact/compat";
 import { Box, CSSProperties } from "@mantine/core";
 import { clsx } from "clsx";
-import calcTree from "relatives-tree";
-import { Connector, ExtNode, Node } from "relatives-tree/lib/types";
+// import calcTree from "relatives-tree";
+// import { Connector, ExtNode, Node } from "relatives-tree/lib/types";
 import { IResBpClutch } from "@/api/models";
 import css from "./style.module.scss";
 import { tree } from "./tree";
 
+// FIXME !!!!
 interface ILinker {
-  connector: Connector;
+  //   connector: Connector;
+  connector: any;
   width: number;
   height: number;
 }
@@ -37,14 +39,16 @@ interface ITree {
   height: number;
   placeholders?: boolean;
   className?: string;
-  renderNode: (node: ExtNode) => ReactNode;
+  //   renderNode: (node: ExtNode) => ReactNode;
+  renderNode: (node: any) => ReactNode;
 }
 
 function ReactFamilyTree(props: ITree) {
-  const data = calcTree(props.nodes, {
-    rootId: props.rootId,
-    placeholders: props.placeholders,
-  });
+  //   const data = calcTree(props.nodes, {
+  //     rootId: props.rootId,
+  //     placeholders: props.placeholders,
+  //   });
+  const data: any = {};
 
   const width = props.width / 2;
   const height = props.height / 2;
@@ -70,7 +74,8 @@ const WIDTH = 70;
 const HEIGHT = 80;
 
 interface FamilyNodeProps {
-  node: ExtNode;
+  //   node: ExtNode;
+  node: any;
   isRoot: boolean;
   onClick: (id: string) => void;
   onSubClick: (id: string) => void;

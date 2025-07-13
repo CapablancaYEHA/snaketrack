@@ -42,7 +42,7 @@ export const FormEditBpBreed = ({ initData, owned_bp_list }) => {
     mutate(prepForUpdate(sub, dirtyFields, location.query.id), {
       onSuccess: (resp) => {
         notif({ c: "green", t: "Успешно", m: "План сохранен.\nКладка зарегистрирована" });
-        location.route(`/clutches/edit?id=${resp.id}`);
+        location.route(`/clutches/edit/ballpython?id=${resp.id}`);
       },
       onError: async (err) => {
         notif({

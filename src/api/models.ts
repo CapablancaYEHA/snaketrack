@@ -179,6 +179,7 @@ export interface IReqCreateBpClutch {
 export type IReqUpdateBpClutch = Partial<IReqCreateBpClutch> & {};
 
 export interface IResBpClutch {
+  id: string;
   owner_id: string;
   males_ids: string[];
   female_id: string;
@@ -194,4 +195,15 @@ export interface IResBpClutch {
   male_pictures: string | null;
   male_genes: IGenesBpComp[][];
   female_genes: IGenesBpComp[];
+}
+
+export interface IUpdClutchReq {
+  upd: {
+    date_laid: string;
+    date_hatch: string;
+    eggs: number;
+    slugs: number;
+    infertile_eggs: number;
+  };
+  id: string;
 }

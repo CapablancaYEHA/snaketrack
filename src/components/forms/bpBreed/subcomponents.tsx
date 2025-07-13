@@ -457,7 +457,7 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
   );
 };
 
-export const ControlMenu = ({ id, onDelete }) => {
+export const ControlMenu = ({ id, onDelete, clutchId }) => {
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>
@@ -470,6 +470,11 @@ export const ControlMenu = ({ id, onDelete }) => {
         <Menu.Item component="a" href={`/breeding/ballpython?id=${id}`}>
           К планированию
         </Menu.Item>
+        {clutchId ? (
+          <Menu.Item component="a" href={`/clutches/edit/:ballpython?id=${clutchId}`}>
+            Посмотреть кладку
+          </Menu.Item>
+        ) : null}
         <Menu.Item onClick={() => onDelete(id)}>Удалить</Menu.Item>
       </Menu.Dropdown>
     </Menu>

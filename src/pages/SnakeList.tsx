@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
-import { Box, Flex, LoadingOverlay, Select, Stack, Text, TextInput } from "@mantine/core";
+import { Box, Flex, LoadingOverlay, Select, Stack, Text, TextInput, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty, toString } from "lodash-es";
 import { makeBpCardColumns, maturityDict } from "@/components/ballpythons/const";
@@ -50,6 +50,9 @@ export function SnakeList() {
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="xl" component="section">
+      <Title component="span" order={4} c="yellow.6">
+        Змеи
+      </Title>
       <Flex wrap="nowrap" maw="100%" w="100%">
         <Btn fullWidth={false} component="a" href="/snakes/add/ballpython" ml="auto">
           Добавить

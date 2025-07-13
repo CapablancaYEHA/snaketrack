@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
 import { useEffect } from "preact/hooks";
-import { Loader, Stack, Text } from "@mantine/core";
+import { LoadingOverlay, Stack, Text } from "@mantine/core";
 import { makeDefaultClutch } from "@/components/forms/bpClutch/editClutch/const";
 import { FormEditClutch } from "@/components/forms/bpClutch/editClutch/formEditClutch";
 import { useSingleBpClutch } from "@/api/hooks";
@@ -21,7 +21,7 @@ export function EditClutch() {
   return (
     <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
       {isPending ? (
-        <Loader color="dark.1" size="lg" />
+        <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />
       ) : isError ? (
         <Text fw={500} c="var(--mantine-color-error)">
           Редактирование невозможно

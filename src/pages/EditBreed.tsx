@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
 import { useEffect } from "preact/hooks";
-import { Loader, Stack, Text } from "@mantine/core";
+import { LoadingOverlay, Stack, Text } from "@mantine/core";
 import { makeDefaultValues } from "@/components/forms/bpBreed/editBpBreed/const";
 import { FormEditBpBreed } from "@/components/forms/bpBreed/editBpBreed/formEditBpBreed";
 import { useSingleBpBreed } from "@/api/hooks";
@@ -24,7 +24,7 @@ export function EditBreed() {
   return (
     <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
       {isPending ? (
-        <Loader color="dark.1" size="lg" />
+        <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />
       ) : isError ? (
         <Text fw={500} c="var(--mantine-color-error)">
           Редактирование бридинга невозможно
