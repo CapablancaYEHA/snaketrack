@@ -88,7 +88,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
             name="genes"
             control={control}
             render={({ field: { onChange } }) => {
-              return <GeneSelect onChange={(a) => onChange(a)} outer={traits} />;
+              return <GeneSelect onChange={(a) => onChange(a)} outer={traits} label="Морфы" />;
             }}
           />
         )}

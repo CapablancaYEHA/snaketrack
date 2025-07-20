@@ -1,0 +1,14 @@
+@keyframes kekus {
+  0%,
+  to {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.animated {
+  animation: kekus 3s linear infinite;
+}

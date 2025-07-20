@@ -1,65 +1,119 @@
 import { useLocation } from "preact-iso";
+import { FC } from "preact/compat";
+import { useEffect } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, Flex, Image, NumberInput, Progress, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Divider, Flex, Image, NumberInput, Progress, Space, Stack, Text, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, FormProvider, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { calcProjGenes } from "@/components/ballpythons/const";
 import { GenePill } from "@/components/genetics/geneSelect";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { useUpdateBpClutch } from "@/api/hooks";
+import { useFinaliseBpClutch, useUpdateBpClutch } from "@/api/hooks";
+import { EClSt, IResBpClutch } from "@/api/models";
 import { notif } from "@/utils/notif";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff } from "@/utils/time";
 import { getPercentage } from "../../bpBreed/breedUtils";
-import { MiniInfo } from "../subcomponents";
-import { IClutchScheme, clutchSchema, prepForUpdate } from "./const";
+import { FormApprovedBabies, MiniInfo } from "../subcomponents";
+import { IClutchScheme, clutchSchema, prepForFinal, prepForHatch, prepForUpdate, stdErr } from "./const";
+import style from "./styles.module.scss";
 
 const snakeId = signal<string | undefined>(undefined);
 
-export const FormEditClutch = ({ initData }) => {
+// FIXME Условия отображения кнопок и компонентов
+interface IProp {
+  clutch: IResBpClutch;
+  initData: IClutchScheme;
+}
+export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
   const location = useLocation();
-  const {
-    handleSubmit,
-    formState: { errors, isDirty, dirtyFields },
-    control,
-    watch,
-    getValues,
-  } = useForm<IClutchScheme>({
+  const form = useForm<IClutchScheme>({
     defaultValues: initData,
     resolver: yupResolver(clutchSchema as any),
   });
 
-  const [wPics, wIds] = useWatch({
+  const {
+    handleSubmit,
+    formState: { isDirty, dirtyFields },
     control,
-    name: ["pics", "ids"],
+    watch,
+  } = form;
+
+  const [wEggs, wInf] = useWatch({
+    control,
+    name: ["eggs", "infertile_eggs"],
   });
 
+  const { fields: kidsFields, replace } = useFieldArray({
+    control,
+    name: "placeholders",
+  });
+
+  const { fields: futureSnakes, replace: replaceInit } = useFieldArray({
+    control,
+    name: "future_animals",
+  });
+
+  const pics = [clutch.female_picture].concat(clutch.male_pictures);
+  const ids = [clutch.female_id].concat(clutch.males_ids);
+  const { female_genes, male_genes } = clutch;
+
   const { mutate: update } = useUpdateBpClutch();
+  const { mutate: finalise } = useFinaliseBpClutch();
 
   const dateLaid = watch("date_laid");
   const left = dateTimeDiff(dateAddDays(dateLaid, 60), "days");
+  const isHatch = clutch.status === EClSt.HA;
+  const isClosed = clutch.status === EClSt.CL;
 
   const onSub = async (sbm) => {
     update(prepForUpdate(sbm, dirtyFields, location.query.id), {
       onSuccess: () => {
-        notif({ c: "green", t: "Успешно", m: "Кладка обновлена" });
+        notif({ c: "green", t: "Успешно", m: "Детали кладки обновлены" });
         location.route("/clutches");
       },
       onError: async (err) => {
-        notif({
-          c: "red",
-          t: "Ошибка",
-          m: JSON.stringify(err),
-          code: err.code || err.statusCode,
-        });
+        stdErr(err);
       },
     });
   };
 
-  console.log("errors", errors);
+  const onHatch = (sbm) => {
+    update(prepForHatch(sbm, dirtyFields, location.query.id), {
+      onSuccess: () => {
+        notif({ c: "green", t: "Успешно", m: "Поздравляем с рождением малышей! 🥳" });
+      },
+      onError: async (err) => {
+        stdErr(err);
+      },
+    });
+  };
+
+  const onFinalise = (sbm) => {
+    finalise(prepForFinal(sbm, location.query.id), {
+      onSuccess: () => {
+        notif({ c: "green", t: "Успешно", m: "Поздравляем с рождением малышей! 🥳" });
+      },
+      onError: async (err) => {
+        stdErr(err);
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (!isHatch) {
+      replace(new Array(wEggs - (wInf ?? 0)).fill(" "));
+    }
+  }, [wEggs, wInf, isHatch, replace]);
+
+  useEffect(() => {
+    if (initData.future_animals != null && isHatch) {
+      replaceInit(initData.future_animals);
+    }
+  }, [initData.future_animals, replaceInit, isHatch]);
 
   return (
     <>
@@ -67,8 +121,8 @@ export const FormEditClutch = ({ initData }) => {
         Просмотр и редактирование кладки {location.query.id}
       </Text>
       <Flex maw="100%" w="100%" gap="lg" wrap="wrap">
-        {wPics?.map((a, ind) => (
-          <Flex key={a} gap="sm" flex="0 1 160px" h={80} style={{ cursor: "pointer" }} onClick={() => (snakeId.value = wIds?.[ind])} wrap="nowrap">
+        {pics?.map((a, ind) => (
+          <Flex key={a} gap="sm" flex="0 1 160px" h={80} style={{ cursor: "pointer" }} onClick={() => (snakeId.value = ids?.[ind])} wrap="nowrap">
             <IconSwitch icon={ind === 0 ? "female" : "male"} width="16" height="16" />
             <Image src={a} fit="cover" radius="sm" w="auto" flex="0 0 160px" loading="lazy" fallbackSrc={fallback} />
           </Flex>
@@ -77,8 +131,8 @@ export const FormEditClutch = ({ initData }) => {
       <Stack gap="xs">
         <Title order={6}>Гены в проекте</Title>
         <Flex gap="4px" wrap="wrap">
-          {calcProjGenes((getValues("female_genes") as any).concat((getValues("male_genes") as any).flat())).map((a, ind) => (
-            <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="xs" />
+          {calcProjGenes(female_genes.concat(male_genes.flat())).map((a, ind) => (
+            <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="sm" />
           ))}
         </Flex>
       </Stack>
@@ -89,7 +143,21 @@ export const FormEditClutch = ({ initData }) => {
             name="date_laid"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <DatePickerInput label="Дата кладки" w={{ base: "100%", xs: "50%" }} flex="1 1 50%" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} />;
+              return (
+                <DatePickerInput
+                  disabled={isHatch || isClosed}
+                  label="Дата кладки"
+                  w={{ base: "100%", xs: "50%" }}
+                  flex="1 1 50%"
+                  value={value as any}
+                  onChange={onChange}
+                  valueFormat="DD MMMM YYYY"
+                  highlightToday
+                  locale="ru"
+                  error={error?.message}
+                  maxDate={new Date()}
+                />
+              );
             }}
           />
           <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%">
@@ -101,7 +169,7 @@ export const FormEditClutch = ({ initData }) => {
               </Box>
             </Flex>
             <Flex justify="center">
-              <Title order={6}>До конца инкубации ~{declWord(left, ["день", "дня", "дней"])}</Title>
+              <Title order={6}>{isHatch || isClosed ? "Кладка инкубирована" : `До конца инкубации ~${declWord(left, ["день", "дня", "дней"])}`}</Title>
             </Flex>
           </Stack>
         </Flex>
@@ -110,36 +178,88 @@ export const FormEditClutch = ({ initData }) => {
             name="eggs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput label="Яйца" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return <NumberInput disabled={isHatch || isClosed} label="Яйца" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
             }}
           />
           <Controller
             name="slugs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput label="Жировики" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return <NumberInput disabled={isHatch || isClosed} label="Жировики" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
             }}
           />
           <Controller
             name="infertile_eggs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput label="Неоплоды" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return <NumberInput disabled={isHatch || isClosed} label="Неоплоды" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
             }}
           />
         </Flex>
       </Stack>
 
-      <Flex align="flex-start" maw="100%" w="100%">
-        {left <= 5 ? (
-          <Button type="submit" onClick={() => undefined} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="xs">
-            Завершить инкубацию
-          </Button>
+      {!(isHatch || isClosed) ? (
+        <Flex align="flex-start" maw="100%" w="100%">
+          <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} disabled={!isDirty}>
+            Сохранить изменения
+          </Btn>
+        </Flex>
+      ) : null}
+
+      <Divider w="100%" maw="100%" mt="md" />
+      <Stack gap="lg" w="100%" maw="100%">
+        <Controller
+          name="date_hatch"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return (
+              <DatePickerInput
+                disabled={isHatch || isClosed}
+                label="Дата завершения инкубации"
+                w="auto"
+                maw="max-content"
+                value={value as any}
+                onChange={onChange}
+                valueFormat="DD MMMM YYYY"
+                highlightToday
+                locale="ru"
+                error={error?.message}
+                maxDate={dateAddDays(value as any, 5).toDate()}
+                minDate={dateAddDays(value as any, -5).toDate()}
+              />
+            );
+          }}
+        />
+
+        {!(isHatch || isClosed) ? (
+          <>
+            <Flex gap="md" className={style.animated} wrap="wrap">
+              {kidsFields?.map((a) => (
+                <Flex key={a.id} gap="sm" wrap="nowrap" miw="0px" mih="0px">
+                  <IconSwitch icon="unisex" width="20" height="20" />
+                  <Image src={null} fit="cover" radius="sm" w="auto" h={48} loading="lazy" flex="1 1 48px" fallbackSrc={fallback} />
+                </Flex>
+              ))}
+            </Flex>
+            <Flex align="flex-start" maw="100%" w="100%">
+              <Button type="submit" onClick={handleSubmit(onHatch)} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="sm">
+                Завершить инкубацию
+              </Button>
+            </Flex>
+          </>
         ) : null}
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} disabled={!isDirty}>
-          Сохранить изменения
+
+        <FormProvider {...form}>
+          <FormApprovedBabies futureSnakes={futureSnakes} />
+        </FormProvider>
+      </Stack>
+
+      <Flex align="flex-start" maw="100%" w="100%">
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onFinalise)}>
+          Завершить кладку
         </Btn>
       </Flex>
+
       <MiniInfo
         opened={snakeId.value != null}
         close={() => {

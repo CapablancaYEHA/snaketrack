@@ -450,7 +450,12 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
             Зарегистрировать кладку
           </Button>
         ) : isClutchMade ? (
-          <div>У вас есть кладка</div>
+          <div>
+            Уже есть кладка{" "}
+            <a href={`/clutches/edit/:ballpython?id=${innerInstance.getValues("clutch_id" as any)}`} target="_blank" rel="noreferrer" style={{ textDecoration: "underline" }}>
+              Перейти
+            </a>
+          </div>
         ) : null}
       </Flex>
     </>

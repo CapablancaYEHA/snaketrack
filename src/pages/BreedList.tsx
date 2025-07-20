@@ -29,7 +29,7 @@ export function BreedList() {
   const userId = localStorage.getItem("USER");
   const [filt, setFilt] = useState<any[]>([]);
   const { data: dt, isError } = useProfile(userId, userId != null);
-  const { data: breed, isPending, isError: isBreedErr } = useBpBreedingList(dt?.breeding_regius_list!, !isEmpty(dt));
+  const { data: breed, isPending, isError: isBreedErr } = useBpBreedingList(userId!, !isEmpty(dt));
 
   const tableData: IBreedExt[] = (breed ?? [])?.map((m) => ({ ...m, traits: calcProjGenes(m.female_genes.concat(m.male_genes.flat())) }));
 
@@ -48,7 +48,7 @@ export function BreedList() {
         <Text fw={500} c="var(--mantine-color-error)">
           Произошла ошибка запроса
         </Text>
-      ) : isEmpty(dt?.breeding_regius_list) || isEmpty(breed) ? (
+      ) : isEmpty(breed) ? (
         <Text fw={500}>Не запланировано ни одного проекта. Самое время начать!</Text>
       ) : (
         <>

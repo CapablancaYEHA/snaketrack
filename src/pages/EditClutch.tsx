@@ -10,7 +10,7 @@ export function EditClutch() {
   const location = useLocation();
   const { data, isError, error, isPending } = useSingleBpClutch(location.query.id);
 
-  const composed = makeDefaultClutch(data as any);
+  const composed = makeDefaultClutch(data);
 
   useEffect(() => {
     if (isError) {
@@ -27,7 +27,7 @@ export function EditClutch() {
           Редактирование невозможно
         </Text>
       ) : (
-        <FormEditClutch initData={composed} />
+        <FormEditClutch initData={composed} clutch={data} />
       )}
     </Stack>
   );

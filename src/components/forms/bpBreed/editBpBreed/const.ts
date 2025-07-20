@@ -9,5 +9,6 @@ export const makeDefaultValues = (data?: IResBpBreedingList | null) => {
     female_ovulation_date: data.female_ovulation_date,
     males_ids: data.breed_males_ids.map((a, ind) => ({ snake: a, id: ind })),
     breed_status: data.breed_status,
+    clutch_id: data.clutch_id,
   };
 };

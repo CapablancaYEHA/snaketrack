@@ -20,7 +20,7 @@ export const getDate = (a: string | Dayjs) => dayjs(a).locale("ru").format("D MM
 
 export const getDateShort = (a: string) => dayjs(a).locale("ru").format("D.MM.YY");
 export const getDateHours = (a: string) => dayjs(a).locale("ru").format("D MMMM YYYY HH:mm:ss");
-
+export const getDateCustom = (a: string | Dayjs, pattern = "YYYY-MM-DD") => dayjs(a).locale("ru").format(pattern);
 export const dateToSupabaseTime = (a: any): string => dayjs(a).format("YYYY-MM-DD HH:mm:ss.SSSZZ");
 export const nowToSbTime = (): string => dayjs().format("YYYY-MM-DD HH:mm:ss.SSSZZ");
 

@@ -14,6 +14,7 @@ import { NoFilterIcon } from "./NoFilter";
 import { PackIcon } from "./Pack";
 import { RelatedIcon } from "./Related";
 import { SearchIcon } from "./Search";
+import { UnisexIcon } from "./Unisex";
 
 interface IProp {
   icon: string;
@@ -34,6 +35,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <MaleIcon width={width} height={height} style={style} />;
     case "female":
       return <FemaleIcon width={width} height={height} style={style} />;
+    case "unisex":
+      return <UnisexIcon width={width} height={height} style={style} />;
     case "kebab":
       return <KebabIcon width={width} height={height} />;
     case "clutches":
@@ -55,6 +58,6 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
     case "search":
       return <SearchIcon width={width} height={height} />;
     default:
-      return <DashIcon width={width} height={height} />;
+      return <UnisexIcon width={width} height={height} />;
   }
 };

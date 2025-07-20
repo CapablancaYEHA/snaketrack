@@ -32,9 +32,11 @@ interface IProp {
   outer?: IGenesBpComp[];
   onChange: (a) => void;
   init?: IGenesBpComp[];
+  label?: string;
+  placeholder?: string;
 }
 
-export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
+export const GeneSelect: FC<IProp> = ({ outer, onChange, init, label, placeholder = "Normal, no Het" }) => {
   const combobox = useCombobox({
     onDropdownClose: () => {
       combobox.resetSelectedOption();
@@ -76,7 +78,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
   return (
     <Combobox store={combobox} onOptionSubmit={handleValueSelect as any} withinPortal={false} disabled={outer?.length === 0}>
       <Combobox.DropdownTarget>
-        <PillsInput onClick={() => combobox.openDropdown()} label="Набор генов">
+        <PillsInput onClick={() => combobox.openDropdown()} label={label}>
           <Pill.Group>
             {values}
             <Combobox.EventsTarget>
@@ -84,7 +86,7 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init }) => {
                 onFocus={() => combobox.openDropdown()}
                 onBlur={() => combobox.closeDropdown()}
                 value={search}
-                placeholder={value.length ? undefined : "Normal, no Het"}
+                placeholder={value.length ? undefined : placeholder}
                 onChange={(event) => {
                   combobox.updateSelectedOptionIndex();
                   debSearch(event.currentTarget.value);

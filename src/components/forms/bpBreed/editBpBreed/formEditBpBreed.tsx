@@ -66,6 +66,3 @@ export const FormEditBpBreed = ({ initData, owned_bp_list }) => {
     </>
   );
 };
-function makeClutchFromBpBreed(): { mutate: any } {
-  throw new Error("Function not implemented.");
-}

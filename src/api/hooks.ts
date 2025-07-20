@@ -5,7 +5,7 @@ import { nanoid } from "nanoid";
 import { upgAlias } from "@/components/genetics/const";
 import { toDataUrl } from "@/utils/supabaseImg";
 import { dateToSupabaseTime } from "@/utils/time";
-import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IReqCreateBpClutch, IResBpBreedingList, IResBpClutch, IResSnakesList, ISupabaseErr, IUpdClutchReq } from "./models";
+import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IReqCreateBpClutch, IReqUpdBpClutch, IResBpBreedingList, IResBpClutch, IResSnakesList, ISupabaseErr, IUpdClutchReq } from "./models";
 
 const httpGetGenes = async () => {
   const { data, error } = await supabase.from(ESupabase.bpgenes).select("*").throwOnError();
@@ -44,7 +44,7 @@ export const httpReplacePic = async (url: string, file: File) => {
 };
 
 // Create
-const httpCreateBp = async (a: IReqCreateBP) => {
+const httpCreateBp = async (a: IReqCreateBP | IReqCreateBP[]) => {
   return await supabase.from(ESupabase.ballpythons).insert(a).select("id").single<{ id: string }>().throwOnError();
 };
 
@@ -212,18 +212,18 @@ export function useBase64(url: string, flag: boolean) {
 }
 
 // Get Breeding
-const httpGetBpBreedingList = async (list: string[]) => {
-  const { data, error } = await supabase.from(ESupabase.bp_breeding_joined).select().in("id", list);
+const httpGetBpBreedingList = async (owner_id: string) => {
+  const { data, error } = await supabase.from(ESupabase.bp_breeding_joined).select().eq("owner_id", owner_id);
   if (error) {
     throw error;
   }
   return data;
 };
 
-export function useBpBreedingList(list: string[], isEnabled: boolean) {
+export function useBpBreedingList(owner: string, isEnabled: boolean) {
   return useQuery<any, ISupabaseErr, IResBpBreedingList[]>({
-    queryKey: [EQuKeys.LIST_BP_BREED, list],
-    queryFn: () => httpGetBpBreedingList(list),
+    queryKey: [EQuKeys.LIST_BP_BREED, owner],
+    queryFn: () => httpGetBpBreedingList(owner),
     enabled: isEnabled,
   });
 }
@@ -430,17 +430,45 @@ export function useBpClutches(owner_id: string, isEnabled = true) {
 }
 
 // Update Clutch
-const httpUpdateBpClutch = async (a: IUpdClutchReq) => {
+const httpUpdateBpClutch = async (a: IReqUpdBpClutch) => {
   return await supabase.from(ESupabase.bp_clutch).update(a.upd).eq("id", a.id).throwOnError();
 };
 
 export function useUpdateBpClutch() {
   const queryClient = useQueryClient();
-  return useMutation<any, ISupabaseErr, IUpdClutchReq>({
+  return useMutation<any, ISupabaseErr, IReqUpdBpClutch>({
     mutationFn: (a) => httpUpdateBpClutch(a),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [EQuKeys.LIST_BP_CLUTCH],
+      });
+    },
+  });
+}
+
+interface IFinaliseClutchReq {
+  snakes: IReqCreateBP[];
+  clutchUpd: IReqUpdBpClutch;
+}
+const httpFinaliseClutch = async (args: IFinaliseClutchReq) => {
+  const { data, error: insertError } = await supabase.from(ESupabase.ballpythons).insert(args.snakes).select("id").throwOnError();
+  if (insertError) {
+    throw insertError;
+  }
+  const { error } = await httpUpdateBpClutch({ upd: args.clutchUpd as any, id: args.clutchUpd.id });
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+export function useFinaliseBpClutch() {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, IFinaliseClutchReq>({
+    mutationFn: (a) => httpFinaliseClutch(a),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EQuKeys.LIST_BP_CLUTCH, EQuKeys.LIST_BP],
       });
     },
   });

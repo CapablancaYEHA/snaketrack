@@ -100,7 +100,7 @@ export const FormEditBp = ({ traits, init }) => {
             name="genes"
             control={control}
             render={({ field: { onChange, value } }) => {
-              return <GeneSelect onChange={(a) => onChange(a)} outer={traits} init={value} />;
+              return <GeneSelect onChange={(a) => onChange(a)} outer={traits} init={value} label="Морфы" />;
             }}
           />
         )}

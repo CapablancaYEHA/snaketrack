@@ -19,13 +19,13 @@ export const enum EQuKeys {
 }
 
 export interface IGenesBpComp {
-  id: number;
+  id?: number;
   label: string;
   gene: "inc-dom" | "dom" | "rec" | "poly" | "other";
   hasSuper: boolean;
   alias?: string | null;
   hasHet: boolean;
-  possible?: boolean;
+  isPos?: boolean;
 }
 
 export interface ISupabaseErr {
@@ -38,12 +38,12 @@ export interface ISupabaseErr {
 
 export interface IReqCreateBP {
   snake_name: string;
-  sex: string;
+  sex: "male" | "female";
   genes: IGenesBpComp[];
   weight: { date: string; weight: number }[] | null;
   date_hatch: string;
   origin: string;
-  parents: []; // TODO ?????
+  parents?: { female: string; males: string[] }; // TODO ?????
   price: number | null;
   feed_last_at?: string | null;
   feed_weight?: string | null;
@@ -52,6 +52,7 @@ export interface IReqCreateBP {
   picture: string | null;
   notes: string | null;
   last_action?: "create" | "transfer" | "update" | "delete";
+  from_clutch?: string | null;
 }
 
 export type IFeed = {
@@ -63,7 +64,7 @@ export type IFeed = {
   regurgitation?: boolean;
 };
 
-export interface IResSnakesList extends Pick<IReqCreateBP, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture" | "notes" | "last_action"> {
+export interface IResSnakesList extends Pick<IReqCreateBP, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture" | "notes" | "last_action" | "from_clutch"> {
   id: string;
   owner_name: string;
   status: string;
@@ -78,7 +79,6 @@ export interface IResProfile {
   username: string;
   role: "free" | "premium";
   regius_list: string[] | null;
-  breeding_regius_list: string[] | null;
 }
 
 enum EEvents {
@@ -171,13 +171,24 @@ export interface IReqCreateBpClutch {
   eggs?: number;
   slugs?: number;
   infertile_eggs?: number;
-  status?: "laid" | "hatched";
+  status?: EClSt;
   picture?: string;
-  traits?: Partial<IGenesBpComp>[];
 }
 
-export type IReqUpdateBpClutch = Partial<IReqCreateBpClutch> & {};
+export interface IHatchling {
+  id?: string;
+  snake_name: string;
+  date_hatch: string;
+  sex: "male" | "female" | null;
+  genes: IGenesBpComp[];
+  status: "alive" | "deceased";
+}
 
+export enum EClSt {
+  LA = "laid",
+  HA = "hatched",
+  CL = "closed",
+}
 export interface IResBpClutch {
   id: string;
   owner_id: string;
@@ -188,22 +199,20 @@ export interface IResBpClutch {
   eggs: number | null;
   slugs: number | null;
   infertile_eggs: number | null;
-  status: "laid" | "hatched";
+  status: EClSt;
   picture: string | null;
-  clutch_babies: string[] | null;
+  clutch_babies: IHatchling[] | null;
   female_picture: string | null;
   male_pictures: string | null;
   male_genes: IGenesBpComp[][];
   female_genes: IGenesBpComp[];
 }
 
-export interface IUpdClutchReq {
-  upd: {
-    date_laid: string;
-    date_hatch: string;
-    eggs: number;
-    slugs: number;
-    infertile_eggs: number;
-  };
+export interface IUpdClutchReq extends Partial<Omit<IReqCreateBpClutch, "males_ids" | "female_id" | "owner_id">> {
+  clutch_babies?: IHatchling[];
+}
+
+export interface IReqUpdBpClutch {
+  upd: IUpdClutchReq;
   id: string;
 }
