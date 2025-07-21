@@ -95,7 +95,17 @@ export function Snake() {
           <ChartLine weightData={data?.weight} feedData={data.feeding} scaleX={scale} view={view} />
         </>
       )}
-      <StackTable data={feedTable ?? []} columns={bpFeedColumns} height={302} />
+      <StackTable
+        data={feedTable ?? []}
+        columns={bpFeedColumns}
+        height={302}
+        initSort={[
+          {
+            id: "feed_last_at",
+            desc: false,
+          },
+        ]}
+      />
       <Space h="lg" />
       <FeedSnake
         opened={isFeedOpen.value}

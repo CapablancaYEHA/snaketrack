@@ -1,7 +1,7 @@
 import { isEmpty } from "lodash-es";
 import * as yup from "yup";
 import { IReqCreateBP } from "@/api/models";
-import { dateToSupabaseTime, nowToSbTime } from "@/utils/time";
+import { dateToSupabaseTime } from "@/utils/time";
 import { notif } from "../../../utils/notif";
 
 export const feederHardcode = [
@@ -90,7 +90,7 @@ export const prepareForSubmit = (a): Omit<IReqCreateBP, "picture"> => {
       : [
           {
             weight: a.weight,
-            date: nowToSbTime(),
+            date: dateToSupabaseTime(new Date()),
           },
         ];
   let d = {

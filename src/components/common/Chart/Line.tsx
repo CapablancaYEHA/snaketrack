@@ -38,7 +38,7 @@ export const ChartBubble = ({ shedData }) => {
     </Text>
   ) : (
     <div style={{ position: "relative", width: "100%" }}>
-      <Bubble options={bubbleOptions as any} data={bubData} height={80} />
+      <Bubble options={bubbleOptions as any} data={bubData} height={100} />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { FC } from "preact/compat";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Accordion, Checkbox, Flex, Modal, NumberInput, Select, Space, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Accordion, Box, Checkbox, Flex, Modal, NumberInput, Select, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { Controller, useForm } from "react-hook-form";
 import { useUpdateFeeding } from "@/api/hooks";
@@ -66,9 +66,9 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
 
   return (
     <Modal size="lg" opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Региус. Новое событие</Title>}>
-      <Flex gap="sm" align="center">
+      <Box>
         <SexName sex={snake?.sex!} name={snake?.snake_name ?? ""} />
-      </Flex>
+      </Box>
       <Space h="sm" />
       <Flex>
         <Controller
@@ -104,7 +104,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         }}
       />
       <Space h="lg" />
-      <NumberInput {...(register("feed_weight") as any)} rightSection="г" label="Масса КО" required placeholder="Не выбрано" hideControls error={errors?.["feed_weight"]?.message} />
+      <NumberInput {...(register("feed_weight") as any)} rightSection="г" label="Масса КО" placeholder="Не выбрано" hideControls error={errors?.["feed_weight"]?.message} />
       <Space h="lg" />
       <TextInput {...register("feed_comment")} label="Коммент к событию" error={errors?.["feed_comment"]?.message} />
       <Space h="lg" />

@@ -1,4 +1,4 @@
-import { adapterLocale, getDate } from "@/utils/time";
+import { adapterLocale, getDate, getDateObj } from "@/utils/time";
 
 adapterLocale();
 
@@ -113,11 +113,14 @@ export const makeLineOptions = (val) => {
     scales: {
       x: {
         type: "time",
+        bounds: "ticks",
         time: timeByString[val],
         ticks: {
           stepSize: ticksByString[val],
           autoSkip: true,
-          source: "data",
+          autoSkipPadding: 20,
+          //   maxTicksLimit: 10,
+          source: "auto",
           color: "rgba(178,178,178,0.9)",
         },
         adapters: {
@@ -204,14 +207,16 @@ export const makeLineData = (weight, feed, view: "ko" | "snake" | "both") => {
   const koSet = {
     ...dataKO,
 
-    data: (feed ?? [])?.map((a, ind, self) => {
-      const lastValid = a.feed_weight ?? findLastValid(ind - 1, self);
-      return { y: lastValid, x: a.feed_last_at, regurgitation: a.regurgitation || false, refuse: a.refuse || false };
-    }),
+    data: (feed ?? [])
+      ?.map((a, ind, self) => {
+        const lastValid = a.feed_weight ?? findLastValid(ind - 1, self);
+        return { y: lastValid, x: a.feed_last_at, regurgitation: a.regurgitation || false, refuse: a.refuse || false };
+      })
+      .sort((a, b) => getDateObj(a.x) - getDateObj(b.x)),
   };
   const snakeSet = {
     ...dataSnake,
-    data: (weight ?? [])?.map((a) => ({ y: a.weight, x: a.date })),
+    data: (weight ?? [])?.map((a) => ({ y: a.weight, x: a.date })).sort((a, b) => getDateObj(a.x) - getDateObj(b.x)),
   };
 
   if (view === "both") {
@@ -281,6 +286,8 @@ export const bubbleOptions = {
         stepSize: 7,
         source: "data",
         color: "rgba(178,178,178,0.9)",
+        maxRotation: 30,
+        minRotation: 20,
       },
       adapters: {
         date: {

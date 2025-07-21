@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Stack } from "@mantine/core";
-import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import styles from "./styles.module.scss";
 import { bgDark, calcColumn, getCommonPinningStyles } from "./utils";
@@ -14,10 +14,12 @@ interface IProp<T> {
   globalFilter?: GlobalFilterTableState;
   setGlobalFilter?: OnChangeFn<GlobalFilterTableState>;
   onRowClick?: (v) => void;
+  initSort?: SortingState;
 }
 
-export const StackTable = <T extends object>({ height, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter }: IProp<T>) => {
+export const StackTable = <T extends object>({ height, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter, initSort }: IProp<T>) => {
   const isMount = useRef(false);
+  const [sorting, setSorting] = useState<SortingState>(initSort ?? []);
   const cols: ColumnDef<T>[] = useMemo<ColumnDef<T, unknown>[]>(() => columns, []);
 
   const table = useReactTable({
@@ -25,6 +27,7 @@ export const StackTable = <T extends object>({ height, columns, data, setColumnF
     data: data ?? [],
     globalFilterFn: "includesString",
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
     // getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -35,6 +38,7 @@ export const StackTable = <T extends object>({ height, columns, data, setColumnF
     state: {
       columnFilters,
       globalFilter,
+      sorting,
     },
   });
 

@@ -12,7 +12,7 @@ export const defVals = {
   refuse: null,
   regurgitation: null,
 };
-const incor = "Отметьте линьку/срыг/отказ, либо укажите массу питомца";
+const incor = "Отметьте линьку / срыг / отказ, либо укажите массу питомца";
 export const schema = yup.object().shape(
   {
     feed_last_at: yup.string().nullable().required("Дата обязательна"),
@@ -25,20 +25,23 @@ export const schema = yup.object().shape(
       .number()
       .transform((v) => (!v || Number.isNaN(v) ? null : v))
       .nullable(),
-    shed: yup.boolean().when(["weight"], ([weight], self) => {
-      return !weight ? self.required(incor) : self.nullable();
+    shed: yup.boolean().when(["weight", "refuse", "regurgitation"], ([weight, refuse, regurgitation], self) => {
+      return !weight && !refuse && !regurgitation ? self.required(incor) : self.nullable();
     }),
-    refuse: yup.boolean().when(["weight"], ([weight], self) => {
-      return !weight ? self.required(incor) : self.nullable();
+    refuse: yup.boolean().when(["weight", "shed", "regurgitation"], ([weight, shed, regurgitation], self) => {
+      return !weight && !shed && !regurgitation ? self.required(incor) : self.nullable();
     }),
-    regurgitation: yup.boolean().when(["weight"], ([weight], self) => {
-      return !weight ? self.required(incor) : self.nullable();
+    regurgitation: yup.boolean().when(["weight", "shed", "refuse"], ([weight, shed, refuse], self) => {
+      return !weight && !shed && !refuse ? self.required(incor) : self.nullable();
     }),
   },
   [
     ["weight", "shed"],
     ["weight", "refuse"],
     ["weight", "regurgitation"],
+    ["regurgitation", "shed"],
+    ["regurgitation", "refuse"],
+    ["shed", "refuse"],
   ],
 );
 
@@ -53,8 +56,10 @@ export const prepareForSubmit = (fd) => {
       }
     : null;
   let shed = fd.shed ? time : null;
-  delete feed.weight;
-  delete feed.shed;
+  if (feed) {
+    delete feed.weight;
+    delete feed.shed;
+  }
 
   return { feed, mass, shed };
 };
