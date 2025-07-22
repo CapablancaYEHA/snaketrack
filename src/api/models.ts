@@ -78,7 +78,6 @@ export interface IResProfile {
   createdat: string;
   username: string;
   role: "free" | "premium";
-  regius_list: string[] | null;
 }
 
 enum EEvents {

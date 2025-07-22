@@ -7,7 +7,7 @@ import { notif } from "@/utils/notif";
 import { IBreedScheme, breedSchema, defaultVals, prepForCreate } from "../common";
 import { FormComposedBody } from "../subcomponents";
 
-export const FormAddBbBreed = ({ owned_bp_list }) => {
+export const FormAddBbBreed = () => {
   const location = useLocation();
   const formInstance = useForm<IBreedScheme>({
     defaultValues: defaultVals,
@@ -57,7 +57,7 @@ export const FormAddBbBreed = ({ owned_bp_list }) => {
         Планирование
       </Title>
       <FormProvider {...formInstance}>
-        <FormComposedBody owned_bp_list={owned_bp_list} onSub={onSub} onFinalize={onFinalize} />
+        <FormComposedBody onSub={onSub} onFinalize={onFinalize} />
       </FormProvider>
     </>
   );

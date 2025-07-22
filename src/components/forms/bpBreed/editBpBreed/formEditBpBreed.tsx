@@ -7,7 +7,7 @@ import { notif } from "@/utils/notif";
 import { FormComposedBody } from "../../bpBreed/subcomponents";
 import { breedSchema, prepForUpdate } from "../common";
 
-export const FormEditBpBreed = ({ initData, owned_bp_list }) => {
+export const FormEditBpBreed = ({ initData }) => {
   const location = useLocation();
   const formInstance = useForm({
     defaultValues: initData,
@@ -61,7 +61,7 @@ export const FormEditBpBreed = ({ initData, owned_bp_list }) => {
         Детализация бридинг плана
       </Title>
       <FormProvider {...formInstance}>
-        <FormComposedBody owned_bp_list={owned_bp_list} onSub={onSub} onFinalize={onFinalize} btnText="Сохранить изменения" />
+        <FormComposedBody onSub={onSub} onFinalize={onFinalize} btnText="Сохранить изменения" />
       </FormProvider>
     </>
   );

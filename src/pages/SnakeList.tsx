@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
-import { Box, Flex, LoadingOverlay, Select, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Flex, LoadingOverlay, Select, Stack, Text, TextInput, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty, toString } from "lodash-es";
 import { makeBpCardColumns, maturityDict } from "@/components/ballpythons/const";
@@ -8,16 +8,17 @@ import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { tableFiltMulti } from "@/components/common/StackTable/utils";
 import { sexHardcode } from "@/components/forms/bpBreed/common";
+import { DeleteSnake } from "@/components/forms/deleteSnake/formDeleteSnake";
 import { FeedSnake } from "@/components/forms/feedSnake/formFeedSnake";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { TransferSnake } from "@/components/transferSnake/transfer";
 import { useGenes, useSnakesList } from "@/api/hooks";
-import { useProfile } from "@/api/profile/hooks";
 
 const curId = signal<string | undefined>(undefined);
 const isTransOpen = signal<boolean>(false);
 const isFeedOpen = signal<boolean>(false);
+const isDeleteOpen = signal<boolean>(false);
 
 const columns = makeBpCardColumns({
   openFeed: (uuid) => {
@@ -28,20 +29,23 @@ const columns = makeBpCardColumns({
     isTransOpen.value = true;
     curId.value = uuid;
   },
+  openDelete: (uuid) => {
+    isDeleteOpen.value = true;
+    curId.value = uuid;
+  },
 });
 
 export function SnakeList() {
   const location = useLocation();
   const userId = localStorage.getItem("USER");
   const { data: genes } = useGenes();
-  const { data: dt, isError } = useProfile(userId, userId != null);
-  const { data: d, isPending } = useSnakesList(dt?.regius_list!, !isEmpty(dt));
+  const { data: snakes, isPending, isError } = useSnakesList(userId!, userId != null);
   const [filt, setFilt] = useState<any[]>([]);
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
-  const tdata = useMemo(() => d, [toString(d)]);
+  const tdata = useMemo(() => snakes, [toString(snakes)]);
 
-  const target = d?.find((b) => b.id === curId.value);
+  const target = snakes?.find((b) => b.id === curId.value);
   const handleRowClick = (id) => {
     location.route(`/snakes/ballpython?id=${id}`);
   };
@@ -71,7 +75,7 @@ export function SnakeList() {
         <Text fw={500} c="var(--mantine-color-error)">
           Произошла ошибка запроса
         </Text>
-      ) : dt?.regius_list == null || isEmpty(dt?.regius_list) ? (
+      ) : isEmpty(snakes) ? (
         <Text fw={500}>Змеек у вас нет</Text>
       ) : (
         <StackTable data={tdata!} columns={columns} onRowClick={handleRowClick} columnFilters={filt} setColumnFilters={setFilt} globalFilter={globalFilter} setGlobalFilter={debSearch} />
@@ -92,6 +96,14 @@ export function SnakeList() {
           isFeedOpen.value = false;
         }}
         snake={target}
+      />
+      <DeleteSnake
+        opened={isDeleteOpen.value}
+        close={() => {
+          curId.value = undefined;
+          isDeleteOpen.value = false;
+        }}
+        snake={curId.value!}
       />
     </Stack>
   );

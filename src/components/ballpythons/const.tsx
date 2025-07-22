@@ -97,7 +97,7 @@ const hatchFIltFn = (row: Row<IResSnakesList>, columnId: string, filterValue: an
   return false;
 };
 
-export const makeBpCardColumns = ({ openTrans, openFeed }) => {
+export const makeBpCardColumns = ({ openTrans, openFeed, openDelete }) => {
   return [
     colHelper.accessor("picture", {
       header: () => " ",
@@ -149,7 +149,7 @@ export const makeBpCardColumns = ({ openTrans, openFeed }) => {
     }),
     colHelper.display({
       id: "action",
-      cell: ({ row }) => <BpControls id={row.original.id} openTrans={openTrans} openFeed={openFeed} />,
+      cell: ({ row }) => <BpControls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openDelete={openDelete} />,
       size: 12,
       maxSize: 1,
       minSize: 36,

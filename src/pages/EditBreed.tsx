@@ -4,13 +4,10 @@ import { LoadingOverlay, Stack, Text } from "@mantine/core";
 import { makeDefaultValues } from "@/components/forms/bpBreed/editBpBreed/const";
 import { FormEditBpBreed } from "@/components/forms/bpBreed/editBpBreed/formEditBpBreed";
 import { useSingleBpBreed } from "@/api/hooks";
-import { useProfile } from "@/api/profile/hooks";
 import { notif } from "@/utils/notif";
 
 export function EditBreed() {
   const location = useLocation();
-  const userId = localStorage.getItem("USER");
-  const { data: dt } = useProfile(userId, userId != null);
   const { data, isError, error, isPending } = useSingleBpBreed(location.query.id);
 
   const composed = makeDefaultValues(data);
@@ -30,7 +27,7 @@ export function EditBreed() {
           Редактирование бридинга невозможно
         </Text>
       ) : (
-        <FormEditBpBreed initData={composed} owned_bp_list={dt?.regius_list} />
+        <FormEditBpBreed initData={composed} />
       )}
     </Stack>
   );

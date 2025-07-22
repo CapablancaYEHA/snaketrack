@@ -8,12 +8,12 @@ import { IUpdBreedReq, TSnakeQueue, useSnake as useFemale, useSnakeQueue, useSna
 import { IBreedStat, IReqCreateBPBreed, IResSnakesList } from "@/api/models";
 
 interface IInit {
-  owned_bp_list: string[];
   fem: string | null | undefined;
   fetchFields: Record<"id" | "snake", string>[];
 }
-export function useUtilsBreed({ owned_bp_list, fem, fetchFields }: IInit) {
-  const { data: regi, isPending: isListPen } = useSnakesList(owned_bp_list, !isEmpty(owned_bp_list));
+export function useUtilsBreed({ fem, fetchFields }: IInit) {
+  const userId = localStorage.getItem("USER");
+  const { data: regi, isPending: isListPen } = useSnakesList(userId!, userId != null);
   const regFems = regi?.filter((a) => a.sex === "female")?.map((b) => ({ label: b.snake_name, value: b.id }));
   const regMales = regi?.filter((a) => a.sex === "male")?.map((b) => ({ label: b.snake_name, value: b.id }));
   const { data: femData } = useFemale(fem ?? "", fem != null);

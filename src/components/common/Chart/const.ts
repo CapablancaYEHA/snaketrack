@@ -276,14 +276,14 @@ export const bubbleOptions = {
     x: {
       type: "time",
       time: {
-        unit: "day",
+        unit: "month",
         displayFormats: {
           day: "MMMM YY",
         },
         tooltipFormat: "DD MMM YYYY",
       },
       ticks: {
-        stepSize: 7,
+        stepSize: 1,
         source: "data",
         color: "rgba(178,178,178,0.9)",
         maxRotation: 30,

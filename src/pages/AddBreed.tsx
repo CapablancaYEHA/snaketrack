@@ -6,7 +6,7 @@ import { notif } from "@/utils/notif";
 
 export function AddBreed() {
   const userId = localStorage.getItem("USER");
-  const { data: dt, isError, error, isPending } = useProfile(userId, userId != null);
+  const { isError, error, isPending } = useProfile(userId, userId != null);
 
   useEffect(() => {
     if (isError) {
@@ -23,7 +23,7 @@ export function AddBreed() {
           Планирование невозможно
         </Text>
       ) : (
-        <FormAddBbBreed owned_bp_list={dt?.regius_list} />
+        <FormAddBbBreed />
       )}
     </Stack>
   );

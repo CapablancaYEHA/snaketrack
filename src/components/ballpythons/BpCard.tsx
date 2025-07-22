@@ -48,7 +48,7 @@ export const BpEventsBlock = ({ feeding, weight, shed }) => {
   );
 };
 
-export const BpControls = ({ id, openFeed, openTrans }) => {
+export const BpControls = ({ id, openFeed, openTrans, openDelete }) => {
   return (
     <Menu
       shadow="md"
@@ -91,6 +91,15 @@ export const BpControls = ({ id, openFeed, openTrans }) => {
           }}
         >
           Передать
+        </Menu.Item>
+        <Menu.Item
+          c="var(--mantine-color-error)"
+          onClick={(e) => {
+            e.stopPropagation();
+            openDelete(id);
+          }}
+        >
+          Удалить
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

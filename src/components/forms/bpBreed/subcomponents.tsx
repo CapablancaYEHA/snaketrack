@@ -281,7 +281,7 @@ export const OddsInfo = ({ female, male }) => {
   );
 };
 
-export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохранить", onFinalize }) => {
+export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFinalize }) => {
   const innerInstance = useFormContext<IBreedScheme>();
 
   const selectedFem = useWatch({
@@ -304,7 +304,7 @@ export const FormComposedBody = ({ owned_bp_list, onSub, btnText = "Сохран
     name: "males_ids",
   });
 
-  const { isListPen, isQuePen, isAddAllowed, femData, malesData, regFems, regMales } = useUtilsBreed({ owned_bp_list, fem: selectedFem, fetchFields });
+  const { isListPen, isQuePen, isAddAllowed, femData, malesData, regFems, regMales } = useUtilsBreed({ fem: selectedFem, fetchFields });
 
   const isClutchMade = innerInstance.getValues("breed_status") === "clutch";
 
@@ -480,7 +480,9 @@ export const ControlMenu = ({ id, onDelete, clutchId }) => {
             Посмотреть кладку
           </Menu.Item>
         ) : null}
-        <Menu.Item onClick={() => onDelete(id)}>Удалить</Menu.Item>
+        <Menu.Item c="var(--mantine-color-error)" onClick={() => onDelete(id)}>
+          Удалить
+        </Menu.Item>
       </Menu.Dropdown>
     </Menu>
   );

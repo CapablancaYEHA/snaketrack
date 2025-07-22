@@ -117,8 +117,8 @@ export function useUpdateFeeding() {
 
 // Get All Snakes
 // TODO нужно модиф эту функцию когда появятся новые категории змей
-const httpGetSnakesList = async (list: string[]) => {
-  const { data, error } = await supabase.from(ESupabase.ballpythons).select().in("id", list);
+const httpGetSnakesList = async (owner_id) => {
+  const { data, error } = await supabase.from(ESupabase.ballpythons).select().eq("owner_id", owner_id);
   if (error) {
     throw error;
   }
@@ -130,10 +130,10 @@ const httpGetSnakesList = async (list: string[]) => {
 и запрашивать их змей - то есть риск засветить айдишник юзера?
 */
 // FIXME Нужно прикрутить\проверить пагинацию к этой и подобным?
-export function useSnakesList(list: string[], isEnabled: boolean) {
+export function useSnakesList(owner: string, isEnabled: boolean) {
   return useQuery<any, ISupabaseErr, IResSnakesList[]>({
-    queryKey: [EQuKeys.LIST_BP, list],
-    queryFn: () => httpGetSnakesList(list),
+    queryKey: [EQuKeys.LIST_BP, owner],
+    queryFn: () => httpGetSnakesList(owner),
     enabled: isEnabled,
   });
 }
@@ -152,6 +152,20 @@ export function useSnake(id: string, isEnabled = true) {
     queryKey: [EQuKeys.LIST_BP, id],
     queryFn: () => httpGetSingleSnake(id),
     enabled: isEnabled,
+  });
+}
+
+const httpDeleteBpBSnake = async (snakeId: string) => await supabase.from(ESupabase.ballpythons).delete().eq("id", snakeId).throwOnError();
+
+export function useDeleteBpSnake() {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, string>({
+    mutationFn: (a) => httpDeleteBpBSnake(a),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EQuKeys.LIST_BP],
+      });
+    },
   });
 }
 
