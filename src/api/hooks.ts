@@ -20,7 +20,7 @@ export function useGenes() {
     queryKey: [EQuKeys.COMP_BP],
     queryFn: () => httpGetGenes(),
     enabled: true,
-    staleTime: 60000 * 60 * 4,
+    staleTime: 60000 * 60 * 4, // 4 часа
   });
 }
 
@@ -32,8 +32,7 @@ export const httpUldSnPic = (file: File) => {
   return supabase.storage.from(ESupabase["bp-pics"]).upload(`${userId}/${nanoid(8)}`, file);
 };
 
-// TODO FIXME нужно написать триггер в supabase для Update действий чтобы была ошибка при RLS
-
+// TODO FIXME нужно написать триггер в supabase для Update / Delete (и View?) действий чтобы была ошибка при RLS
 export const httpReplacePic = async (url: string, file: File) => {
   const userId: string = localStorage.getItem("USER")!;
   const { error } = await supabase.storage.from(ESupabase["bp-pics"]).remove([`${userId}/${url.split("/").slice(-1)}`]);
@@ -54,7 +53,7 @@ export function useCreateBp() {
     mutationFn: (a) => httpCreateBp(a),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [EQuKeys.PROFILE],
+        queryKey: [EQuKeys.LIST_BP],
       });
     },
   });
@@ -155,6 +154,10 @@ export function useSnake(id: string, isEnabled = true) {
   });
 }
 
+// TODO Нужно написать триггеры на удаление из массивов в Breeding и Clutch
+//В Клатч сделана ошибка, что впринципе не можешь удалить змею из активной кладки или плана
+// Может тогда вместо удаления, сделать возможность только перевести в Архив (аналогично статусу "Умер") ? Это значит что змее никаким образом нельзя апдейтить содержимое профиля
+// + её больше нельзя выбрать в планах и кладках, но в уже созданных она останется
 const httpDeleteBpBSnake = async (snakeId: string) => await supabase.from(ESupabase.ballpythons).delete().eq("id", snakeId).throwOnError();
 
 export function useDeleteBpSnake() {
@@ -211,7 +214,7 @@ export function useTransferSnake() {
     mutationFn: ({ username, snekId }) => httpTransferSnake(username, snekId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [EQuKeys.PROFILE],
+        queryKey: [EQuKeys.LIST_BP],
       });
     },
   });
@@ -253,7 +256,7 @@ export function useCreateBpBreed() {
     mutationFn: (a) => httpCreateBpBreed(a),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [EQuKeys.PROFILE],
+        queryKey: [EQuKeys.LIST_BP_BREED],
       });
     },
   });
@@ -464,12 +467,15 @@ interface IFinaliseClutchReq {
   snakes: IReqCreateBP[];
   clutchUpd: IReqUpdBpClutch;
 }
-const httpFinaliseClutch = async (args: IFinaliseClutchReq) => {
+type IFinaliseClutchRes = {
+  id: string;
+}[];
+const httpFinaliseClutch = async (args: IFinaliseClutchReq): Promise<IFinaliseClutchRes> => {
   const { data, error: insertError } = await supabase.from(ESupabase.ballpythons).insert(args.snakes).select("id").throwOnError();
   if (insertError) {
     throw insertError;
   }
-  const { error } = await httpUpdateBpClutch({ upd: args.clutchUpd as any, id: args.clutchUpd.id });
+  const { error } = await httpUpdateBpClutch({ upd: args.clutchUpd.upd as any, id: args.clutchUpd.id });
   if (error) {
     throw error;
   }
@@ -478,7 +484,7 @@ const httpFinaliseClutch = async (args: IFinaliseClutchReq) => {
 
 export function useFinaliseBpClutch() {
   const queryClient = useQueryClient();
-  return useMutation<any, ISupabaseErr, IFinaliseClutchReq>({
+  return useMutation<IFinaliseClutchRes, ISupabaseErr, IFinaliseClutchReq>({
     mutationFn: (a) => httpFinaliseClutch(a),
     onSuccess: () => {
       queryClient.invalidateQueries({

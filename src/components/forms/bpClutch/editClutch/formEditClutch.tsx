@@ -17,6 +17,7 @@ import { notif } from "@/utils/notif";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff } from "@/utils/time";
 import { getPercentage } from "../../bpBreed/breedUtils";
+import { calcAnim } from "../clutchUtils";
 import { FormApprovedBabies, MiniInfo } from "../subcomponents";
 import { IClutchScheme, clutchSchema, prepForFinal, prepForHatch, prepForUpdate, stdErr } from "./const";
 import style from "./styles.module.scss";
@@ -95,7 +96,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
   const onFinalise = (sbm) => {
     finalise(prepForFinal(sbm, location.query.id), {
       onSuccess: () => {
-        notif({ c: "green", t: "Успешно", m: "Поздравляем с рождением малышей! 🥳" });
+        notif({ c: "green", t: "Успешно", m: "Змейки зарегистрированы" });
       },
       onError: async (err) => {
         stdErr(err);
@@ -164,7 +165,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
             <Flex>
               <Box w="100%" maw="100%">
                 <Progress.Root size="lg">
-                  <Progress.Section value={getPercentage(60, left)} color="green" animated striped />
+                  <Progress.Section value={getPercentage(60, left)} color="green" animated={calcAnim(clutch.status, left)} striped={calcAnim(clutch.status, left)} />
                 </Progress.Root>
               </Box>
             </Flex>

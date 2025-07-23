@@ -56,7 +56,7 @@ export const BpControls = ({ id, openFeed, openTrans, openDelete }) => {
       transitionProps={{ transition: "rotate-left", duration: 150 }}
       trigger="click"
       loop={false}
-      withinPortal={false}
+      withinPortal
       trapFocus={false}
       menuItemTabIndex={0}
       position="bottom-end"

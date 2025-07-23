@@ -1,12 +1,13 @@
 export const enum ESupabase {
-  "bp-pics" = "bp-pics",
-  bpgenes = "bpgenes",
   ballpythons = "ballpythons",
   bp_breeding = "bp_breeding",
   bp_clutch = "bp_clutch",
+  bpgenes = "bpgenes",
+  profiles = "profiles",
+  "bp-pics" = "bp-pics",
+  // views
   bp_breeding_joined = "user_breeding_view",
   bp_clutch_joined = "clutch_view",
-  profiles = "profiles",
   three_cols_profiles = "three_cols_profiles",
 }
 
@@ -38,7 +39,7 @@ export interface ISupabaseErr {
 
 export interface IReqCreateBP {
   snake_name: string;
-  sex: "male" | "female";
+  sex: "male" | "female" | null;
   genes: IGenesBpComp[];
   weight: { date: string; weight: number }[] | null;
   date_hatch: string;

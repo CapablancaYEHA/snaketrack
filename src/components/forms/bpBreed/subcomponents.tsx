@@ -188,7 +188,7 @@ const TimeLeft = ({ shedDate, ovulDate }) => {
         </Flex>
         <Box w="100%" maw="100%">
           <Progress.Root size="lg">
-            <Progress.Section value={shedDate ? getPercentage(daysAfterShed, left) : getPercentage(daysAfterOvul, left)} color="green" animated striped />
+            <Progress.Section value={shedDate ? getPercentage(daysAfterShed, left) : getPercentage(daysAfterOvul, left)} color="green" animated={left > 0} striped={left > 0} />
           </Progress.Root>
         </Box>
       </Group>
@@ -507,18 +507,23 @@ export const BreedDelete = ({ opened, close, breedId }) => {
       },
     });
   return (
-    <Modal centered opened={opened} onClose={close} size="sm" title={<Title order={3}>Удаление проекта</Title>}>
+    <Modal centered opened={opened} onClose={close} size="sm" title={<Title order={5}>Удаление проекта</Title>} ta="center">
+      <Title component="span" c="var(--mantine-color-error)" order={4}>
+        Внимание!
+      </Title>
+      <Space h="xs" />
       <Text>
-        Внимание! Все данные проекта будут утеряны <br />
-        Уверены, что хотите удалить?
+        Все данные проекта будут утеряны без возможности восстановления
+        <br />
+        Вы уверены?
       </Text>
       <Space h="xl" />
       <Flex gap="xl" justify="center" w="100%" maw="100%">
-        <Button variant="default" onClick={close} size="compact-sm" loading={isPending}>
-          Нет
+        <Button variant="default" onClick={close}>
+          Отмена
         </Button>
-        <Button onClick={handleDel} size="compact-sm" loading={isPending}>
-          Да
+        <Button variant="filled" color="var(--mantine-color-error)" onClick={handleDel} loading={isPending}>
+          Удалить
         </Button>
       </Flex>
     </Modal>

@@ -133,7 +133,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
       <Flex gap="lg" wrap="wrap">
         {wOrigin === "purchase" ? <NumberInput {...(register("price") as any)} rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " /> : null}
         {/* FIX здесь нужно проверка на наличие разнополой пары */}
-        {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null}
+        {/* {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null} */}
       </Flex>
 
       <Flex gap="lg" wrap="wrap">
@@ -159,7 +159,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
         <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.["feed_comment"]?.message} />
       </Flex>
       <Box w="100%" maw="100%">
-        <Textarea {...register("notes")} label="Заметки, примечания" resize="vertical" w="100%" maw="100%" size="lg" />
+        <Textarea {...register("notes")} label="Заметки, примечания" resize="vertical" w="100%" maw="100%" id="txarea_helper_addbp" />
       </Box>
       <Flex align="flex-start" maw="100%" w="100%" gap="xl">
         <Controller

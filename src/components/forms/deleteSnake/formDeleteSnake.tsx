@@ -26,17 +26,16 @@ export const DeleteSnake: FC<IProp> = ({ opened, close, snake }) => {
   };
 
   return (
-    <Modal opened={opened} onClose={close} centered transitionProps={{ transition: "fade", duration: 200 }} title={<Title order={5}>Удаление</Title>}>
-      <Title component="span" c="var(--mantine-color-error)" order={4} ta="center">
+    <Modal opened={opened} onClose={close} centered transitionProps={{ transition: "fade", duration: 200 }} title={<Title order={5}>Удаление</Title>} ta="center">
+      <Title component="span" c="var(--mantine-color-error)" order={4}>
         Внимание!
       </Title>
       <Space h="xs" />
       <Text>
-        Данное действие удалит все данные по Змее из вашего профиля без возможности восстановления
+        Все данные по змее будут утеряны без возможности восстановления
         <br />
         Вы уверены?
       </Text>
-
       <Space h="xl" />
       <Flex gap="sm" wrap="nowrap" justify="space-between">
         <Button variant="default" onClick={close}>

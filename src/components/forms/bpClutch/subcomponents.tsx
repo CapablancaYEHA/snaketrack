@@ -12,11 +12,12 @@ import { sortBpGenes } from "@/components/genetics/const";
 import { GenePill, GeneSelect } from "@/components/genetics/geneSelect";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { useGenes, useSnake } from "@/api/hooks";
-import { IResBpClutch } from "@/api/models";
+import { EClSt, IResBpClutch } from "@/api/models";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff, getAge, getDate } from "@/utils/time";
 import { getPercentage } from "../bpBreed/breedUtils";
 import { sexHardcode } from "../bpBreed/common";
+import { calcAnim } from "./clutchUtils";
 import { IClutchScheme, statusHardcode } from "./editClutch/const";
 
 export const SClutchCard = ({ clutch, onPicClick, className }: { clutch: IResBpClutch; onPicClick: Function; className?: string }) => {
@@ -50,7 +51,7 @@ export const SClutchCard = ({ clutch, onPicClick, className }: { clutch: IResBpC
           ))}
         </Stack>
         <Stack gap="md" flex="1 1 auto">
-          <ClutchProgress date_laid={clutch.date_laid} />
+          <ClutchProgress date_laid={clutch.date_laid} curStatus={clutch.status} />
           <Space h="lg" />
           <Flex gap="xl">
             <Stack gap="xs">
@@ -92,7 +93,7 @@ export const SClutchCard = ({ clutch, onPicClick, className }: { clutch: IResBpC
   );
 };
 
-export const ClutchProgress = ({ date_laid, barOnly = false }) => {
+export const ClutchProgress = ({ date_laid, curStatus, barOnly = false }) => {
   const left = dateTimeDiff(dateAddDays(date_laid, 60), "days");
 
   return (
@@ -116,7 +117,7 @@ export const ClutchProgress = ({ date_laid, barOnly = false }) => {
       <Flex>
         <Box w="100%" maw="100%">
           <Progress.Root size="lg">
-            <Progress.Section value={getPercentage(60, left)} color="green" animated striped />
+            <Progress.Section value={getPercentage(60, left)} color="green" animated={calcAnim(curStatus, left)} striped={calcAnim(curStatus, left)} />
           </Progress.Root>
         </Box>
       </Flex>

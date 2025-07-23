@@ -146,10 +146,10 @@ export const FormEditBp = ({ traits, init }) => {
           />
         ) : null}
         {/* FIX здесь нужно проверка на наличие разнополой пары */}
-        {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null}
+        {/* {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null} */}
       </Flex>
       <Box w="100%" maw="100%">
-        <Textarea {...register("notes")} label="Заметки, примечания" w="100%" maw="100%" autosize id="txarea_helper" />
+        <Textarea {...register("notes")} label="Заметки, примечания" w="100%" maw="100%" autosize id="txarea_helper_editBp" />
       </Box>
       <Flex align="flex-start" maw="100%" w="100%">
         <Controller

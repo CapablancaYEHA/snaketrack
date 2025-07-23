@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { IHatchling, IResBpClutch } from "@/api/models";
+import { EClSt, IHatchling, IResBpClutch } from "@/api/models";
 import { SClutchCard } from "./subcomponents";
 
 const columnHelper = createColumnHelper<IResBpClutch>();
@@ -21,4 +21,9 @@ export const makeHatchlingPlaceholder = ({ id, ind, date }): IHatchling => {
     status: "alive",
     genes: [{ label: "Normal", gene: "other", hasSuper: false, hasHet: false }],
   };
+};
+
+export const calcAnim = (stat: EClSt, left: number) => {
+  if (stat !== EClSt.LA) return false;
+  return left > 0;
 };
