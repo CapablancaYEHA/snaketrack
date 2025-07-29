@@ -1,8 +1,8 @@
 import { useLocation } from "preact-iso";
-import { useMemo, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 import { Flex, LoadingOverlay, Select, Stack, Text, TextInput, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
-import { debounce, isEmpty, toString } from "lodash-es";
+import { debounce, isEmpty } from "lodash-es";
 import { makeBpCardColumns, maturityDict } from "@/components/ballpythons/const";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
@@ -43,8 +43,6 @@ export function SnakeList() {
   const [filt, setFilt] = useState<any[]>([]);
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
-  const tdata = useMemo(() => snakes, [toString(snakes)]);
-
   const target = snakes?.find((b) => b.id === curId.value);
   const handleRowClick = (id) => {
     location.route(`/snakes/ballpython?id=${id}`);
@@ -78,7 +76,7 @@ export function SnakeList() {
       ) : isEmpty(snakes) ? (
         <Text fw={500}>Змеек у вас нет</Text>
       ) : (
-        <StackTable data={tdata!} columns={columns} onRowClick={handleRowClick} columnFilters={filt} setColumnFilters={setFilt} globalFilter={globalFilter} setGlobalFilter={debSearch} />
+        <StackTable data={snakes ?? []} columns={columns} onRowClick={handleRowClick} columnFilters={filt} setColumnFilters={setFilt} globalFilter={globalFilter} setGlobalFilter={debSearch} />
       )}
       <TransferSnake
         opened={isTransOpen.value}

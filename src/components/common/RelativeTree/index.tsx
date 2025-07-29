@@ -1,147 +1,146 @@
-import { ReactNode, useCallback, useState } from "preact/compat";
-import { Box, CSSProperties } from "@mantine/core";
-import { clsx } from "clsx";
+// import { ReactNode, useCallback, useState } from "preact/compat";
+// import { Box, CSSProperties } from "@mantine/core";
+// import { clsx } from "clsx";
 // import calcTree from "relatives-tree";
 // import { Connector, ExtNode, Node } from "relatives-tree/lib/types";
-import { IResBpClutch } from "@/api/models";
-import css from "./style.module.scss";
-import { tree } from "./tree";
+// import { useBpTree } from "@/api/hooks";
+// import css from "./style.module.scss";
 
-// FIXME !!!!
-interface ILinker {
-  //   connector: Connector;
-  connector: any;
-  width: number;
-  height: number;
-}
+// // import { tree } from "./tree";
 
-function Linker({ connector, width, height }: ILinker) {
-  const [x1, y1, x2, y2] = connector;
+// interface ILinker {
+//   connector: Connector;
+//   width: number;
+//   height: number;
+// }
 
-  return (
-    <i
-      style={{
-        position: "absolute",
-        width: Math.max(1, (x2 - x1) * width + 1),
-        height: Math.max(1, (y2 - y1) * height + 1),
-        background: `#999`,
-        transform: `translate(${x1 * width}px, ${y1 * height}px)`,
-        pointerEvents: "none",
-      }}
-    />
-  );
-}
+// function Linker({ connector, width, height }: ILinker) {
+//   const [x1, y1, x2, y2] = connector;
 
-interface ITree {
-  nodes: Node[];
-  rootId: string;
-  width: number;
-  height: number;
-  placeholders?: boolean;
-  className?: string;
-  //   renderNode: (node: ExtNode) => ReactNode;
-  renderNode: (node: any) => ReactNode;
-}
+//   return (
+//     <i
+//       style={{
+//         position: "absolute",
+//         width: Math.max(1, (x2 - x1) * width + 1),
+//         height: Math.max(1, (y2 - y1) * height + 1),
+//         background: `#999`,
+//         transform: `translate(${x1 * width}px, ${y1 * height}px)`,
+//         pointerEvents: "none",
+//       }}
+//     />
+//   );
+// }
 
-function ReactFamilyTree(props: ITree) {
-  //   const data = calcTree(props.nodes, {
-  //     rootId: props.rootId,
-  //     placeholders: props.placeholders,
-  //   });
-  const data: any = {};
+// interface ITree {
+//   nodes: Node[];
+//   rootId: string;
+//   width: number;
+//   height: number;
+//   placeholders?: boolean;
+//   className?: string;
+//   //   renderNode: (node: ExtNode) => ReactNode;
+//   renderNode: (node: any) => ReactNode;
+// }
 
-  const width = props.width / 2;
-  const height = props.height / 2;
+// function ReactFamilyTree(props: ITree) {
+//   const data = calcTree(props.nodes, {
+//     rootId: props.rootId,
+//     placeholders: props.placeholders,
+//   });
 
-  return (
-    <div
-      className={props.className}
-      style={{
-        position: "relative",
-        width: data.canvas.width * width,
-        height: data.canvas.height * height,
-      }}
-    >
-      {data.connectors.map((connector, idx) => (
-        <Linker key={idx} connector={connector} width={width} height={height} />
-      ))}
-      {data.nodes.map(props.renderNode)}
-    </div>
-  );
-}
+//   const width = props.width / 2;
+//   const height = props.height / 2;
 
-const WIDTH = 70;
-const HEIGHT = 80;
+//   return (
+//     <div
+//       className={props.className}
+//       style={{
+//         position: "relative",
+//         width: data.canvas.width * width,
+//         height: data.canvas.height * height,
+//       }}
+//     >
+//       {data.connectors.map((connector, idx) => (
+//         <Linker key={idx} connector={connector} width={width} height={height} />
+//       ))}
+//       {data.nodes.map(props.renderNode)}
+//     </div>
+//   );
+// }
 
-interface FamilyNodeProps {
-  //   node: ExtNode;
-  node: any;
-  isRoot: boolean;
-  onClick: (id: string) => void;
-  onSubClick: (id: string) => void;
-  style?: CSSProperties;
-  clutch: any;
-}
-function FamilyNode({ node, isRoot, onClick, onSubClick, style, clutch }: FamilyNodeProps) {
-  const clickHandler = useCallback(() => onClick(node.id), [node.id, onClick]);
-  const clickSubHandler = useCallback(() => onSubClick(node.id), [node.id, onSubClick]);
+// const WIDTH = 70;
+// const HEIGHT = 80;
 
-  return (
-    <div className={css.root} style={style}>
-      <Box className={clsx(css.inner, css[node.gender], isRoot && css.isRoot)} onClick={clickHandler}>
-        <div className={css.id}>{node.id}</div>
-      </Box>
-      {node.hasSubTree && <div className={clsx(css.sub, css[node.gender])} onClick={clickSubHandler} />}
-    </div>
-  );
-}
+// interface FamilyNodeProps {
+//   node: ExtNode;
+//   isRoot: boolean;
+//   onClick: (id: string) => void;
+//   onSubClick: (id: string) => void;
+//   style?: CSSProperties;
+//   //   clutch: any;
+// }
+// function FamilyNode({ node, isRoot, onClick, onSubClick, style }: FamilyNodeProps) {
+//   const clickHandler = useCallback(() => onClick(node.id), [node.id, onClick]);
+//   const clickSubHandler = useCallback(() => onSubClick(node.id), [node.id, onSubClick]);
 
-const SRow = ({ clutch }: { clutch: IResBpClutch }) => {
-  const [rootId, setRootId] = useState(tree[0].id);
-  const [selectId, setSelectId] = useState<string>();
+//   return (
+//     <div className={css.root} style={style}>
+//       <Box className={clsx(css.inner, css[node.gender], isRoot && css.isRoot)} onClick={clickHandler}>
+//         <div className={css.id}>{node.id}</div>
+//       </Box>
+//       {node.hasSubTree && <div className={clsx(css.sub, css[node.gender])} onClick={clickSubHandler} />}
+//     </div>
+//   );
+// }
 
-  const selected = tree.find((item) => item.id === selectId);
+// export const SFamTree = () => {
+//   const { data: tree } = useBpTree("9fc3d7152b");
+//   // const tree = data ?? [];
+//   const [rootId, setRootId] = useState(tree?.[0]?.id ?? "");
+//   const [selectId, setSelectId] = useState<string>();
 
-  return (
-    <>
-      <ReactFamilyTree
-        nodes={tree as any}
-        rootId={tree[0].id}
-        width={WIDTH}
-        height={HEIGHT}
-        renderNode={(node) => (
-          <FamilyNode
-            key={node.id}
-            node={node}
-            isRoot={node.id === rootId}
-            onClick={setSelectId}
-            onSubClick={setRootId}
-            clutch={clutch}
-            style={{
-              width: WIDTH,
-              height: HEIGHT,
-              transform: `translate(${node.left * (WIDTH / 2)}px, ${node.top * (HEIGHT / 2)}px)`,
-            }}
-          />
-        )}
-      />
-      {selected && <div>puk</div>}
-    </>
-  );
-};
+//   const selected = tree?.find((item) => item.id === selectId);
 
-const makeTree = (origin: IResBpClutch) => {
-  return [
-    {
-      id: origin.female_id,
-      gender: "female",
-      spouses: origin.males_ids.map((b) => ({ id: b })),
-    },
-  ].concat(
-    origin.males_ids.map((m) => ({
-      id: m,
-      gender: "male",
-      spouses: [{ id: origin.female_id }],
-    })),
-  );
-};
+//   return tree != null ? (
+//     <>
+//       <ReactFamilyTree
+//         nodes={tree as any}
+//         rootId={tree?.[0]?.id ?? ""}
+//         width={WIDTH}
+//         height={HEIGHT}
+//         renderNode={(node) => (
+//           <FamilyNode
+//             key={node.id}
+//             node={node}
+//             isRoot={node.id === rootId}
+//             onClick={setSelectId}
+//             onSubClick={setRootId}
+//             // clutch={clutch}
+//             style={{
+//               width: WIDTH,
+//               height: HEIGHT,
+//               transform: `translate(${node.left * (WIDTH / 2)}px, ${node.top * (HEIGHT / 2)}px)`,
+//             }}
+//           />
+//         )}
+//       />
+//       {selected && <div>puk</div>}
+//     </>
+//   ) : null;
+// };
+
+// // const makeTree = (origin: IResBpClutch) => {
+// //   return [
+// //     {
+// //       id: origin.female_id,
+// //       gender: "female",
+// //       spouses: origin.males_ids.map((b) => ({ id: b })),
+// //     },
+// //   ].concat(
+// //     origin.males_ids.map((m) => ({
+// //       id: m,
+// //       gender: "male",
+// //       spouses: [{ id: origin.female_id }],
+// //     })),
+// //   );
+// // };

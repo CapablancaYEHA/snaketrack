@@ -12,26 +12,38 @@ export const defVals = {
   refuse: null,
   regurgitation: null,
 };
-const incor = "Отметьте линьку / срыг / отказ, либо укажите массу питомца";
+const incor = "Отметьте линьку / срыг / отказ\nЛибо укажите новое измерение массы питомца\nЛибо информацию о кормлении";
 export const schema = yup.object().shape(
   {
     feed_last_at: yup.string().nullable().required("Дата обязательна"),
     feed_ko: yup.string().nullable(),
     feed_comment: yup.string().max(150, "Ограничение 150 символов").nullable(),
-    weight: yup.number().when(["refuse", "regurgitation", "shed"], ([refuse, regurgitation, shed], self) => {
+    weight: yup.number().when(["refuse", "regurgitation", "shed", "feed_ko", "feed_weight"], ([refuse, regurgitation, shed, feed_ko, feed_weight], self) => {
+      if (feed_ko || feed_weight) {
+        return self.nullable();
+      }
       return !shed && !refuse && !regurgitation ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required(incor) : self.transform((v) => (!v || Number.isNaN(v) ? null : v)).nullable();
     }),
     feed_weight: yup
       .number()
       .transform((v) => (!v || Number.isNaN(v) ? null : v))
       .nullable(),
-    shed: yup.boolean().when(["weight", "refuse", "regurgitation"], ([weight, refuse, regurgitation], self) => {
+    shed: yup.boolean().when(["refuse", "regurgitation", "weight", "feed_ko", "feed_weight"], ([refuse, regurgitation, weight, feed_ko, feed_weight], self) => {
+      if (feed_ko || feed_weight) {
+        return self.nullable();
+      }
       return !weight && !refuse && !regurgitation ? self.required(incor) : self.nullable();
     }),
-    refuse: yup.boolean().when(["weight", "shed", "regurgitation"], ([weight, shed, regurgitation], self) => {
+    refuse: yup.boolean().when(["weight", "regurgitation", "shed", "feed_ko", "feed_weight"], ([weight, regurgitation, shed, feed_ko, feed_weight], self) => {
+      if (feed_ko || feed_weight) {
+        return self.nullable();
+      }
       return !weight && !shed && !regurgitation ? self.required(incor) : self.nullable();
     }),
-    regurgitation: yup.boolean().when(["weight", "shed", "refuse"], ([weight, shed, refuse], self) => {
+    regurgitation: yup.boolean().when(["refuse", "weight", "shed", "feed_ko", "feed_weight"], ([refuse, weight, shed, feed_ko, feed_weight], self) => {
+      if (feed_ko || feed_weight) {
+        return self.nullable();
+      }
       return !weight && !shed && !refuse ? self.required(incor) : self.nullable();
     }),
   },
@@ -42,6 +54,14 @@ export const schema = yup.object().shape(
     ["regurgitation", "shed"],
     ["regurgitation", "refuse"],
     ["shed", "refuse"],
+    ["weight", "feed_ko"],
+    ["weight", "feed_weight"],
+    ["regurgitation", "feed_ko"],
+    ["regurgitation", "feed_weight"],
+    ["refuse", "feed_ko"],
+    ["refuse", "feed_weight"],
+    ["shed", "feed_ko"],
+    ["shed", "feed_weight"],
   ],
 );
 

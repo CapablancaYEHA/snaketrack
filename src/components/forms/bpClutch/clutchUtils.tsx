@@ -1,15 +1,31 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { EClSt, IHatchling, IResBpClutch } from "@/api/models";
-import { SClutchCard } from "./subcomponents";
+import { getDateObj } from "@/utils/time";
+import { SInfo, SPics } from "./subcomponents";
 
 const columnHelper = createColumnHelper<IResBpClutch>();
 
 export const makeBpClutchColumns = ({ setSnake }) => [
-  columnHelper.display({
-    id: "whole",
-    cell: ({ row }) => <SClutchCard clutch={row.original} onPicClick={setSnake} />,
+  columnHelper.accessor("date_laid" as any, {
+    header: () => "Дата кладки",
+    cell: ({ row }) => <SPics clutch={row.original} onPicClick={setSnake} />,
     size: 1,
-    maxSize: 12,
+    maxSize: 2,
+    minSize: 164,
+    sortingFn: (rowA: any, rowB: any, columnId: any) => getDateObj(rowA.getValue("date_laid")) - getDateObj(rowB.getValue("date_laid")),
+  }),
+  //   columnHelper.display({
+  //     id: "whole",
+  //     cell: ({ row }) => <SPics clutch={row.original} onPicClick={setSnake} />,
+  //     size: 1,
+  //     maxSize: 2,
+  //     minSize: 164,
+  //   }),
+  columnHelper.display({
+    id: "whole2",
+    cell: ({ row }) => <SInfo clutch={row.original} onPicClick={setSnake} />,
+    size: 3,
+    maxSize: 9,
   }),
 ];
 

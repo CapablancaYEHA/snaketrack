@@ -1,4 +1,5 @@
 import { useLocation } from "preact-iso";
+import { useEffect } from "preact/hooks";
 import { Flex, LoadingOverlay, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
@@ -26,6 +27,12 @@ export function ClutchList() {
   const handleRowClick = (id) => {
     location.route(`/clutches/edit/ballpython?id=${id}`);
   };
+
+  useEffect(() => {
+    return () => {
+      snakeId.value = undefined;
+    };
+  }, []);
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="xl" component="section">

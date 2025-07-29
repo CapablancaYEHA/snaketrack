@@ -18,7 +18,7 @@ export const stdErr = (e: any) =>
   });
 
 export const statusHardcode = [
-  { label: "Жив", value: "alive" },
+  { label: "ОК", value: "alive" },
   { label: "Не выжил", value: "deceased" },
 ];
 
@@ -47,6 +47,8 @@ export const clutchSchema = yup.object<Schema>().shape({
       genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
     }),
   ),
+  father_id: yup.string().required("Самец обязателен для проекта"),
+  mother_id: yup.string(),
 });
 
 export type IClutchScheme = yup.InferType<typeof clutchSchema>;
@@ -61,6 +63,8 @@ export const makeDefaultClutch = (data?: IResBpClutch | null) => {
     infertile_eggs: data.infertile_eggs,
     placeholders: new Array((data.eggs || 0) - (data.infertile_eggs || 0)).fill(" "),
     future_animals: data.clutch_babies ?? [],
+    father_id: data.males_ids.length > 1 ? null : data.males_ids?.[0],
+    mother_id: data.female_id,
   };
 };
 
@@ -92,7 +96,7 @@ export const prepForHatch = (sub, dirtyObject, clutch_id): IReqUpdBpClutch => {
     }
   }
 
-  const hatchDate = dateToSupabaseTime(sub.date_hatch);
+  const hatchDate = sub.date_hatch ? dateToSupabaseTime(sub.date_hatch) : undefined;
   const babies = isEmpty(sub.placeholders) ? null : sub.placeholders.map((_, ind) => makeHatchlingPlaceholder({ id: clutch_id, ind, date: hatchDate }));
 
   delete upd.placeholders;
@@ -105,7 +109,9 @@ export const prepForHatch = (sub, dirtyObject, clutch_id): IReqUpdBpClutch => {
 };
 
 export const prepForFinal = (sub, clutchId) => {
-  const newSnakes = sub.future_animals.filter((a) => a.status !== "deceased").map((b) => ({ ...b, from_clutch: clutchId }));
+  const newSnakes = sub.future_animals
+    .filter((a) => a.status !== "deceased")
+    .map((b) => ({ ...b, date_hatch: dateToSupabaseTime(b.date_hatch), mother_id: sub.mother_id, father_id: sub.father_id, from_clutch: clutchId, shadow_date_hatch: dateToSupabaseTime(sub.date_hatch) }));
 
   return {
     snakes: newSnakes,

@@ -9,6 +9,7 @@ import { ControlMenu } from "./subcomponents";
 
 export const daysAfterOvul = 44;
 export const daysAfterShed = 29;
+export const daysAfterLaid = 60;
 
 const columnHelper = createColumnHelper<IResBpBreedingList>();
 

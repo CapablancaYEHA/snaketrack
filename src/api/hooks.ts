@@ -451,18 +451,21 @@ const httpUpdateBpClutch = async (a: IReqUpdBpClutch) => {
   return await supabase.from(ESupabase.bp_clutch).update(a.upd).eq("id", a.id).throwOnError();
 };
 
-export function useUpdateBpClutch() {
+export function useUpdateBpClutch(id: string) {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, IReqUpdBpClutch>({
     mutationFn: (a) => httpUpdateBpClutch(a),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [EQuKeys.LIST_BP_CLUTCH],
+        queryKey: [EQuKeys.LIST_BP_CLUTCH, id],
+        exact: true,
       });
     },
   });
 }
 
+// TODO Триггер в БД на обновление таблицы связей запускать только для определенной роли юзера?
+// Для заплатившего юзера, чтобы не забивать таблицу и не строить потом древо для всех подряд
 interface IFinaliseClutchReq {
   snakes: IReqCreateBP[];
   clutchUpd: IReqUpdBpClutch;
@@ -482,14 +485,33 @@ const httpFinaliseClutch = async (args: IFinaliseClutchReq): Promise<IFinaliseCl
   return data;
 };
 
-export function useFinaliseBpClutch() {
+export function useFinaliseBpClutch(id: string) {
   const queryClient = useQueryClient();
   return useMutation<IFinaliseClutchRes, ISupabaseErr, IFinaliseClutchReq>({
     mutationFn: (a) => httpFinaliseClutch(a),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [EQuKeys.LIST_BP_CLUTCH, EQuKeys.LIST_BP],
+        queryKey: [EQuKeys.LIST_BP_CLUTCH, id, EQuKeys.LIST_BP],
+        exact: true,
       });
     },
+  });
+}
+
+const httpGetBpTree = async (id) => {
+  const { data, error } = await supabase.rpc("rpc_bp_family_tree", {
+    target_id: id,
+  });
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+export function useBpTree(id: string, isEnabled = true) {
+  return useQuery<any, ISupabaseErr, any[]>({
+    queryKey: [EQuKeys.BP_TREE, id],
+    queryFn: () => httpGetBpTree(id),
+    enabled: isEnabled,
   });
 }

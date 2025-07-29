@@ -264,8 +264,8 @@ export const OddsInfo = ({ female, male }) => {
             {data?.offspring?.map((o) => {
               const { numerator, denominator } = o.probability;
               return (
-                <Flex key={o.morph_name} direction="row" wrap="nowrap" gap="md">
-                  <Box fz="xs" flex="1 0 72px">{`${numerator}/${denominator} (${(numerator / denominator) * 100}%)`}</Box>
+                <Flex key={o.morph_name} direction="row" wrap="nowrap" gap="md" w="100%" maw="100%">
+                  <Box fz="xs" flex="0 0 72px">{`${numerator}/${denominator} (${(numerator / denominator) * 100}%)`}</Box>
                   <Flex direction="row" wrap="wrap" gap="sm">
                     {o.traits.map((t) => (
                       <GenePill key={`${t.id}_${t.name}`} item={fromMMtoPill(t)} />

@@ -3,9 +3,10 @@ import { FC } from "preact/compat";
 import { useEffect } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, Divider, Flex, Image, NumberInput, Progress, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
+import { isEmpty } from "lodash-es";
 import { Controller, FormProvider, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { calcProjGenes } from "@/components/ballpythons/const";
 import { GenePill } from "@/components/genetics/geneSelect";
@@ -16,9 +17,9 @@ import { EClSt, IResBpClutch } from "@/api/models";
 import { notif } from "@/utils/notif";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff } from "@/utils/time";
-import { getPercentage } from "../../bpBreed/breedUtils";
+import { daysAfterLaid, getPercentage } from "../../bpBreed/breedUtils";
 import { calcAnim } from "../clutchUtils";
-import { FormApprovedBabies, MiniInfo } from "../subcomponents";
+import { FormApprovedBabies, Juveniles, MiniInfo } from "../subcomponents";
 import { IClutchScheme, clutchSchema, prepForFinal, prepForHatch, prepForUpdate, stdErr } from "./const";
 import style from "./styles.module.scss";
 
@@ -28,8 +29,9 @@ const snakeId = signal<string | undefined>(undefined);
 interface IProp {
   clutch: IResBpClutch;
   initData: IClutchScheme;
+  fathersToPick: any[];
 }
-export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
+export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) => {
   const location = useLocation();
   const form = useForm<IClutchScheme>({
     defaultValues: initData,
@@ -62,13 +64,15 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
   const ids = [clutch.female_id].concat(clutch.males_ids);
   const { female_genes, male_genes } = clutch;
 
-  const { mutate: update } = useUpdateBpClutch();
-  const { mutate: finalise } = useFinaliseBpClutch();
+  const { mutate: update } = useUpdateBpClutch(clutch.id);
+  const { mutate: finalise } = useFinaliseBpClutch(clutch.id);
 
   const dateLaid = watch("date_laid");
   const left = dateTimeDiff(dateAddDays(dateLaid, 60), "days");
+  const isLaid = clutch.status === EClSt.LA;
   const isHatch = clutch.status === EClSt.HA;
   const isClosed = clutch.status === EClSt.CL;
+  const isCanHatch = dateTimeDiff(dateAddDays(clutch.date_laid, daysAfterLaid), "days") <= 5;
 
   const onSub = async (sbm) => {
     update(prepForUpdate(sbm, dirtyFields, location.query.id), {
@@ -94,7 +98,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
   };
 
   const onFinalise = (sbm) => {
-    finalise(prepForFinal(sbm, location.query.id), {
+    finalise(prepForFinal(sbm, location.query.id) as any, {
       onSuccess: () => {
         notif({ c: "green", t: "Успешно", m: "Змейки зарегистрированы" });
       },
@@ -105,16 +109,22 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
   };
 
   useEffect(() => {
-    if (!isHatch) {
+    if (isLaid) {
       replace(new Array(wEggs - (wInf ?? 0)).fill(" "));
     }
-  }, [wEggs, wInf, isHatch, replace]);
+  }, [wEggs, wInf, isLaid, replace]);
 
   useEffect(() => {
     if (initData.future_animals != null && isHatch) {
       replaceInit(initData.future_animals);
     }
   }, [initData.future_animals, replaceInit, isHatch]);
+
+  useEffect(() => {
+    return () => {
+      snakeId.value = undefined;
+    };
+  }, []);
 
   return (
     <>
@@ -137,7 +147,6 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
           ))}
         </Flex>
       </Stack>
-
       <Stack maw="100%" w="100%" gap="lg">
         <Flex maw="100%" w="100%" gap="xl" align="end" direction={{ base: "column", xs: "row" }}>
           <Controller
@@ -198,7 +207,6 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
           />
         </Flex>
       </Stack>
-
       {!(isHatch || isClosed) ? (
         <Flex align="flex-start" maw="100%" w="100%">
           <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} disabled={!isDirty}>
@@ -206,60 +214,93 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch }) => {
           </Btn>
         </Flex>
       ) : null}
-
-      <Divider w="100%" maw="100%" mt="md" />
-      <Stack gap="lg" w="100%" maw="100%">
-        <Controller
-          name="date_hatch"
-          control={control}
-          render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return (
-              <DatePickerInput
-                disabled={isHatch || isClosed}
-                label="Дата завершения инкубации"
-                w="auto"
-                maw="max-content"
-                value={value as any}
-                onChange={onChange}
-                valueFormat="DD MMMM YYYY"
-                highlightToday
-                locale="ru"
-                error={error?.message}
-                maxDate={dateAddDays(value as any, 5).toDate()}
-                minDate={dateAddDays(value as any, -5).toDate()}
+      {isCanHatch ? (
+        <>
+          <Divider w="100%" maw="100%" mt="md" />
+          <Stack gap="lg" w="100%" maw="100%">
+            <Flex gap="md">
+              <Controller
+                name="date_hatch"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => {
+                  return (
+                    <DatePickerInput
+                      disabled={isHatch || isClosed}
+                      label="Дата завершения инкубации"
+                      w="auto"
+                      maw="max-content"
+                      value={value as any}
+                      onChange={onChange}
+                      valueFormat="DD MMMM YYYY"
+                      highlightToday
+                      locale="ru"
+                      error={error?.message}
+                      maxDate={dateAddDays(value as any, 5).toDate()}
+                      minDate={dateAddDays(value as any, -5).toDate()}
+                    />
+                  );
+                }}
               />
-            );
-          }}
-        />
+              <Controller
+                name="father_id"
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => {
+                  return <Select searchable label="Отработавший самец" data={fathersToPick} value={value} onChange={onChange} error={error?.message} disabled={clutch.males_ids.length === 1} />;
+                }}
+              />
+            </Flex>
 
-        {!(isHatch || isClosed) ? (
-          <>
-            <Flex gap="md" className={style.animated} wrap="wrap">
-              {kidsFields?.map((a) => (
-                <Flex key={a.id} gap="sm" wrap="nowrap" miw="0px" mih="0px">
-                  <IconSwitch icon="unisex" width="20" height="20" />
-                  <Image src={null} fit="cover" radius="sm" w="auto" h={48} loading="lazy" flex="1 1 48px" fallbackSrc={fallback} />
+            {isLaid && !isClosed ? (
+              <>
+                <Flex gap="md" className={style.animated} wrap="wrap">
+                  {kidsFields?.map((a) => (
+                    <Flex key={a.id} gap="sm" wrap="nowrap" miw="0px" mih="0px">
+                      <IconSwitch icon="unisex" width="20" height="20" />
+                      <Image src={null} fit="cover" radius="sm" w="auto" h={48} loading="lazy" flex="1 1 48px" fallbackSrc={fallback} />
+                    </Flex>
+                  ))}
                 </Flex>
-              ))}
-            </Flex>
+                <Flex align="flex-start" maw="100%" w="100%">
+                  <Button type="submit" onClick={handleSubmit(onHatch)} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="sm">
+                    Завершить инкубацию
+                  </Button>
+                </Flex>
+              </>
+            ) : null}
+
+            <FormProvider {...form}>
+              <FormApprovedBabies futureSnakes={futureSnakes} isClosed={isClosed} />
+            </FormProvider>
+          </Stack>
+          {clutch.males_ids.length > 1 && !isClosed ? (
+            <Title component="span" c="yellow.6" order={5} fw={400}>
+              Мы рекомендуем завершить кладку и сохранить всех ювенилов, когда вы определились с их морфингом, а, значит, и с тем, какой самец отработал. На данный момент записать отцом можно только одного самца.
+            </Title>
+          ) : null}
+
+          {!isLaid && !isClosed ? (
             <Flex align="flex-start" maw="100%" w="100%">
-              <Button type="submit" onClick={handleSubmit(onHatch)} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="sm">
-                Завершить инкубацию
-              </Button>
+              <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onFinalise)}>
+                Завершить кладку
+              </Btn>
             </Flex>
-          </>
-        ) : null}
+          ) : null}
+        </>
+      ) : null}
 
-        <FormProvider {...form}>
-          <FormApprovedBabies futureSnakes={futureSnakes} />
-        </FormProvider>
-      </Stack>
+      {isClosed ? (
+        !isEmpty(clutch.finalised_ids) ? (
+          <Juveniles ids={clutch.finalised_ids} onPicClick={(i) => (snakeId.value = i)} title="Итоговые змееныши в кладке" />
+        ) : (
+          <Text fw={400} c="var(--mantine-color-error)">
+            Кладка завершена, но невозможно отобразить змеенышей.
+            <br />
+            Вероятно, данные по ним были удалены, либо же — из кладки никто не вышел 😭
+          </Text>
+        )
+      ) : null}
 
-      <Flex align="flex-start" maw="100%" w="100%">
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onFinalise)}>
-          Завершить кладку
-        </Btn>
-      </Flex>
+      {isClosed && !isEmpty(clutch.finalised_ids) ? <Juveniles ids={clutch.finalised_ids} onPicClick={(i) => (snakeId.value = i)} title="Итоговые змееныши в кладке" /> : null}
 
       <MiniInfo
         opened={snakeId.value != null}

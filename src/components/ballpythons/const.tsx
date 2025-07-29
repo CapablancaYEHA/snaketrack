@@ -1,7 +1,7 @@
 import fallback from "@assets/placeholder.png";
-import { Box, Flex, Image, Stack, Text } from "@mantine/core";
+import { Flex, Image, Stack, Text } from "@mantine/core";
 import { Row, createColumnHelper } from "@tanstack/react-table";
-import { isEmpty } from "lodash-es";
+import { isEmpty, uniqBy } from "lodash-es";
 import { EBreedStat, IFeed, IGenesBpComp, IResBpBreedingList, IResSnakesList } from "@/api/models";
 import { getAge, getDateShort, isOlderThan, isYoungerThan } from "@/utils/time";
 import { SexName } from "../common/sexName";
@@ -177,8 +177,11 @@ export const calcProjGenes = (arr?: IGenesBpComp[]) => {
     .filter((g) => g.label !== "Normal")
     .map((a) => {
       if (a.gene === "inc-dom") {
-        const [r, ..._] = a.label.match(/(Super)?\w+$/)!;
-        return { gene: "inc-dom", label: r };
+        if (a.label.startsWith("Super")) {
+          const [r, ..._] = a.label.match(/(Super)?\w+$/)!;
+          return { gene: "inc-dom", label: r };
+        }
+        return { gene: "inc-dom", label: a.label };
       }
       if (a.gene === "rec") {
         const [, , , r, ..._] = a.label.match(/^((\d+)% Het |Het )?(\w+)$/)!;
@@ -187,14 +190,14 @@ export const calcProjGenes = (arr?: IGenesBpComp[]) => {
       }
       return a;
     });
-  return [...new Set(pre)];
+  return uniqBy(pre, "label");
 };
 
 export const calcBreedTraits = (all: IResBpBreedingList[] | undefined) => {
   if (!all) return [];
   let res = all.map((a) => a.female_genes.concat(a.male_genes.flat())).flat();
   let resmore = calcProjGenes(res).map((a) => a.label);
-  return [...new Set(resmore)];
+  return uniqBy(resmore, "label");
 };
 
 export const bStToLabel = {

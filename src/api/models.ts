@@ -17,6 +17,7 @@ export const enum EQuKeys {
   LIST_BP = "bp_list",
   LIST_BP_BREED = "bp_list_breed",
   LIST_BP_CLUTCH = "bp_list_clutch",
+  BP_TREE = "bp_family_tree",
 }
 
 export interface IGenesBpComp {
@@ -43,6 +44,7 @@ export interface IReqCreateBP {
   genes: IGenesBpComp[];
   weight: { date: string; weight: number }[] | null;
   date_hatch: string;
+  shadow_date_hatch?: string; // неизменяемая дата рождения, используется для определения siblings в дереве
   origin: string;
   parents?: { female: string; males: string[] }; // TODO ?????
   price: number | null;
@@ -54,6 +56,8 @@ export interface IReqCreateBP {
   notes: string | null;
   last_action?: "create" | "transfer" | "update" | "delete";
   from_clutch?: string | null;
+  mother_id?: string | null;
+  father_id?: string | null;
 }
 
 export type IFeed = {
@@ -206,6 +210,7 @@ export interface IResBpClutch {
   male_pictures: string | null;
   male_genes: IGenesBpComp[][];
   female_genes: IGenesBpComp[];
+  finalised_ids: string[] | null;
 }
 
 export interface IUpdClutchReq extends Partial<Omit<IReqCreateBpClutch, "males_ids" | "female_id" | "owner_id">> {

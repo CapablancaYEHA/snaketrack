@@ -1,12 +1,13 @@
 import { useEffect } from "preact/hooks";
 import { mobileThreshold, startMd, startSm, tabletThreshold } from "@/styles/theme";
 import fallback from "@assets/placeholder.png";
-import { Box, Flex, Grid, Group, Image, Loader, Modal, Progress, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Anchor, Box, Flex, Grid, Group, Image, Loader, Modal, Progress, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { calcProjGenes } from "@/components/ballpythons/const";
+import { bgDark } from "@/components/common/StackTable/utils";
 import { SexName } from "@/components/common/sexName";
 import { sortBpGenes } from "@/components/genetics/const";
 import { GenePill, GeneSelect } from "@/components/genetics/geneSelect";
@@ -20,7 +21,7 @@ import { sexHardcode } from "../bpBreed/common";
 import { calcAnim } from "./clutchUtils";
 import { IClutchScheme, statusHardcode } from "./editClutch/const";
 
-export const SClutchCard = ({ clutch, onPicClick, className }: { clutch: IResBpClutch; onPicClick: Function; className?: string }) => {
+export const SPics = ({ clutch, onPicClick, className }: { clutch: IResBpClutch; onPicClick: Function; className?: string }) => {
   const pics = [clutch.female_picture].concat(clutch.male_pictures);
   const ids = [clutch.female_id].concat(clutch.males_ids);
 
@@ -35,7 +36,7 @@ export const SClutchCard = ({ clutch, onPicClick, className }: { clutch: IResBpC
         <Stack gap="md" justify="space-between">
           {pics.map((a, ind) => (
             <Flex
-              key={a}
+              key={`${a}_${ind}_${clutch.id}`}
               mt={ind === 1 ? "lg" : 0}
               gap="sm"
               align="center"
@@ -50,46 +51,84 @@ export const SClutchCard = ({ clutch, onPicClick, className }: { clutch: IResBpC
             </Flex>
           ))}
         </Stack>
-        <Stack gap="md" flex="1 1 auto">
-          <ClutchProgress date_laid={clutch.date_laid} curStatus={clutch.status} />
-          <Space h="lg" />
-          <Flex gap="xl">
-            <Stack gap="xs">
-              <Title order={6}>
-                Яйца
-                <Text size="sm" fw={500}>
-                  {clutch.eggs ?? "Не указано"}
-                </Text>
-              </Title>
-            </Stack>
-            <Stack gap="xs">
-              <Title order={6}>
-                Жировики
-                <Text size="sm" fw={500}>
-                  {clutch.slugs ?? "Не указано"}
-                </Text>
-              </Title>
-            </Stack>
-            <Stack gap="xs">
-              <Title order={6}>
-                Неоплоды
-                <Text size="sm" fw={500}>
-                  {clutch.infertile_eggs ?? "Не указано"}
-                </Text>
-              </Title>
-            </Stack>
-          </Flex>
-          <Stack gap="xs">
-            <Title order={6}>Гены в проекте</Title>
-            <Flex gap="4px" wrap="wrap">
-              {calcProjGenes(clutch.female_genes.concat(clutch.male_genes.flat())).map((a, ind) => (
-                <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="xs" />
-              ))}
-            </Flex>
-          </Stack>
-        </Stack>
       </Flex>
     </Stack>
+  );
+};
+
+export const SInfo = ({ clutch, onPicClick }: { clutch: IResBpClutch; onPicClick: Function }) => {
+  const ids = clutch.finalised_ids;
+
+  return (
+    <Flex gap="xl" flex="0 1 520px">
+      <Stack gap="md" flex={ids ? "1 0 290px" : "1 1 auto"}>
+        <ClutchProgress date_laid={clutch.date_laid} curStatus={clutch.status} />
+        <Space h="lg" />
+        <Flex gap="xl" wrap="nowrap">
+          <Stack gap="xs">
+            <Title order={6}>
+              Яйца
+              <Text size="sm" fw={500}>
+                {clutch.eggs ?? "Не указано"}
+              </Text>
+            </Title>
+          </Stack>
+          <Stack gap="xs">
+            <Title order={6}>
+              Жировики
+              <Text size="sm" fw={500}>
+                {clutch.slugs ?? "Не указано"}
+              </Text>
+            </Title>
+          </Stack>
+          <Stack gap="xs">
+            <Title order={6}>
+              Неоплоды
+              <Text size="sm" fw={500}>
+                {clutch.infertile_eggs ?? "Не указано"}
+              </Text>
+            </Title>
+          </Stack>
+        </Flex>
+        <Stack gap="xs">
+          <Title order={6}>Гены в проекте</Title>
+          <Flex gap="4px" wrap="wrap">
+            {calcProjGenes(clutch.female_genes.concat(clutch.male_genes.flat())).map((a, ind) => (
+              <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="xs" />
+            ))}
+          </Flex>
+        </Stack>
+      </Stack>
+      {ids ? <Juveniles ids={ids} onPicClick={onPicClick} /> : null}
+    </Flex>
+  );
+};
+
+export const Juveniles = ({ ids, onPicClick, title = "Змееныши" }) => {
+  return (
+    <Flex wrap="nowrap" direction="column" align="flex-start">
+      <div>
+        <Title order={6}>{title}</Title>
+        <Space h="xs" />
+      </div>
+      <Flex gap="md" wrap="wrap" direction="column" mah={344}>
+        {ids?.map((a, ind) => (
+          <Flex
+            key={a}
+            gap="sm"
+            align="center"
+            style={{ cursor: "pointer" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onPicClick(ids[ind], null);
+            }}
+          >
+            <IconSwitch icon={""} width="16" height="16" />
+            <Image src={fallback} fit="cover" radius="sm" w="auto" h={32} loading="lazy" flex="1 1 32px" fallbackSrc={fallback} />
+          </Flex>
+        ))}
+      </Flex>
+    </Flex>
   );
 };
 
@@ -132,7 +171,7 @@ export const MiniInfo = ({ opened, close, snakeId, sex, withTitle = true }) => {
   const { data, isPending, isError } = useSnake(snakeId, snakeId != null);
 
   return (
-    <Modal centered opened={opened} onClose={close} size="xs" title={withTitle ? <Title order={4}>{sex || ""} в кладке</Title> : undefined}>
+    <Modal centered opened={opened} onClose={close} keepMounted={true} size="xs" title={withTitle && sex ? <Title order={4}>{sex} в кладке</Title> : undefined}>
       <Stack gap="md" mih={260}>
         {isPending ? (
           <Loader color="dark.1" size="lg" style={{ alignSelf: "center" }} />
@@ -142,8 +181,10 @@ export const MiniInfo = ({ opened, close, snakeId, sex, withTitle = true }) => {
           </Text>
         ) : (
           <>
-            <Image src={data?.picture ?? fallback} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" mih={110} fallbackSrc={fallback} loading="lazy" />
-            <SexName sex={data?.sex} name={data?.snake_name} />
+            <Image src={data?.picture ?? fallback} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" mih={110} mah={112} fallbackSrc={fallback} loading="lazy" />
+            <Anchor href={`/snakes/:ballpython?id=${data.id}`} c="inherit">
+              <SexName sex={data?.sex} name={data?.snake_name} isLink />
+            </Anchor>
             <Text size="md">⌛ {getAge(data?.date_hatch)}</Text>
             <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
               {sortBpGenes(data.genes as any).map((a) => (
@@ -157,7 +198,7 @@ export const MiniInfo = ({ opened, close, snakeId, sex, withTitle = true }) => {
   );
 };
 
-export const FormApprovedBabies = ({ futureSnakes }) => {
+export const FormApprovedBabies = ({ futureSnakes, isClosed }) => {
   const isMinSm = useMediaQuery(startSm);
   const isMinMd = useMediaQuery(startMd);
   const { data: traits } = useGenes();
@@ -206,7 +247,7 @@ export const FormApprovedBabies = ({ futureSnakes }) => {
     </>
   );
 
-  return !isEmpty(futureSnakes) ? (
+  return !isEmpty(futureSnakes) && !isClosed ? (
     isMinMd ? (
       futureSnakes.map((f, ind) => (
         <SimpleGrid cols={5} spacing="xs" verticalSpacing="xs" key={f.id}>

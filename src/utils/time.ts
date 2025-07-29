@@ -29,6 +29,8 @@ export const getAge = (a: string) => {
   const months = dayjs().diff(dayjs(a), "month") - years * 12;
   const days = dayjs().diff(dayjs(a).add(years, "year").add(months, "month"), "day");
 
+  if (!days) return "Меньше суток";
+
   return `${years ? `${declWord(years, ["год", "года", "лет"])}` : ""}
   ${months ? `${declWord(months, ["месяц", "месяца", "месяцев"])}` : ""}
   ${days ? `${declWord(days, ["день", "дня", "дней"])}` : ""}`;

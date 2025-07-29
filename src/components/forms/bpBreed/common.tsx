@@ -2,13 +2,12 @@
 import { Group } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 import * as yup from "yup";
-import { calcProjGenes } from "@/components/ballpythons/const";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IUpdBreedReq, TSnakeQueue, useSnake as useFemale, useSnakeQueue, useSnakesList } from "@/api/hooks";
 import { IBreedStat, IReqCreateBPBreed, IResSnakesList } from "@/api/models";
 
 interface IInit {
-  fem: string | null | undefined;
+  fem?: string | null;
   fetchFields: Record<"id" | "snake", string>[];
 }
 export function useUtilsBreed({ fem, fetchFields }: IInit) {
