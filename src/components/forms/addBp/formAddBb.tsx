@@ -5,6 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Flex, Group, NumberInput, Radio, Select, Text, TextInput, Textarea } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { Feeder } from "@/components/common/Feeder/Feeder";
 import { IGenesBpComp } from "@/api/models";
 import { httpUldSnPic, useCreateBp } from "../../../api/hooks";
 import { FileUpload } from "../../../components/fileUpload";
@@ -13,7 +14,7 @@ import { Btn } from "../../../components/navs/btn/Btn";
 import { notif } from "../../../utils/notif";
 import { calcImgUrl, compressImage } from "../../../utils/supabaseImg";
 import { sexHardcode } from "../bpBreed/common";
-import { defVals, feederHardcode, prepareForSubmit, schema, uplErr } from "./const";
+import { defVals, prepareForSubmit, schema, uplErr } from "./const";
 
 // TODO сделать проверку родителей и что есть разнополая пара вообще
 // TODO в будущем - нужна выпадашка Статус - жива, умерла, карантин, продана ну и чето еще
@@ -143,7 +144,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DatePickerInput label="Последнее кормление" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Нет данных" maxDate={new Date()} error={error?.message} />
+                <DatePickerInput label="Последнее кормление" flex="0 0 260px" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Нет данных" maxDate={new Date()} error={error?.message} />
               </>
             );
           }}
@@ -151,8 +152,8 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
         <Controller
           name="feed_ko"
           control={control}
-          render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <Select data={feederHardcode} value={value} onChange={onChange} label="Кормовой объект" error={error?.message} placeholder="Нет данных" searchable />;
+          render={({ field: { onChange }, fieldState: { error } }) => {
+            return <Feeder onChange={onChange} errMsg={error?.message} />;
           }}
         />
         <NumberInput {...(register("feed_weight") as any)} name="feed_weight" rightSection="г" label="Масса КО" placeholder="Нет данных" hideControls />

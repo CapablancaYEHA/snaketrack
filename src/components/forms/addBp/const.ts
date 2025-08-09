@@ -4,30 +4,6 @@ import { IReqCreateBP } from "@/api/models";
 import { dateToSupabaseTime } from "@/utils/time";
 import { notif } from "../../../utils/notif";
 
-export const feederHardcode = [
-  { label: "❄️Мышь голая", value: "ft_mouse_pinkie" },
-  { label: "❄️Мышь опушенок", value: "ft_mouse_fuzzy" },
-  { label: "❄️Мышь бегунок", value: "ft_mouse_runner" },
-  { label: "❄️Мышь взрослая", value: "ft_mouse_adult" },
-  { label: "❄️Крыса голая", value: "ft_rat_pinkie" },
-  { label: "❄️Крыса опушенок", value: "ft_rat_fuzzy" },
-  { label: "❄️Крыса бегунок", value: "ft_rat_runner" },
-  { label: "❄️Крыса подросток", value: "ft_rat_teen" },
-  { label: "❄️Крыса взрослая", value: "ft_rat_adult" },
-  { label: "🐁Мышь голая живая", value: "live_mouse_pinkie" },
-  { label: "🐁Мышь опушенок живая", value: "live_mouse_fuzzy" },
-  { label: "🐁Мышь бегунок живая", value: "live_mouse_runner" },
-  { label: "🐁Мышь взрослая живая", value: "live_mouse_adult" },
-  { label: "🐀Крыса голая живая", value: "live_rat_pinkie" },
-  { label: "🐀Крыса опушенок живая", value: "live_rat_fuzzy" },
-  { label: "🐀Крыса бегунок живая", value: "live_rat_runner" },
-  { label: "🐀Крыса подросток живая", value: "live_rat_teen" },
-  { label: "🐀Крыса взрослая живая", value: "live_rat_adult" },
-];
-
-export const reverseFeeder = (arr) => arr.reduce((tot, cur) => ({ ...tot, [cur.value]: cur.label }), {});
-export const feederToString = reverseFeeder(feederHardcode);
-
 type Schema = {
   file: File;
 };
@@ -47,7 +23,17 @@ export const schema = yup.object<Schema>().shape({
   price: yup.number().nullable(),
   feed_last_at: yup.string().nullable(),
   feed_weight: yup.number().nullable(),
-  feed_ko: yup.string().nullable(),
+  feed_ko: yup
+    .string()
+    .nullable()
+    .test("checkit", "Тип КО обязателен при заполнении кормления, остальное - опционально", (val) => {
+      if (!val) return true;
+      const arr = val.split("_");
+      if (val.startsWith("ft") || val.startsWith("live")) {
+        return Boolean(arr?.[1]);
+      }
+      return Boolean(arr?.[0]);
+    }),
   feed_comment: yup.string().max(150, "Ограничение 150 символов").nullable(),
   picture: yup
     .mixed<File>()

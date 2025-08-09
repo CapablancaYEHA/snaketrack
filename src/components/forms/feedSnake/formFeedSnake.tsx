@@ -1,15 +1,16 @@
 import { FC } from "preact/compat";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Accordion, Box, Checkbox, Flex, Modal, NumberInput, Select, Space, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Accordion, Box, Checkbox, Flex, Modal, NumberInput, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { Controller, useForm } from "react-hook-form";
+import { Feeder } from "@/components/common/Feeder/Feeder";
+import { codeToFeeder } from "@/components/common/Feeder/const";
 import { useUpdateFeeding } from "@/api/hooks";
 import { IResSnakesList } from "@/api/models";
 import { notif } from "../../../utils/notif";
 import { getDate } from "../../../utils/time";
 import { SexName } from "../../common/sexName";
 import { Btn } from "../../navs/btn/Btn";
-import { feederHardcode, feederToString } from "../addBp/const";
 import { defVals, prepareForSubmit, schema } from "./const";
 
 type IProp = {
@@ -65,7 +66,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
   const errObj = errors?.["shed"] || errors?.["refuse"] || errors?.["regurgitation"];
 
   return (
-    <Modal size="lg" opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Региус. Новое событие</Title>}>
+    <Modal size="lg" opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Региус. Новое событие</Title>} keepMounted>
       <Box>
         <SexName sex={snake?.sex!} name={snake?.snake_name ?? ""} />
       </Box>
@@ -99,8 +100,8 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
       <Controller
         name="feed_ko"
         control={control}
-        render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <Select data={feederHardcode} data-scroll-locked={0} value={value} onChange={onChange} label="Кормовой объект" error={error?.message} placeholder="Нет данных" />;
+        render={({ field: { onChange }, fieldState: { error } }) => {
+          return <Feeder onChange={onChange} errMsg={error?.message} />;
         }}
       />
       <Space h="lg" />
@@ -118,7 +119,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
                 <Text size="sm">Масса питомца: {lastWeight?.weight ? `${lastWeight?.weight}г` : "Нет данных"}</Text>
               </Flex>
               <Flex justify="space-between">
-                <Text size="sm">Кормовой объект: {lastFeed?.feed_ko ? feederToString[lastFeed.feed_ko] : "Нет данных"}</Text>
+                <Text size="sm">Кормовой объект: {lastFeed?.feed_ko ? codeToFeeder(lastFeed.feed_ko) : "Нет данных"}</Text>
                 <Text size="sm">Вес КО: {lastFeed?.feed_weight ? `${lastFeed.feed_weight}г` : "Нет данных"}</Text>
                 {lastFeed?.regurgitation ? (
                   <Text size="sm" c="var(--mantine-color-error)">

@@ -16,7 +16,17 @@ const incor = "Отметьте линьку / срыг / отказ\nЛибо �
 export const schema = yup.object().shape(
   {
     feed_last_at: yup.string().nullable().required("Дата обязательна"),
-    feed_ko: yup.string().nullable(),
+    feed_ko: yup
+      .string()
+      .nullable()
+      .test("checkit", "Тип КО обязателен при заполнении кормления, остальное - опционально", (val) => {
+        if (!val) return true;
+        const arr = val.split("_");
+        if (val.startsWith("ft") || val.startsWith("live")) {
+          return Boolean(arr?.[1]);
+        }
+        return Boolean(arr?.[0]);
+      }),
     feed_comment: yup.string().max(150, "Ограничение 150 символов").nullable(),
     weight: yup.number().when(["refuse", "regurgitation", "shed", "feed_ko", "feed_weight"], ([refuse, regurgitation, shed, feed_ko, feed_weight], self) => {
       if (feed_ko || feed_weight) {

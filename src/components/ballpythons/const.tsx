@@ -4,8 +4,8 @@ import { Row, createColumnHelper } from "@tanstack/react-table";
 import { isEmpty, uniqBy } from "lodash-es";
 import { EBreedStat, IFeed, IGenesBpComp, IResBpBreedingList, IResSnakesList } from "@/api/models";
 import { getAge, getDateShort, isOlderThan, isYoungerThan } from "@/utils/time";
+import { codeToFeeder } from "../common/Feeder/const";
 import { SexName } from "../common/sexName";
-import { feederToString } from "../forms/addBp/const";
 import { BpControls, BpEventsBlock, BpGenes } from "./BpCard";
 
 const columnHelper = createColumnHelper<IFeed>();
@@ -22,7 +22,7 @@ export const bpFeedColumns = [
   columnHelper.accessor("feed_ko", {
     header: () => "КО / Проблема",
     cell: ({ row, cell }) => {
-      const res = feederToString[cell.getValue() as any];
+      const res = codeToFeeder(cell.getValue() as any);
       return row.original.regurgitation ? (
         <Flex gap="md" wrap="wrap">
           <Text fw={500} component="span" c="var(--mantine-color-error)">
@@ -46,7 +46,7 @@ export const bpFeedColumns = [
           ) : null}
         </Flex>
       ) : cell.getValue() != null ? (
-        feederToString[cell.getValue()!]
+        codeToFeeder(cell.getValue()!)
       ) : (
         ""
       );
