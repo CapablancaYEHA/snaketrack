@@ -6,23 +6,33 @@ import { GenePill } from "../genetics/geneSelect";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
 
 const calcFeedEvent = (feed?: IFeed) => {
+  let temp = "";
+  if (feed?.feed_last_at != null) {
+    temp = temp + getDate(feed.feed_last_at);
+  }
   if (feed?.refuse) {
     return (
-      <Text fw={500} component="span" c="#00FFC0">
-        Отказ
-      </Text>
+      <>
+        <span>{temp}</span>
+        {"  "}
+        <Text fw={500} component="span" c="#00FFC0">
+          Отказ
+        </Text>
+      </>
     );
   }
   if (feed?.regurgitation) {
     return (
-      <Text fw={500} component="span" c="var(--mantine-color-error)">
-        Срыг
-      </Text>
+      <>
+        <span>{temp}</span>
+        {"  "}
+        <Text fw={500} component="span" c="var(--mantine-color-error)">
+          Срыг
+        </Text>
+      </>
     );
   }
-  if (feed?.feed_last_at != null) {
-    return getDate(feed.feed_last_at);
-  }
+
   return "Нет данных";
 };
 
@@ -34,16 +44,16 @@ export const BpGenes = ({ genes }) => (
   </Flex>
 );
 
-export const BpEventsBlock = ({ feeding, weight, shed }) => {
+export const BpEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isShowShed = true, isShowWeight = true }) => {
   const lastWeight = weight?.[weight?.length - 1];
   const lastFeed = feeding?.[feeding.length - 1];
   const lastShed = shed?.[shed.length - 1];
 
   return (
     <Stack gap="xs">
-      <Text size="sm">Текущий вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text>
-      <Text size="sm">Последнее кормление: {calcFeedEvent(lastFeed)}</Text>
-      <Text size="sm">Последняя линька: {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text>
+      {isShowWeight ? <Text size="sm">Текущий вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text> : null}
+      {isShowFeed ? <Text size="sm">Последнее кормление: {calcFeedEvent(lastFeed)}</Text> : null}
+      {isShowShed ? <Text size="sm">Последняя линька: {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text> : null}
     </Stack>
   );
 };

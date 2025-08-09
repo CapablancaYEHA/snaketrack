@@ -1,6 +1,9 @@
 {
   "private": true,
   "type": "module",
+  "name": "snaketrack",
+  "description": "Snaketrack Website",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",

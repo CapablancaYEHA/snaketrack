@@ -7,6 +7,7 @@ import { ClutchList } from "@/pages/ClutchList";
 import { EditBreed } from "@/pages/EditBreed";
 import { EditClutch } from "@/pages/EditClutch";
 import { EditSnake } from "@/pages/EditSnake";
+import { Schedule } from "@/pages/Schedule";
 import { Snake } from "@/pages/Snake";
 import { SnakeList } from "@/pages/SnakeList";
 import { Profile } from "@/pages/auth/Profile";
@@ -42,10 +43,12 @@ export const protectedRoutes = {
   "/breeding/:type?id=:id": EditBreed,
   "/clutches": ClutchList,
   "/clutches/edit/:type?id=:id": EditClutch,
+  "/schedule": Schedule,
 };
 
 export const sidebarLinks = [
   { id: 2, link: "/snakes" },
   { id: 3, link: "/breeding" },
   { id: 4, link: "/clutches" },
+  { id: 5, link: "/schedule" },
 ];

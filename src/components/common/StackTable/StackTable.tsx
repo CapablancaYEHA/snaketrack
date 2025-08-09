@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Stack } from "@mantine/core";
-import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, RowSelectionState, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import styles from "./styles.module.scss";
 import { bgDark, calcColumn, getCommonPinningStyles } from "./utils";
@@ -15,30 +15,36 @@ interface IProp<T> {
   setGlobalFilter?: OnChangeFn<GlobalFilterTableState>;
   onRowClick?: (v) => void;
   initSort?: SortingState;
+  //   rowSelection?: RowSelectionState;
+  //   setRowSelection?: OnChangeFn<RowSelectionState>;
+  onSelect?: (a: RowSelectionState) => void;
 }
 
-export const StackTable = <T extends object>({ height, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter, initSort }: IProp<T>) => {
+export const StackTable = <T extends object>({ height, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter, initSort, onSelect }: IProp<T>) => {
   const isMount = useRef(false);
   const [sorting, setSorting] = useState<SortingState>(initSort ?? []);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const cols: ColumnDef<T>[] = useMemo<ColumnDef<T, unknown>[]>(() => columns, []);
 
   const table = useReactTable({
     columns: cols,
     data: data ?? [],
     globalFilterFn: "includesString",
+    getRowId: (row: any) => row?.id,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
-    // getPaginationRowModel: getPaginationRowModel(),
+    onRowSelectionChange: setRowSelection,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+
     onColumnFiltersChange: (columnFilters && setColumnFilters) || undefined,
     onGlobalFilterChange: (globalFilter && setGlobalFilter) || undefined,
-
     debugTable: import.meta.env.DEV,
     state: {
       columnFilters,
       globalFilter,
       sorting,
+      rowSelection,
     },
   });
 
@@ -51,10 +57,16 @@ export const StackTable = <T extends object>({ height, columns, data, setColumnF
     table.getColumn(trg)?.pin("left");
   }, []);
 
+  useEffect(() => {
+    onSelect?.(rowSelection);
+  }, [rowSelection, onSelect]);
+
   const isEmpty = isMount.current && table.options.data.length === 0;
   const isFilteredOut = table.options.data.length > 0 && table.getRowModel().rows.length === 0;
 
   const headGroups = table.getHeaderGroups();
+
+  console.log("rowSelection", rowSelection);
 
   return (
     <div className={styles.cont} style={height && !isEmpty ? { height: `${height}px` } : {}}>

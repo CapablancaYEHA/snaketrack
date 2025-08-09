@@ -2,6 +2,7 @@ import { CSSProperties, FC } from "preact/compat";
 import { ArrBidirectIcon } from "./ArrBidirect";
 import { ArrUpIcon } from "./ArrUp";
 import { BinIcon } from "./Bin";
+import { CalendarIcon } from "./Calendar";
 import { CheckIcon } from "./Check";
 import { DashIcon } from "./Dash";
 import { EggIcon } from "./Egg";
@@ -57,6 +58,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <NoFilterIcon width={width} height={height} />;
     case "search":
       return <SearchIcon width={width} height={height} />;
+    case "schedule":
+      return <CalendarIcon width={width} height={height} />;
     default:
       return <UnisexIcon width={width} height={height} />;
   }

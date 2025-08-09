@@ -1,20 +1,21 @@
-import { FC, useState } from "preact/compat";
-import { Button, ComboboxItem, Flex, Modal, Select, Space, Text, Title } from "@mantine/core";
-import { debounce, isEmpty } from "lodash-es";
+import { FC } from "preact/compat";
+import { Box, Button, Flex, Modal, Space, Text, Title } from "@mantine/core";
+import { SexName } from "@/components/common/sexName";
 import { useDeleteBpSnake } from "@/api/hooks";
+import { IResSnakesList } from "@/api/models";
 import { notif } from "@/utils/notif";
 
 type IProp = {
   opened: boolean;
   close: () => void;
-  snake: string;
+  target?: IResSnakesList;
 };
 
-export const DeleteSnake: FC<IProp> = ({ opened, close, snake }) => {
+export const DeleteSnake: FC<IProp> = ({ opened, close, target }) => {
   const { mutate, isPending } = useDeleteBpSnake();
 
   const subm = () => {
-    mutate(snake, {
+    mutate(target!.id, {
       onSuccess: () => {
         notif({ c: "green", m: "Удалено" });
         close();
@@ -31,8 +32,17 @@ export const DeleteSnake: FC<IProp> = ({ opened, close, snake }) => {
         Внимание!
       </Title>
       <Space h="xs" />
-      <Text>
-        Все данные по змее будут утеряны без возможности восстановления
+      <Text component="div">
+        Все данные по змее
+        {target ? (
+          <Box pos="relative" top="3px" display="inline">
+            <SexName sex={target.sex} name={target.snake_name} size="md" />
+          </Box>
+        ) : (
+          " "
+        )}
+        {"  "}
+        будут утеряны без возможности восстановления
         <br />
         Вы уверены?
       </Text>
@@ -48,4 +58,3 @@ export const DeleteSnake: FC<IProp> = ({ opened, close, snake }) => {
     </Modal>
   );
 };
-// c="var(--mantine-color-error)"

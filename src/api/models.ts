@@ -5,6 +5,7 @@ export const enum ESupabase {
   bpgenes = "bpgenes",
   profiles = "profiles",
   "bp-pics" = "bp-pics",
+  "reminders" = "feeding_reminders",
   // views
   bp_breeding_joined = "user_breeding_view",
   bp_clutch_joined = "clutch_view",
@@ -18,6 +19,7 @@ export const enum EQuKeys {
   LIST_BP_BREED = "bp_list_breed",
   LIST_BP_CLUTCH = "bp_list_clutch",
   BP_TREE = "bp_family_tree",
+  REMIND = "reminders",
 }
 
 export interface IGenesBpComp {
@@ -220,4 +222,24 @@ export interface IUpdClutchReq extends Partial<Omit<IReqCreateBpClutch, "males_i
 export interface IReqUpdBpClutch {
   upd: IUpdClutchReq;
   id: string;
+}
+
+export interface IRemindersRes {
+  id: string;
+  owner_id: string;
+  scheduled_time: string; // "2025-08-05T11:30:51+03:00"
+  next_occurrence: string; // "2025-08-05T11:30:51+03:00"
+  repeat_interval: number;
+  snake_ids: string[] | null;
+  status: "active" | "paused" | "completed";
+  notification_id: string | null;
+}
+
+export interface IRemindersReq {
+  owner_id: string;
+  scheduled_time: string; // "2025-08-05T11:30:51+03:00"
+  repeat_interval: number;
+  snake_ids: string[];
+  status?: "paused" | "completed";
+  notification_id?: string;
 }

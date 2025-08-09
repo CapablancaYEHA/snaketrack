@@ -101,7 +101,7 @@ export function SnakeList() {
           curId.value = undefined;
           isDeleteOpen.value = false;
         }}
-        snake={curId.value!}
+        target={target}
       />
     </Stack>
   );

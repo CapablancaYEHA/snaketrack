@@ -1,5 +1,5 @@
 import { FC, useState } from "preact/compat";
-import { ComboboxItem, Flex, Modal, Select, Space, Text, Title } from "@mantine/core";
+import { ComboboxItem, Flex, Loader, Modal, Select, Space, Text, Title } from "@mantine/core";
 import { debounce, isEmpty } from "lodash-es";
 import { useTransferSnake } from "../../api/hooks";
 import { useUserSuggestion } from "../../api/profile/hooks";
@@ -19,7 +19,7 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName }) =>
   const [search, setSearch] = useState("");
   const [breeder, setBreeder] = useState<ComboboxItem | null>(null);
 
-  const { data } = useUserSuggestion(search);
+  const { data, isFetching: isSearchPending } = useUserSuggestion(search);
   const sugg = (data ?? [])?.map((a) => ({ label: a.username, value: a.createdat }));
 
   const { mutate, isPending } = useTransferSnake();
@@ -62,6 +62,7 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName }) =>
         onSearchChange={handleSearch}
         data={sugg}
         nothingFoundMessage={search.length === 0 ? "Начните печатать" : "Нет совпадений..."}
+        rightSection={isSearchPending ? <Loader size="xs" /> : null}
         renderOption={(it) => (
           <Flex justify="space-between" align="center" maw="100%" w="100%">
             <Text size="sm" fw={500}>

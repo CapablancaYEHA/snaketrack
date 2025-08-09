@@ -5,7 +5,25 @@ import { nanoid } from "nanoid";
 import { upgAlias } from "@/components/genetics/const";
 import { toDataUrl } from "@/utils/supabaseImg";
 import { dateToSupabaseTime } from "@/utils/time";
-import { EQuKeys, ESupabase, IFeed, IGenesBpComp, IMorphOddsReq, IMorphOddsRes, IReqCreateBP, IReqCreateBPBreed, IReqCreateBpClutch, IReqUpdBpClutch, IResBpBreedingList, IResBpClutch, IResSnakesList, ISupabaseErr, IUpdClutchReq } from "./models";
+import {
+  EQuKeys,
+  ESupabase,
+  IFeed,
+  IGenesBpComp,
+  IMorphOddsReq,
+  IMorphOddsRes,
+  IRemindersReq,
+  IRemindersRes,
+  IReqCreateBP,
+  IReqCreateBPBreed,
+  IReqCreateBpClutch,
+  IReqUpdBpClutch,
+  IResBpBreedingList,
+  IResBpClutch,
+  IResSnakesList,
+  ISupabaseErr,
+  IUpdClutchReq,
+} from "./models";
 
 const httpGetGenes = async () => {
   const { data, error } = await supabase.from(ESupabase.bpgenes).select("*").throwOnError();
@@ -513,5 +531,52 @@ export function useBpTree(id: string, isEnabled = true) {
     queryKey: [EQuKeys.BP_TREE, id],
     queryFn: () => httpGetBpTree(id),
     enabled: isEnabled,
+  });
+}
+
+// Reminders
+const httpGetReminders = async (owner_id: string): Promise<IRemindersRes[]> => {
+  const { data, error } = await supabase.from(ESupabase.reminders).select("*").eq("owner_id", owner_id);
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+export function useReminders(owner: string, isEnabled: boolean) {
+  return useQuery<any, ISupabaseErr, IRemindersRes[]>({
+    queryKey: [EQuKeys.REMIND, owner],
+    queryFn: () => httpGetReminders(owner),
+    enabled: isEnabled,
+  });
+}
+
+const httpCreateReminder = async (a: IRemindersReq) => {
+  return await supabase.from(ESupabase.reminders).insert(a).select("id").single<{ id: string }>().throwOnError();
+};
+
+export function useCreateReminder() {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, IRemindersReq>({
+    mutationFn: (a) => httpCreateReminder(a),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EQuKeys.REMIND],
+      });
+    },
+  });
+}
+
+const httpDeleteReminder = async (id: string) => await supabase.from(ESupabase.reminders).delete().eq("id", id).throwOnError();
+
+export function useDeleteReminder() {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, string>({
+    mutationFn: (a) => httpDeleteReminder(a),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [EQuKeys.REMIND],
+      });
+    },
   });
 }
