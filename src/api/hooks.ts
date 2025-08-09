@@ -22,7 +22,6 @@ import {
   IResBpClutch,
   IResSnakesList,
   ISupabaseErr,
-  IUpdClutchReq,
 } from "./models";
 
 const httpGetGenes = async () => {

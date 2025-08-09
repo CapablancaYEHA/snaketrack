@@ -12,7 +12,7 @@ import { dateAddDays, dateToSupabaseTime, getDate, getIsSame } from "@/utils/tim
 import { calcExisting, makeSubmit } from "./const";
 import { sigCurDate, sigIsModOpen, sigSelected } from "./signals";
 
-export const Reminder = ({ reminders, allSnakes, close, onCreate }: { reminders: IRemindersRes[]; allSnakes: IResSnakesList[]; close: () => void; onCreate: () => void }) => {
+export const Reminder = ({ reminders, allSnakes, close }: { reminders: IRemindersRes[]; allSnakes: IResSnakesList[]; close: () => void }) => {
   const userId = localStorage.getItem("USER");
   const { control, getValues } = useForm<any>({
     defaultValues: {},
@@ -37,7 +37,6 @@ export const Reminder = ({ reminders, allSnakes, close, onCreate }: { reminders:
       onSuccess: () => {
         notif({ c: "green", t: "Успешно", m: "Напоминание создано" });
         close();
-        onCreate();
       },
       onError: async (err) => {
         notif({

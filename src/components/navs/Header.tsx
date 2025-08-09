@@ -1,5 +1,5 @@
 import { tabletThreshold } from "@/styles/theme";
-import { Box, Flex, Image, Title, alpha } from "@mantine/core";
+import { Box, Image, Title, alpha } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useProfile } from "../../api/profile/hooks";
 import { logoUri } from "./const";

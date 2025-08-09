@@ -19,8 +19,6 @@ export const Schedule = () => {
     return eventDates.some((eventDate) => getIsSame(eventDate, date));
   };
 
-  //   console.log("sigSelected", sigSelected.value);
-
   return (
     <>
       <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
@@ -67,7 +65,6 @@ export const Schedule = () => {
           sigIsModOpen.value = false;
           sigCurDate.value = undefined;
         }}
-        onCreate={() => (sigSelected.value = [])}
       />
     </>
   );

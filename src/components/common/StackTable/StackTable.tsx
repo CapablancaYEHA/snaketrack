@@ -66,8 +66,6 @@ export const StackTable = <T extends object>({ height, columns, data, setColumnF
 
   const headGroups = table.getHeaderGroups();
 
-  console.log("rowSelection", rowSelection);
-
   return (
     <div className={styles.cont} style={height && !isEmpty ? { height: `${height}px` } : {}}>
       <table className={styles.table}>
