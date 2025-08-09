@@ -6,10 +6,14 @@ import { GenePill } from "../genetics/geneSelect";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
 
 const calcFeedEvent = (feed?: IFeed) => {
+  if (feed == null || feed?.feed_last_at == null) {
+    return <span>Нет данных</span>;
+  }
   let temp = "";
   if (feed?.feed_last_at != null) {
-    temp = temp + getDate(feed.feed_last_at);
+    temp = temp + getDate(feed?.feed_last_at!);
   }
+
   if (feed?.refuse) {
     return (
       <>
@@ -33,7 +37,7 @@ const calcFeedEvent = (feed?: IFeed) => {
     );
   }
 
-  return "Нет данных";
+  return <span>{temp}</span>;
 };
 
 export const BpGenes = ({ genes }) => (

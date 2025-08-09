@@ -18,7 +18,6 @@ const isFeedOpen = signal<boolean>(false);
 
 export function Snake() {
   const location = useLocation();
-  //   const [value, setValue] = useState("common");
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
   const { data, isPending, isError } = useSnake(location.query.id);
@@ -98,7 +97,7 @@ export function Snake() {
       <StackTable
         data={feedTable ?? []}
         columns={bpFeedColumns}
-        height={302}
+        maxHeight={302}
         initSort={[
           {
             id: "feed_last_at",

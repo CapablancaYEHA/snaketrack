@@ -37,9 +37,8 @@ export function UseOneSignal(uid) {
             OneSignal.login(uid);
             OneSignal.Notifications.requestPermission();
           })
-          .catch((e) => {
+          .catch(() => {
             setInit(false);
-            console.log(e);
           });
       }
     }

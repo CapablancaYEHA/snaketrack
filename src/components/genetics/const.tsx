@@ -59,7 +59,6 @@ export const upgradeOptions = (arr: IGenesBpComp[], search: string) => {
 };
 
 const fullHet = ["50% Het", "66% Het", "Het"];
-const reSup = /(?<=super\s)[\w\s]+/i;
 // const rePosHet = /(?<=pos\shet\s)[\w\s]+/i;
 const reHet = /(?<=het\s)[\w\s]+/i;
 const re50het = /(?<=50het\s)[\w\s]+/i;
@@ -68,12 +67,11 @@ const reArr = [reHet, re50het, re66het];
 
 export const checkGeneConflict = (current: IGenesBpComp[], val: IGenesBpComp) => {
   if (val.hasSuper) {
-    let trg = val.label.match(reSup);
-    if (current.some((a) => a.label === trg?.[0] || a.alias === trg?.[0])) {
+    if (current.some((x) => x.label === `Super ${val.label}` || val.label === `Super ${x.label}`)) {
       notifExcessSuper();
       return current;
     }
-    if (current.some((a) => a.label.includes(val.label) || a.alias?.includes(val.label))) {
+    if (current.some((a) => a.id === val.id)) {
       notifHomo();
       return current;
     }
@@ -106,7 +104,7 @@ const notifHomo = () =>
   notif({
     c: "red",
     t: "Конфликт генов",
-    m: "Нельзя совмещать гомозиготу и гетерозиготу",
+    m: "Ген уже добавлен (возможно, под alias-названием)",
   });
 
 const notifExcessSuper = () =>

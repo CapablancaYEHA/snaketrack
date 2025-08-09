@@ -6,7 +6,7 @@ import styles from "./styles.module.scss";
 import { bgDark, calcColumn, getCommonPinningStyles } from "./utils";
 
 interface IProp<T> {
-  height?: number;
+  maxHeight?: number;
   columns: ColumnDef<T, any>[];
   data: T[];
   setColumnFilters?: OnChangeFn<ColumnFiltersState>;
@@ -20,7 +20,7 @@ interface IProp<T> {
   onSelect?: (a: RowSelectionState) => void;
 }
 
-export const StackTable = <T extends object>({ height, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter, initSort, onSelect }: IProp<T>) => {
+export const StackTable = <T extends object>({ maxHeight, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter, initSort, onSelect }: IProp<T>) => {
   const isMount = useRef(false);
   const [sorting, setSorting] = useState<SortingState>(initSort ?? []);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -67,7 +67,7 @@ export const StackTable = <T extends object>({ height, columns, data, setColumnF
   const headGroups = table.getHeaderGroups();
 
   return (
-    <div className={styles.cont} style={height && !isEmpty ? { height: `${height}px` } : {}}>
+    <div className={styles.cont} style={maxHeight && !isEmpty ? { maxHeight: `${maxHeight}px` } : {}}>
       <table className={styles.table}>
         {headGroups[0]?.headers.length <= 1 ? null : (
           <thead style={{ background: "#1c1c1c" }}>
