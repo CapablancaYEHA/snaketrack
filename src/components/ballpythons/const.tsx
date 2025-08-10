@@ -184,7 +184,7 @@ export const calcProjGenes = (arr?: IGenesBpComp[]) => {
         return { gene: "inc-dom", label: a.label };
       }
       if (a.gene === "rec") {
-        const [, , , r, ..._] = a.label.match(/^((\d+)% Het |Het )?(\w+)$/)!;
+        const [, , , r, ..._] = a.label.match(/^((\d+)% Het |Het )?([\w\s()]+)$/)!;
 
         return { gene: "rec", label: r };
       }
