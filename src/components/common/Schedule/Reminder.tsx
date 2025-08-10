@@ -67,7 +67,7 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
   };
 
   return (
-    <Modal centered opened={sigIsModOpen.value} onClose={close} keepMounted={true} size="xs" title={sigCurDate.value ? <Title order={5}>{getDate(sigCurDate.value)}</Title> : null}>
+    <Modal centered opened={sigIsModOpen.value} onClose={close} size="xs" title={sigCurDate.value ? <Title order={5}>{getDate(sigCurDate.value)}</Title> : null}>
       {sigCurDate.value ? (
         <div>
           {cur ? (

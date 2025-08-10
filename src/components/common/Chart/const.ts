@@ -192,7 +192,7 @@ const dataSnake = {
 
 const findLastValid = (ind: number, arr: any[]) => {
   if (ind < 0) {
-    return 0;
+    return null;
   }
   return arr[ind].feed_weight ? arr[ind].feed_weight : findLastValid(ind - 1, arr);
 };

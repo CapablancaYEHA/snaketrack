@@ -78,7 +78,7 @@ export const schema = yup.object().shape(
 export const prepareForSubmit = (fd) => {
   let time = dateToSupabaseTime(fd.feed_last_at);
 
-  let feed = fd.feed_weight || fd.refuse || fd.regurgitation ? { ...fd, feed_last_at: time } : null;
+  let feed = fd.feed_weight || fd.refuse || fd.regurgitation || fd.feed_ko ? { ...fd, feed_last_at: time } : null;
   let mass = fd.weight
     ? {
         date: time,

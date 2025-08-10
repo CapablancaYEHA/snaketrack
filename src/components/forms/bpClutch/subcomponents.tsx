@@ -169,7 +169,7 @@ export const MiniInfo = ({ opened, close, snakeId, sex, withTitle = true }) => {
   const { data, isPending, isError } = useSnake(snakeId, snakeId != null);
 
   return (
-    <Modal centered opened={opened} onClose={close} keepMounted={true} size="xs" title={withTitle && sex ? <Title order={4}>{sex} в кладке</Title> : undefined}>
+    <Modal centered opened={opened} onClose={close} size="xs" title={withTitle && sex ? <Title order={4}>{sex} в кладке</Title> : undefined}>
       <Stack gap="md" mih={260}>
         {isPending ? (
           <Loader color="dark.1" size="lg" style={{ alignSelf: "center" }} />

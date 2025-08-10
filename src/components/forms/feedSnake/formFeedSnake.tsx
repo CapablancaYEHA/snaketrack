@@ -66,7 +66,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
   const errObj = errors?.["shed"] || errors?.["refuse"] || errors?.["regurgitation"];
 
   return (
-    <Modal size="lg" opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Региус. Новое событие</Title>} keepMounted>
+    <Modal size="lg" opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>Региус. Новое событие</Title>}>
       <Box>
         <SexName sex={snake?.sex!} name={snake?.snake_name ?? ""} />
       </Box>
