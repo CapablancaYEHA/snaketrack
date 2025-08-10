@@ -67,6 +67,10 @@ a {
   }
 }
 
+.mantine-Modal-content {
+  @include cute-scroll(0);
+}
+
 .mantine-Notifications-notification {
   min-height: 32px;
 }

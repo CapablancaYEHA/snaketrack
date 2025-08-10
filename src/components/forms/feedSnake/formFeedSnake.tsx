@@ -114,13 +114,18 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
           <Accordion.Control>Предыдущая запись</Accordion.Control>
           <Accordion.Panel>
             <Stack gap="md">
-              <Flex justify="space-between">
+              <Flex justify="space-between" gap="md">
                 <Text size="sm">Дата: {lastFeed?.feed_last_at ? `${getDate(lastFeed.feed_last_at!)}` : "Нет данных"}</Text>
                 <Text size="sm">Масса питомца: {lastWeight?.weight ? `${lastWeight?.weight}г` : "Нет данных"}</Text>
               </Flex>
-              <Flex justify="space-between">
-                <Text size="sm">Кормовой объект: {lastFeed?.feed_ko ? codeToFeeder(lastFeed.feed_ko) : "Нет данных"}</Text>
-                <Text size="sm">Вес КО: {lastFeed?.feed_weight ? `${lastFeed.feed_weight}г` : "Нет данных"}</Text>
+              <Flex justify="space-between" gap="md">
+                <Text size="sm" flex="1 1 50%">
+                  Кормовой объект:
+                  {lastFeed?.feed_ko ? codeToFeeder(lastFeed.feed_ko) : "Нет данных"}
+                </Text>
+                <Text size="sm" flex="1 1 50%" ta="right">
+                  Вес КО: {lastFeed?.feed_weight ? `${lastFeed.feed_weight}г` : "Нет данных"}
+                </Text>
                 {lastFeed?.regurgitation ? (
                   <Text size="sm" c="var(--mantine-color-error)">
                     Срыг

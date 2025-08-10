@@ -156,6 +156,8 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
             return <Feeder onChange={onChange} errMsg={error?.message} />;
           }}
         />
+      </Flex>
+      <Flex gap="lg" wrap="wrap">
         <NumberInput {...(register("feed_weight") as any)} name="feed_weight" rightSection="г" label="Масса КО" placeholder="Нет данных" hideControls />
         <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.["feed_comment"]?.message} />
       </Flex>

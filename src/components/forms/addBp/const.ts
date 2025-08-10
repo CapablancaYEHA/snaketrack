@@ -16,7 +16,12 @@ export const schema = yup.object<Schema>().shape({
     .required(),
   sex: yup.string().nullable(),
   genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
-  weight: yup.number().nullable().max(5000, "Это региус-рекордсмен?"),
+  weight: yup
+    .number()
+    .transform((v) => (!v || Number.isNaN(v) ? null : v))
+    .nullable()
+    .max(5000, "Это региус-рекордсмен?"),
+
   date_hatch: yup.string().nullable().required("Хотя бы примерно"),
   origin: yup.string().required(),
   parents: yup.mixed().nullable(),
