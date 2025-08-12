@@ -54,13 +54,8 @@ export const makeScheduleColumns = () => [
   }),
 ];
 
-export const calcExisting = (a: IRemindersRes[] | undefined, snakes: IResSnakesList[]) => {
-  return !a
-    ? null
-    : a
-        .map((c) => c.snake_ids)
-        ?.flat()
-        ?.map((s) => snakes.find((k) => k.id === s));
+export const getSnakesInReminder = (a: IRemindersRes | undefined, snakes: IResSnakesList[]) => {
+  return !a ? null : snakes.filter((s) => a.snake_ids?.includes(s.id));
 };
 
 export const makeSubmit = (selection: string[], existing: string[] | undefined | null) => {

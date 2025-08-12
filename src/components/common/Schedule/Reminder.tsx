@@ -10,7 +10,7 @@ import { IRemindersRes, IResSnakesList } from "@/api/models";
 import { notif } from "@/utils/notif";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateToSupabaseTime, getDate, getIsSame } from "@/utils/time";
-import { calcExisting, makeSubmit } from "./const";
+import { getSnakesInReminder, makeSubmit } from "./const";
 import { sigCurDate, sigIsModOpen, sigSelected } from "./signals";
 
 export const Reminder = ({ reminders, allSnakes, close }: { reminders: IRemindersRes[]; allSnakes: IResSnakesList[]; close: () => void }) => {
@@ -20,8 +20,13 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
   });
 
   const cur: IRemindersRes[] = reminders?.filter((a) => getIsSame(a.scheduled_time, sigCurDate.value));
-  const existing = calcExisting(cur, allSnakes);
-  const { forCreate } = makeSubmit(sigSelected.value, existing ? existing?.filter((s) => !isEmpty(s)).map((b) => b!.id) : null);
+  const { forCreate } = makeSubmit(
+    sigSelected.value,
+    reminders
+      .map((c) => c.snake_ids)
+      .flat()
+      .filter((a) => a != null),
+  );
 
   const { mutate, isPending } = useDeleteReminder();
   const { mutate: makeNew } = useCreateReminder();
@@ -77,7 +82,7 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
                   <Stack gap="sm">
                     <Text size="sm">{getIsSame(new Date(), sigCurDate.value) ? "Сегодня по плану кормление для" : "Активное напоминание о кормлении для"}</Text>
                     <Flex wrap="wrap" rowGap={"xs"} columnGap={"sm"}>
-                      {existing?.map((c) => <SexName key={c?.id} sex={c?.sex!} name={c?.snake_name ?? ""} size="sm" inline={false} />)}
+                      {getSnakesInReminder(rem, allSnakes)?.map((c) => <SexName key={c?.id} sex={c?.sex!} name={c?.snake_name ?? ""} size="sm" inline={false} />)}
                     </Flex>
                     <Text size="sm">{rem.repeat_interval ? `Периодичность — ${declWord(rem.repeat_interval, ["день", "дня", "дней"])}` : "Единоразово"}</Text>
                     {rem.repeat_interval ? <Text size="sm">Следующее напоминание {getDate(dateAddDays(rem.scheduled_time, rem.repeat_interval))}</Text> : null}
@@ -115,9 +120,15 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
                   <Text size="sm">Выберите в таблице змей, для которых хотите создать напоминание о кормлении. В этот день вам придет push с перечнем питомцев.</Text>
                 </>
               ) : (
-                <FormProvider {...formInstance}>
-                  <CreateRem list={infoList} handleCreate={handleCreate} creationIds={forCreate} />
-                </FormProvider>
+                <>
+                  {isEmpty(forCreate) ? (
+                    <Text size="sm">Для создания нового напоминания на эту дату, нужно выбрать хотя бы одну Змею, для которой еще не существует напоминания</Text>
+                  ) : (
+                    <FormProvider {...formInstance}>
+                      <CreateRem list={infoList} handleCreate={handleCreate} creationIds={forCreate} />
+                    </FormProvider>
+                  )}
+                </>
               )}
             </>
           )}
