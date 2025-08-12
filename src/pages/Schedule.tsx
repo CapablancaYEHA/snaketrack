@@ -48,7 +48,7 @@ export const Schedule = () => {
                 const day = getDateOfMonth(date);
 
                 return (
-                  <Indicator size={6} color="green" offset={-2} disabled={!hasEvent(date)} processing>
+                  <Indicator size={6} color={getIsSame(new Date(), date) ? "orange" : "green"} offset={-2} disabled={!hasEvent(date)} processing>
                     <div>{day}</div>
                   </Indicator>
                 );

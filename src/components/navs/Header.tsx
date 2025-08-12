@@ -1,5 +1,5 @@
 import { tabletThreshold } from "@/styles/theme";
-import { Box, Image, Title, alpha } from "@mantine/core";
+import { Box, Image, Skeleton, Title, alpha } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useProfile } from "../../api/profile/hooks";
 import { logoUri } from "./const";
@@ -9,7 +9,7 @@ import styles from "./styles.module.scss";
 
 export function Header({ session }) {
   const userId = localStorage.getItem("USER");
-  const { data } = useProfile(userId, userId != null);
+  const { data, isPending } = useProfile(userId, userId != null);
 
   const isMwTablet = useMediaQuery(tabletThreshold);
 
@@ -37,18 +37,23 @@ export function Header({ session }) {
           </Title>
           <Image src={logoUri} fit="cover" w="24" h="24" />
         </a>
-        {session != null ? (
-          <nav
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: "24px",
-            }}
-          >
+        <nav
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: "24px",
+          }}
+        >
+          {isPending ? (
+            <Box>
+              <Skeleton height={25} width={120} radius="sm" />
+            </Box>
+          ) : session != null ? (
             <HeadMenu accName={data?.username} />
-          </nav>
-        ) : null}
+          ) : null}
+        </nav>
       </div>
     </Box>
   );

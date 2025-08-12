@@ -24,7 +24,7 @@ export const HeadMenu: FC<IProps> = ({ accName }) => {
       closeOnClickOutside
     >
       <Menu.Target>
-        <Box pl="lg" pt="md" pb="md" style={{ cursor: "pointer" }}>
+        <Box style={{ cursor: "pointer" }}>
           <Text size="md" fw={700}>
             {accName ?? "Аккаунт"}
           </Text>

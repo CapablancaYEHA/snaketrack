@@ -97,7 +97,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
           name="weight"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <NumberInput onChange={onChange} value={value as any} name="weight" rightSection="г" label="Масса" placeholder="Нет данных" hideControls error={error?.message} />;
+            return <NumberInput onChange={onChange} value={value as any} name="weight" rightSection="г" label="Масса" placeholder="Нет данных" hideControls error={error?.message} allowDecimal={false} />;
           }}
         />
       </Flex>
@@ -132,7 +132,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
       </Flex>
 
       <Flex gap="lg" wrap="wrap">
-        {wOrigin === "purchase" ? <NumberInput {...(register("price") as any)} rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " /> : null}
+        {wOrigin === "purchase" ? <NumberInput {...(register("price") as any)} allowDecimal={false} rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " /> : null}
         {/* FIX здесь нужно проверка на наличие разнополой пары */}
         {/* {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null} */}
       </Flex>
@@ -158,7 +158,7 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
         />
       </Flex>
       <Flex gap="lg" wrap="wrap">
-        <NumberInput {...(register("feed_weight") as any)} name="feed_weight" rightSection="г" label="Масса КО" placeholder="Нет данных" hideControls />
+        <NumberInput {...(register("feed_weight") as any)} name="feed_weight" rightSection="г" label="Масса КО" placeholder="Нет данных" hideControls allowDecimal={false} />
         <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.["feed_comment"]?.message} />
       </Flex>
       <Box w="100%" maw="100%">

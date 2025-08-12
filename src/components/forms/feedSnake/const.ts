@@ -19,7 +19,7 @@ export const schema = yup.object().shape(
     feed_ko: yup
       .string()
       .nullable()
-      .test("checkit", "Тип КО обязателен при заполнении кормления, остальное - опционально", (val) => {
+      .test("checkit", "При конкретизации КО, тип — обязателен, остальное опционально", (val) => {
         if (!val) return true;
         const arr = val.split("_");
         if (val.startsWith("ft") || val.startsWith("live")) {

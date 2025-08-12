@@ -1,5 +1,5 @@
 import fallback from "@assets/placeholder.png";
-import { Checkbox, Image, Stack, Text } from "@mantine/core";
+import { Checkbox, Flex, Image, Stack, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
 import { BpEventsBlock } from "@/components/ballpythons/BpCard";
@@ -10,33 +10,27 @@ import { getAge } from "@/utils/time";
 const columnHelper = createColumnHelper<IResSnakesList>();
 
 export const makeScheduleColumns = () => [
-  columnHelper.display({
-    id: "checkbox_column",
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        disabled={!row.getCanSelect()}
-        onChange={() => {
-          const sel = row.getIsSelected();
-          row.toggleSelected(!sel);
-        }}
-      />
-    ),
-    size: 1,
-    maxSize: 1,
-    minSize: 36,
-  }),
   columnHelper.accessor("picture", {
     header: () => "Региус",
     cell: ({ cell, row }) => (
-      <Stack gap="xs" flex="1 1 auto">
-        <Image src={cell.getValue()} fit="cover" radius="sm" w="auto" h={64} loading="lazy" flex="1 1 64px" fallbackSrc={fallback} />
-        <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
-      </Stack>
+      <Flex gap="sm">
+        <Checkbox
+          checked={row.getIsSelected()}
+          disabled={!row.getCanSelect()}
+          onChange={() => {
+            const sel = row.getIsSelected();
+            row.toggleSelected(!sel);
+          }}
+        />
+        <Stack gap="xs" flex="1 1 auto">
+          <Image src={cell.getValue()} fit="cover" radius="sm" w="100%" loading="lazy" flex="1 1 0px" fallbackSrc={fallback} />
+          <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
+        </Stack>
+      </Flex>
     ),
-    size: 2,
+    size: 1,
     maxSize: 3,
-    minSize: 94,
+    minSize: 190,
     enableSorting: false,
     enableColumnFilter: false,
   }),
@@ -60,8 +54,13 @@ export const makeScheduleColumns = () => [
   }),
 ];
 
-export const calcExisting = (a: IRemindersRes | undefined, snakes: IResSnakesList[]) => {
-  return !a ? null : a.snake_ids?.map((s) => snakes.find((k) => k.id === s));
+export const calcExisting = (a: IRemindersRes[] | undefined, snakes: IResSnakesList[]) => {
+  return !a
+    ? null
+    : a
+        .map((c) => c.snake_ids)
+        ?.flat()
+        ?.map((s) => snakes.find((k) => k.id === s));
 };
 
 export const makeSubmit = (selection: string[], existing: string[] | undefined | null) => {

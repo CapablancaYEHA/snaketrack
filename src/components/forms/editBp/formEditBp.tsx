@@ -141,7 +141,7 @@ export const FormEditBp = ({ traits, init }) => {
             name="price"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value} onChange={onChange} />;
+              return <NumberInput rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value} onChange={onChange} allowDecimal={false} />;
             }}
           />
         ) : null}

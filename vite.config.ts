@@ -3,8 +3,6 @@ import path from "path";
 import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
 
-// import mkcert from "vite-plugin-mkcert";
-
 export default defineConfig({
   resolve: {
     alias: {

@@ -95,7 +95,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         </>
       ) : null}
       <Space h="lg" />
-      <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса питомца" required placeholder="Нет заполнено" hideControls error={errors?.["weight"]?.message} />
+      <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса питомца" required placeholder="Нет заполнено" hideControls error={errors?.["weight"]?.message} allowDecimal={false} />
       <Space h="lg" />
       <Controller
         name="feed_ko"
@@ -105,7 +105,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         }}
       />
       <Space h="lg" />
-      <NumberInput {...(register("feed_weight") as any)} rightSection="г" label="Масса КО" placeholder="Не выбрано" hideControls error={errors?.["feed_weight"]?.message} />
+      <NumberInput {...(register("feed_weight") as any)} rightSection="г" label="Масса КО" placeholder="Не выбрано" hideControls error={errors?.["feed_weight"]?.message} allowDecimal={false} />
       <Space h="lg" />
       <TextInput {...register("feed_comment")} label="Коммент к событию" error={errors?.["feed_comment"]?.message} />
       <Space h="lg" />

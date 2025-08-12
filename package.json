@@ -47,7 +47,6 @@
     "prettier": "^3.5.3",
     "sass": "^1.77.5",
     "vite": "npm:rolldown-vite@latest",
-    "vite-plugin-eslint": "^1.8.1",
-    "vite-plugin-mkcert": "^1.17.8"
+    "vite-plugin-eslint": "^1.8.1"
   }
 }

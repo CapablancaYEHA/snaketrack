@@ -1,7 +1,8 @@
+import { Fragment } from "preact/jsx-runtime";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Flex, Modal, NumberInput, Space, Stack, Text, Title } from "@mantine/core";
+import { Button, Divider, Flex, Modal, NumberInput, Space, Stack, Text, Title } from "@mantine/core";
 import { isEmpty } from "lodash-es";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { Controller, FormProvider, useForm, useFormContext, useWatch } from "react-hook-form";
 import { SexName } from "@/components/common/sexName";
 import { Btn } from "@/components/navs/btn/Btn";
 import { useCreateReminder, useDeleteReminder, useSnakeQueue } from "@/api/hooks";
@@ -13,18 +14,12 @@ import { calcExisting, makeSubmit } from "./const";
 import { sigCurDate, sigIsModOpen, sigSelected } from "./signals";
 
 export const Reminder = ({ reminders, allSnakes, close }: { reminders: IRemindersRes[]; allSnakes: IResSnakesList[]; close: () => void }) => {
-  const userId = localStorage.getItem("USER");
-  const { control, getValues } = useForm<any>({
+  const formInstance = useForm<any>({
     defaultValues: {},
     resolver: yupResolver({} as any),
   });
 
-  const wInt = useWatch({
-    control,
-    name: "interval",
-  });
-
-  const cur = reminders?.find((a) => getIsSame(a.scheduled_time, sigCurDate.value));
+  const cur: IRemindersRes[] = reminders?.filter((a) => getIsSame(a.scheduled_time, sigCurDate.value));
   const existing = calcExisting(cur, allSnakes);
   const { forCreate } = makeSubmit(sigSelected.value, existing ? existing?.filter((s) => !isEmpty(s)).map((b) => b!.id) : null);
 
@@ -32,11 +27,16 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
   const { mutate: makeNew } = useCreateReminder();
   const { data: infoList } = useSnakeQueue(forCreate);
 
-  const createRem = (payload) => {
+  const closeAndRes = () => {
+    close();
+    formInstance.reset();
+  };
+
+  const handleCreate = (payload) => {
     makeNew(payload, {
       onSuccess: () => {
         notif({ c: "green", t: "Успешно", m: "Напоминание создано" });
-        close();
+        closeAndRes();
       },
       onError: async (err) => {
         notif({
@@ -49,11 +49,11 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
     });
   };
 
-  const del = () => {
-    mutate(cur?.id!, {
+  const del = (id) => {
+    mutate(id, {
       onSuccess: () => {
         notif({ c: "green", t: "Успешно", m: "Напоминание удалено" });
-        close();
+        closeAndRes();
       },
       onError: async (err) => {
         notif({
@@ -67,27 +67,45 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
   };
 
   return (
-    <Modal centered opened={sigIsModOpen.value} onClose={close} size="xs" title={sigCurDate.value ? <Title order={5}>{getDate(sigCurDate.value)}</Title> : null}>
+    <Modal centered opened={sigIsModOpen.value} onClose={closeAndRes} size="xs" title={sigCurDate.value ? <Title order={5}>{getDate(sigCurDate.value)}</Title> : null}>
       {sigCurDate.value ? (
         <div>
-          {cur ? (
-            <Stack gap="sm">
-              <Text size="sm">Активное напоминание о кормлении для</Text>
-              <Flex gap="sm" wrap="wrap">
-                {existing?.map((c) => <SexName key={c?.id} sex={c?.sex!} name={c?.snake_name ?? ""} size="sm" />)}
-              </Flex>
-              <Text size="sm">{cur.repeat_interval ? `Периодичность — ${declWord(cur.repeat_interval, ["день", "дня", "дней"])}` : "Единоразово"}</Text>
-              {cur.repeat_interval ? <Text size="sm">Следующее напоминание{getDate(dateAddDays(cur.scheduled_time, cur.repeat_interval))}</Text> : null}
-              <Space h="md" />
-              <Flex justify="space-between">
-                <Button variant="default" onClick={close}>
-                  Ок
-                </Button>
-                <Button variant="filled" color="var(--mantine-color-error)" onClick={del} loading={isPending}>
-                  Удалить
-                </Button>
-              </Flex>
-            </Stack>
+          {!isEmpty(cur) ? (
+            <>
+              {cur.map((rem, ind, self) => (
+                <Fragment key={rem.id}>
+                  <Stack gap="sm">
+                    <Text size="sm">{getIsSame(new Date(), sigCurDate.value) ? "Сегодня по плану кормление для" : "Активное напоминание о кормлении для"}</Text>
+                    <Flex wrap="wrap" rowGap={"xs"} columnGap={"sm"}>
+                      {existing?.map((c) => <SexName key={c?.id} sex={c?.sex!} name={c?.snake_name ?? ""} size="sm" inline={false} />)}
+                    </Flex>
+                    <Text size="sm">{rem.repeat_interval ? `Периодичность — ${declWord(rem.repeat_interval, ["день", "дня", "дней"])}` : "Единоразово"}</Text>
+                    {rem.repeat_interval ? <Text size="sm">Следующее напоминание {getDate(dateAddDays(rem.scheduled_time, rem.repeat_interval))}</Text> : null}
+                    <Flex justify="space-between">
+                      <Button variant="default" onClick={closeAndRes} size="xs">
+                        Ок
+                      </Button>
+                      <Button variant="filled" color="var(--mantine-color-error)" onClick={() => del(rem.id)} loading={isPending} size="xs">
+                        Удалить
+                      </Button>
+                    </Flex>
+                  </Stack>
+                  {ind !== self.length - 1 ? <Divider w="100%" maw="100%" mb="md" mt="sm" /> : null}
+                </Fragment>
+              ))}
+              {!isEmpty(sigSelected.value) ? (
+                <>
+                  <Divider w="100%" maw="100%" mb="md" mt="sm" />
+                  {isEmpty(forCreate) ? (
+                    <Text size="sm">Для создания нового напоминания на эту дату, нужно выбрать хотя бы одну Змею, для которой еще не существует напоминания</Text>
+                  ) : (
+                    <FormProvider {...formInstance}>
+                      <CreateRem list={infoList} handleCreate={handleCreate} creationIds={forCreate} />
+                    </FormProvider>
+                  )}
+                </>
+              ) : null}
+            </>
           ) : (
             <>
               {isEmpty(sigSelected.value) ? (
@@ -97,57 +115,71 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
                   <Text size="sm">Выберите в таблице змей, для которых хотите создать напоминание о кормлении. В этот день вам придет push с перечнем питомцев.</Text>
                 </>
               ) : (
-                <Stack>
-                  <Text size="sm">Создать напоминание для:</Text>
-
-                  <Flex wrap="wrap" gap="sm">
-                    {infoList?.map((c) => <SexName key={c?.id} sex={c?.sex!} name={c?.snake_name ?? ""} size="sm" />)}
-                  </Flex>
-
-                  <Controller
-                    name="interval"
-                    control={control}
-                    render={({ field: { onChange, value }, fieldState: { error } }) => {
-                      return (
-                        <NumberInput
-                          label={wInt ? "С периодичностью" : "Единоразово"}
-                          onChange={onChange}
-                          value={value || 0}
-                          defaultValue={undefined}
-                          suffix={wInt ? ` ${declWord(wInt, ["день", "дня", "дней"], true)}` : undefined}
-                          allowDecimal={false}
-                          allowNegative={false}
-                          allowLeadingZeros={false}
-                          min={0}
-                          max={99}
-                          clampBehavior="strict"
-                          error={error?.message}
-                        />
-                      );
-                    }}
-                  />
-
-                  <Btn
-                    fullWidth={false}
-                    w="min-content"
-                    style={{ alignSelf: "end" }}
-                    onClick={() =>
-                      createRem({
-                        owner_id: userId!,
-                        scheduled_time: dateToSupabaseTime(sigCurDate.value),
-                        repeat_interval: getValues("interval"),
-                        snake_ids: forCreate,
-                      })
-                    }
-                  >
-                    Создать
-                  </Btn>
-                </Stack>
+                <FormProvider {...formInstance}>
+                  <CreateRem list={infoList} handleCreate={handleCreate} creationIds={forCreate} />
+                </FormProvider>
               )}
             </>
           )}
         </div>
       ) : null}
     </Modal>
+  );
+};
+
+const CreateRem = ({ list, handleCreate, creationIds }) => {
+  const innerInstance = useFormContext<any>();
+  const userId = localStorage.getItem("USER");
+
+  const wInt = useWatch({
+    control: innerInstance.control,
+    name: "interval",
+  });
+
+  return (
+    <Stack>
+      <Text size="sm">Создать напоминание для:</Text>
+      <Flex wrap="wrap" gap="sm">
+        {list?.map((c) => <SexName key={c?.id} sex={c?.sex!} name={c?.snake_name ?? ""} size="sm" inline={false} />)}
+      </Flex>
+      <Controller
+        name="interval"
+        control={innerInstance.control}
+        render={({ field: { onChange, value }, fieldState: { error } }) => {
+          return (
+            <NumberInput
+              label={wInt ? "С периодичностью" : "Единоразово"}
+              onChange={onChange}
+              value={value || 0}
+              defaultValue={undefined}
+              suffix={wInt ? ` ${declWord(wInt, ["день", "дня", "дней"], true)}` : undefined}
+              allowDecimal={false}
+              allowNegative={false}
+              allowLeadingZeros={false}
+              min={0}
+              max={99}
+              clampBehavior="strict"
+              error={error?.message}
+            />
+          );
+        }}
+      />
+
+      <Btn
+        fullWidth={false}
+        w="min-content"
+        style={{ alignSelf: "end" }}
+        onClick={() =>
+          handleCreate({
+            owner_id: userId!,
+            scheduled_time: dateToSupabaseTime(sigCurDate.value),
+            repeat_interval: innerInstance.getValues("interval"),
+            snake_ids: creationIds,
+          })
+        }
+      >
+        Создать
+      </Btn>
+    </Stack>
   );
 };

@@ -38,9 +38,14 @@ export function Login() {
 
   useLayoutEffect(() => {
     let trg = document.getElementById("layoutsdbr");
+    let trgH = document.getElementById("layouthdr");
     trg?.classList.add("hide");
+    trgH?.classList.add("hide");
 
-    return () => trg?.classList.remove("hide");
+    return () => {
+      trg?.classList.remove("hide");
+      trgH?.classList.remove("hide");
+    };
   }, []);
 
   return (
