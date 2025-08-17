@@ -193,7 +193,6 @@ export const FormAddBp: FC<IProp> = ({ traits }) => {
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
-
       <Flex align="flex-start" maw="100%" w="100%" gap="xl">
         <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending}>
           Добавить

@@ -15,7 +15,7 @@ export function AddBreed() {
   }, [isError, error]);
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
+    <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       {isPending ? (
         <Loader color="dark.1" size="lg" />
       ) : isError ? (

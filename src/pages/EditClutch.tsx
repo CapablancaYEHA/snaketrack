@@ -21,7 +21,7 @@ export function EditClutch() {
   }, [isError, error]);
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
+    <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       {isPending ? (
         <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />
       ) : isError ? (

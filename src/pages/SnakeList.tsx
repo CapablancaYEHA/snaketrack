@@ -1,6 +1,8 @@
 import { useLocation } from "preact-iso";
 import { useState } from "preact/hooks";
-import { Flex, LoadingOverlay, Select, Stack, Text, TextInput, Title } from "@mantine/core";
+import { startSm } from "@/styles/theme";
+import { Button, Drawer, Flex, LoadingOverlay, Select, Space, Stack, Text, TextInput, Title } from "@mantine/core";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
 import { makeBpCardColumns, maturityDict } from "@/components/ballpythons/const";
@@ -37,6 +39,8 @@ const columns = makeBpCardColumns({
 
 export function SnakeList() {
   const location = useLocation();
+  const isMinSm = useMediaQuery(startSm);
+  const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
   const { data: genes } = useGenes();
   const { data: snakes, isPending, isError } = useSnakesList(userId!, userId != null);
@@ -51,23 +55,46 @@ export function SnakeList() {
   const debSearch = debounce(setGlobalFilter, 400);
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="xl" component="section">
-      <Title component="span" order={4} c="yellow.6">
-        Змеи
-      </Title>
+    <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Flex wrap="nowrap" maw="100%" w="100%">
+        <Title component="span" order={4} c="yellow.6">
+          Змеи
+        </Title>
         <Btn fullWidth={false} component="a" href="/snakes/add/ballpython" ml="auto">
           Добавить
         </Btn>
       </Flex>
-      <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
-        <TextInput flex="0 1 618px" miw={0} mr="auto" placeholder="Свободный поиск" onChange={(e: any) => setGlobalFilter(e.target.value!)} value={globalFilter} leftSection={<IconSwitch icon="search" />} />
-        <Flex wrap="wrap" align="flex-start" maw="100%" w="100%" miw={0} gap="lg">
-          <Select miw={0} data={sexHardcode} onChange={(a: any) => tableFiltMulti(setFilt, [a], "sex")} label="Пол" placeholder="Не выбран" />
-          <MaxSelectedMulti miw={0} label="Возраст" onChange={(a) => tableFiltMulti(setFilt, a, "date_hatch")} data={maturityDict} isDataHasLabel />
-          <MaxSelectedMulti miw={0} label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "genes")} data={(genes ?? [])?.map((g) => g.label)} />
+      <Drawer
+        opened={opened}
+        onClose={close}
+        title={<Title order={5}>Фильтрация</Title>}
+        position="top"
+        offset={16}
+        // size="auto"
+        styles={{
+          inner: {
+            justifyContent: "center",
+          },
+          content: {
+            height: "auto",
+            width: "auto",
+            maxWidth: isMinSm ? "640px" : "100%",
+          },
+        }}
+      >
+        <Flex gap="md" wrap="nowrap" align="end" flex="1 1 auto">
+          <TextInput flex="1 1 50%" placeholder="Свободный поиск" onChange={(e: any) => setGlobalFilter(e.target.value!)} value={globalFilter} leftSection={<IconSwitch icon="search" />} />
+          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltMulti(setFilt, [a], "sex")} label="Пол" placeholder="Не выбран" />
         </Flex>
-      </Flex>
+        <Space h="md" />
+        <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Возраст" onChange={(a) => tableFiltMulti(setFilt, a, "date_hatch")} data={maturityDict} isDataHasLabel />
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "genes")} data={(genes ?? [])?.map((g) => g.label)} />
+        </Flex>
+      </Drawer>
+      <Button leftSection={<IconSwitch icon="adjust" width="16" height="16" />} variant="default" onClick={open} size="compact-xs">
+        Фильтры
+      </Button>
       {isPending ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
       {isError ? (
         <Text fw={500} c="var(--mantine-color-error)">

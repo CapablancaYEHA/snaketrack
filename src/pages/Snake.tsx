@@ -34,7 +34,7 @@ export function Snake() {
     );
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
+    <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Title component="span" order={4} c="yellow.6">
         Подробная информация о змее
       </Title>

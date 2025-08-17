@@ -35,11 +35,11 @@ export function ClutchList() {
   }, []);
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="xl" component="section">
-      <Title component="span" order={4} c="yellow.6">
-        Кладки
-      </Title>
+    <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
+        <Title component="span" order={4} c="yellow.6">
+          Кладки
+        </Title>
         <Btn fullWidth={false} component="a" href="/clutches/add" ml="auto">
           Добавить
         </Btn>

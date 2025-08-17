@@ -1,4 +1,5 @@
 import { CSSProperties, FC } from "preact/compat";
+import { AdjustIcon } from "./Adjust";
 import { ArrBidirectIcon } from "./ArrBidirect";
 import { ArrUpIcon } from "./ArrUp";
 import { BinIcon } from "./Bin";
@@ -26,6 +27,8 @@ interface IProp {
 
 export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style }) => {
   switch (icon) {
+    case "adjust":
+      return <AdjustIcon width={width} height={height} />;
     case "dashboard":
       return <DashIcon width={width} height={height} />;
     case "snakes":

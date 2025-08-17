@@ -5,7 +5,7 @@ import { FormAddBp } from "../components/forms/addBp/formAddBb";
 export function AddSnake() {
   const { data } = useGenes();
   return (
-    <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
+    <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <FormAddBp traits={data!} />
     </Stack>
   );

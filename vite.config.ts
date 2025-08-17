@@ -3,6 +3,8 @@ import path from "path";
 import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
 
+const assets = ["placeholder.png", "fav.png"];
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -26,6 +28,11 @@ export default defineConfig({
             return id.toString().split("node_modules/")[1].split("/")[0].toString();
           }
         },
+        // entryFileNames: `[name].[hash].js`,
+        // chunkFileNames: `[name].[hash].js`,
+        // assetFileNames: function (file) {
+        //   return assets.includes(file.name) ? `assets/[name][extname]` : `assets/[name]-[hash].[ext]`;
+        // },
       },
     },
   },
