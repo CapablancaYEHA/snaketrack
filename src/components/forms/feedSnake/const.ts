@@ -12,7 +12,7 @@ export const defVals = {
   refuse: null,
   regurgitation: null,
 };
-const incor = "Отметьте линьку / срыг / отказ\nЛибо укажите новое измерение массы питомца\nЛибо информацию о кормлении";
+const incor = "Отметьте линьку / срыг / отказ\nИЛИ укажите новое измерение массы питомца\n,ИЛИ информацию о кормлении";
 export const schema = yup.object().shape(
   {
     feed_last_at: yup.string().nullable().required("Дата обязательна"),
@@ -32,7 +32,7 @@ export const schema = yup.object().shape(
       if (feed_ko || feed_weight) {
         return self.nullable();
       }
-      return !shed && !refuse && !regurgitation ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required(incor) : self.transform((v) => (!v || Number.isNaN(v) ? null : v)).nullable();
+      return !shed && !refuse && !regurgitation ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required("Заполняется по условиям") : self.transform((v) => (!v || Number.isNaN(v) ? null : v)).nullable();
     }),
     feed_weight: yup
       .number()

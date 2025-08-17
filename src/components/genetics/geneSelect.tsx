@@ -1,28 +1,48 @@
 import { FC } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
-import { CheckIcon, Combobox, Group, MantineSize, Pill, PillsInput, useCombobox } from "@mantine/core";
+import { CheckIcon, Combobox, Group, MantineSize, Pill, PillsInput, Text, useCombobox } from "@mantine/core";
 import { debounce } from "lodash-es";
 import { IGenesBpComp } from "@/api/models";
 import { checkGeneConflict, geneToColor, redef, upgradeOptions } from "./const";
 import styles from "./styles.module.scss";
+import { useLongPress } from "./useLongPress";
 
 type IPill = {
   onRemove?: (a) => void;
   item: IGenesBpComp;
   size?: MantineSize;
+  onLeftClick?: (a: IGenesBpComp) => void;
 };
-export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm" }) => {
-  const isHet = item.label.toLowerCase().includes("het");
+export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick }) => {
+  const isHet = item.gene === "rec" && item.label.toLowerCase().includes("het");
+  const isPercent = item.label.startsWith("50%") || item.label.startsWith("66%");
+
+  const handlers = useLongPress(() => onLeftClick?.(item));
+
   return (
     <Pill
       styles={{
-        root: { ...redef, backgroundColor: isHet ? "var(--mantine-color-dark-9)" : geneToColor[item.gene], boxShadow: `0 0 0 1px ${geneToColor[item.gene]}` },
+        root: {
+          ...redef,
+          backgroundColor: isHet ? "var(--mantine-color-dark-9)" : geneToColor[item.gene],
+          boxShadow: `0 0 0 1px ${geneToColor[item.gene]}`,
+          cursor: "default",
+          ...(item.isPos ? { paddingLeft: "24px" } : {}),
+        },
       }}
       key={item.label}
       withRemoveButton={onRemove != null}
       onRemove={onRemove ? () => onRemove(item) : () => undefined}
       size={size}
+      {...(isPercent ? {} : handlers)}
     >
+      {item.isPos ? (
+        <div className={styles.possible}>
+          <Text className={styles.circle} size="xs" fw={500}>
+            P
+          </Text>
+        </div>
+      ) : null}
       {item.label}
     </Pill>
   );
@@ -54,7 +74,17 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init, label, placeholde
 
   const handleValueRemove = (val: IGenesBpComp) => setValue((current) => current.filter((v) => v.label !== val.label));
 
-  const values = value.map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} />);
+  const handleAssignPos = (val: IGenesBpComp) =>
+    setValue((current) => {
+      const ind = current.findIndex((a) => a.id === val.id);
+      const trg = { ...current[ind] };
+      let res = { ...trg, isPos: !trg.isPos };
+      let temp = [...current];
+      temp[ind] = res;
+      return temp;
+    });
+
+  const values = value.map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} onLeftClick={handleAssignPos} />);
 
   const options = upgradeOptions(outer ?? [], search).map((item) => (
     <Combobox.Option value={item as any} key={item.label} active={value.includes(item)}>
@@ -73,12 +103,12 @@ export const GeneSelect: FC<IProp> = ({ outer, onChange, init, label, placeholde
     onChange(value);
     setSearch("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value.length]);
+  }, [value]);
 
   return (
     <Combobox store={combobox} onOptionSubmit={handleValueSelect as any} withinPortal={false} disabled={outer?.length === 0}>
       <Combobox.DropdownTarget>
-        <PillsInput onClick={() => combobox.openDropdown()} label={label}>
+        <PillsInput w="100%" onClick={() => combobox.openDropdown()} label={label} description="Нажмите и удерживайте выбраный ген, чтобы пометить его как Possible">
           <Pill.Group>
             {values}
             <Combobox.EventsTarget>

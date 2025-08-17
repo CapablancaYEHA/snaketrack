@@ -11,13 +11,15 @@ const calcFeedEvent = (feed?: IFeed) => {
   }
   let temp = "";
   if (feed?.feed_last_at != null) {
-    temp = temp + getDate(feed?.feed_last_at!);
+    temp = `${temp + getDate(feed?.feed_last_at!)}\n${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г` : ""}`;
   }
 
   if (feed?.refuse) {
     return (
       <>
-        <span>{temp}</span>
+        <Text style={{ whiteSpace: "pre-wrap" }} component="span">
+          {temp}
+        </Text>
         {"  "}
         <Text fw={500} component="span" c="#00FFC0">
           Отказ
@@ -28,7 +30,9 @@ const calcFeedEvent = (feed?: IFeed) => {
   if (feed?.regurgitation) {
     return (
       <>
-        <span>{temp}</span>
+        <Text style={{ whiteSpace: "pre-wrap" }} component="span">
+          {temp}
+        </Text>
         {"  "}
         <Text fw={500} component="span" c="var(--mantine-color-error)">
           Срыг
@@ -37,7 +41,11 @@ const calcFeedEvent = (feed?: IFeed) => {
     );
   }
 
-  return <span>{temp}</span>;
+  return (
+    <Text style={{ whiteSpace: "pre-wrap" }} component="span">
+      {temp}
+    </Text>
+  );
 };
 
 export const BpGenes = ({ genes }) => (

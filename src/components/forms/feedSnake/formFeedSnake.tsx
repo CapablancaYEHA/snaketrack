@@ -71,17 +71,18 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         <SexName sex={snake?.sex!} name={snake?.snake_name ?? ""} />
       </Box>
       <Space h="sm" />
-      <Flex>
+      <Flex w="100%" gap="md">
         <Controller
           name="feed_last_at"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <DatePickerInput label="Дата" required value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} style={{ flex: "1 1 auto" }} />;
+            return <DatePickerInput label="Дата" required value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} flex="1 1 50%" />;
           }}
         />
+        <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса питомца" required placeholder="Не заполнено" hideControls error={errors?.["weight"]?.message} allowDecimal={false} flex="1 1 50%" />
       </Flex>
       <Space h="sm" />
-      <Flex rowGap="lg" columnGap="md">
+      <Flex rowGap="lg" columnGap="md" wrap="nowrap">
         <Checkbox label="Линька" value="true" {...(register("shed") as any)} />
         <Checkbox label="Отказ" value="true" {...register("refuse")} />
         <Checkbox label="Срыг" value="true" {...register("regurgitation")} />
@@ -95,8 +96,6 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         </>
       ) : null}
       <Space h="lg" />
-      <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса питомца" required placeholder="Нет заполнено" hideControls error={errors?.["weight"]?.message} allowDecimal={false} />
-      <Space h="lg" />
       <Controller
         name="feed_ko"
         control={control}
@@ -105,7 +104,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         }}
       />
       <Space h="lg" />
-      <NumberInput {...(register("feed_weight") as any)} rightSection="г" label="Масса КО" placeholder="Не выбрано" hideControls error={errors?.["feed_weight"]?.message} allowDecimal={false} />
+      <NumberInput {...(register("feed_weight") as any)} rightSection="г" label="Масса КО" placeholder="Не выбрано" hideControls error={errors?.["feed_weight"]?.message} allowDecimal={false} w={{ base: "100%", xs: "50%" }} />
       <Space h="lg" />
       <TextInput {...register("feed_comment")} label="Коммент к событию" error={errors?.["feed_comment"]?.message} />
       <Space h="lg" />
@@ -143,9 +142,11 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
         </Accordion.Item>
       </Accordion>
       <Space h="lg" />
-      <Btn type="submit" size="xs" onClick={handleSubmit(onSub)} loading={isPending}>
-        Подтвердить
-      </Btn>
+      <Flex>
+        <Btn type="submit" size="xs" onClick={handleSubmit(onSub)} loading={isPending} ml="auto">
+          Подтвердить
+        </Btn>
+      </Flex>
     </Modal>
   );
 };

@@ -19,7 +19,7 @@ export const FileUpload = forwardRef<any, IProp>(({ onUpload, url, err, clearFil
               <Stack align="flex-start" justify="flex-start">
                 <Text {...props} fw="bold" size="sm">
                   Фото
-                  <span style={{ height: 109, display: "block" }}>
+                  <span style={{ maxHeight: 109, display: "block" }}>
                     {url ? <img src={url} width={196} height={110} alt="uploaded_snake_pic" style={{ objectFit: "contain", objectPosition: "bottom left" }} /> : <IconSwitch icon="img" width="64" height="64" />}
                   </span>
                 </Text>
@@ -35,13 +35,13 @@ export const FileUpload = forwardRef<any, IProp>(({ onUpload, url, err, clearFil
             </>
           ) : null}
         </div>
-        <div>
-          {url && withRemove ? (
+        {url && withRemove ? (
+          <div>
             <Button color="red" onClick={clearFile} size="compact-xs" mt={18}>
               Убрать
             </Button>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
       </Stack>
     </>
   );

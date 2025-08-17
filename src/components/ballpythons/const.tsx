@@ -179,14 +179,14 @@ export const calcProjGenes = (arr?: IGenesBpComp[]) => {
       if (a.gene === "inc-dom") {
         if (a.label.startsWith("Super")) {
           const [r, ..._] = a.label.match(/(Super)?\w+$/)!;
-          return { gene: "inc-dom", label: r };
+          return { gene: "inc-dom", label: r, isPos: a.isPos };
         }
-        return { gene: "inc-dom", label: a.label };
+        return { gene: "inc-dom", label: a.label, isPos: a.isPos };
       }
       if (a.gene === "rec") {
         const [, , , r, ..._] = a.label.match(/^((\d+)% Het |Het )?([\w\s()]+)$/)!;
 
-        return { gene: "rec", label: r };
+        return { gene: "rec", label: r, isPos: a.isPos };
       }
       return a;
     });

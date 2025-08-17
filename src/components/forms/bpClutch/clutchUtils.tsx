@@ -11,16 +11,9 @@ export const makeBpClutchColumns = ({ setSnake }) => [
     cell: ({ row }) => <SPics clutch={row.original} onPicClick={setSnake} />,
     size: 1,
     maxSize: 2,
-    minSize: 164,
+    minSize: 176,
     sortingFn: (rowA: any, rowB: any, columnId: any) => getDateObj(rowA.getValue("date_laid")) - getDateObj(rowB.getValue("date_laid")),
   }),
-  //   columnHelper.display({
-  //     id: "whole",
-  //     cell: ({ row }) => <SPics clutch={row.original} onPicClick={setSnake} />,
-  //     size: 1,
-  //     maxSize: 2,
-  //     minSize: 164,
-  //   }),
   columnHelper.display({
     id: "whole2",
     cell: ({ row }) => <SInfo clutch={row.original} onPicClick={setSnake} />,
@@ -35,7 +28,7 @@ export const makeHatchlingPlaceholder = ({ id, ind, date }): IHatchling => {
     date_hatch: date,
     sex: null,
     status: "alive",
-    genes: [{ label: "Normal", gene: "other", hasSuper: false, hasHet: false }],
+    genes: [{ label: "Normal", gene: "other", hasSuper: false, hasHet: false, id: -1 }],
   };
 };
 

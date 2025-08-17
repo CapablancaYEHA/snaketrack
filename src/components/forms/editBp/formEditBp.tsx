@@ -14,6 +14,7 @@ import { dateToSupabaseTime } from "@/utils/time";
 import { sexHardcode } from "../bpBreed/common";
 import { filterSubmitByDirty, uplErr } from "../common";
 import { makeDefault, schema } from "./const";
+import styles from "./styles.module.scss";
 
 export const FormEditBp = ({ traits, init }) => {
   const location = useLocation();
@@ -82,17 +83,21 @@ export const FormEditBp = ({ traits, init }) => {
       <Text size="md" fw={500} c="yellow.6">
         Редактирование Региуса
       </Text>
-      <Flex gap="lg" wrap="wrap">
-        <TextInput {...register("snake_name")} required label="Кличка змеи" error={errors?.snake_name?.message} />
+      <Flex gap="lg" className={styles.w70} wrap="nowrap">
+        <TextInput {...register("snake_name")} required label="Кличка змеи" error={errors?.snake_name?.message} flex="1 1 50%" />
         <Controller
-          name="sex"
+          name="date_hatch"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <Select data={sexHardcode} value={value} onChange={onChange} label="Пол" error={error?.message} />;
+            return (
+              <>
+                <DatePickerInput label="Дата рождения" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" flex="1 1 50%" required highlightToday locale="ru" error={error?.message} maxDate={new Date()} />
+              </>
+            );
           }}
         />
       </Flex>
-      <Flex gap="lg" wrap="wrap">
+      <Flex gap="lg" wrap="wrap" className={styles.w70}>
         {traits?.length === 0 ? (
           <TextInput label="Набор генов" placeholder="Normal, no Het" disabled />
         ) : (
@@ -105,53 +110,47 @@ export const FormEditBp = ({ traits, init }) => {
           />
         )}
       </Flex>
-      <Flex gap="lg" wrap="wrap">
-        <Controller
-          name="date_hatch"
-          control={control}
-          render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return (
-              <>
-                <DatePickerInput label="Дата рождения" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" required highlightToday locale="ru" error={error?.message} maxDate={new Date()} />
-              </>
-            );
-          }}
-        />
+      <Flex gap="lg" wrap="nowrap" className={styles.w70}>
         <Controller
           name="origin"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
-              <>
-                <Radio.Group label="Змея получена" value={value} onChange={onChange} error={error?.message}>
-                  <Group mt="xs">
-                    <Radio value="breed" label="Собственным разведением" checked={value === "breed"} />
-                    <Radio value="purchase" label="Куплена" checked={value === "purchase"} />
-                  </Group>
-                </Radio.Group>
-              </>
+              <Radio.Group label="Змея получена" value={value} onChange={onChange} error={error?.message} flex="1 1 50%">
+                <Group mt="xs">
+                  <Radio value="breed" label="Собственным разведением" checked={value === "breed"} />
+                  <Radio value="purchase" label="Куплена" checked={value === "purchase"} />
+                </Group>
+              </Radio.Group>
             );
           }}
         />
-      </Flex>
-
-      <Flex gap="lg" wrap="wrap">
         {wOrigin === "purchase" ? (
           <Controller
             name="price"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value} onChange={onChange} allowDecimal={false} />;
+              return <NumberInput rightSection="₽" label="Цена покупки" flex="1 1 50%" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value} onChange={onChange} allowDecimal={false} />;
             }}
           />
         ) : null}
+      </Flex>
+
+      <Flex gap="lg" wrap="nowrap" className={styles.w70}>
+        <Controller
+          name="sex"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <Select data={sexHardcode} value={value} onChange={onChange} label="Пол" error={error?.message} flex="0 1 50%" />;
+          }}
+        />
         {/* FIX здесь нужно проверка на наличие разнополой пары */}
         {/* {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null} */}
       </Flex>
-      <Box w="100%" maw="100%">
+      <Box className={styles.w70} maw="100%">
         <Textarea {...register("notes")} label="Заметки, примечания" w="100%" maw="100%" autosize id="txarea_helper_editBp" />
       </Box>
-      <Flex align="flex-start" maw="100%" w="100%">
+      <Flex align="flex-start" maw="100%" className={styles.w70}>
         <Controller
           name="picture"
           control={control}
@@ -172,6 +171,8 @@ export const FormEditBp = ({ traits, init }) => {
             );
           }}
         />
+      </Flex>
+      <Flex align="flex-start" maw="100%" w="100%" gap="xl">
         <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending} disabled={!isDirty}>
           Сохранить
         </Btn>

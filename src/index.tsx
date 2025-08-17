@@ -62,11 +62,11 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LocationProvider>
-        <MantineProvider theme={theme} defaultColorScheme="dark">
+        <MantineProvider theme={theme} defaultColorScheme="dark" >
           <Notifications />
           <Header session={session} />
 		  {!isMwTablet ? <Sidebar /> : null}
-          <Box component="main" pl={{ base: 'md', sm: "xl", md: 'calc(48px + var(--mantine-spacing-md))',lg: 'md' }} pr={{base: 'md', sm: "xl"}} py={{ base: 'sm', sm: "lg" }} >
+          <Box className='box-main' component="main" >
 		  <Router>
 			<Route path="/login"  component={Login} />
 			<Route path="/register"  component={Register} />

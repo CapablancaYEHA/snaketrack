@@ -11,6 +11,7 @@ export const geneToColor = {
 };
 
 export const redef = {
+  position: "relative",
   "--pill-radius": "6px",
   color: "#efefef",
   width: "fit-content",
@@ -36,9 +37,6 @@ export const upgradeOptions = (arr: IGenesBpComp[], search: string) => {
           let res = fullHet.map((a) => ({ ...cur, label: `${a} ${cur.label}` }));
           return tot.concat(cur).concat(res);
         }
-        // if (inp.toLowerCase().includes("po")) {
-        //   return tot.concat(cur).concat({ ...cur, label: `Pos Het ${cur.label}` });
-        // }
         if (inp.indexOf("6") === 0) {
           return tot.concat(cur).concat({ ...cur, label: `66% Het ${cur.label}` });
         }
@@ -59,7 +57,6 @@ export const upgradeOptions = (arr: IGenesBpComp[], search: string) => {
 };
 
 const fullHet = ["50% Het", "66% Het", "Het"];
-// const rePosHet = /(?<=pos\shet\s)[\w\s]+/i;
 const reHet = /(?<=het\s)[\w\s]+/i;
 const re50het = /(?<=50het\s)[\w\s]+/i;
 const re66het = /(?<=66het\s)[\w\s]+/i;
@@ -145,10 +142,11 @@ export const sortBpGenes = (arr: IGenesBpComp[] | null): IGenesBpComp[] => {
     if (a.gene === "dom" && b.gene === "inc-dom") {
       return 1;
     }
+
     return 0;
   });
 
-  return sortBy(kek, [(o) => priority[o.label.substring(0, 3).toLowerCase()] ?? 0]);
+  return sortBy(kek, [(o) => (o.isPos ? 5 : (priority[o.label.substring(0, 3).toLowerCase()] ?? 0))]);
 };
 
 export const fromMMtoPill = (m: IMMTrait): IGenesBpComp => {

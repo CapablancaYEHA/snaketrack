@@ -29,7 +29,8 @@ main {
   max-width: $max-width;
   width: 100%;
   margin: $header-height auto 0 auto;
-  overflow-x: auto;
+  overflow: auto;
+  //   overflow-x: auto;
 
   & > section {
     min-width: 0;
@@ -57,6 +58,26 @@ a {
   }
 }
 
+.box-main {
+  padding-left: var(--mantine-spacing-md);
+  padding-right: var(--mantine-spacing-md);
+  padding-top: var(--mantine-spacing-sm);
+  padding-bottom: var(--mantine-spacing-sm);
+
+  @media (min-width: 48em) {
+    padding-left: var(--mantine-spacing-xl);
+    padding-right: var(--mantine-spacing-xl);
+    padding-top: var(--mantine-spacing-lg);
+    padding-bottom: var(--mantine-spacing-lg);
+  }
+  @media (min-width: 58em) {
+    padding-left: calc(48px + var(--mantine-spacing-md));
+  }
+  @media (min-width: 80em) {
+    padding-left: var(--mantine-spacing-md);
+  }
+}
+
 .hide {
   display: none;
 }
@@ -74,3 +95,4 @@ a {
 .mantine-Notifications-notification {
   min-height: 32px;
 }
+// pl={{ base: 'md', sm: "xl", md: 'calc(48px + var(--mantine-spacing-md))',lg: 'md' }} pr={{base: 'md', sm: "xl"}} py={{ base: 'sm', sm: "lg" }}

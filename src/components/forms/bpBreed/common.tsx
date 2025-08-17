@@ -74,13 +74,15 @@ export const eventsOpts = [
 ];
 
 export const prepForMm = (parent: IResSnakesList) => {
-  return parent.genes.map((a) => {
-    if (a.gene === "rec") {
-      let trg = a.label.split("% ");
-      return trg[trg.length - 1];
-    }
-    return a.label;
-  });
+  return parent.genes
+    .filter((f) => !f.isPos)
+    .map((a) => {
+      if (a.gene === "rec") {
+        let trg = a.label.split("% ");
+        return trg[trg.length - 1];
+      }
+      return a.label;
+    });
 };
 
 export const prepForCreate = (submit, status?: IBreedStat): IReqCreateBPBreed => {

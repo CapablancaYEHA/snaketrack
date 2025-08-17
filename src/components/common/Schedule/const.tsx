@@ -15,6 +15,7 @@ export const makeScheduleColumns = () => [
     cell: ({ cell, row }) => (
       <Flex gap="sm">
         <Checkbox
+          size="xs"
           checked={row.getIsSelected()}
           disabled={!row.getCanSelect()}
           onChange={() => {
@@ -37,7 +38,7 @@ export const makeScheduleColumns = () => [
   columnHelper.accessor("date_hatch", {
     header: () => " ",
     cell: ({ cell }) => <Text size="md">⌛ {getAge(cell.getValue())}</Text>,
-    size: 5,
+    size: 4,
     maxSize: 2,
     minSize: 150,
     enableSorting: false,

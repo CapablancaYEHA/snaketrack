@@ -235,12 +235,12 @@ export const OddsInfo = ({ female, male }) => {
     <>
       <Space h="sm" />
       <Drawer opened={isOpen} onClose={() => setOpen(false)} title="Возможные комбинации" offset={24} position="top">
-        <Group gap="lg" pt="xs">
+        <Stack gap="lg" pt="xs">
           {data?.offspring?.map((o) => {
             const { numerator, denominator } = o.probability;
             return (
               <Flex key={o.morph_name} direction="row" wrap="nowrap" gap="xs">
-                <Box fz="xs" flex={{ base: "1 0 auto", sm: "1 0 72px" }}>{`${numerator}/${denominator} (${(numerator / denominator) * 100}%)`}</Box>
+                <Box fz="xs" flex="0 0 72px" p="0" component="section">{`${numerator}/${denominator} (${(numerator / denominator) * 100}%)`}</Box>
                 <Flex direction="row" wrap="wrap" gap="sm">
                   {o.traits.map((t) => (
                     <GenePill key={`${t.id}_${t.name}`} item={fromMMtoPill(t)} />
@@ -249,7 +249,7 @@ export const OddsInfo = ({ female, male }) => {
               </Flex>
             );
           })}
-        </Group>
+        </Stack>
       </Drawer>
       <Button variant="default" onClick={() => setOpen(true)} size="compact-xs">
         Возможные комбинации

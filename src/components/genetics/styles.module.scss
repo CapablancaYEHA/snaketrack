@@ -22,3 +22,23 @@
   animation: option-animation 200ms ease;
   animation-fill-mode: forwards;
 }
+
+.possible {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: white;
+  color: black !important;
+}
