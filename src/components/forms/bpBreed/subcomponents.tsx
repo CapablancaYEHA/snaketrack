@@ -14,7 +14,7 @@ import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { useCalcOdds, useDeleteBpBreed } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { dateToSupabaseTime, getAge } from "@/utils/time";
-import { calcEstimatedDate, calcTimeleft, daysAfterOvul, daysAfterShed, getPercentage } from "./breedUtils";
+import { calcEstimatedDate, calcTimeleft, daysAfterOvul, daysAfterShed, daysCriticalThr, getPercentage } from "./breedUtils";
 import { IBreedScheme, eventsOpts, prepForMm, renderSelectOption, useUtilsBreed } from "./common";
 
 export const MaleEvent = ({ id, disabled }) => {
@@ -445,7 +445,7 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
         <Button type="submit" onClick={innerInstance.handleSubmit(onSub)} disabled={!innerInstance.formState.isDirty || isClutchMade} size="xs">
           {btnText}
         </Button>
-        {left <= 5 && !isClutchMade ? (
+        {left <= daysCriticalThr && !isClutchMade ? (
           <Button type="submit" onClick={innerInstance.handleSubmit(onFinalize)} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="xs">
             Зарегистрировать кладку
           </Button>

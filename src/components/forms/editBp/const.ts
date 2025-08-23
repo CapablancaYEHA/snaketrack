@@ -21,7 +21,7 @@ export const schema = yup.object<Schema>().shape({
     .nullable(),
   picture: yup
     .mixed<File>()
-    .test("fileSize", "Вес фото более 3Мb", (v) => (!v ? true : v.size <= 3145728))
+    .test("fileSize", "Вес сжатого фото более 1Мb", (v) => (!v ? true : v.size <= 1048576))
     .nullable(),
   notes: yup.string().nullable(),
 });

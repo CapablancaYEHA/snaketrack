@@ -23,10 +23,6 @@ export const statusHardcode = [
 ];
 
 export const clutchSchema = yup.object<Schema>().shape({
-  picture: yup
-    .mixed<File>()
-    .test("fileSize", "Вес фото более 3Мb", (v) => (!v ? true : v.size <= 3145728))
-    .nullable(),
   date_laid: yup.string().required("Дата кладки обязательна"),
   date_hatch: yup.string().optional().nullable(),
   eggs: yup.number().required("Требуется цифра"),

@@ -36,7 +36,6 @@ export const StackTable = <T extends object>({ maxHeight, columns, data, setColu
     onRowSelectionChange: setRowSelection,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-
     onColumnFiltersChange: (columnFilters && setColumnFilters) || undefined,
     onGlobalFilterChange: (globalFilter && setGlobalFilter) || undefined,
     debugTable: import.meta.env.DEV,

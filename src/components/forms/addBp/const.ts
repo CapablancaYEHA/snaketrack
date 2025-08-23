@@ -21,7 +21,6 @@ export const schema = yup.object<Schema>().shape({
     .transform((v) => (!v || Number.isNaN(v) ? null : v))
     .nullable()
     .max(5000, "Это региус-рекордсмен?"),
-
   date_hatch: yup.string().nullable().required("Хотя бы примерно"),
   origin: yup.string().required(),
   parents: yup.mixed().nullable(),
@@ -42,7 +41,7 @@ export const schema = yup.object<Schema>().shape({
   feed_comment: yup.string().max(150, "Ограничение 150 символов").nullable(),
   picture: yup
     .mixed<File>()
-    .test("fileSize", "Вес фото более 3Мb", (v) => (!v ? true : v.size <= 3145728))
+    .test("fileSize", "Вес сжатого фото более 1Мb", (v) => (!v ? true : v.size <= 1048576))
     .nullable(),
   notes: yup.string().nullable(),
 });

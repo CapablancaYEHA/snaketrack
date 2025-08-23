@@ -3,6 +3,7 @@ import { useEffect } from "preact/hooks";
 import { Flex, LoadingOverlay, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
+import { SkelTable } from "@/components/ballpythons/skeletons";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { makeBpClutchColumns } from "@/components/forms/bpClutch/clutchUtils";
 import { MiniInfo } from "@/components/forms/bpClutch/subcomponents";
@@ -22,7 +23,7 @@ const columns = makeBpClutchColumns({
 export function ClutchList() {
   const userId = localStorage.getItem("USER");
   const location = useLocation();
-  const { data, isPending, isError } = useBpClutches(userId!);
+  const { data, isPending, isRefetching, isError } = useBpClutches(userId!);
 
   const handleRowClick = (id) => {
     location.route(`/clutches/edit/ballpython?id=${id}`);
@@ -44,7 +45,7 @@ export function ClutchList() {
           Добавить
         </Btn>
       </Flex>
-      {isPending ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+      {isPending ? <SkelTable /> : null}
       {isError ? (
         <Text fw={500} c="var(--mantine-color-error)">
           Произошла ошибка запроса
@@ -65,6 +66,7 @@ export function ClutchList() {
         snakeId={snakeId.value}
         sex={snakeSex.value}
       />
+      {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </Stack>
   );
 }

@@ -86,11 +86,8 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
                     </Flex>
                     <Text size="sm">{rem.repeat_interval ? `Периодичность — ${declWord(rem.repeat_interval, ["день", "дня", "дней"])}` : "Единоразово"}</Text>
                     {rem.repeat_interval ? <Text size="sm">Следующее напоминание {getDate(dateAddDays(rem.scheduled_time, rem.repeat_interval))}</Text> : null}
-                    <Flex justify="space-between">
-                      <Button variant="default" onClick={closeAndRes} size="xs">
-                        Ок
-                      </Button>
-                      <Button variant="filled" color="var(--mantine-color-error)" onClick={() => del(rem.id)} loading={isPending} size="xs">
+                    <Flex>
+                      <Button variant="filled" color="var(--mantine-color-error)" onClick={() => del(rem.id)} loading={isPending} size="xs" ml="auto">
                         Удалить
                       </Button>
                     </Flex>

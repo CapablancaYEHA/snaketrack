@@ -14,7 +14,7 @@ import { useGenes, useSnake } from "@/api/hooks";
 import { IResBpClutch } from "@/api/models";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff, getAge, getDate } from "@/utils/time";
-import { getPercentage } from "../bpBreed/breedUtils";
+import { daysAfterLaid, getPercentage } from "../bpBreed/breedUtils";
 import { sexHardcode } from "../bpBreed/common";
 import { calcAnim } from "./clutchUtils";
 import { IClutchScheme, statusHardcode } from "./editClutch/const";
@@ -131,7 +131,7 @@ export const Juveniles = ({ ids, onPicClick, title = "Змееныши" }) => {
 };
 
 export const ClutchProgress = ({ date_laid, curStatus, barOnly = false }) => {
-  const left = dateTimeDiff(dateAddDays(date_laid, 60), "days");
+  const left = dateTimeDiff(dateAddDays(date_laid, daysAfterLaid), "days");
 
   return (
     <>
@@ -146,7 +146,7 @@ export const ClutchProgress = ({ date_laid, curStatus, barOnly = false }) => {
           <Title order={6} ta="right">
             Ожидаем
             <Text size="sm" fw={500}>
-              ~{getDate(dateAddDays(date_laid, 60))}
+              ~{getDate(dateAddDays(date_laid, daysAfterLaid))}
             </Text>
           </Title>
         </Flex>
@@ -154,7 +154,7 @@ export const ClutchProgress = ({ date_laid, curStatus, barOnly = false }) => {
       <Flex>
         <Box w="100%" maw="100%">
           <Progress.Root size="lg">
-            <Progress.Section value={getPercentage(60, left)} color="green" animated={calcAnim(curStatus, left)} striped={calcAnim(curStatus, left)} />
+            <Progress.Section value={getPercentage(daysAfterLaid, left)} color="green" animated={calcAnim(curStatus, left)} striped={calcAnim(curStatus, left)} />
           </Progress.Root>
         </Box>
       </Flex>

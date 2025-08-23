@@ -3,7 +3,7 @@ import { notif } from "./notif";
 
 const options = {
   maxSizeMB: 1,
-  maxWidthOrHeight: 600,
+  maxWidthOrHeight: 900,
   useWebWorker: true,
   initialQuality: 0.85,
 };
@@ -19,6 +19,7 @@ export const compressImage = async (pic: File, handleChange, handleState) => {
       c: "red",
       t: "Ошибка загрузки файла",
       m: e?.message,
+      code: e.code || e.statusCode,
     });
   }
 };

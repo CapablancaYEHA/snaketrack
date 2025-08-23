@@ -1,6 +1,7 @@
 import { ActionIcon, Flex, Menu, Stack, Text } from "@mantine/core";
 import { IFeed } from "@/api/models";
-import { getDate } from "../../utils/time";
+import { getDate, getDateObj } from "../../utils/time";
+import { codeToFeeder } from "../common/Feeder/const";
 import { sortBpGenes } from "../genetics/const";
 import { GenePill } from "../genetics/geneSelect";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
@@ -11,7 +12,7 @@ const calcFeedEvent = (feed?: IFeed) => {
   }
   let temp = "";
   if (feed?.feed_last_at != null) {
-    temp = `${temp + getDate(feed?.feed_last_at!)}\n${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г` : ""}`;
+    temp = `${temp + getDate(feed?.feed_last_at!)}${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г` : ""}\n${feed?.feed_ko ? codeToFeeder(feed.feed_ko) : ""}`;
   }
 
   if (feed?.refuse) {
@@ -57,9 +58,9 @@ export const BpGenes = ({ genes }) => (
 );
 
 export const BpEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isShowShed = true, isShowWeight = true }) => {
-  const lastWeight = weight?.[weight?.length - 1];
-  const lastFeed = feeding?.[feeding.length - 1];
-  const lastShed = shed?.[shed.length - 1];
+  const lastWeight = weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[weight?.length - 1];
+  const lastFeed = feeding?.sort((a, b) => getDateObj(a.feed_last_at) - getDateObj(b.feed_last_at))?.[feeding.length - 1];
+  const lastShed = shed?.sort((a, b) => getDateObj(a) - getDateObj(b))?.[shed.length - 1];
 
   return (
     <Stack gap="xs">

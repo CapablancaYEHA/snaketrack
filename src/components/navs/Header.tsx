@@ -1,4 +1,4 @@
-import { tabletThreshold } from "@/styles/theme";
+import { startSm, tabletThreshold } from "@/styles/theme";
 import { Box, Image, Skeleton, Title, alpha } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useProfile } from "../../api/profile/hooks";
@@ -12,6 +12,7 @@ export function Header({ session }) {
   const { data, isPending } = useProfile(userId, userId != null);
 
   const isMwTablet = useMediaQuery(tabletThreshold);
+  const isMinSm = useMediaQuery(startSm);
 
   return (
     <Box
@@ -32,7 +33,7 @@ export function Header({ session }) {
           </Box>
         ) : null}
         <a href="/snakes" className={styles.logo}>
-          <Title component="span" c="dark.1" order={4}>
+          <Title component="span" c="dark.1" order={isMinSm ? 4 : 6}>
             HsssStats
           </Title>
           <Image src={logoUri} fit="cover" w="24" h="24" />

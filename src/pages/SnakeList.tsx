@@ -6,6 +6,7 @@ import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
 import { makeBpCardColumns, maturityDict } from "@/components/ballpythons/const";
+import { SkelTable } from "@/components/ballpythons/skeletons";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { tableFiltMulti } from "@/components/common/StackTable/utils";
@@ -43,7 +44,7 @@ export function SnakeList() {
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
   const { data: genes } = useGenes();
-  const { data: snakes, isPending, isError } = useSnakesList(userId!, userId != null);
+  const { data: snakes, isPending, isRefetching, isError } = useSnakesList(userId!, userId != null);
   const [filt, setFilt] = useState<any[]>([]);
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
@@ -53,6 +54,8 @@ export function SnakeList() {
   };
 
   const debSearch = debounce(setGlobalFilter, 400);
+
+  const isFilterNull = isEmpty(filt) && globalFilter.length === 0;
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
@@ -70,7 +73,6 @@ export function SnakeList() {
         title={<Title order={5}>Фильтрация</Title>}
         position="top"
         offset={16}
-        // size="auto"
         styles={{
           inner: {
             justifyContent: "center",
@@ -92,10 +94,10 @@ export function SnakeList() {
           <MaxSelectedMulti miw={0} flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "genes")} data={(genes ?? [])?.map((g) => g.label)} />
         </Flex>
       </Drawer>
-      <Button leftSection={<IconSwitch icon="adjust" width="16" height="16" />} variant="default" onClick={open} size="compact-xs">
-        Фильтры
+      <Button color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} variant={isFilterNull ? "default" : "filled"} onClick={open} size="compact-xs">
+        Фильтры {isFilterNull ? "" : "применены"}
       </Button>
-      {isPending ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+      {isPending ? <SkelTable /> : null}
       {isError ? (
         <Text fw={500} c="var(--mantine-color-error)">
           Произошла ошибка запроса
@@ -130,6 +132,7 @@ export function SnakeList() {
         }}
         target={target}
       />
+      {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </Stack>
   );
 }

@@ -2,10 +2,14 @@ import preact from "@preact/preset-vite";
 import path from "path";
 import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
+import pkg from "./package.json";
 
 const assets = ["placeholder.png", "fav.png"];
 
 export default defineConfig({
+  define: {
+    "import.meta.env.VITE_APP_VERSION": JSON.stringify(pkg.version),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -19,6 +23,11 @@ export default defineConfig({
     },
   },
   plugins: [preact(), eslint()],
+  server: {
+    watch: {
+      usePolling: true,
+    },
+  },
   build: {
     rollupOptions: {
       output: {

@@ -5,6 +5,7 @@ import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { calcBreedTraits, calcProjGenes, calcStatusOptions } from "@/components/ballpythons/const";
+import { SkelTable } from "@/components/ballpythons/skeletons";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { tableFiltMulti } from "@/components/common/StackTable/utils";
@@ -34,9 +35,11 @@ export function BreedList() {
   const isMinSm = useMediaQuery(startSm);
   const [filt, setFilt] = useState<any[]>([]);
   const { data: dt, isError } = useProfile(userId, userId != null);
-  const { data: breed, isPending, isError: isBreedErr } = useBpBreedingList(userId!, !isEmpty(dt));
+  const { data: breed, isPending, isRefetching, isError: isBreedErr } = useBpBreedingList(userId!, !isEmpty(dt));
 
   const tableData: IBreedExt[] = (breed ?? [])?.map((m) => ({ ...m, traits: calcProjGenes(m.female_genes.concat(m.male_genes.flat())) }));
+
+  const isFilterNull = isEmpty(filt);
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
@@ -48,7 +51,7 @@ export function BreedList() {
           Добавить
         </Btn>
       </Flex>
-      {isPending ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+      {isPending ? <SkelTable /> : null}
       {isError || isBreedErr ? (
         <Text fw={500} c="var(--mantine-color-error)">
           Произошла ошибка запроса
@@ -85,8 +88,8 @@ export function BreedList() {
               <MaxSelectedMulti flex="1 1 50%" label="Статус" onChange={(a: any) => tableFiltMulti(setFilt, a, "breed_status")} data={calcStatusOptions()} />
             </Flex>
           </Drawer>
-          <Button leftSection={<IconSwitch icon="adjust" width="16" height="16" />} variant="default" onClick={open} size="compact-xs">
-            Фильтры
+          <Button color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} variant={isFilterNull ? "default" : "filled"} onClick={open} size="compact-xs">
+            Фильтры {isFilterNull ? "" : "применены"}
           </Button>
           <StackTable data={tableData} columns={columns} columnFilters={filt} setColumnFilters={setFilt} />
         </>
@@ -98,6 +101,7 @@ export function BreedList() {
         }}
         breedId={breedId.value}
       />
+      {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </Stack>
   );
 }

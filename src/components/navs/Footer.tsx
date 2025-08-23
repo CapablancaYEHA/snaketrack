@@ -1,5 +1,4 @@
 import { Anchor, Box } from "@mantine/core";
-
 import { footLinks } from "./const";
 import styles from "./styles.module.scss";
 

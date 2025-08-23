@@ -24,8 +24,8 @@ export const makeScheduleColumns = () => [
           }}
         />
         <Stack gap="xs" flex="1 1 auto">
-          <Image src={cell.getValue()} fit="cover" radius="sm" w="100%" loading="lazy" flex="1 1 0px" fallbackSrc={fallback} />
-          <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
+          <Image src={cell.getValue()} fit="cover" radius="sm" w="100%" loading="lazy" mah={110} flex="1 1 0px" fallbackSrc={fallback} />
+          <SexName sex={row.original.sex} name={row.original.snake_name} size="sm" />
         </Stack>
       </Flex>
     ),
@@ -35,22 +35,13 @@ export const makeScheduleColumns = () => [
     enableSorting: false,
     enableColumnFilter: false,
   }),
-  columnHelper.accessor("date_hatch", {
-    header: () => " ",
-    cell: ({ cell }) => <Text size="md">⌛ {getAge(cell.getValue())}</Text>,
-    size: 4,
-    maxSize: 2,
-    minSize: 150,
-    enableSorting: false,
-    enableColumnFilter: false,
-  }),
   columnHelper.accessor("feeding", {
     header: () => "События",
     cell: ({ cell, row }) => <BpEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} isShowShed={false} isShowWeight={false} />,
     enableSorting: false,
     enableColumnFilter: false,
-    size: 7,
-    maxSize: 6,
+    size: 4,
+    maxSize: 9,
     minSize: 150,
   }),
 ];

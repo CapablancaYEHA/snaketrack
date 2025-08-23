@@ -1,6 +1,7 @@
 import { Indicator, LoadingOverlay, Stack, Text, Title } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { isEmpty } from "lodash-es";
+import { SkelShedule, SkelTable } from "@/components/ballpythons/skeletons";
 import { Reminder } from "@/components/common/Schedule/Reminder";
 import { makeScheduleColumns } from "@/components/common/Schedule/const";
 import { sigCurDate, sigIsModOpen, sigSelected } from "@/components/common/Schedule/signals";
@@ -11,8 +12,8 @@ import { getDateObj, getDateOfMonth, getIsSame } from "@/utils/time";
 export const Schedule = () => {
   const userId = localStorage.getItem("USER");
 
-  const { data: snakes, isPending, isError } = useSnakesList(userId!, userId != null);
-  const { data: rem, isPending: isRemPending, isError: isRemError } = useReminders(userId!, userId != null);
+  const { data: snakes, isPending, isRefetching, isError } = useSnakesList(userId!, userId != null);
+  const { data: rem, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useReminders(userId!, userId != null);
   const eventDates = (rem ?? [])?.map((a) => getDateObj(a.scheduled_time));
 
   const hasEvent = (date: Date) => {
@@ -25,7 +26,7 @@ export const Schedule = () => {
         <Title component="span" order={4} c="yellow.6">
           Напоминания о кормлениях
         </Title>
-        {isPending || isRemPending ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+        {isPending || isRemPending ? <SkelShedule /> : null}
         {isError || isRemError ? (
           <Text fw={500} c="var(--mantine-color-error)">
             Произошла ошибка запроса
@@ -48,7 +49,7 @@ export const Schedule = () => {
                 const day = getDateOfMonth(date);
 
                 return (
-                  <Indicator size={6} color={getIsSame(new Date(), date) ? "orange" : "green"} offset={-2} disabled={!hasEvent(date)} processing>
+                  <Indicator size={6} color={getIsSame(new Date(), date) ? "orange" : "green"} offset={-2} disabled={!hasEvent(date)} processing zIndex={3}>
                     <div>{day}</div>
                   </Indicator>
                 );
@@ -66,6 +67,7 @@ export const Schedule = () => {
           sigCurDate.value = undefined;
         }}
       />
+      {isRefetching || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </>
   );
 };

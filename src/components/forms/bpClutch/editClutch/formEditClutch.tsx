@@ -17,7 +17,7 @@ import { EClSt, IResBpClutch } from "@/api/models";
 import { notif } from "@/utils/notif";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff } from "@/utils/time";
-import { daysAfterLaid, getPercentage } from "../../bpBreed/breedUtils";
+import { daysAfterLaid, daysCriticalThr, getPercentage } from "../../bpBreed/breedUtils";
 import { calcAnim } from "../clutchUtils";
 import { FormApprovedBabies, Juveniles, MiniInfo } from "../subcomponents";
 import { IClutchScheme, clutchSchema, prepForFinal, prepForHatch, prepForUpdate, stdErr } from "./const";
@@ -68,11 +68,11 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
   const { mutate: finalise } = useFinaliseBpClutch(clutch.id);
 
   const dateLaid = watch("date_laid");
-  const left = dateTimeDiff(dateAddDays(dateLaid, 60), "days");
+  const left = dateTimeDiff(dateAddDays(dateLaid, daysAfterLaid), "days");
   const isLaid = clutch.status === EClSt.LA;
   const isHatch = clutch.status === EClSt.HA;
   const isClosed = clutch.status === EClSt.CL;
-  const isCanHatch = dateTimeDiff(dateAddDays(clutch.date_laid, daysAfterLaid), "days") <= 5;
+  const isCanHatch = dateTimeDiff(dateAddDays(clutch.date_laid, daysAfterLaid), "days") <= daysCriticalThr;
 
   const onSub = async (sbm) => {
     update(prepForUpdate(sbm, dirtyFields, location.query.id), {
@@ -174,7 +174,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
             <Flex>
               <Box w="100%" maw="100%">
                 <Progress.Root size="lg">
-                  <Progress.Section value={getPercentage(60, left)} color="green" animated={calcAnim(clutch.status, left)} striped={calcAnim(clutch.status, left)} />
+                  <Progress.Section value={getPercentage(daysAfterLaid, left)} color="green" animated={calcAnim(clutch.status, left)} striped={calcAnim(clutch.status, left)} />
                 </Progress.Root>
               </Box>
             </Flex>
