@@ -6,6 +6,8 @@
   max-width: 100%;
   top: 0;
   z-index: 4;
+  height: calc(50px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
 
   & > div {
     display: flex;

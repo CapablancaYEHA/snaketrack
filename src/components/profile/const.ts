@@ -1,5 +1,11 @@
 export const versionHistory = [
   {
+    id: 3,
+    ver: "1.1.1",
+    date: "08-25-2025",
+    list: ["Исправлены safe-inset-area в шапках мобильных устройств"],
+  },
+  {
     id: 2,
     ver: "1.1.0",
     date: "08-23-2025",

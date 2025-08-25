@@ -8,7 +8,7 @@ import { codeToFeeder } from "@/components/common/Feeder/const";
 import { useUpdateFeeding } from "@/api/hooks";
 import { IResSnakesList } from "@/api/models";
 import { notif } from "../../../utils/notif";
-import { getDate } from "../../../utils/time";
+import { getDate, getDateObj } from "../../../utils/time";
 import { SexName } from "../../common/sexName";
 import { Btn } from "../../navs/btn/Btn";
 import { defVals, prepareForSubmit, schema } from "./const";
@@ -20,8 +20,8 @@ type IProp = {
 };
 
 export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
-  const lastFeed = snake?.feeding?.[snake?.feeding.length - 1];
-  const lastWeight = snake?.weight?.[snake?.weight.length - 1];
+  const lastFeed = snake?.feeding?.sort((a, b) => getDateObj(a.feed_last_at!) - getDateObj(b.feed_last_at!))?.[snake?.feeding.length - 1];
+  const lastWeight = snake?.weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[snake?.weight.length - 1];
   const {
     register,
     handleSubmit,
@@ -110,12 +110,14 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
       <Space h="lg" />
       <Accordion variant="separated" radius="xl" defaultValue="Apples">
         <Accordion.Item value={"kek"}>
-          <Accordion.Control>Предыдущая запись</Accordion.Control>
+          <Accordion.Control>Последние актуальные данные</Accordion.Control>
           <Accordion.Panel>
             <Stack gap="md">
               <Flex justify="space-between" gap="md">
                 <Text size="sm">Дата: {lastFeed?.feed_last_at ? `${getDate(lastFeed.feed_last_at!)}` : "Нет данных"}</Text>
-                <Text size="sm">Масса питомца: {lastWeight?.weight ? `${lastWeight?.weight}г` : "Нет данных"}</Text>
+                <Text size="sm" ta="right">
+                  Масса питомца: {lastWeight?.weight ? `${lastWeight?.weight}г` : "Нет данных"}
+                </Text>
               </Flex>
               <Flex justify="space-between" gap="md">
                 <Text size="sm" flex="1 1 50%">

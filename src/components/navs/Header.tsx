@@ -19,7 +19,6 @@ export function Header({ session }) {
       id="layouthdr"
       bg="dark.8"
       component="header"
-      h="50"
       px="xl"
       className={styles.wrap}
       style={{

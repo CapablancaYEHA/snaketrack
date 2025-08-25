@@ -208,11 +208,11 @@ export const makeLineData = (weight, feed, view: "ko" | "snake" | "both") => {
     ...dataKO,
 
     data: (feed ?? [])
+      ?.sort((a, b) => getDateObj(a.feed_last_at) - getDateObj(b.feed_last_at))
       ?.map((a, ind, self) => {
         const lastValid = a.feed_weight ?? findLastValid(ind - 1, self);
         return { y: lastValid, x: a.feed_last_at, regurgitation: a.regurgitation || false, refuse: a.refuse || false };
-      })
-      .sort((a, b) => getDateObj(a.x) - getDateObj(b.x)),
+      }),
   };
   const snakeSet = {
     ...dataSnake,

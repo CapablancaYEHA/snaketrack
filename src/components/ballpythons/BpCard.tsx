@@ -12,7 +12,7 @@ const calcFeedEvent = (feed?: IFeed) => {
   }
   let temp = "";
   if (feed?.feed_last_at != null) {
-    temp = `${temp + getDate(feed?.feed_last_at!)}${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г` : ""}\n${feed?.feed_ko ? codeToFeeder(feed.feed_ko) : ""}`;
+    temp = `${temp + getDate(feed?.feed_last_at!)}\n${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г` : ""}\n${feed?.feed_ko ? codeToFeeder(feed.feed_ko) : ""}`;
   }
 
   if (feed?.refuse) {
