@@ -13,6 +13,7 @@ $offset: 8px;
   max-height: 100%;
   padding-top: 8px;
   transition: max-width 0.3s ease-in-out;
+  padding-top: calc(8px + env(safe-area-inset-top));
 
   &:hover {
     max-width: 160px;
