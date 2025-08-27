@@ -172,9 +172,10 @@ export function useSnake(id: string, isEnabled = true) {
 }
 
 // TODO Нужно написать триггеры на удаление из массивов в Breeding и Clutch
-//В Клатч сделана ошибка, что впринципе не можешь удалить змею из активной кладки или плана
+//В Клатч сделана ошибка, что впринципе не можешь удалить змею из активной кладки или плана. У меня при удалении получается еще и триггер надо запускать чтобы вычистить из массивов
 // Может тогда вместо удаления, сделать возможность только перевести в Архив (аналогично статусу "Умер") ? Это значит что змее никаким образом нельзя апдейтить содержимое профиля
 // + её больше нельзя выбрать в планах и кладках, но в уже созданных она останется
+// А вот если змею кому-то перевели, то все равно проблемка остается
 const httpDeleteBpBSnake = async (snakeId: string) => await supabase.from(ESupabase.ballpythons).delete().eq("id", snakeId).throwOnError();
 
 export function useDeleteBpSnake() {
@@ -207,15 +208,14 @@ export function useSnakeQueue(snakes: (string | undefined)[]) {
 }
 
 type IReqTransfer = {
-  username: string;
+  userId: string;
   snekId: string;
 };
 
 // Transfer
-// FIXME Перестать бояться и переделать функцию RPC на работу с uuid?
-const httpTransferSnake = async (username: string, snekId: string) => {
+const httpTransferSnake = async (userId: string, snekId: string) => {
   const { data, error } = await supabase.rpc("transfer_snake", {
-    trg_user: username,
+    trg_user: userId,
     trg_snake: snekId,
     action: "transfer",
   });
@@ -228,7 +228,7 @@ const httpTransferSnake = async (username: string, snekId: string) => {
 export function useTransferSnake() {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, IReqTransfer>({
-    mutationFn: ({ username, snekId }) => httpTransferSnake(username, snekId),
+    mutationFn: ({ userId, snekId }) => httpTransferSnake(userId, snekId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [EQuKeys.LIST_BP],
@@ -577,5 +577,47 @@ export function useDeleteReminder() {
         queryKey: [EQuKeys.REMIND],
       });
     },
+  });
+}
+
+// Market
+async function httpDadata(str: string) {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await fetch("https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address", {
+      method: "POST",
+      body: JSON.stringify({
+        query: str,
+        from_bound: {
+          value: "city",
+        },
+        to_bound: {
+          value: "city",
+        },
+      }),
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Token ${import.meta.env.VITE_REACT_APP_DADATA_KEY}`,
+        "X-Secret": import.meta.env.VITE_REACT_APP_DADATA_SECRET,
+        credentials: "include",
+      },
+    });
+
+    if (!response.ok) {
+      throw { message: `Response status: ${response.status}` };
+    }
+
+    const result = await response.json();
+    return result.suggestions;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export function useDadata() {
+  return useMutation<any, { message?: string }, string>({
+    mutationFn: (a) => httpDadata(a),
   });
 }

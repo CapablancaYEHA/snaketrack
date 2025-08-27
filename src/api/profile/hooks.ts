@@ -41,14 +41,14 @@ export function useProfile(id, isEnabled = false) {
 }
 
 const httpGetUsersBySubstring = async (a: string) => {
-  const { data, error } = await supabase.from(ESupabase.three_cols_profiles).select("username,createdat").ilike("username", `%${a}%`);
+  const { data, error } = await supabase.from(ESupabase.three_cols_profiles).select("username,createdat,id").ilike("username", `%${a}%`);
   if (error) {
     throw error;
   }
   return data;
 };
 
-type IBreederSuggest = Pick<IResProfile, "createdat" | "username">;
+type IBreederSuggest = Pick<IResProfile, "createdat" | "username" | "id">;
 
 export function useUserSuggestion(str: string) {
   return useQuery<IBreederSuggest[] | null, ISupabaseErr>({

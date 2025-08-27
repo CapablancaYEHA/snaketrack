@@ -79,7 +79,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake }) => {
             return <DatePickerInput label="Дата" required value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} flex="1 1 50%" />;
           }}
         />
-        <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса питомца" required placeholder="Не заполнено" hideControls error={errors?.["weight"]?.message} allowDecimal={false} flex="1 1 50%" />
+        <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса питомца" placeholder="Не заполнено" hideControls error={errors?.["weight"]?.message} allowDecimal={false} flex="1 1 50%" />
       </Flex>
       <Space h="sm" />
       <Flex rowGap="lg" columnGap="md" wrap="nowrap">

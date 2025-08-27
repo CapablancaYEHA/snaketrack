@@ -56,10 +56,11 @@ export interface IReqCreateBP {
   feed_comment?: string;
   picture: string | null;
   notes: string | null;
-  last_action?: "create" | "transfer" | "update" | "delete";
+  last_action?: "create" | "transfer" | "update" | "archive";
   from_clutch?: string | null;
   mother_id?: string | null;
   father_id?: string | null;
+  status?: "alive" | "archived";
 }
 
 export type IFeed = {

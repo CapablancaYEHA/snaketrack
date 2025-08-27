@@ -85,6 +85,7 @@ export const prepareForSubmit = (a): Omit<IReqCreateBP, "picture"> => {
         ];
   let d = {
     ...a,
+    status: "alive",
     genes,
     date_hatch: dateToSupabaseTime(a.date_hatch),
     feeding: [

@@ -15,17 +15,21 @@ type IProp = {
   sex?: string;
 };
 
+interface ICmb extends ComboboxItem {
+  id: string;
+}
+
 export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName }) => {
   const [search, setSearch] = useState("");
-  const [breeder, setBreeder] = useState<ComboboxItem | null>(null);
+  const [breeder, setBreeder] = useState<ICmb | null>(null);
 
   const { data, isFetching: isSearchPending } = useUserSuggestion(search);
-  const sugg = (data ?? [])?.map((a) => ({ label: a.username, value: a.createdat }));
+  const sugg = (data ?? [])?.map((a) => ({ label: a.username, value: a.createdat, id: a.id }));
 
   const { mutate, isPending } = useTransferSnake();
   const subm = () => {
     mutate(
-      { username: breeder?.label!, snekId },
+      { userId: breeder?.id!, snekId },
       {
         onSuccess: () => {
           notif({ c: "green", t: "Успех!", m: `Змейка ${snekName} уже у нового владельца!` });
@@ -53,7 +57,7 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName }) =>
       <Select
         data-autofocus
         value={breeder ? breeder.value : null}
-        onChange={(_, option) => setBreeder(option)}
+        onChange={(_, option) => setBreeder(option as any)}
         placeholder="Поиск бридера"
         clearable
         mt="md"

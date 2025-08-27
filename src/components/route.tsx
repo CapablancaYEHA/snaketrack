@@ -7,6 +7,7 @@ import { ClutchList } from "@/pages/ClutchList";
 import { EditBreed } from "@/pages/EditBreed";
 import { EditClutch } from "@/pages/EditClutch";
 import { EditSnake } from "@/pages/EditSnake";
+import { Market } from "@/pages/Market";
 import { Schedule } from "@/pages/Schedule";
 import { Snake } from "@/pages/Snake";
 import { SnakeList } from "@/pages/SnakeList";
@@ -44,6 +45,7 @@ export const protectedRoutes = {
   "/clutches": ClutchList,
   "/clutches/edit/:type?id=:id": EditClutch,
   "/schedule": Schedule,
+  "/market": Market,
 };
 
 export const sidebarLinks = [

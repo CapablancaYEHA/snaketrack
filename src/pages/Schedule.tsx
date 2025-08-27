@@ -1,7 +1,7 @@
 import { Indicator, LoadingOverlay, Stack, Text, Title } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { isEmpty } from "lodash-es";
-import { SkelShedule, SkelTable } from "@/components/ballpythons/skeletons";
+import { SkelShedule } from "@/components/ballpythons/skeletons";
 import { Reminder } from "@/components/common/Schedule/Reminder";
 import { makeScheduleColumns } from "@/components/common/Schedule/const";
 import { sigCurDate, sigIsModOpen, sigSelected } from "@/components/common/Schedule/signals";
