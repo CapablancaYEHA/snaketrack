@@ -1,6 +1,8 @@
-@mixin cute-scroll($trackStart, $colored: false) {
+@mixin cute-scroll($trackStart, $colored: false, $auto: false) {
   overflow-y: auto;
-  left: auto !important;
+  @if $auto {
+    left: auto !important;
+  }
 
   &::-webkit-scrollbar {
     width: 4px;

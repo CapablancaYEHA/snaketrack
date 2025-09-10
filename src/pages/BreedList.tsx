@@ -4,17 +4,19 @@ import { Button, Drawer, Flex, LoadingOverlay, Space, Stack, Text, Title } from 
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
-import { calcBreedTraits, calcProjGenes, calcStatusOptions } from "@/components/ballpythons/const";
-import { SkelTable } from "@/components/ballpythons/skeletons";
+import { calcBreedTraits } from "@/components/ballpythons/const";
+import { makeBpBreedColumns } from "@/components/ballpythons/forms/bpBreed/breedUtils";
+import { BreedDelete } from "@/components/ballpythons/forms/bpBreed/subcomponents";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
-import { tableFiltMulti } from "@/components/common/StackTable/utils";
-import { makeBpBreedColumns } from "@/components/forms/bpBreed/breedUtils";
-import { BreedDelete } from "@/components/forms/bpBreed/subcomponents";
+import { tableFiltMulti } from "@/components/common/StackTable/filters";
+import { SkelTable } from "@/components/common/skeletons";
+import { calcProjGenes, calcStatusOptions } from "@/components/common/utils";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { useBpBreedingList } from "@/api/hooks";
-import { IResBpBreedingList } from "@/api/models";
+import { bpBreedList } from "@/api/ballpythons/configs";
+import { IResBpBreedingList } from "@/api/ballpythons/models";
+import { useSupaGet } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 
 const breedId = signal<string | undefined>(undefined);
@@ -35,7 +37,7 @@ export function BreedList() {
   const isMinSm = useMediaQuery(startSm);
   const [filt, setFilt] = useState<any[]>([]);
   const { data: dt, isError } = useProfile(userId, userId != null);
-  const { data: breed, isPending, isRefetching, isError: isBreedErr } = useBpBreedingList(userId!, !isEmpty(dt));
+  const { data: breed, isPending, isRefetching, isError: isBreedErr } = useSupaGet<IResBpBreedingList[]>(bpBreedList(userId), !isEmpty(dt));
 
   const tableData: IBreedExt[] = (breed ?? [])?.map((m) => ({ ...m, traits: calcProjGenes(m.female_genes.concat(m.male_genes.flat())) }));
 
@@ -47,7 +49,7 @@ export function BreedList() {
         <Title component="span" order={4} c="yellow.6">
           Планы спариваний
         </Title>
-        <Btn fullWidth={false} component="a" href="/breeding/add/ballpython" ml="auto">
+        <Btn fullWidth={false} component="a" href="/breeding/add/ball-pythons" ml="auto">
           Добавить
         </Btn>
       </Flex>

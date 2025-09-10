@@ -1,15 +1,17 @@
 import { useLocation } from "preact-iso";
 import { useEffect } from "preact/hooks";
 import { LoadingOverlay, Stack, Text } from "@mantine/core";
-import { useUtilsBreed } from "@/components/forms/bpBreed/common";
-import { makeDefaultClutch } from "@/components/forms/bpClutch/editClutch/const";
-import { FormEditClutch } from "@/components/forms/bpClutch/editClutch/formEditClutch";
-import { useSingleBpClutch } from "@/api/hooks";
+import { useUtilsBreed } from "@/components/ballpythons/forms/bpBreed/common";
+import { makeDefaultClutch } from "@/components/ballpythons/forms/bpClutch/editClutch/const";
+import { FormEditClutch } from "@/components/ballpythons/forms/bpClutch/editClutch/formEditClutch";
+import { bpClutchSingle } from "@/api/ballpythons/configs";
+import { IResBpClutch } from "@/api/ballpythons/models";
+import { useSupaGet } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 
 export function EditClutch() {
   const location = useLocation();
-  const { data, isError, error, isPending } = useSingleBpClutch(location.query.id);
+  const { data, isError, error, isPending } = useSupaGet<IResBpClutch>(bpClutchSingle(location.query.id), location.query.id != null);
   const { regMales } = useUtilsBreed({ fetchFields: data?.males_ids.map((a) => ({ snake: a, id: a })) ?? [] });
 
   const composed = makeDefaultClutch(data);

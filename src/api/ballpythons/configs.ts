@@ -1,0 +1,17 @@
+import { ESupabase } from "../common";
+
+/* FIXME? нужно ли создать view для этой таблицы? */
+// FIXME Нужно прикрутить\проверить пагинацию к этой и подобным?
+export const bpList = (userId) => ({ t: ESupabase.BP, f: (b) => b.eq("owner_id", userId) });
+
+export const bpSingle = (id) => ({ t: ESupabase.BP, f: (b) => b.eq("id", id).limit(1).single(), id });
+
+export const bpBreedList = (userId) => ({ t: ESupabase.BP_BREED_V, f: (b) => b.eq("owner_id", userId) });
+
+export const bpBreedSingle = (id) => ({ t: ESupabase.BP_BREED_V, f: (b) => b.eq("id", id).limit(1).single(), id });
+
+export const bpClutchList = (userId) => ({ t: ESupabase.BP_CL_V, f: (b) => b.eq("owner_id", userId) });
+
+export const bpClutchSingle = (id) => ({ t: ESupabase.BP_CL_V, f: (b) => b.eq("id", id).limit(1).single(), id });
+
+export const remList = (userId) => ({ t: ESupabase.REM, f: (b) => b.eq("owner_id", userId) });

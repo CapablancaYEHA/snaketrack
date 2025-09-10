@@ -1,19 +1,22 @@
 import { Indicator, LoadingOverlay, Stack, Text, Title } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { isEmpty } from "lodash-es";
-import { SkelShedule } from "@/components/ballpythons/skeletons";
 import { Reminder } from "@/components/common/Schedule/Reminder";
 import { makeScheduleColumns } from "@/components/common/Schedule/const";
 import { sigCurDate, sigIsModOpen, sigSelected } from "@/components/common/Schedule/signals";
 import { StackTable } from "@/components/common/StackTable/StackTable";
-import { useReminders, useSnakesList } from "@/api/hooks";
+import { SkelShedule } from "@/components/common/skeletons";
+import { bpList, remList } from "@/api/ballpythons/configs";
+import { IRemindersRes } from "@/api/ballpythons/models";
+import { IResSnakesList } from "@/api/common";
+import { useSupaGet } from "@/api/hooks";
 import { getDateObj, getDateOfMonth, getIsSame } from "@/utils/time";
 
 export const Schedule = () => {
   const userId = localStorage.getItem("USER");
+  const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(bpList(userId), userId != null);
+  const { data: rem, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
 
-  const { data: snakes, isPending, isRefetching, isError } = useSnakesList(userId!, userId != null);
-  const { data: rem, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useReminders(userId!, userId != null);
   const eventDates = (rem ?? [])?.map((a) => getDateObj(a.scheduled_time));
 
   const hasEvent = (date: Date) => {

@@ -3,12 +3,14 @@ import { useEffect } from "preact/hooks";
 import { Flex, LoadingOverlay, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
-import { SkelTable } from "@/components/ballpythons/skeletons";
+import { makeBpClutchColumns } from "@/components/ballpythons/forms/bpClutch/clutchUtils";
+import { MiniInfo } from "@/components/ballpythons/forms/bpClutch/subcomponents";
 import { StackTable } from "@/components/common/StackTable/StackTable";
-import { makeBpClutchColumns } from "@/components/forms/bpClutch/clutchUtils";
-import { MiniInfo } from "@/components/forms/bpClutch/subcomponents";
+import { SkelTable } from "@/components/common/skeletons";
 import { Btn } from "@/components/navs/btn/Btn";
-import { useBpClutches } from "@/api/hooks";
+import { bpClutchList } from "@/api/ballpythons/configs";
+import { IResBpClutch } from "@/api/ballpythons/models";
+import { useSupaGet } from "@/api/hooks";
 
 const snakeId = signal<string | undefined>(undefined);
 const snakeSex = signal<string | undefined>(undefined);
@@ -23,10 +25,11 @@ const columns = makeBpClutchColumns({
 export function ClutchList() {
   const userId = localStorage.getItem("USER");
   const location = useLocation();
-  const { data, isPending, isRefetching, isError } = useBpClutches(userId!);
+
+  const { data, isPending, isRefetching, isError } = useSupaGet<IResBpClutch[]>(bpClutchList(userId), userId != null);
 
   const handleRowClick = (id) => {
-    location.route(`/clutches/edit/ballpython?id=${id}`);
+    location.route(`/clutches/edit/ball-pythons?id=${id}`);
   };
 
   useEffect(() => {

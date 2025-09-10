@@ -1,14 +1,17 @@
 import { useLocation } from "preact-iso";
 import { useEffect } from "preact/hooks";
 import { LoadingOverlay, Stack, Text } from "@mantine/core";
-import { makeDefaultValues } from "@/components/forms/bpBreed/editBpBreed/const";
-import { FormEditBpBreed } from "@/components/forms/bpBreed/editBpBreed/formEditBpBreed";
-import { useSingleBpBreed } from "@/api/hooks";
+import { makeDefaultValues } from "@/components/ballpythons/forms/bpBreed/editBpBreed/const";
+import { FormEditBpBreed } from "@/components/ballpythons/forms/bpBreed/editBpBreed/formEditBpBreed";
+import { bpBreedSingle } from "@/api/ballpythons/configs";
+import { IResBpBreedingList } from "@/api/ballpythons/models";
+import { useSupaGet } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 
 export function EditBreed() {
   const location = useLocation();
-  const { data, isError, error, isPending } = useSingleBpBreed(location.query.id);
+
+  const { data, isError, error, isPending } = useSupaGet<IResBpBreedingList>(bpBreedSingle(location.query.id), location.query.id != null);
 
   const composed = makeDefaultValues(data);
 

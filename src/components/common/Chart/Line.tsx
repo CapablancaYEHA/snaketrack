@@ -3,7 +3,7 @@ import { Text } from "@mantine/core";
 import { CategoryScale, Chart as ChartJS, Legend, LineElement, LinearScale, PointElement, TimeScale, Title, Tooltip } from "chart.js";
 import "chartjs-adapter-dayjs-4";
 import { Bubble, Line } from "react-chartjs-2";
-import { IFeed } from "@/api/models";
+import { IFeed } from "@/api/common";
 import { bubbleOptions, makeBubbleData, makeLineData, makeLineOptions } from "./const";
 
 ChartJS.register(CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, LinearScale, TimeScale);

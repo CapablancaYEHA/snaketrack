@@ -93,7 +93,18 @@ a {
   @include cute-scroll(0);
 }
 
+.mantine-Drawer-content {
+  overflow: visible !important;
+}
+
+.mantine-Drawer-header {
+  z-index: 5;
+}
+
+.mantine-Combobox-dropdown {
+  @include cute-scroll(0px);
+}
+
 .mantine-Notifications-notification {
   min-height: 32px;
 }
-// pl={{ base: 'md', sm: "xl", md: 'calc(48px + var(--mantine-spacing-md))',lg: 'md' }} pr={{base: 'md', sm: "xl"}} py={{ base: 'sm', sm: "lg" }}

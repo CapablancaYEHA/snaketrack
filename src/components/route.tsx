@@ -10,7 +10,7 @@ import { EditSnake } from "@/pages/EditSnake";
 import { Market } from "@/pages/Market";
 import { Schedule } from "@/pages/Schedule";
 import { Snake } from "@/pages/Snake";
-import { SnakeList } from "@/pages/SnakeList";
+import { SnakeCategories } from "@/pages/SnakeCategories";
 import { Profile } from "@/pages/auth/Profile";
 
 export const ProtectedRoute = (props) => {
@@ -35,7 +35,7 @@ export const RedirectiveRoute = (props) => {
 
 export const protectedRoutes = {
   "/profile": Profile,
-  "/snakes": SnakeList,
+  "/snakes": SnakeCategories,
   "/snakes/:type?id=:id": Snake,
   "/snakes/add/:type": AddSnake,
   "/snakes/edit/:type?id=:id": EditSnake,

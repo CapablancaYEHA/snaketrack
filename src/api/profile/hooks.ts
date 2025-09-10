@@ -1,13 +1,21 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../lib/client_supabase";
-import { EQuKeys, ESupabase, IResProfile, ISupabaseErr } from "../models";
+import { ESupabase, ISupabaseErr } from "../common";
+
+interface IResProfile {
+  id: string;
+  usermail: string;
+  createdat: string;
+  username: string;
+  role: "free" | "premium";
+}
 
 export async function logout() {
   localStorage.removeItem("USER");
   await supabase.auth.signOut({ scope: "local" });
 }
 
-const updUsername = async (name: string, id: string) => supabase.from(ESupabase.profiles).update({ username: name }).eq("id", id).throwOnError();
+const updUsername = async (name: string, id: string) => supabase.from(ESupabase.PROF).update({ username: name }).eq("id", id).throwOnError();
 
 type IReqChangeName = {
   name: string;
@@ -19,13 +27,13 @@ export function useUpdName() {
     mutationFn: ({ name, id }) => updUsername(name, id),
     onSuccess: async () =>
       await queryClient.invalidateQueries({
-        queryKey: [EQuKeys.PROFILE],
+        queryKey: [ESupabase.PROF],
       }),
   });
 }
 
 const httpGetProfile = async (a: string) => {
-  const { data, error } = await supabase.from(ESupabase.profiles).select("*").eq("id", a).limit(1).single();
+  const { data, error } = await supabase.from(ESupabase.PROF).select("*").eq("id", a).limit(1).single();
   if (error) {
     throw error;
   }
@@ -34,14 +42,14 @@ const httpGetProfile = async (a: string) => {
 
 export function useProfile(id, isEnabled = false) {
   return useQuery<IResProfile, ISupabaseErr>({
-    queryKey: [EQuKeys.PROFILE, id],
+    queryKey: [ESupabase.PROF, id],
     queryFn: async () => httpGetProfile(id),
     enabled: isEnabled,
   });
 }
 
 const httpGetUsersBySubstring = async (a: string) => {
-  const { data, error } = await supabase.from(ESupabase.three_cols_profiles).select("username,createdat,id").ilike("username", `%${a}%`);
+  const { data, error } = await supabase.from(ESupabase.PROF_V).select("username,createdat,id").ilike("username", `%${a}%`);
   if (error) {
     throw error;
   }
@@ -52,7 +60,7 @@ type IBreederSuggest = Pick<IResProfile, "createdat" | "username" | "id">;
 
 export function useUserSuggestion(str: string) {
   return useQuery<IBreederSuggest[] | null, ISupabaseErr>({
-    queryKey: ["all_profiles", str],
+    queryKey: [ESupabase.PROF_V, str],
     queryFn: async () => httpGetUsersBySubstring(str),
     enabled: str?.length > 1,
   });

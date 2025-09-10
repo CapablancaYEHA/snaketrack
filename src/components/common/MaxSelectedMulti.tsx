@@ -79,7 +79,7 @@ export function MaxSelectedMulti({ data, label, onChange, isDataHasLabel, flex, 
     });
 
   return (
-    <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false}>
+    <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false} position="bottom">
       <Combobox.DropdownTarget>
         <PillsInput pointer onClick={() => combobox.openDropdown()} label={label} miw={150} flex={flex}>
           <Pill.Group>
@@ -111,7 +111,11 @@ export function MaxSelectedMulti({ data, label, onChange, isDataHasLabel, flex, 
           </Pill.Group>
         </PillsInput>
       </Combobox.DropdownTarget>
-      <Combobox.Dropdown mah={212} style={{ overflowY: "auto" }}>
+      <Combobox.Dropdown
+        mah={212}
+        style={{ overflowY: "auto" }}
+        //   className={styles.scrollbox}
+      >
         <Combobox.Options>{options.length > 0 ? options : <Combobox.Empty>Нет совпадений</Combobox.Empty>}</Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>

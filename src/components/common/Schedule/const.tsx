@@ -1,11 +1,11 @@
 import fallback from "@assets/placeholder.png";
-import { Checkbox, Flex, Image, Stack, Text } from "@mantine/core";
+import { Checkbox, Flex, Image, Stack } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
-import { BpEventsBlock } from "@/components/ballpythons/BpCard";
 import { SexName } from "@/components/common/sexName";
-import { IRemindersRes, IResSnakesList } from "@/api/models";
-import { getAge } from "@/utils/time";
+import { IRemindersRes } from "@/api/ballpythons/models";
+import { IResSnakesList } from "@/api/common";
+import { SnakeEventsBlock } from "../SnakeCard";
 
 const columnHelper = createColumnHelper<IResSnakesList>();
 
@@ -13,7 +13,7 @@ export const makeScheduleColumns = () => [
   columnHelper.accessor("picture", {
     header: () => "Региус",
     cell: ({ cell, row }) => (
-      <Flex gap="sm">
+      <Flex gap="sm" w="100%">
         <Checkbox
           size="xs"
           checked={row.getIsSelected()}
@@ -24,7 +24,7 @@ export const makeScheduleColumns = () => [
           }}
         />
         <Stack gap="xs" flex="1 1 auto">
-          <Image src={cell.getValue()} fit="cover" radius="sm" w="100%" loading="lazy" mah={110} flex="1 1 0px" fallbackSrc={fallback} />
+          <Image src={cell.getValue()} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
           <SexName sex={row.original.sex} name={row.original.snake_name} size="sm" />
         </Stack>
       </Flex>
@@ -37,7 +37,7 @@ export const makeScheduleColumns = () => [
   }),
   columnHelper.accessor("feeding", {
     header: () => "События",
-    cell: ({ cell, row }) => <BpEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} isShowShed={false} isShowWeight={false} />,
+    cell: ({ cell, row }) => <SnakeEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} isShowShed={false} isShowWeight={false} />,
     enableSorting: false,
     enableColumnFilter: false,
     size: 4,

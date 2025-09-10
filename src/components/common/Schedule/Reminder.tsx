@@ -5,8 +5,10 @@ import { isEmpty } from "lodash-es";
 import { Controller, FormProvider, useForm, useFormContext, useWatch } from "react-hook-form";
 import { SexName } from "@/components/common/sexName";
 import { Btn } from "@/components/navs/btn/Btn";
-import { useCreateReminder, useDeleteReminder, useSnakeQueue } from "@/api/hooks";
-import { IRemindersRes, IResSnakesList } from "@/api/models";
+import { IRemindersReq, IRemindersRes } from "@/api/ballpythons/models";
+import { useBpQueue } from "@/api/ballpythons/snake";
+import { ESupabase, IResSnakesList } from "@/api/common";
+import { useSupaCreate, useSupaDel } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateToSupabaseTime, getDate, getIsSame } from "@/utils/time";
@@ -28,9 +30,9 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
       .filter((a) => a != null),
   );
 
-  const { mutate, isPending } = useDeleteReminder();
-  const { mutate: makeNew } = useCreateReminder();
-  const { data: infoList } = useSnakeQueue(forCreate);
+  const { mutate, isPending } = useSupaDel(ESupabase.REM);
+  const { mutate: makeNew } = useSupaCreate<IRemindersReq>(ESupabase.REM);
+  const { data: infoList } = useBpQueue(forCreate);
 
   const closeAndRes = () => {
     close();
@@ -55,20 +57,23 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
   };
 
   const del = (id) => {
-    mutate(id, {
-      onSuccess: () => {
-        notif({ c: "green", t: "Успешно", m: "Напоминание удалено" });
-        closeAndRes();
+    mutate(
+      { id },
+      {
+        onSuccess: () => {
+          notif({ c: "green", t: "Успешно", m: "Напоминание удалено" });
+          closeAndRes();
+        },
+        onError: async (err) => {
+          notif({
+            c: "red",
+            t: "Не удалось удалить напоминание",
+            m: JSON.stringify(err),
+            code: err.code || err.statusCode,
+          });
+        },
       },
-      onError: async (err) => {
-        notif({
-          c: "red",
-          t: "Не удалось удалить напоминание",
-          m: JSON.stringify(err),
-          code: err.code || err.statusCode,
-        });
-      },
-    });
+    );
   };
 
   return (

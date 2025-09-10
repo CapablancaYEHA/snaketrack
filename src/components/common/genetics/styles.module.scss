@@ -1,0 +1,26 @@
+@import "@styles/mixins.scss";
+
+.scrollbox {
+  left: auto !important;
+  @include cute-scroll(0px);
+}
+
+.possible {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: white;
+  color: black !important;
+}
