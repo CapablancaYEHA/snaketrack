@@ -1,4 +1,4 @@
-import { dateToSupabaseTime } from "@/utils/time";
+import { dateToSupabaseTime, getEndOf, getStartOf } from "@/utils/time";
 import { ESupabase } from "../common";
 
 /* FIXME? нужно ли создать view для этой таблицы? */
@@ -17,4 +17,4 @@ export const bpClutchSingle = (id) => ({ t: ESupabase.BP_CL_V, f: (b) => b.eq("i
 
 export const remList = (userId) => ({ t: ESupabase.REM_V, f: (b) => b.eq("owner_id", userId), id: userId });
 
-export const remsByDate = (time) => ({ t: ESupabase.REM_V, f: (b) => b.eq("scheduled_time", dateToSupabaseTime(time)), id: dateToSupabaseTime(time) });
+export const remsByDate = (time) => ({ t: ESupabase.REM_V, f: (b) => b.gte("scheduled_time", dateToSupabaseTime(getStartOf(time))).lte("scheduled_time", dateToSupabaseTime(getEndOf(time))), id: dateToSupabaseTime(time) });

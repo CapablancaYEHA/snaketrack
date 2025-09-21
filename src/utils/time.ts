@@ -22,6 +22,8 @@ export const getDateCustom = (a: string | Dayjs, pattern = "YYYY-MM-DD") => dayj
 export const getDateObj = (a: string | Dayjs) => dayjs(a).locale("ru").valueOf();
 export const getDateOfMonth = (a: string | Dayjs | Date) => dayjs(a).locale("ru").date();
 export const getIsSame = (a: any, b: any, time: OpUnitType = "day") => dayjs(a).locale("ru").isSame(b, time);
+export const getStartOf = (a: string | Dayjs | Date, unit: OpUnitType = "day") => dayjs(a).locale("ru").startOf(unit);
+export const getEndOf = (a: string | Dayjs | Date, unit: OpUnitType = "day") => dayjs(a).locale("ru").endOf(unit);
 
 export const getDateShort = (a: string) => dayjs(a).locale("ru").format("D.MM.YY");
 export const getDateHours = (a: string) => dayjs(a).locale("ru").format("D MMMM YYYY HH:mm:ss");
