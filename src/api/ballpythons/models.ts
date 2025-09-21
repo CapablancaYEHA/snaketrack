@@ -141,23 +141,3 @@ export interface IReqUpdBpClutch {
   upd: IUpdClutchReq;
   id: string;
 }
-
-export interface IRemindersRes {
-  id: string;
-  owner_id: string;
-  scheduled_time: string; // "2025-08-05T11:30:51+03:00"
-  next_occurrence: string; // "2025-08-05T11:30:51+03:00"
-  repeat_interval: number;
-  snake_ids: string[] | null;
-  status: "active" | "paused" | "completed";
-  notification_id: string | null;
-}
-
-export interface IRemindersReq {
-  owner_id: string;
-  scheduled_time: string; // "2025-08-05T11:30:51+03:00"
-  repeat_interval: number;
-  snake_ids: string[];
-  status?: "paused" | "completed";
-  notification_id?: string;
-}

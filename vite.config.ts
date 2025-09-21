@@ -4,7 +4,7 @@ import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
 import pkg from "./package.json";
 
-const assets = ["placeholder.png", "fav.png"];
+// const assets = ["placeholder.png", "fav.png"];
 
 export default defineConfig({
   define: {

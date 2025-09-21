@@ -47,7 +47,7 @@ export function BreedList() {
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
         <Title component="span" order={4} c="yellow.6">
-          Планы спариваний
+          Планы спариваний Региусов
         </Title>
         <Btn fullWidth={false} component="a" href="/breeding/add/ball-pythons" ml="auto">
           Добавить

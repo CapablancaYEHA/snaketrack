@@ -5,7 +5,7 @@ import { useDadata } from "@/api/ballpythons/misc";
 
 export function Market() {
   const [val, setVal] = useState("");
-  const { mutate, data, isPending, isError } = useDadata();
+  const { mutate, data } = useDadata();
 
   const debSearch = debounce(setVal, 400);
   const opts = (data ?? [])?.map((a) => ({ label: a.value, value: a.value }));

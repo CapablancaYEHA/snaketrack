@@ -14,16 +14,26 @@ export const enum ESupabase {
   BC_G = "boagenes",
   PROF = "profiles",
   BC = "boa_constrictors",
-  REM = "feeding_reminders",
-  REPLACE = "feed_reminders",
+  REM = "feed_reminders",
   // views
   BP_BREED_V = "user_breeding_view",
   BP_CL_V = "clutch_view",
   PROF_V = "three_cols_profiles",
+  REM_V = "feed_reminders_view",
   // storage
   BP_PICS = "bp-pics",
   BC_PICS = "bc-pics",
 }
+
+export const categoryToGenesTable = {
+  [ECategories.BP]: ESupabase.BP_G,
+  [ECategories.BC]: ESupabase.BC_G,
+};
+
+export const categoryToBaseTable = {
+  [ECategories.BP]: ESupabase.BP,
+  [ECategories.BC]: ESupabase.BC,
+};
 
 export const enum EQuKeys {
   BP_TREE = "bp_family_tree",
@@ -87,6 +97,31 @@ export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "se
   status: string;
   feeding?: IFeed[];
   shed: string[] | null;
+}
+
+export interface IRemindersRes {
+  id: string;
+  owner_id: string;
+  scheduled_time: string; // "2025-08-05T11:30:51+03:00"
+  next_occurrence: string; // "2025-08-05T11:30:51+03:00"
+  repeat_interval: number;
+  snake: string;
+  status: "active" | "paused" | "completed";
+  notification_id?: string | null;
+  category: ECategories;
+}
+
+export interface IRemResExt extends IRemindersRes {
+  sex: string;
+  snake_name: string;
+}
+
+export interface IRemindersReq {
+  owner_id: string;
+  scheduled_time: string; // "2025-08-05T11:30:51+03:00"
+  repeat_interval: number;
+  snake: string;
+  status?: "paused" | "completed";
 }
 
 export type TSnakeQueue = UseQueryResult<IResSnakesList[], ISupabaseErr>;

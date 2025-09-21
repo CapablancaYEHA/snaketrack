@@ -1,7 +1,4 @@
 import * as yup from "yup";
-import { bpSingle } from "@/api/ballpythons/configs";
-import { bcSingle } from "@/api/boa-constrictors/configs";
-import { ECategories } from "@/api/common";
 
 type Schema = {
   file: File;

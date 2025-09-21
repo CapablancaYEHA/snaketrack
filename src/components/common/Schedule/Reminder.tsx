@@ -1,49 +1,65 @@
+import { FC } from "preact/compat";
 import { Fragment } from "preact/jsx-runtime";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Divider, Flex, Modal, NumberInput, Space, Stack, Text, Title } from "@mantine/core";
+import { Divider, Flex, Loader, Modal, NumberInput, Space, Stack, Text, Title } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 import { Controller, FormProvider, useForm, useFormContext, useWatch } from "react-hook-form";
 import { SexName } from "@/components/common/sexName";
 import { Btn } from "@/components/navs/btn/Btn";
-import { IRemindersReq, IRemindersRes } from "@/api/ballpythons/models";
-import { useBpQueue } from "@/api/ballpythons/snake";
-import { ESupabase, IResSnakesList } from "@/api/common";
-import { useSupaCreate, useSupaDel } from "@/api/hooks";
+import { ECategories, ESupabase, IRemResExt, IRemindersReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
+import { useSupaCreate, useSupaDel, useSupaGet } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { declWord } from "@/utils/other";
-import { dateAddDays, dateToSupabaseTime, getDate, getIsSame } from "@/utils/time";
-import { getSnakesInReminder, makeSubmit } from "./const";
-import { sigCurDate, sigIsModOpen, sigSelected } from "./signals";
+import { dateToSupabaseTime, getDate, getIsSame } from "@/utils/time";
+import { makeSubmit } from "./const";
+import { sigCurDate, sigDeletedId, sigIsModOpen } from "./signals";
+import { SnakeRem } from "./subcomponents";
 
-export const Reminder = ({ reminders, allSnakes, close }: { reminders: IRemindersRes[]; allSnakes: IResSnakesList[]; close: () => void }) => {
+interface IProp {
+  snakesInRems: string[];
+  remsThisDate?: IRemResExt[];
+  close: () => void;
+  selected: string[];
+  category: ECategories;
+  resetSelected: Function;
+  isFetching?: boolean;
+}
+export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, resetSelected, isFetching, remsThisDate }) => {
   const formInstance = useForm<any>({
     defaultValues: {},
     resolver: yupResolver({} as any),
   });
 
-  const cur: IRemindersRes[] = reminders?.filter((a) => getIsSame(a.scheduled_time, sigCurDate.value));
-  const { forCreate } = makeSubmit(
-    sigSelected.value,
-    reminders
-      .map((c) => c.snake_ids)
-      .flat()
-      .filter((a) => a != null),
+  const { forCreate } = makeSubmit(selected, snakesInRems);
+
+  const { mutate } = useSupaDel(ESupabase.REM, {
+    qk: [ESupabase.REM_V],
+    e: false,
+  });
+  const { mutate: makeNew } = useSupaCreate<IRemindersReq[]>(
+    ESupabase.REM,
+    {
+      qk: [ESupabase.REM_V],
+      e: false,
+    },
+    true,
   );
 
-  const { mutate, isPending } = useSupaDel(ESupabase.REM);
-  const { mutate: makeNew } = useSupaCreate<IRemindersReq>(ESupabase.REM);
-  const { data: infoList } = useBpQueue(forCreate);
+  const dataBp = remsThisDate?.filter((a) => a.category === ECategories.BP);
+  const dataBc = remsThisDate?.filter((a) => a.category === ECategories.BC);
 
   const closeAndRes = () => {
+    sigDeletedId.value = undefined;
     close();
     formInstance.reset();
   };
 
-  const handleCreate = (payload) => {
+  const handleCreate = (payload: IRemindersReq[]) => {
     makeNew(payload, {
       onSuccess: () => {
         notif({ c: "green", t: "Успешно", m: "Напоминание создано" });
         closeAndRes();
+        resetSelected();
       },
       onError: async (err) => {
         notif({
@@ -80,34 +96,45 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
     <Modal centered opened={sigIsModOpen.value} onClose={closeAndRes} size="xs" title={sigCurDate.value ? <Title order={5}>{getDate(sigCurDate.value)}</Title> : null}>
       {sigCurDate.value ? (
         <div>
-          {!isEmpty(cur) ? (
+          {isFetching ? (
+            <Flex justify="center" maw="100%" w="100%">
+              <Loader size="md" />
+            </Flex>
+          ) : !isEmpty(remsThisDate) ? (
             <>
-              {cur.map((rem, ind, self) => (
-                <Fragment key={rem.id}>
-                  <Stack gap="sm">
-                    <Text size="sm">{getIsSame(new Date(), sigCurDate.value) ? "Сегодня по плану кормление для" : "Активное напоминание о кормлении для"}</Text>
-                    <Flex wrap="wrap" rowGap={"xs"} columnGap={"sm"}>
-                      {getSnakesInReminder(rem, allSnakes)?.map((c) => <SexName key={c?.id} sex={c?.sex!} name={c?.snake_name ?? ""} size="sm" inline={false} />)}
-                    </Flex>
-                    <Text size="sm">{rem.repeat_interval ? `Периодичность — ${declWord(rem.repeat_interval, ["день", "дня", "дней"])}` : "Единоразово"}</Text>
-                    {rem.repeat_interval ? <Text size="sm">Следующее напоминание {getDate(dateAddDays(rem.scheduled_time, rem.repeat_interval))}</Text> : null}
-                    <Flex>
-                      <Button variant="filled" color="var(--mantine-color-error)" onClick={() => del(rem.id)} loading={isPending} size="xs" ml="auto">
-                        Удалить
-                      </Button>
-                    </Flex>
-                  </Stack>
-                  {ind !== self.length - 1 ? <Divider w="100%" maw="100%" mb="md" mt="sm" /> : null}
-                </Fragment>
-              ))}
-              {!isEmpty(sigSelected.value) ? (
+              <Stack gap="xs" align="start">
+                <Text size="sm">{getIsSame(new Date(), sigCurDate.value) ? "Сегодня по плану кормление для" : "В эту дату кормление для"}</Text>
+                {!isEmpty(dataBp) ? (
+                  <>
+                    <Divider w="100%" maw="100%" label="Региусы" labelPosition="center" />
+                    {dataBp?.map((a, ind, self) => (
+                      <Fragment key={a.id}>
+                        <SnakeRem rem={a} handleDel={del} key={a.id} />
+                        {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
+                      </Fragment>
+                    ))}
+                  </>
+                ) : null}
+                {!isEmpty(dataBc) ? (
+                  <>
+                    {!isEmpty(dataBp) ? <Divider w="100%" maw="100%" label="Удавы" labelPosition="center" mt="xs" /> : null}
+                    {dataBc?.map((b, ind, self) => (
+                      <Fragment key={b.id}>
+                        <SnakeRem rem={b} handleDel={del} key={b.id} />
+                        {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
+                      </Fragment>
+                    ))}
+                  </>
+                ) : null}
+              </Stack>
+              {!isEmpty(selected) ? (
                 <>
                   <Divider w="100%" maw="100%" mb="md" mt="sm" />
                   {isEmpty(forCreate) ? (
                     <Text size="sm">Для создания нового напоминания на эту дату, нужно выбрать хотя бы одну Змею, для которой еще не существует напоминания</Text>
                   ) : (
                     <FormProvider {...formInstance}>
-                      <CreateRem list={infoList} handleCreate={handleCreate} creationIds={forCreate} />
+                      <CreateRem handleCreate={handleCreate} creationIds={forCreate} category={category} />
                     </FormProvider>
                   )}
                 </>
@@ -115,7 +142,7 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
             </>
           ) : (
             <>
-              {isEmpty(sigSelected.value) ? (
+              {isEmpty(selected) ? (
                 <>
                   <Text size="md">Нет напоминаний</Text>
                   <Space h="md" />
@@ -127,7 +154,7 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
                     <Text size="sm">Для создания нового напоминания на эту дату, нужно выбрать хотя бы одну Змею, для которой еще не существует напоминания</Text>
                   ) : (
                     <FormProvider {...formInstance}>
-                      <CreateRem list={infoList} handleCreate={handleCreate} creationIds={forCreate} />
+                      <CreateRem handleCreate={handleCreate} creationIds={forCreate} category={category} />
                     </FormProvider>
                   )}
                 </>
@@ -140,9 +167,17 @@ export const Reminder = ({ reminders, allSnakes, close }: { reminders: IReminder
   );
 };
 
-const CreateRem = ({ list, handleCreate, creationIds }) => {
+interface ICrRem {
+  handleCreate: (arg: IRemindersReq[]) => void;
+  creationIds: string[];
+  category: ECategories;
+}
+
+const CreateRem: FC<ICrRem> = ({ handleCreate, creationIds, category }) => {
   const innerInstance = useFormContext<any>();
   const userId = localStorage.getItem("USER");
+
+  const { data: list } = useSupaGet<IResSnakesList[]>({ t: categoryToBaseTable[category], s: ["snake_name", "id", "sex"].join(", "), f: (b) => b.in("id", creationIds), id: { ids: creationIds } }, !isEmpty(creationIds));
 
   const wInt = useWatch({
     control: innerInstance.control,
@@ -182,14 +217,17 @@ const CreateRem = ({ list, handleCreate, creationIds }) => {
         fullWidth={false}
         w="min-content"
         style={{ alignSelf: "end" }}
-        onClick={() =>
-          handleCreate({
+        onClick={() => {
+          const dt = creationIds.map((a) => ({
             owner_id: userId!,
             scheduled_time: dateToSupabaseTime(sigCurDate.value),
             repeat_interval: innerInstance.getValues("interval"),
-            snake_ids: creationIds,
-          })
-        }
+            snake: a,
+            category,
+          })) as IRemindersReq[];
+
+          handleCreate(dt);
+        }}
       >
         Создать
       </Btn>

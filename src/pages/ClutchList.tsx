@@ -7,7 +7,6 @@ import { makeBpClutchColumns } from "@/components/ballpythons/forms/bpClutch/clu
 import { MiniInfo } from "@/components/ballpythons/forms/bpClutch/subcomponents";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { SkelTable } from "@/components/common/skeletons";
-import { Btn } from "@/components/navs/btn/Btn";
 import { bpClutchList } from "@/api/ballpythons/configs";
 import { IResBpClutch } from "@/api/ballpythons/models";
 import { useSupaGet } from "@/api/hooks";
@@ -42,11 +41,8 @@ export function ClutchList() {
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
         <Title component="span" order={4} c="yellow.6">
-          Кладки
+          Кладки Региусов
         </Title>
-        <Btn fullWidth={false} component="a" href="/clutches/add" ml="auto">
-          Добавить
-        </Btn>
       </Flex>
       {isPending ? <SkelTable /> : null}
       {isError ? (

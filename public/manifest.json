@@ -12,7 +12,7 @@
       "type": "image/png"
     }
   ],
-  "scope": "https://snaketrack.ru/",
+  "scope": ".",
   "start_url": "https://snaketrack.ru",
   "display": "standalone",
   "display_override": ["tabbed"],

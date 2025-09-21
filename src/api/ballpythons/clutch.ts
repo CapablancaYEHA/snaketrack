@@ -1,9 +1,9 @@
 import { supabase } from "@/lib/client_supabase";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { dateToSupabaseTime } from "@/utils/time";
-import { EQuKeys, ESupabase, IReqCreateSnake, ISupabaseErr } from "../common";
+import { ESupabase, IReqCreateSnake, ISupabaseErr } from "../common";
 import { httpCreateBpBreed, httpGetSingleBpBreed, httpUpdateBpBreed } from "./breed";
-import { IReqCreateBPBreed, IReqCreateBpClutch, IReqUpdBpClutch, IResBpBreedingList, IResBpClutch, IUpdBreedReq } from "./models";
+import { IReqCreateBPBreed, IReqCreateBpClutch, IReqUpdBpClutch, IUpdBreedReq } from "./models";
 
 const httpCreateBpClutch = async (a: IReqCreateBpClutch) => {
   return await supabase.from(ESupabase.BP_CL).insert(a).select("id").single<{ id: string }>().throwOnError();

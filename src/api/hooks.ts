@@ -1,20 +1,24 @@
+import { useCallback } from "preact/hooks";
 import { supabase } from "@/lib/client_supabase";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { isEmpty } from "lodash-es";
 import { upgAlias } from "@/components/common/genetics/const";
+import { categToConfig } from "@/components/common/utils";
 import { toDataUrl } from "@/utils/supabaseImg";
 import { httpUpdBpFeeding } from "./ballpythons/snake";
 import { httpUpdBcFeeding } from "./boa-constrictors/snake";
-import { ECategories, ESupabase, IFeedReq, IGenesComp, ISupabaseErr } from "./common";
+import { ECategories, ESupabase, IFeedReq, IGenesComp, ISupabaseErr, categoryToBaseTable, categoryToGenesTable } from "./common";
 
 interface IQueryConfig {
   t: ESupabase;
   s?: string;
   f: (query: any) => any;
-  id?: string | number;
+  id?: any;
 }
 
-interface IModif<T> extends Pick<IQueryConfig, "t"> {
+interface IModif<T> extends Pick<IQueryConfig, "t" | "s"> {
   p: T;
+  bulk?: boolean;
 }
 
 export const supaGet = async (config: IQueryConfig) => {
@@ -29,24 +33,46 @@ export const supaGet = async (config: IQueryConfig) => {
 };
 
 export function useSupaGet<T>(config: IQueryConfig, isEnabled: boolean) {
+  const queKeys = [config.t, config.id].filter((a) => !isEmpty(a));
   return useQuery<any, ISupabaseErr, T>({
-    queryKey: [...Object.values(config)],
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: queKeys,
     queryFn: () => supaGet(config),
     enabled: isEnabled,
   });
 }
 
-const supaCreate = async <T>({ t, p }: IModif<T>) => {
-  return await supabase.from(t).insert(p).select("id").single<{ id: string }>().throwOnError();
+const supaCreate = async <T>({ t, p, bulk }: IModif<T>) => {
+  //   return await supabase.from(t).insert(p).select("id").single<{ id: string }>().throwOnError();
+
+  const query = supabase.from(t).insert(p);
+  let res;
+
+  if (bulk) {
+    res = await query.throwOnError();
+  } else {
+    res = await query.select("id").single<{ id: string }>().throwOnError();
+  }
+  return res;
 };
 
-export function useSupaCreate<T>(table: ESupabase, inval?: ESupabase) {
+type IInval = {
+  qk: (string | ESupabase)[];
+  e?: boolean;
+};
+
+export function useSupaCreate<T>(table: ESupabase, invalWhat?: IInval, isBulk?: boolean) {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, T>({
-    mutationFn: (a) => supaCreate({ t: table, p: a }),
+    mutationFn: (a) => supaCreate({ t: table, p: a, bulk: isBulk }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [inval ?? table],
+        ...(invalWhat
+          ? {
+              queryKey: invalWhat.qk,
+              exact: invalWhat.e,
+            }
+          : { queryKey: [table] }),
       });
     },
   });
@@ -57,11 +83,6 @@ const supaUpd = async <T>({ t, p }: IModif<T>) => {
   return await supabase.from(t).update(upd).eq("id", id).throwOnError();
 };
 
-type IInval = {
-  qk: (string | ESupabase)[];
-  e?: boolean;
-};
-
 export function useSupaUpd<T>(table: ESupabase, invalWhat?: IInval) {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, T>({
@@ -70,7 +91,7 @@ export function useSupaUpd<T>(table: ESupabase, invalWhat?: IInval) {
       queryClient.invalidateQueries({
         ...(invalWhat
           ? {
-              queryKey: [invalWhat.qk],
+              queryKey: invalWhat.qk,
               exact: invalWhat.e,
             }
           : { queryKey: [table] }),
@@ -90,15 +111,34 @@ const supaDel = async <T>({ t, p }: IModif<T>) => {
   return await supabase.from(t).delete().eq("id", id).throwOnError();
 };
 
-export function useSupaDel(table: ESupabase, inval?: ESupabase) {
+export function useSupaDel(table: ESupabase, invalWhat?: IInval) {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, { id: string }>({
     mutationFn: (a) => supaDel({ t: table, p: a }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [inval ?? table],
+        ...(invalWhat
+          ? {
+              queryKey: invalWhat.qk,
+              exact: invalWhat.e,
+            }
+          : { queryKey: [table] }),
       });
     },
+  });
+}
+
+export function useSnakeQueue(snakes: (string | undefined)[], categ: ECategories) {
+  const memoCombine = useCallback((results) => ({ data: results.map((result) => result.data), isPending: results.some((result) => result.isPending), isError: results.some((result) => result.isError) }), []);
+  return useQueries({
+    queries: snakes
+      ?.filter((el, ind, self) => self.indexOf(el) === ind)
+      .map((id) => ({
+        queryKey: [categoryToBaseTable[categ], "queue", id],
+        queryFn: () => supaGet(categToConfig[categ](id)),
+        enabled: snakes != null && snakes?.length > 0,
+      })),
+    combine: memoCombine,
   });
 }
 
@@ -110,7 +150,7 @@ export function useBase64(url: string, flag: boolean) {
   });
 }
 
-export function useUpdSnakeFeeding(category: ECategories) {
+export function useUpdSnakeFeeding(category: ECategories, invalWhat?: IInval) {
   const func = category === ECategories.BP ? httpUpdBpFeeding : httpUpdBcFeeding;
   const table = category === ECategories.BP ? ESupabase.BP : ESupabase.BC;
   const queryClient = useQueryClient();
@@ -118,19 +158,19 @@ export function useUpdSnakeFeeding(category: ECategories) {
     mutationFn: ({ id, feed, mass, shed }) => func(id, feed, mass, shed),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [table],
+        ...(invalWhat
+          ? {
+              queryKey: invalWhat.qk,
+              exact: invalWhat.e,
+            }
+          : { queryKey: [table] }),
       });
     },
   });
 }
 
-const categoryToTable = {
-  [ECategories.BP]: ESupabase.BP_G,
-  [ECategories.BC]: ESupabase.BC_G,
-};
-
 const httpGetSnakeGenes = async (cat: ECategories) => {
-  const { data, error } = await supabase.from(categoryToTable[cat]).select("*").throwOnError();
+  const { data, error } = await supabase.from(categoryToGenesTable[cat]).select("*").throwOnError();
   if (error) {
     throw error;
   }
@@ -139,7 +179,7 @@ const httpGetSnakeGenes = async (cat: ECategories) => {
 
 export function useSnakeGenes(cat: ECategories) {
   return useQuery<IGenesComp[], ISupabaseErr>({
-    queryKey: [categoryToTable[cat], cat],
+    queryKey: [categoryToGenesTable[cat], cat],
     queryFn: () => httpGetSnakeGenes(cat),
     enabled: true,
     staleTime: 60000 * 60 * 4, // 4 часа

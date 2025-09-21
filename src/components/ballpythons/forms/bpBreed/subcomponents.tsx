@@ -491,7 +491,10 @@ export const ControlMenu = ({ id, onDelete, clutchId }) => {
 };
 
 export const BreedDelete = ({ opened, close, breedId }) => {
-  const { mutate, isPending } = useSupaDel(ESupabase.BP_BREED, ESupabase.BP_BREED_V);
+  const { mutate, isPending } = useSupaDel(ESupabase.BP_BREED, {
+    qk: [ESupabase.BP_BREED_V],
+    e: false,
+  });
 
   const handleDel = () =>
     mutate(

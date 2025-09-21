@@ -21,6 +21,7 @@ export function SnakeCategories() {
         </Title>
       </Flex>
       <SegmentedControl
+        size="xs"
         value={val}
         onChange={handle}
         w="100%"

@@ -12,6 +12,7 @@ dayjs.extend(timezone);
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
 dayjs.extend(advancedFormat);
+
 export function adapterLocale() {
   dayjs.locale("ru");
 }

@@ -2,8 +2,7 @@ import { FC } from "preact/compat";
 import { Box, Button, Flex, Modal, Space, Text, Title } from "@mantine/core";
 import { UseMutateFunction } from "@tanstack/react-query";
 import { SexName } from "@/components/common/sexName";
-import { ESupabase, IFeedReq, IResSnakesList, ISupabaseErr } from "@/api/common";
-import { useSupaDel } from "@/api/hooks";
+import { IResSnakesList, ISupabaseErr } from "@/api/common";
 import { notif } from "@/utils/notif";
 
 type IProp = {

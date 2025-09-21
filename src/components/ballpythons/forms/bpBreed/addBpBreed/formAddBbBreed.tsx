@@ -17,7 +17,7 @@ export const FormAddBbBreed = () => {
     resolver: yupResolver(breedSchema),
   });
 
-  const { mutate: create } = useSupaCreate<IReqCreateBPBreed>(ESupabase.BP_BREED, ESupabase.BP_BREED_V);
+  const { mutate: create } = useSupaCreate<IReqCreateBPBreed>(ESupabase.BP_BREED, { qk: [ESupabase.BP_BREED_V], e: false });
   const { mutate } = useMakeBpClutchFromBreed();
 
   const onSub = (sub) => {

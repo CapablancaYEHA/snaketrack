@@ -1,13 +1,10 @@
 import fallback from "@assets/placeholder.png";
 import { Image, Stack, Text } from "@mantine/core";
-import { Row, createColumnHelper } from "@tanstack/react-table";
-import { isEmpty, uniq } from "lodash-es";
-import { IResBpBreedingList } from "@/api/ballpythons/models";
+import { createColumnHelper } from "@tanstack/react-table";
 import { IResSnakesList } from "@/api/common";
-import { getAge, isOlderThan, isYoungerThan } from "@/utils/time";
+import { getAge } from "@/utils/time";
 import { Controls, GenesList, SnakeEventsBlock } from "../common/SnakeCard";
 import { SexName } from "../common/sexName";
-import { calcProjGenes } from "../common/utils";
 import { hatchFiltFn } from "./StackTable/filters";
 
 const colHelper = createColumnHelper<IResSnakesList>();

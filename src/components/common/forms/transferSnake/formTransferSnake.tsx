@@ -2,7 +2,6 @@ import { FC, useState } from "preact/compat";
 import { ComboboxItem, Flex, Loader, Modal, Select, Space, Text, Title } from "@mantine/core";
 import { UseMutateFunction } from "@tanstack/react-query";
 import { debounce, isEmpty } from "lodash-es";
-import { useTransferBp } from "@/api/ballpythons/misc";
 import { ISupabaseErr, ITransferReq } from "@/api/common";
 import { useUserSuggestion } from "../../../../api/profile/hooks";
 import { notif } from "../../../../utils/notif";
@@ -27,7 +26,7 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, hand
   const [search, setSearch] = useState("");
   const [breeder, setBreeder] = useState<ICmb | null>(null);
 
-  const { data, isFetching: isSearchPending } = useUserSuggestion(search);
+  const { data, isFetching } = useUserSuggestion(search);
   const sugg = (data ?? [])?.map((a) => ({ label: a.username, value: a.createdat, id: a.id }));
 
   //   const { mutate, isPending } = useTransferBp();
@@ -70,7 +69,7 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, hand
         onSearchChange={handleSearch}
         data={sugg}
         nothingFoundMessage={search.length === 0 ? "Начните печатать" : "Нет совпадений..."}
-        rightSection={isSearchPending ? <Loader size="xs" /> : null}
+        rightSection={isFetching ? <Loader size="xs" /> : null}
         renderOption={(it) => (
           <Flex justify="space-between" align="center" maw="100%" w="100%">
             <Text size="sm" fw={500}>

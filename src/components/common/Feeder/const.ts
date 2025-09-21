@@ -14,7 +14,7 @@ export const feederType = [
 
 export const feederAge = [
   { label: "голыш", value: "pinkie" },
-  { label: "бархатный", value: "velvet" },
+  { label: "бархатная", value: "velvet" },
   { label: "опушенок", value: "fuzzy" },
   { label: "бегунок", value: "runner" },
   { label: "подросток", value: "teen" },

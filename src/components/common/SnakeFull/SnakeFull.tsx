@@ -11,7 +11,7 @@ import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
 import { detailsDict, subjectDict } from "@/components/common/utils";
-import { ECategories, IResSnakesList } from "@/api/common";
+import { ECategories, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useUpdSnakeFeeding } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
 import { snakeFeedColumns } from "./utils";
@@ -28,7 +28,7 @@ export function SnakeFull({ title, category, data }: IProp) {
   const location = useLocation();
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
-  const { mutate: feed, isPending: isFeedPend } = useUpdSnakeFeeding(category);
+  const { mutate: feed, isPending: isFeedPend } = useUpdSnakeFeeding(category, { qk: [categoryToBaseTable[category], location.query.id], e: true });
 
   const feedTable = useMemo(() => data?.feeding?.filter((a) => Object.values(a)?.some((b) => b != null)), [toString(data?.feeding)]);
 

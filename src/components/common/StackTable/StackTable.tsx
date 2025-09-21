@@ -15,15 +15,13 @@ interface IProp<T> {
   setGlobalFilter?: OnChangeFn<GlobalFilterTableState>;
   onRowClick?: (v) => void;
   initSort?: SortingState;
-  //   rowSelection?: RowSelectionState;
-  //   setRowSelection?: OnChangeFn<RowSelectionState>;
-  onSelect?: (a: RowSelectionState) => void;
+  rowSelection?: RowSelectionState;
+  onRowSelect?: OnChangeFn<RowSelectionState>;
 }
 
-export const StackTable = <T extends object>({ maxHeight, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter, initSort, onSelect }: IProp<T>) => {
+export const StackTable = <T extends object>({ maxHeight, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter, initSort, rowSelection, onRowSelect }: IProp<T>) => {
   const isMount = useRef(false);
   const [sorting, setSorting] = useState<SortingState>(initSort ?? []);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const cols: ColumnDef<T>[] = useMemo<ColumnDef<T, unknown>[]>(() => columns, []);
 
   const table = useReactTable({
@@ -33,7 +31,7 @@ export const StackTable = <T extends object>({ maxHeight, columns, data, setColu
     getRowId: (row: any) => row?.id,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: (rowSelection && onRowSelect) || undefined,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnFiltersChange: (columnFilters && setColumnFilters) || undefined,
@@ -55,10 +53,6 @@ export const StackTable = <T extends object>({ maxHeight, columns, data, setColu
     const trg = table.getAllColumns()[0].id;
     table.getColumn(trg)?.pin("left");
   }, []);
-
-  useEffect(() => {
-    onSelect?.(rowSelection);
-  }, [rowSelection, onSelect]);
 
   const isEmpty = isMount.current && table.options.data.length === 0;
   const isFilteredOut = table.options.data.length > 0 && table.getRowModel().rows.length === 0;

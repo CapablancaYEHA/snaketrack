@@ -1,7 +1,5 @@
-import { CSSProperties } from "preact/compat";
 import { StateUpdater } from "preact/hooks";
-import { darken } from "@mantine/core";
-import { Cell, Column, Row } from "@tanstack/react-table";
+import { Row } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
 import { IResSnakesList } from "@/api/common";
 import { isOlderThan, isYoungerThan } from "@/utils/time";

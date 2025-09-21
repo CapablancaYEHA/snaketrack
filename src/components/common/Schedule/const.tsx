@@ -3,25 +3,25 @@ import { Checkbox, Flex, Image, Stack } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
 import { SexName } from "@/components/common/sexName";
-import { IRemindersRes } from "@/api/ballpythons/models";
-import { IResSnakesList } from "@/api/common";
+import { ECategories, IRemResExt, IRemindersRes, IResSnakesList } from "@/api/common";
 import { SnakeEventsBlock } from "../SnakeCard";
 
 const columnHelper = createColumnHelper<IResSnakesList>();
 
 export const makeScheduleColumns = () => [
   columnHelper.accessor("picture", {
-    header: () => "Региус",
+    header: () => "Змея",
     cell: ({ cell, row }) => (
       <Flex gap="sm" w="100%">
         <Checkbox
-          size="xs"
+          size="sm"
           checked={row.getIsSelected()}
           disabled={!row.getCanSelect()}
           onChange={() => {
             const sel = row.getIsSelected();
             row.toggleSelected(!sel);
           }}
+          style={{ alignSelf: "start" }}
         />
         <Stack gap="xs" flex="1 1 auto">
           <Image src={cell.getValue()} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
@@ -47,7 +47,7 @@ export const makeScheduleColumns = () => [
 ];
 
 export const getSnakesInReminder = (a: IRemindersRes | undefined, snakes: IResSnakesList[]) => {
-  return !a ? null : snakes.filter((s) => a.snake_ids?.includes(s.id));
+  return !a ? null : snakes.filter((s) => a.snake?.includes(s.id));
 };
 
 export const makeSubmit = (selection: string[], existing: string[] | undefined | null) => {
@@ -67,4 +67,24 @@ export const makeSubmit = (selection: string[], existing: string[] | undefined |
     });
   }
   return { forUpdate: dubl, forCreate: newIds };
+};
+
+type ICst = {
+  [key in ECategories]?: string[];
+};
+
+export const composeSnakesType = (dt: IRemResExt[]) => {
+  let res: ICst = {};
+
+  if (isEmpty(dt)) return {};
+
+  for (let sn of dt) {
+    if (res.hasOwnProperty(sn.category)) {
+      res[sn.category]!.push(sn.snake);
+    } else {
+      res[sn.category] = [sn.snake];
+    }
+  }
+
+  return res;
 };

@@ -5,9 +5,8 @@ import * as yup from "yup";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { bpList, bpSingle } from "@/api/ballpythons/configs";
 import { IBreedStat, IReqCreateBPBreed, IUpdBreedReq } from "@/api/ballpythons/models";
-import { useBpQueue } from "@/api/ballpythons/snake";
-import { IResSnakesList, TSnakeQueue } from "@/api/common";
-import { useSupaGet } from "@/api/hooks";
+import { ECategories, IResSnakesList, TSnakeQueue } from "@/api/common";
+import { useSnakeQueue, useSupaGet } from "@/api/hooks";
 
 interface IInit {
   fem?: string | null;
@@ -19,7 +18,11 @@ export function useUtilsBreed({ fem, fetchFields }: IInit) {
   const regFems = regi?.filter((a) => a.sex === "female")?.map((b) => ({ label: b.snake_name, value: b.id }));
   const regMales = regi?.filter((a) => a.sex === "male")?.map((b) => ({ label: b.snake_name, value: b.id }));
   const { data: femData } = useSupaGet<IResSnakesList>(bpSingle(fem ?? ""), fem != null);
-  const { data: malesData, isPending } = useBpQueue(fetchFields?.filter((a) => a.snake != null)?.map((a) => a.snake)) as TSnakeQueue;
+
+  const { data: malesData, isPending } = useSnakeQueue(
+    fetchFields?.filter((a) => a.snake != null)?.map((a) => a.snake),
+    ECategories.BP,
+  ) as TSnakeQueue;
 
   const isAddAllowed = regMales?.length !== fetchFields?.length && (regMales?.length || 0) <= 3;
 

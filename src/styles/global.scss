@@ -18,6 +18,7 @@ body {
   min-height: 100%;
   @include cute-scroll($header-height);
   padding-top: env(safe-area-inset-top);
+  -webkit-tap-highlight-color: transparent;
 }
 
 #app {
