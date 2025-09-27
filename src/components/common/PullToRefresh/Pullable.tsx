@@ -23,7 +23,7 @@ interface IPullable {
 }
 
 export const Pullable: React.FC<IPullable> = ({ onRefresh = () => window.location.reload(), refreshDuration = 0 }) => {
-  const [scrollDist, setScrollDist] = useState(0);
+  const [isCan, setCan] = useState(false);
   const [status, setStatus] = useState<TPullStatus>("ready");
   const [pullStartY, setPullStartY] = useState<number>(0);
   const [pullMoveY, setPullMoveY] = useState<number>(0);
@@ -32,12 +32,13 @@ export const Pullable: React.FC<IPullable> = ({ onRefresh = () => window.locatio
 
   useLayoutEffect(() => {
     const calcScrollDistance = throttle(() => {
-      setScrollDist(document?.querySelector("main.box-main")?.getBoundingClientRect()?.top || 0);
+      const trg = document.querySelector("main.box-main")?.getBoundingClientRect()?.top;
+      setCan(!trg || trg === magicThr);
     }, 500);
 
-    window?.addEventListener("scroll", calcScrollDistance, { passive: true, capture: true });
+    document.addEventListener("scroll", calcScrollDistance, { passive: true, capture: true });
     return (): void => {
-      window?.removeEventListener("scroll", calcScrollDistance);
+      document.removeEventListener("scroll", calcScrollDistance);
     };
   }, []);
 
@@ -59,7 +60,7 @@ export const Pullable: React.FC<IPullable> = ({ onRefresh = () => window.locatio
   };
 
   const onTouchStart = (e: TouchEvent): void => {
-    if (disabled || ignoreTouches || scrollDist >= magicThr) return;
+    if (!isCan || ignoreTouches) return;
 
     setPullStartY(e.touches[0].screenY);
   };

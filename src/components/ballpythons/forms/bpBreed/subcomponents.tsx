@@ -24,63 +24,66 @@ export const MaleEvent = ({ id, disabled }) => {
   const { fields, update, remove } = useFieldArray({ name: `malesEvents.${id}`, control });
 
   return (
-    <Stack gap="sm">
-      {fields?.map((f, ind) => (
-        <Flex key={f.id} w="100%" maw="100%" gap="sm" wrap="nowrap">
-          <Controller
-            name={`malesEvents.${id}.${ind}.event`}
-            control={control}
-            render={({ field: { value }, fieldState: { error } }) => {
-              return (
-                <Select
-                  disabled={disabled}
-                  data={eventsOpts}
-                  data-scroll-locked={0}
-                  value={value as any}
-                  error={error?.message}
-                  onOptionSubmit={(v) => {
-                    const cur = fields[ind];
-                    update(ind, { ...cur, ...{ event: v } });
-                  }}
-                  flex="1 0 114px"
-                  size="xs"
-                />
-              );
-            }}
-          />
-          <Controller
-            name={`malesEvents.${id}.${ind}.date`}
-            control={control}
-            render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return (
-                <>
-                  <DatePickerInput
-                    disabled={disabled}
-                    value={value ? new Date(value) : value}
-                    onChange={(v) => {
-                      onChange(v);
-                      const cur = fields[ind];
-                      update(ind, { ...cur, ...{ date: v } });
-                    }}
-                    valueFormat="DD MMMM YYYY"
-                    placeholder="Дата"
-                    highlightToday
-                    locale="ru"
-                    error={error?.message}
-                    maxDate={new Date()}
-                    flex="1 1 50%"
-                    size="xs"
-                  />
-                </>
-              );
-            }}
-          />
-          {disabled ? null : (
-            <div style={{ flex: "1 0 auto", alignSelf: "center", color: "red", cursor: "pointer" }} onClick={() => remove(ind)}>
-              <IconSwitch icon="bin" width="24" height="24" />
-            </div>
-          )}
-        </Flex>
+    <Stack gap="xs">
+      {fields.map((f, ind, self) => (
+        <Fragment key={f.id}>
+          <Flex w="100%" maw="100%" gap="xs" wrap="nowrap">
+            <Stack gap="xs" flex="1 0 114px">
+              <Controller
+                name={`malesEvents.${id}.${ind}.event`}
+                control={control}
+                render={({ field: { value }, fieldState: { error } }) => {
+                  return (
+                    <Select
+                      disabled={disabled}
+                      data={eventsOpts}
+                      data-scroll-locked={0}
+                      value={value as any}
+                      error={error?.message}
+                      onOptionSubmit={(v) => {
+                        const cur = fields[ind];
+                        update(ind, { ...cur, ...{ event: v } });
+                      }}
+                      size="xs"
+                    />
+                  );
+                }}
+              />
+              <Controller
+                name={`malesEvents.${id}.${ind}.date`}
+                control={control}
+                render={({ field: { onChange, value }, fieldState: { error } }) => {
+                  return (
+                    <>
+                      <DatePickerInput
+                        disabled={disabled}
+                        value={value ? new Date(value) : value}
+                        onChange={(v) => {
+                          onChange(v);
+                          const cur = fields[ind];
+                          update(ind, { ...cur, ...{ date: v } });
+                        }}
+                        valueFormat="DD MMMM YYYY"
+                        placeholder="Дата"
+                        highlightToday
+                        locale="ru"
+                        error={error?.message}
+                        maxDate={new Date()}
+                        size="xs"
+                      />
+                    </>
+                  );
+                }}
+              />
+            </Stack>
+            {disabled ? null : (
+              <div style={{ display: "flex", justifyContent: "center", flex: "1 0 auto", alignSelf: "center", color: "red", cursor: "pointer" }} onClick={() => remove(ind)}>
+                <IconSwitch icon="bin" width="24" height="24" />
+              </div>
+            )}
+          </Flex>
+          {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
+        </Fragment>
       ))}
     </Stack>
   );
@@ -220,6 +223,7 @@ export const OddsInfo = ({ female, male }) => {
 
   useEffect(() => {
     if (female != null && male != null) {
+      console.log("female", female);
       mutate({ p1: prepForMm(female), p2: prepForMm(male) });
     }
   }, [female, male, mutate]);
@@ -328,7 +332,7 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
             }}
           />
           <Box w="100%" maw="100%">
-            {femData ? (
+            {selectedFem ? (
               <>
                 <BriefInfo snake={femData} />
                 <Space h="md" />
@@ -431,7 +435,7 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
                   {isAddAllowed && !isClutchMade ? (
                     <Box style={{ justifySelf: "flex-end" }}>
                       <Space h="md" />
-                      <Button size="compact-sm" right={0} onClick={() => appendFetch({ snake: undefined })}>
+                      <Button size="compact-xs" right={0} onClick={() => appendFetch({ snake: undefined })}>
                         Добавить самца
                       </Button>
                     </Box>

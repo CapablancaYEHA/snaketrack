@@ -24,7 +24,7 @@ export function useUtilsBreed({ fem, fetchFields }: IInit) {
     ECategories.BP,
   ) as TSnakeQueue;
 
-  const isAddAllowed = regMales?.length !== fetchFields?.length && (regMales?.length || 0) <= 3;
+  const isAddAllowed = regMales?.length >= 1 && (fetchFields?.length || 0) < 3;
 
   return { isListPen, isQuePen: isPending, isAddAllowed, femData, malesData, regFems, regMales };
 }
@@ -39,7 +39,7 @@ export const breedSchema = yup.object().shape({
     .of(
       yup.object().shape({
         id: yup.string(),
-        snake: yup.string().required("Самец обязателен для проекта"),
+        snake: yup.string().required("Не может быть пустым"),
       }),
     )
     .required("Поле обязательно")
