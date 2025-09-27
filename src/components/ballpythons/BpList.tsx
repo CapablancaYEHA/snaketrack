@@ -1,4 +1,3 @@
-import { useLocation } from "preact-iso";
 import { useState } from "preact/hooks";
 import { startSm } from "@/styles/theme";
 import { Button, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
@@ -40,10 +39,10 @@ const columns = makeListColumns({
     isDeleteOpen.value = true;
     curId.value = uuid;
   },
+  category: ECategories.BP,
 });
 
 export function BpList() {
-  const location = useLocation();
   const isMinSm = useMediaQuery(startSm);
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
@@ -56,9 +55,6 @@ export function BpList() {
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
   const target = snakes?.find((b) => b.id === curId.value);
-  const handleRowClick = (id) => {
-    location.route(`/snakes/ball-pythons?id=${id}`);
-  };
 
   const debSearch = debounce(setGlobalFilter, 400);
 
@@ -83,7 +79,12 @@ export function BpList() {
       ) : isEmpty(snakes) ? (
         <Text fw={500}>Региусов у вас нет</Text>
       ) : (
-        <StackTable data={snakes ?? []} columns={columns} onRowClick={handleRowClick} columnFilters={filt} setColumnFilters={setFilt} globalFilter={globalFilter} setGlobalFilter={debSearch} />
+        <>
+          <Text size="xs" ta="left" w="100%">
+            Закрепленная колонка отображает дополнительное меню на ховер
+          </Text>
+          <StackTable data={snakes ?? []} columns={columns} columnFilters={filt} setColumnFilters={setFilt} globalFilter={globalFilter} setGlobalFilter={debSearch} />
+        </>
       )}
       <TransferSnake
         opened={isTransOpen.value}

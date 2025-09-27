@@ -54,7 +54,7 @@ export const DeleteBp: FC<IProp> = ({ opened, close, target, handleAction, isPen
         <Button variant="default" onClick={close}>
           Отмена
         </Button>
-        <Button variant="filled" color="var(--mantine-color-error)" loading={isPend} onClick={subm}>
+        <Button variant="filled" color="var(--mantine-color-error)" loading={isPend} onClick={subm} disabled={isPend}>
           Удалить
         </Button>
       </Flex>

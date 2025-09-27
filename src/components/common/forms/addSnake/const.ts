@@ -18,8 +18,7 @@ export const schema = yup.object<Schema>().shape({
   weight: yup
     .number()
     .transform((v) => (!v || Number.isNaN(v) ? null : v))
-    .nullable()
-    .max(8000, "Это змея-рекордсмен?"),
+    .nullable(),
   date_hatch: yup.string().nullable().required("Хотя бы примерно"),
   origin: yup.string().required(),
   parents: yup.mixed().nullable(),

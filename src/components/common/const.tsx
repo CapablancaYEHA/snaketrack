@@ -9,15 +9,17 @@ import { hatchFiltFn } from "./StackTable/filters";
 
 const colHelper = createColumnHelper<IResSnakesList>();
 
-export const makeListColumns = ({ openTrans, openFeed, openDelete }) => {
+export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) => {
   return [
     colHelper.accessor("picture", {
       header: () => " ",
       cell: ({ cell, row }) => (
-        <Stack gap="xs" flex="1 1 140px">
-          <Image src={cell.getValue() ?? fallback} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
-          <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
-        </Stack>
+        <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openDelete={openDelete} category={category}>
+          <Stack gap="xs" flex="1 1 140px">
+            <Image src={cell.getValue() ?? fallback} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
+            <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
+          </Stack>
+        </Controls>
       ),
       enableSorting: false,
       size: 1,
@@ -55,16 +57,9 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete }) => {
       header: () => "Гены",
       cell: ({ cell }) => <GenesList genes={cell.getValue()} />,
       size: 8,
-      maxSize: 4,
+      maxSize: 5,
       minSize: 200,
       filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => row.original.genes.map((b) => b.label).includes(a)),
-    }),
-    colHelper.display({
-      id: "action",
-      cell: ({ row }) => <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openDelete={openDelete} />,
-      size: 12,
-      maxSize: 1,
-      minSize: 36,
     }),
   ];
 };

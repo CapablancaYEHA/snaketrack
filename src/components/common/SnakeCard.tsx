@@ -1,9 +1,7 @@
-import { useLocation } from "preact-iso";
-import { ActionIcon, Flex, Menu, Stack, Text } from "@mantine/core";
+import { Flex, Menu, Stack, Text } from "@mantine/core";
 import { IFeed } from "@/api/common";
 import { getDate, getDateObj } from "../../utils/time";
 import { codeToFeeder } from "../common/Feeder/const";
-import { IconSwitch } from "../navs/sidebar/icons/switch";
 import { sortSnakeGenes } from "./genetics/const";
 import { GenePill } from "./genetics/geneSelect";
 
@@ -13,7 +11,7 @@ const calcFeedEvent = (feed?: IFeed) => {
   }
   let temp = "";
   if (feed?.feed_last_at != null) {
-    temp = `${temp + getDate(feed?.feed_last_at!)}\n${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г` : ""}\n${feed?.feed_ko ? codeToFeeder(feed.feed_ko) : ""}`;
+    temp = `${temp + getDate(feed?.feed_last_at!)}\n${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г` : ""}${feed?.feed_ko ? ` ${codeToFeeder(feed.feed_ko)}` : ""}`;
   }
 
   if (feed?.refuse) {
@@ -72,33 +70,30 @@ export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isS
   );
 };
 
-export const Controls = ({ id, openFeed, openTrans, openDelete }) => {
-  const location = useLocation();
-  const categ = location.path.split("/").slice(-1)[0];
-
+export const Controls = ({ id, openFeed, openTrans, openDelete, category, children }) => {
   return (
     <Menu
+      openDelay={200}
       shadow="md"
       width={164}
       transitionProps={{ transition: "rotate-left", duration: 150 }}
-      trigger="click"
+      trigger="click-hover"
       loop={false}
       withinPortal
       trapFocus={false}
       menuItemTabIndex={0}
-      position="bottom-end"
-      offset={6}
+      position="right-end"
+      offset={8}
       withArrow
       arrowPosition="center"
       closeOnClickOutside
       keepMounted={false}
     >
-      <Menu.Target>
-        <ActionIcon size="sm" variant="transparent" color="gray" aria-label="Table Action Kebab" onClick={(e) => e.stopPropagation()}>
-          <IconSwitch icon="kebab" />
-        </ActionIcon>
-      </Menu.Target>
+      <Menu.Target>{children}</Menu.Target>
       <Menu.Dropdown>
+        <Menu.Item component="a" href={`/snakes/${category}?id=${id}`}>
+          На страницу змеи
+        </Menu.Item>
         <Menu.Item
           onClick={(e) => {
             e.stopPropagation();
@@ -108,7 +103,7 @@ export const Controls = ({ id, openFeed, openTrans, openDelete }) => {
         >
           Добавить событие
         </Menu.Item>
-        <Menu.Item component="a" href={`/snakes/edit/${categ}?id=${id}`}>
+        <Menu.Item component="a" href={`/snakes/edit/${category}?id=${id}`}>
           Редактировать
         </Menu.Item>
         <Menu.Item

@@ -1,11 +1,13 @@
 import { FC } from "preact/compat";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Accordion, Box, Checkbox, Flex, Modal, NumberInput, Space, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Accordion, Box, Checkbox, Flex, Modal, NumberInput, Popover, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
+import { useDisclosure } from "@mantine/hooks";
 import { UseMutateFunction } from "@tanstack/react-query";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { Feeder } from "@/components/common/Feeder/Feeder";
 import { codeToFeeder } from "@/components/common/Feeder/const";
+import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IFeedReq, IResSnakesList, ISupabaseErr } from "@/api/common";
 import { notif } from "../../../../utils/notif";
 import { getDate, getDateObj } from "../../../../utils/time";
@@ -23,6 +25,7 @@ type IProp = {
 };
 
 export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction, isPend }) => {
+  const [isPop, func] = useDisclosure(false);
   const lastFeed = snake?.feeding?.sort((a, b) => getDateObj(a.feed_last_at!) - getDateObj(b.feed_last_at!))?.[snake?.feeding.length - 1];
   const lastWeight = snake?.weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[snake?.weight.length - 1];
   const {
@@ -31,12 +34,15 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
     formState: { errors },
     control,
     reset,
+    setValue,
   } = useForm({
     defaultValues: defVals,
     resolver: yupResolver(schema as any),
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
+
+  const isCln = useWatch({ name: "isClean", control });
 
   const fullClose = () => {
     reset();
@@ -77,10 +83,41 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
           name="feed_last_at"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <DatePickerInput label="Дата" required value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} flex="1 1 50%" />;
+            return <DatePickerInput label="Дата" required value={value} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} flex="1 1 50%" />;
           }}
         />
-        <NumberInput {...(register("weight") as any)} name="weight" rightSection="г" label="Масса питомца" placeholder="Не заполнено" hideControls error={errors?.["weight"]?.message} allowDecimal={false} flex="1 1 50%" />
+        <Controller
+          name="weight"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return (
+              <NumberInput
+                suffix=" г"
+                rightSection={
+                  <Popover width={200} position="top" withArrow shadow="md" opened={isPop} offset={{ mainAxis: 18, crossAxis: -80 }}>
+                    <Popover.Target>
+                      <Box onMouseEnter={func.open} onMouseLeave={func.close} onClick={() => setValue("isClean", !isCln)} style={{ cursor: "pointer" }}>
+                        <IconSwitch icon="clean" width="18" height="18" style={{ stroke: isCln ? "#ff9f40" : "" }} />
+                      </Box>
+                    </Popover.Target>
+                    <Popover.Dropdown style={{ pointerEvents: "none" }} p="xs">
+                      <Text size="xs">Активно, если масса без экскреции</Text>
+                    </Popover.Dropdown>
+                  </Popover>
+                }
+                rightSectionPointerEvents="auto"
+                value={value as any}
+                onChange={onChange}
+                label="Масса питомца"
+                placeholder="Не заполнено"
+                hideControls
+                error={error?.message}
+                allowDecimal={false}
+                flex="1 1 50%"
+              />
+            );
+          }}
+        />
       </Flex>
       <Space h="sm" />
       <Flex rowGap="lg" columnGap="md" wrap="nowrap">
@@ -105,7 +142,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
         }}
       />
       <Space h="lg" />
-      <NumberInput {...(register("feed_weight") as any)} rightSection="г" label="Масса КО" placeholder="Не заполнено" hideControls error={errors?.["feed_weight"]?.message} allowDecimal={false} w={{ base: "100%", xs: "50%" }} />
+      <NumberInput {...(register("feed_weight") as any)} suffix=" г" label="Масса КО" placeholder="Не заполнено" hideControls error={errors?.["feed_weight"]?.message} allowDecimal={false} w={{ base: "100%", xs: "50%" }} />
       <Space h="lg" />
       <TextInput {...register("feed_comment")} label="Коммент к событию" error={errors?.["feed_comment"]?.message} />
       <Space h="lg" />
@@ -146,7 +183,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
       </Accordion>
       <Space h="lg" />
       <Flex>
-        <Btn type="submit" size="xs" onClick={handleSubmit(onSub)} loading={isPend} ml="auto">
+        <Btn type="submit" ml="auto" size="xs" onClick={handleSubmit(onSub)} loading={isPend} disabled={isPend}>
           Подтвердить
         </Btn>
       </Flex>

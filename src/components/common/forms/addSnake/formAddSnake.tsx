@@ -90,10 +90,9 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
           }}
         />
       </Flex>
-
-      <Accordion defaultValue="optional" variant="separated" radius="md" w={{ base: "100%", sm: "70%" }}>
+      <Accordion defaultValue={null} variant="separated" radius="md" w={{ base: "100%", sm: "70%" }}>
         <Accordion.Item value="optional">
-          <Accordion.Control fz="xs">Опционально. Можно заполнить/изменить в любое время</Accordion.Control>
+          <Accordion.Control fz="xs">Опциональные поля. Можно дополнить/изменить в любое время</Accordion.Control>
           <Accordion.Panel>
             <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
               <Flex gap="lg" wrap="wrap" w="100%">
@@ -110,7 +109,7 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
                   name="weight"
                   control={control}
                   render={({ field: { onChange, value }, fieldState: { error } }) => {
-                    return <NumberInput onChange={onChange} value={value as any} name="weight" rightSection="г" label="Масса" placeholder="Нет данных" hideControls error={error?.message} allowDecimal={false} flex="1 1 50%" />;
+                    return <NumberInput onChange={onChange} value={value as any} name="weight" suffix=" г" label="Масса" placeholder="Нет данных" hideControls error={error?.message} allowDecimal={false} flex="1 1 50%" />;
                   }}
                 />
                 <Controller
@@ -163,7 +162,7 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
                 />
               </Flex>
               <Flex gap="lg" wrap="nowrap" w="100%">
-                <NumberInput {...(register("feed_weight") as any)} name="feed_weight" rightSection="г" label="Масса КО" placeholder="Нет данных" hideControls allowDecimal={false} flex="1 1 50%" />
+                <NumberInput {...(register("feed_weight") as any)} name="feed_weight" suffix=" г" label="Масса КО" placeholder="Нет данных" hideControls allowDecimal={false} flex="1 1 50%" />
                 <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.["feed_comment"]?.message} flex="1 1 50%" />
               </Flex>
               <Box maw="100%" w="100%">
@@ -195,7 +194,7 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
         </Accordion.Item>
       </Accordion>
       <Flex align="flex-start" maw="100%" w="100%" gap="xl">
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending}>
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending} disabled={isPending}>
           Добавить
         </Btn>
       </Flex>

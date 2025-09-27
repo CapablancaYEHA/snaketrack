@@ -10,6 +10,7 @@ export const feederType = [
   { label: "🐿️ Хомяк", value: "hams" },
   { label: "🐤 Цыпленок", value: "chick" },
   { label: "🦃 Перепел", value: "quail" },
+  { label: "🐇 Кролик", value: "rabbit" },
 ];
 
 export const feederAge = [

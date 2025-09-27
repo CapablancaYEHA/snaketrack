@@ -530,7 +530,7 @@ export const BreedDelete = ({ opened, close, breedId }) => {
         <Button variant="default" onClick={close}>
           Отмена
         </Button>
-        <Button variant="filled" color="var(--mantine-color-error)" onClick={handleDel} loading={isPending}>
+        <Button variant="filled" color="var(--mantine-color-error)" onClick={handleDel} loading={isPending} disabled={isPending}>
           Удалить
         </Button>
       </Flex>

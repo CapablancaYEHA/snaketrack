@@ -9,7 +9,7 @@ export function Snake() {
   const location = useLocation();
   const p = location.path.split("/").slice(-1)[0];
 
-  const title = p === ECategories.BP ? "Региуса" : "Удава";
+  const title = p === ECategories.BP ? "Региус" : "Удав";
   const { data, isPending, isError } = useSupaGet<IResSnakesList>(categToConfig[p](location.query.id), Boolean(location.query.id));
 
   if (isPending) return <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />;

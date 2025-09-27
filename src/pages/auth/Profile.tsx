@@ -35,19 +35,17 @@ export function Profile() {
           <Text size="md">{data?.username ?? "Не задано"}</Text>
         </div>
         <Box flex="1 0 156px" display="flex">
-          <Btn fullWidth={false} style={{ width: "min-content", marginLeft: "auto" }} onClick={() => (isOpen.value = true)} size="xs" loading={isPend}>
+          <Btn fullWidth={false} style={{ width: "min-content", marginLeft: "auto" }} onClick={() => (isOpen.value = true)} size="xs" loading={isPend} disabled={isPend}>
             Сменить имя
           </Btn>
         </Box>
       </Flex>
-
       <div>
         <Text size="sm" c="dark.2">
           Email:
         </Text>
         <Text size="md">{data?.usermail ?? ""}</Text>
       </div>
-
       <div>
         <Text size="sm" c="dark.2">
           Дата регистрации:

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Stack } from "@mantine/core";
 import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, RowSelectionState, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
+import { useLongPress } from "../genetics/useLongPress";
 import styles from "./styles.module.scss";
 import { bgDark, calcColumn, getCommonPinningStyles } from "./utils";
 
@@ -17,9 +18,10 @@ interface IProp<T> {
   initSort?: SortingState;
   rowSelection?: RowSelectionState;
   onRowSelect?: OnChangeFn<RowSelectionState>;
+  onLongPress?: (event: MouseEvent | TouchEvent) => void;
 }
 
-export const StackTable = <T extends object>({ maxHeight, columns, data, setColumnFilters, columnFilters, onRowClick, globalFilter, setGlobalFilter, initSort, rowSelection, onRowSelect }: IProp<T>) => {
+export const StackTable = <T extends object>({ maxHeight, columns, data, setColumnFilters, columnFilters, onRowClick, onLongPress, globalFilter, setGlobalFilter, initSort, rowSelection, onRowSelect }: IProp<T>) => {
   const isMount = useRef(false);
   const [sorting, setSorting] = useState<SortingState>(initSort ?? []);
   const cols: ColumnDef<T>[] = useMemo<ColumnDef<T, unknown>[]>(() => columns, []);
@@ -58,6 +60,8 @@ export const StackTable = <T extends object>({ maxHeight, columns, data, setColu
   const isFilteredOut = table.options.data.length > 0 && table.getRowModel().rows.length === 0;
 
   const headGroups = table.getHeaderGroups();
+
+  const handleLong = useLongPress((e) => onLongPress?.(e));
 
   return (
     <div className={styles.cont} style={maxHeight && !isEmpty ? { maxHeight: `${maxHeight}px` } : {}}>
@@ -102,7 +106,7 @@ export const StackTable = <T extends object>({ maxHeight, columns, data, setColu
           ) : (
             table.getRowModel().rows.map((row) => {
               return (
-                <tr key={row.id} onClick={() => onRowClick?.((row.original as any).id)} className={onRowClick != null ? styles.pointer : ""}>
+                <tr key={row.id} onClick={() => onRowClick?.((row.original as any).id)} {...(onLongPress ? handleLong : {})} className={onRowClick != null ? styles.pointer : ""}>
                   {row.getVisibleCells().map((cell) => {
                     return cell.column.columnDef.cell ? (
                       <td key={cell.id} style={{ ...calcColumn(cell), ...getCommonPinningStyles(cell.column), minWidth: cell.column.columnDef.minSize, background: cell.column.getIsPinned() ? bgDark : "transparent" }}>

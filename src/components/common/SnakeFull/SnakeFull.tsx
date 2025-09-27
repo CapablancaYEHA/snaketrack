@@ -116,7 +116,7 @@ export function SnakeFull({ title, category, data }: IProp) {
           isFeedOpen.value = false;
         }}
         snake={data}
-        title="Удав"
+        title={category === ECategories.BP ? "Региус" : "Удав"}
         handleAction={feed}
         isPend={isFeedPend}
       />

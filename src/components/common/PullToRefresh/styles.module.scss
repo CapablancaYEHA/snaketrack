@@ -1,0 +1,30 @@
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(720deg);
+  }
+}
+
+.spinner {
+  will-change: transform, opacity;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 50%;
+  transform-origin: center;
+  transform: translateX(-50%);
+  overflow: hidden;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.spinner-ready {
+  & > svg {
+    path {
+      stroke: var(--mantine-color-yellow-6);
+    }
+  }
+}

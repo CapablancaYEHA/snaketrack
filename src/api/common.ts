@@ -79,7 +79,7 @@ export type IFeed = {
   feed_last_at?: string | null;
   feed_weight?: number | null;
   feed_ko?: string | null;
-  feed_comment?: string;
+  feed_comment?: string | null;
   refuse?: boolean;
   regurgitation?: boolean;
 };
@@ -87,7 +87,7 @@ export type IFeed = {
 export type IFeedReq = {
   id: string;
   feed: IFeed | null;
-  mass: { date: string; weight: number } | null;
+  mass: { date: string; weight: number; is_clean?: boolean | null } | null;
   shed: string | null;
 };
 

@@ -5,10 +5,11 @@ import { isEmpty } from "lodash-es";
 import { SexName } from "@/components/common/sexName";
 import { ECategories, IRemResExt, IRemindersRes, IResSnakesList } from "@/api/common";
 import { SnakeEventsBlock } from "../SnakeCard";
+import { RemControls } from "./remControls";
 
 const columnHelper = createColumnHelper<IResSnakesList>();
 
-export const makeScheduleColumns = () => [
+export const makeScheduleColumns = ({ openFeed }) => [
   columnHelper.accessor("picture", {
     header: () => "Змея",
     cell: ({ cell, row }) => (
@@ -23,10 +24,12 @@ export const makeScheduleColumns = () => [
           }}
           style={{ alignSelf: "start" }}
         />
-        <Stack gap="xs" flex="1 1 auto">
-          <Image src={cell.getValue()} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
-          <SexName sex={row.original.sex} name={row.original.snake_name} size="sm" />
-        </Stack>
+        <RemControls id={row.original.id} openFeed={openFeed}>
+          <Stack gap="xs" flex="1 1 auto">
+            <Image src={cell.getValue()} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
+            <SexName sex={row.original.sex} name={row.original.snake_name} size="sm" />
+          </Stack>
+        </RemControls>
       </Flex>
     ),
     size: 1,
@@ -37,7 +40,7 @@ export const makeScheduleColumns = () => [
   }),
   columnHelper.accessor("feeding", {
     header: () => "События",
-    cell: ({ cell, row }) => <SnakeEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} isShowShed={false} isShowWeight={false} />,
+    cell: ({ cell, row }) => <SnakeEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} isShowShed={false} />,
     enableSorting: false,
     enableColumnFilter: false,
     size: 4,

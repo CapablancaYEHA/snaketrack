@@ -1,5 +1,5 @@
-import { FC, useEffect } from "preact/compat";
-import { Box, Flex, Stack, Text } from "@mantine/core";
+import { FC, useEffect, useState } from "preact/compat";
+import { Box, Button, Flex, Modal, Space, Stack, Text } from "@mantine/core";
 import { SexName } from "@/components/common/sexName";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IRemResExt } from "@/api/common";
@@ -9,10 +9,11 @@ import { dateAddDays, getDateCustom } from "@/utils/time";
 interface IProp {
   rem?: IRemResExt;
   handleDel: (id: string) => void;
+  isPend?: boolean;
 }
 
-export const SnakeRem: FC<IProp> = ({ rem, handleDel }) => {
-  useEffect(() => {}, [rem]);
+export const SnakeRem: FC<IProp> = ({ rem, handleDel, isPend }) => {
+  const [isOpen, setOpen] = useState(false);
 
   if (!rem) {
     return null;
@@ -34,9 +35,27 @@ export const SnakeRem: FC<IProp> = ({ rem, handleDel }) => {
           ) : null}
         </Text>
       </Stack>
-      <Box ml="auto" onClick={() => handleDel(rem.id)} style={{ cursor: "pointer" }} pl="xs" pr="xs" pb="xs">
-        <IconSwitch icon="bin" width="18" height="18" />
-      </Box>
+      <Stack ml="auto" gap="xs" align="end">
+        <Box onClick={() => setOpen(true)} style={{ cursor: "pointer" }} pl="xs" pr="xs" pb="xs">
+          <IconSwitch icon="bin" width="18" height="18" />
+        </Box>
+        {isOpen ? (
+          <Box>
+            <Text component="div" size="xs">
+              Удалить напоминание?
+            </Text>
+            <Space h="sm" />
+            <Flex gap="sm" wrap="nowrap" justify="space-between">
+              <Button variant="default" onClick={() => setOpen(false)} size="compact-xs">
+                Отмена
+              </Button>
+              <Button variant="filled" color="var(--mantine-color-error)" loading={isPend} disabled={isPend} onClick={() => handleDel(rem.id)} size="compact-xs">
+                Удалить
+              </Button>
+            </Flex>
+          </Box>
+        ) : null}
+      </Stack>
     </Flex>
   );
 };

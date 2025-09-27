@@ -32,7 +32,7 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
 
   const { forCreate } = makeSubmit(selected, snakesInRems);
 
-  const { mutate } = useSupaDel(ESupabase.REM, {
+  const { mutate, isPending: isDelPend } = useSupaDel(ESupabase.REM, {
     qk: [ESupabase.REM_V],
     e: false,
   });
@@ -109,7 +109,7 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
                     <Divider w="100%" maw="100%" label="Региусы" labelPosition="center" />
                     {dataBp?.map((a, ind, self) => (
                       <Fragment key={a.id}>
-                        <SnakeRem rem={a} handleDel={del} key={a.id} />
+                        <SnakeRem rem={a} handleDel={del} key={a.id} isPend={isDelPend && a.id === sigDeletedId.value} />
                         {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
                       </Fragment>
                     ))}
@@ -120,7 +120,7 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
                     {!isEmpty(dataBp) ? <Divider w="100%" maw="100%" label="Удавы" labelPosition="center" mt="xs" /> : null}
                     {dataBc?.map((b, ind, self) => (
                       <Fragment key={b.id}>
-                        <SnakeRem rem={b} handleDel={del} key={b.id} />
+                        <SnakeRem rem={b} handleDel={del} key={b.id} isPend={isDelPend && b.id === sigDeletedId.value} />
                         {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
                       </Fragment>
                     ))}

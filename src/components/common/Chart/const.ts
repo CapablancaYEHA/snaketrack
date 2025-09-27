@@ -182,11 +182,21 @@ const dataSnake = {
   yAxisID: "y",
   id: 1,
   label: "Змея",
-  borderColor: "rgb(255, 159, 64)",
-  backgroundColor: "rgb(255, 159, 64)",
+  backgroundColor: "#ff9f40",
+  pointBackgroundColor: (context) => {
+    const index = context.dataIndex;
+    const value = context.dataset.data[index];
+    return value && value?.is_clean === false ? "#a0a3a8" : "#ff9f40";
+  },
+  borderColor: (context) => {
+    const index = context.dataIndex;
+    const value = context.dataset.data[index];
+    return value && value?.is_clean === false ? "#a0a3a8" : "#ff9f40";
+  },
   borderWidth: 2,
   tension: 0.2,
   pointRadius: 2,
+  pointStyle: "circle",
   spanGaps: true,
 };
 
@@ -216,7 +226,7 @@ export const makeLineData = (weight, feed, view: "ko" | "snake" | "both") => {
   };
   const snakeSet = {
     ...dataSnake,
-    data: (weight ?? [])?.map((a) => ({ y: a.weight, x: a.date })).sort((a, b) => getDateObj(a.x) - getDateObj(b.x)),
+    data: (weight ?? [])?.map((a) => ({ y: a.weight, x: a.date, is_clean: a.is_clean })).sort((a, b) => getDateObj(a.x) - getDateObj(b.x)),
   };
 
   if (view === "both") {
@@ -245,7 +255,10 @@ const lineLabelFunc = (a) => {
   if (a.raw.refuse) {
     return " Отказ";
   }
-  return ` ${a.formattedValue}`;
+  if (a.raw.is_clean === false) {
+    return ` ${a.formattedValue}г с экскрецией`;
+  }
+  return ` ${a.formattedValue}г`;
 };
 
 export const bubbleOptions = {

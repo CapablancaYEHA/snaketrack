@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import * as yup from "yup";
+import { IFeedReq } from "@/api/common";
 import { dateToSupabaseTime } from "@/utils/time";
 
 export const defVals = {
@@ -11,6 +12,7 @@ export const defVals = {
   shed: null,
   refuse: null,
   regurgitation: null,
+  isClean: true,
 };
 const incor = "Отметьте линьку / срыг / отказ ИЛИ укажите новое измерение массы питомца, ИЛИ информацию о кормлении";
 export const schema = yup.object().shape(
@@ -32,7 +34,7 @@ export const schema = yup.object().shape(
       if (feed_ko || feed_weight) {
         return self.nullable();
       }
-      return !shed && !refuse && !regurgitation ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required("Заполняется по условиям") : self.transform((v) => (!v || Number.isNaN(v) ? null : v)).nullable();
+      return !shed && !refuse && !regurgitation ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required("Заполняется по условиям") : self.optional().nullable();
     }),
     feed_weight: yup
       .number()
@@ -56,6 +58,7 @@ export const schema = yup.object().shape(
       }
       return !weight && !shed && !refuse ? self.required(incor) : self.nullable();
     }),
+    isClean: yup.boolean().optional().nullable(),
   },
   [
     ["weight", "shed"],
@@ -75,7 +78,9 @@ export const schema = yup.object().shape(
   ],
 );
 
-export const prepareForSubmit = (fd) => {
+export type ISubmitType = yup.InferType<typeof schema>;
+
+export const prepareForSubmit = (fd: ISubmitType): Omit<IFeedReq, "id"> => {
   let time = dateToSupabaseTime(fd.feed_last_at);
 
   let feed = fd.feed_weight || fd.refuse || fd.regurgitation || fd.feed_ko ? { ...fd, feed_last_at: time } : null;
@@ -83,6 +88,7 @@ export const prepareForSubmit = (fd) => {
     ? {
         date: time,
         weight: fd.weight,
+        is_clean: fd.isClean,
       }
     : null;
   let shed = fd.shed ? time : null;

@@ -14,6 +14,7 @@ interface IQueryConfig {
   s?: string;
   f: (query: any) => any;
   id?: any;
+  o?: any;
 }
 
 interface IModif<T> extends Pick<IQueryConfig, "t" | "s"> {
@@ -39,12 +40,11 @@ export function useSupaGet<T>(config: IQueryConfig, isEnabled: boolean) {
     queryKey: queKeys,
     queryFn: () => supaGet(config),
     enabled: isEnabled,
+    ...config?.o,
   });
 }
 
 const supaCreate = async <T>({ t, p, bulk }: IModif<T>) => {
-  //   return await supabase.from(t).insert(p).select("id").single<{ id: string }>().throwOnError();
-
   const query = supabase.from(t).insert(p);
   let res;
 
