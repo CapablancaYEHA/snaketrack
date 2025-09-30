@@ -7,6 +7,7 @@ import { CalendarIcon } from "./Calendar";
 import { CheckIcon } from "./Check";
 import { CleanIcon } from "./Clean";
 import { DashIcon } from "./Dash";
+import { EditIcon } from "./Edit";
 import { EggIcon } from "./Egg";
 import { FemaleIcon } from "./Female";
 import { ImgIcon } from "./Img";
@@ -29,6 +30,8 @@ interface IProp {
 
 export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style }) => {
   switch (icon) {
+    case "edit":
+      return <EditIcon width={width} height={height} style={style} />;
     case "refresh":
       return <RefreshIcon width={width} height={height} style={style} />;
     case "clean":

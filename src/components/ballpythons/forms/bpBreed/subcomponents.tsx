@@ -223,7 +223,6 @@ export const OddsInfo = ({ female, male }) => {
 
   useEffect(() => {
     if (female != null && male != null) {
-      console.log("female", female);
       mutate({ p1: prepForMm(female), p2: prepForMm(male) });
     }
   }, [female, male, mutate]);

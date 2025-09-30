@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
-import { Button, Flex, Image, NumberFormatter, Paper, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Button, Drawer, Flex, Image, NumberFormatter, Paper, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -11,12 +11,15 @@ import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
 import { detailsDict, subjectDict } from "@/components/common/utils";
-import { ECategories, IResSnakesList, categoryToBaseTable } from "@/api/common";
+import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
+import { ECategories, ESupabase, IFeed, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useUpdSnakeFeeding } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
+import { EditStats } from "../forms/editStats/formEditStats";
 import { snakeFeedColumns } from "./utils";
 
 const isFeedOpen = signal<boolean>(false);
+const isEditMode = signal<boolean>(false);
 
 interface IProp {
   title: string;
@@ -30,7 +33,7 @@ export function SnakeFull({ title, category, data }: IProp) {
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
   const { mutate: feed, isPending: isFeedPend } = useUpdSnakeFeeding(category, { qk: [categoryToBaseTable[category], location.query.id], e: true });
 
-  const feedTable = useMemo(() => data?.feeding?.filter((a) => Object.values(a)?.some((b) => b != null)), [toString(data?.feeding)]);
+  const feedTable = useMemo(() => data?.feeding?.filter((a) => Object.values(a)?.some((b) => b != null)), [toString(data?.feeding)]) as IFeed[];
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
@@ -92,12 +95,15 @@ export function SnakeFull({ title, category, data }: IProp) {
       ) : (
         <>
           <Flex justify="space-between" w="100%" gap="sm">
-            <Select label="Детализация графика" data={detailsDict} value={scale} onChange={setScale as any} />
-            <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} />
+            <Select label="Детализация графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" />
+            <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" />
           </Flex>
           <ChartLine weightData={data?.weight} feedData={data.feeding} scaleX={scale} view={view} />
         </>
       )}
+      <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} size="compact-xs" ml="auto">
+        Изменить данные
+      </Button>
       <StackTable
         data={feedTable ?? []}
         columns={snakeFeedColumns}
@@ -122,6 +128,7 @@ export function SnakeFull({ title, category, data }: IProp) {
       />
       <ChartBubble shedData={data.shed} />
       <Space h="lg" />
+      <EditStats table={category === ECategories.BP ? ESupabase.BP : ESupabase.BC} opened={isEditMode.value} close={() => (isEditMode.value = false)} weight={data?.weight ?? []} feeding={data?.feeding ?? []} id={location.query.id} />
     </Stack>
   );
 }

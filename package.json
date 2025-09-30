@@ -3,7 +3,7 @@
   "type": "module",
   "name": "snaketrack",
   "description": "Snaketrack PWA",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",

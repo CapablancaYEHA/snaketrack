@@ -6,7 +6,7 @@ import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import styles from "./styles.module.scss";
 
 const magicThr = 50;
-const magicNmb = 300;
+const magicNmb = 220;
 
 type TPullStatus = "ready" | "pulling" | "aborted" | "refreshed";
 

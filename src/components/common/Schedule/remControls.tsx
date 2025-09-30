@@ -18,6 +18,7 @@ export const RemControls = ({ children, id, openFeed }) => {
       arrowPosition="center"
       closeOnClickOutside
       keepMounted={false}
+      zIndex={30}
     >
       <Menu.Target>{children}</Menu.Target>
       <Menu.Dropdown>
