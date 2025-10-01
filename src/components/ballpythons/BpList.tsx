@@ -17,7 +17,7 @@ import { bpList } from "@/api/ballpythons/configs";
 import { useTransferBp } from "@/api/ballpythons/misc";
 import { ECategories, ESupabase, IResSnakesList } from "@/api/common";
 import { useSnakeGenes, useSupaDel, useSupaGet, useUpdSnakeFeeding } from "@/api/hooks";
-import { tableFiltMulti } from "../common/StackTable/filters";
+import { tableFiltMulti, tableFiltSingle } from "../common/StackTable/filters";
 import { makeListColumns } from "../common/const";
 import { maturityDict } from "../common/utils";
 
@@ -63,7 +63,7 @@ export function BpList() {
   return (
     <>
       <Flex wrap="nowrap" maw="100%" w="100%">
-        <Button color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} variant={isFilterNull ? "default" : "filled"} onClick={open} size="compact-xs">
+        <Button variant={isFilterNull ? "default" : "filled"} color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} onClick={open} size="compact-xs">
           Фильтры {isFilterNull ? "" : "применены"}
         </Button>
         <Btn fullWidth={false} component="a" href="/snakes/add/ball-pythons" ml="auto">
@@ -134,10 +134,11 @@ export function BpList() {
             maxWidth: isMinSm ? "640px" : "100%",
           },
         }}
+        keepMounted
       >
         <Flex gap="md" wrap="nowrap" align="end" flex="1 1 auto">
           <TextInput flex="1 1 50%" placeholder="Свободный поиск" onChange={(e: any) => setGlobalFilter(e.target.value!)} value={globalFilter} leftSection={<IconSwitch icon="search" />} />
-          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltMulti(setFilt, [a], "sex")} label="Пол" placeholder="Не выбран" />
+          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltSingle(setFilt, a, "sex")} label="Пол" placeholder="Не выбран" />
         </Flex>
         <Space h="md" />
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">

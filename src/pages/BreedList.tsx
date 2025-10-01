@@ -79,6 +79,7 @@ export function BreedList() {
                 maxWidth: isMinSm ? "640px" : "100%",
               },
             }}
+            keepMounted
           >
             <Flex gap="md" wrap="nowrap" flex="1 1 auto">
               <MaxSelectedMulti flex="1 1 50%" label="Самки в проектах" onChange={(a) => tableFiltMulti(setFilt, a, "female_name")} data={[...new Set(breed?.map((a) => a.female_name))]} />

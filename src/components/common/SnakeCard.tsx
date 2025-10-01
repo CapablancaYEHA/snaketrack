@@ -5,7 +5,7 @@ import { codeToFeeder } from "../common/Feeder/const";
 import { sortSnakeGenes } from "./genetics/const";
 import { GenePill } from "./genetics/geneSelect";
 
-export const calcFeedEvent = (feed?: IFeed, size = "md") => {
+export const calcFeedEvent = (feed?: IFeed, size = "sm") => {
   if (feed == null || feed?.feed_last_at == null) {
     return <span>Нет данных</span>;
   }

@@ -7,7 +7,7 @@ import { debounce, isEmpty } from "lodash-es";
 import { sexHardcode } from "@/components/ballpythons/forms/bpBreed/common";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
-import { tableFiltMulti } from "@/components/common/StackTable/filters";
+import { tableFiltMulti, tableFiltSingle } from "@/components/common/StackTable/filters";
 import { DeleteBp } from "@/components/common/forms/deleteSnake/formDeleteBp";
 import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { TransferSnake } from "@/components/common/forms/transferSnake/formTransferSnake";
@@ -134,10 +134,11 @@ export function BcList() {
             maxWidth: isMinSm ? "640px" : "100%",
           },
         }}
+        keepMounted
       >
         <Flex gap="md" wrap="nowrap" align="end" flex="1 1 auto">
           <TextInput flex="1 1 50%" placeholder="Свободный поиск" onChange={(e: any) => setGlobalFilter(e.target.value!)} value={globalFilter} leftSection={<IconSwitch icon="search" />} />
-          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltMulti(setFilt, [a], "sex")} label="Пол" placeholder="Не выбран" />
+          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltSingle(setFilt, a, "sex")} label="Пол" placeholder="Не выбран" />
         </Flex>
         <Space h="md" />
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">

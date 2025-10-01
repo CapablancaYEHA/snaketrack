@@ -109,7 +109,7 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
                   name="weight"
                   control={control}
                   render={({ field: { onChange, value }, fieldState: { error } }) => {
-                    return <NumberInput onChange={onChange} value={value as any} name="weight" suffix=" г" label="Масса" placeholder="Нет данных" hideControls error={error?.message} allowDecimal={false} flex="1 1 50%" />;
+                    return <NumberInput onChange={onChange} value={value as any} name="weight" suffix=" г" label="Масса" placeholder="Нет данных" hideControls error={error?.message} allowDecimal={false} allowLeadingZeros={false} flex="1 1 50%" />;
                   }}
                 />
                 <Controller
@@ -135,7 +135,7 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
                     );
                   }}
                 />
-                {wOrigin === "purchase" ? <NumberInput {...(register("price") as any)} allowDecimal={false} rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " flex="1 1 50%" /> : null}
+                {wOrigin === "purchase" ? <NumberInput {...(register("price") as any)} allowDecimal={false} rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " flex="1 1 50%" allowLeadingZeros={false} /> : null}
               </Flex>
 
               {/* FIX здесь нужно проверка на наличие разнополой пары */}
@@ -162,7 +162,13 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
                 />
               </Flex>
               <Flex gap="lg" wrap="nowrap" w="100%">
-                <NumberInput {...(register("feed_weight") as any)} name="feed_weight" suffix=" г" label="Масса КО" placeholder="Нет данных" hideControls allowDecimal={false} flex="1 1 50%" />
+                <Controller
+                  name="feed_weight"
+                  control={control}
+                  render={({ field: { onChange, value }, fieldState: { error } }) => {
+                    return <NumberInput onChange={onChange} value={value as any} suffix=" г" label="Масса КО" placeholder="Не заполнено" hideControls error={error?.message} allowDecimal={false} flex="1 1 50%" allowLeadingZeros={false} />;
+                  }}
+                />
                 <TextInput {...register("feed_comment")} label="Коммент к кормлению" error={errors?.["feed_comment"]?.message} flex="1 1 50%" />
               </Flex>
               <Box maw="100%" w="100%">

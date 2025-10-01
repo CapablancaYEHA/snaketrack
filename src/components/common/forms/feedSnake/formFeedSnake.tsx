@@ -93,6 +93,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
             return (
               <NumberInput
                 suffix=" г"
+                allowLeadingZeros={false}
                 rightSection={
                   <Popover width={200} position="top" withArrow shadow="md" opened={isPop} offset={{ mainAxis: 18, crossAxis: -80 }}>
                     <Popover.Target>
@@ -142,7 +143,13 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
         }}
       />
       <Space h="lg" />
-      <NumberInput {...(register("feed_weight") as any)} suffix=" г" label="Масса КО" placeholder="Не заполнено" hideControls error={errors?.["feed_weight"]?.message} allowDecimal={false} w={{ base: "100%", xs: "50%" }} />
+      <Controller
+        name="feed_weight"
+        control={control}
+        render={({ field: { onChange, value }, fieldState: { error } }) => {
+          return <NumberInput onChange={onChange} value={value as any} suffix=" г" label="Масса КО" placeholder="Не заполнено" hideControls error={error?.message} allowDecimal={false} w={{ base: "100%", xs: "50%" }} allowLeadingZeros={false} />;
+        }}
+      />
       <Space h="lg" />
       <TextInput {...register("feed_comment")} label="Коммент к событию" error={errors?.["feed_comment"]?.message} />
       <Space h="lg" />

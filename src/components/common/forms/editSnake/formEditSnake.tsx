@@ -128,7 +128,7 @@ export const FormEditSnake = ({ init, table, storage, title, category }) => {
             name="price"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput rightSection="₽" label="Цена покупки" flex="1 1 50%" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value} onChange={onChange} allowDecimal={false} />;
+              return <NumberInput rightSection="₽" label="Цена покупки" flex="1 1 50%" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} />;
             }}
           />
         ) : null}
