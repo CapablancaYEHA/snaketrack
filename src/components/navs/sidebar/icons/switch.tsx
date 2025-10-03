@@ -3,6 +3,7 @@ import { AdjustIcon } from "./Adjust";
 import { ArrBidirectIcon } from "./ArrBidirect";
 import { ArrUpIcon } from "./ArrUp";
 import { BinIcon } from "./Bin";
+import { CalculatorIcon } from "./Calculator";
 import { CalendarIcon } from "./Calendar";
 import { CheckIcon } from "./Check";
 import { CleanIcon } from "./Clean";
@@ -30,6 +31,8 @@ interface IProp {
 
 export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style }) => {
   switch (icon) {
+    case "calculator":
+      return <CalculatorIcon width={width} height={height} style={style} />;
     case "edit":
       return <EditIcon width={width} height={height} style={style} />;
     case "refresh":

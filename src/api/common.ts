@@ -3,6 +3,7 @@ import { UseQueryResult } from "@tanstack/react-query";
 export const enum ECategories {
   BP = "ball-pythons",
   BC = "boa-constrictors",
+  CS = "corn-snakes",
 }
 
 // названия таблиц
@@ -10,8 +11,6 @@ export const enum ESupabase {
   BP = "ballpythons",
   BP_BREED = "bp_breeding",
   BP_CL = "bp_clutch",
-  BP_G = "bpgenes",
-  BC_G = "boagenes",
   PROF = "profiles",
   BC = "boa_constrictors",
   REM = "feed_reminders",
@@ -20,6 +19,10 @@ export const enum ESupabase {
   BP_CL_V = "clutch_view",
   PROF_V = "three_cols_profiles",
   REM_V = "feed_reminders_view",
+  // genes
+  BP_G = "bpgenes",
+  BC_G = "boagenes",
+  CS_G = "corngenes",
   // storage
   BP_PICS = "bp-pics",
   BC_PICS = "bc-pics",
@@ -28,11 +31,18 @@ export const enum ESupabase {
 export const categoryToGenesTable = {
   [ECategories.BP]: ESupabase.BP_G,
   [ECategories.BC]: ESupabase.BC_G,
+  [ECategories.CS]: ESupabase.CS_G,
 };
 
 export const categoryToBaseTable = {
   [ECategories.BP]: ESupabase.BP,
   [ECategories.BC]: ESupabase.BC,
+};
+
+export const categoryToMmCat = {
+  [ECategories.BP]: "bps",
+  [ECategories.BC]: "bcs",
+  [ECategories.CS]: "corns",
 };
 
 export const enum EQuKeys {

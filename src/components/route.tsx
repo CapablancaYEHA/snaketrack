@@ -3,6 +3,7 @@ import { isEmpty } from "lodash-es";
 import { AddBreed } from "@/pages/AddBreed";
 import { AddSnake } from "@/pages/AddSnake";
 import { BreedList } from "@/pages/BreedList";
+import { Calculator } from "@/pages/Calculator";
 import { ClutchList } from "@/pages/ClutchList";
 import { EditBreed } from "@/pages/EditBreed";
 import { EditClutch } from "@/pages/EditClutch";
@@ -46,10 +47,12 @@ export const protectedRoutes = {
   "/clutches/edit/:type?id=:id": EditClutch,
   "/schedule": Schedule,
   "/market": Market,
+  "/calculator": Calculator,
 };
 
 export const sidebarLinks = [
   { id: 2, link: "/snakes" },
+  { id: 6, link: "/calculator" },
   { id: 3, link: "/breeding" },
   { id: 4, link: "/clutches" },
   { id: 5, link: "/schedule" },

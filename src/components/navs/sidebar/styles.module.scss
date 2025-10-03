@@ -22,7 +22,7 @@ $offset: 8px;
     & section {
       transition:
         max-width 0.3s ease-in-out,
-        background-color 0.4s ease-in-out;
+        background-color 0.3s ease-in-out;
       max-width: calc(100% - 2 * $offset);
       width: 100%;
     }
@@ -112,7 +112,9 @@ $offset: 8px;
     pointer-events: none;
     max-width: 0;
     color: var(--mantine-color-dark-3);
-    transition: opacity 0.3s ease-in-out;
+    transition:
+      opacity 0.3s ease-in-out,
+      color 0.3s ease-in-out;
   }
 
   &:hover {

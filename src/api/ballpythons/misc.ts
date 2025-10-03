@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/client_supabase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
-import { EQuKeys, ESupabase, ISupabaseErr, ITransferReq } from "../common";
+import { ECategories, EQuKeys, ESupabase, ISupabaseErr, ITransferReq, categoryToMmCat } from "../common";
 import { IMorphOddsReq, IMorphOddsRes } from "./models";
 
 export const httpUldSnPic = (file: File, source: ESupabase) => {
@@ -45,13 +45,13 @@ export function useTransferBp() {
 }
 
 // Calc Odds
-const httpCalcBpOdds = async (p1: string[], p2: string[]): Promise<IMorphOddsRes> => {
+const httpCalcMmOdds = async (p1: string[], p2: string[], categ): Promise<IMorphOddsRes> => {
   let res;
   //   eslint-disable-next-line no-useless-catch
   try {
     let d = (await fetch(" https://681f314fc8b548beafe901f6--morph-proxy.netlify.app/.netlify/functions/proxy?url=https://www.morphmarket.com/api/v1/calculators/calculate_offspring/", {
       method: "POST",
-      body: JSON.stringify({ category: "bps", links_to: "morphs", parent1: p1, parent2: p2 }),
+      body: JSON.stringify({ category: categoryToMmCat[categ], links_to: "morphs", parent1: p1, parent2: p2 }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -66,9 +66,9 @@ const httpCalcBpOdds = async (p1: string[], p2: string[]): Promise<IMorphOddsRes
   return await res;
 };
 
-export function useCalcBpOdds() {
+export function useCalcMmOdds(categ: ECategories) {
   return useMutation<IMorphOddsRes, any, IMorphOddsReq>({
-    mutationFn: ({ p1, p2 }) => httpCalcBpOdds(p1, p2),
+    mutationFn: ({ p1, p2 }) => httpCalcMmOdds(p1, p2, categ),
   });
 }
 

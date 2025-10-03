@@ -11,8 +11,8 @@ import { fromMMtoPill, sortSnakeGenes } from "@/components/common/genetics/const
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { useCalcBpOdds } from "@/api/ballpythons/misc";
-import { ESupabase } from "@/api/common";
+import { useCalcMmOdds } from "@/api/ballpythons/misc";
+import { ECategories, ESupabase } from "@/api/common";
 import { useSupaDel } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { dateToSupabaseTime, getAge } from "@/utils/time";
@@ -219,7 +219,7 @@ export const BriefInfo = ({ snake }) => (
 export const OddsInfo = ({ female, male }) => {
   const isMwTablet = useMediaQuery(tabletThreshold);
   const [isOpen, setOpen] = useState(false);
-  const { mutate, data, isPending, isError } = useCalcBpOdds();
+  const { mutate, data, isPending, isError } = useCalcMmOdds(ECategories.BP);
 
   useEffect(() => {
     if (female != null && male != null) {
@@ -320,9 +320,7 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
       {isListPen || isQuePen ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
       <Group maw="100%" w="100%" align="start" gap="xl" grow>
         <Flex gap="md" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
-          <Text size="lg" mb="xs">
-            Самка для проекта
-          </Text>
+          <Text size="md">Самка для проекта</Text>
           <Controller
             name="female_id"
             control={innerInstance.control}
@@ -343,9 +341,7 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
           </Box>
         </Flex>
         <Flex gap="md" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
-          <Text size="lg" mb="xs">
-            Самцы для проекта
-          </Text>
+          <Text size="md">Самцы для проекта</Text>
           <Stack align="flex-start" w="100%" maw="100%">
             <Controller
               name={`males_ids.0.snake`}

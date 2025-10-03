@@ -1,5 +1,5 @@
-import { FC, useEffect, useState } from "preact/compat";
-import { Box, Button, Flex, Modal, Space, Stack, Text } from "@mantine/core";
+import { FC, useState } from "preact/compat";
+import { Box, Button, Flex, Space, Stack, Text } from "@mantine/core";
 import { SexName } from "@/components/common/sexName";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IRemResExt } from "@/api/common";

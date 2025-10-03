@@ -15,7 +15,7 @@ type IPill = {
   onLeftClick?: (a: IGenesComp) => void;
 };
 export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick }) => {
-  const isHet = item.gene === "rec" && item.label.toLowerCase().includes("het");
+  const isHet = (item.gene === "rec" || (item.gene === "inc-dom" && item.hasHet)) && item.label.toLowerCase().includes("het");
   const isPercent = item.label.startsWith("50%") || item.label.startsWith("66%");
 
   const handlers = useLongPress(() => onLeftClick?.(item));
@@ -54,10 +54,11 @@ interface IProp {
   init?: IGenesComp[];
   label?: string;
   placeholder?: string;
+  description?: string;
   category: ECategories;
 }
 
-export const GenesSelect: FC<IProp> = ({ onChange, init, label, category, placeholder = "Normal, no Het" }) => {
+export const GenesSelect: FC<IProp> = ({ onChange, init, label, category, placeholder = "Normal, no Het", description = "Нажмите и удерживайте выбраный ген, чтобы пометить его как Possible" }) => {
   const combobox = useCombobox({
     onDropdownClose: () => {
       combobox.resetSelectedOption();
@@ -110,7 +111,7 @@ export const GenesSelect: FC<IProp> = ({ onChange, init, label, category, placeh
   return (
     <Combobox store={combobox} onOptionSubmit={handleValueSelect as any} withinPortal={false} disabled={traits?.length === 0}>
       <Combobox.DropdownTarget>
-        <PillsInput w="100%" onClick={() => combobox.openDropdown()} label={label} description="Нажмите и удерживайте выбраный ген, чтобы пометить его как Possible">
+        <PillsInput w="100%" miw={170} onClick={() => combobox.openDropdown()} label={label} description={description}>
           <Pill.Group>
             {values}
             <Combobox.EventsTarget>

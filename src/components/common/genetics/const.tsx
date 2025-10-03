@@ -59,9 +59,6 @@ export const upgradeOptions = (arr: IGenesComp[], search: string) => {
 
 const fullHet = ["50% Het", "66% Het", "Het"];
 const reHet = /(?<=het\s)[\w\s]+/i;
-const re50het = /(?<=50het\s)[\w\s]+/i;
-const re66het = /(?<=66het\s)[\w\s]+/i;
-const reArr = [reHet, re50het, re66het];
 
 export const checkGeneConflict = (current: IGenesComp[], val: IGenesComp) => {
   if (val.hasSuper) {
@@ -80,17 +77,14 @@ export const checkGeneConflict = (current: IGenesComp[], val: IGenesComp) => {
       notifHetAlias();
       return current;
     }
-    for (let i of reArr) {
-      if (!i.test(val.label)) {
-        continue;
-      }
-      let trg = val.label.match(i);
-      if (current.some((a) => a.label === trg?.[0] || a.alias === trg?.[0])) {
+    if (reHet.test(val.label)) {
+      let trg = val.label.match(reHet);
+      if (current.some((a) => a.label?.includes(trg?.[0] ?? ""))) {
         notifSameHet();
-        if (current.some((a) => a.label.includes(val.label) || a.alias?.includes(val.label))) {
-          notifHetAlias();
-          return current;
-        }
+        return current;
+      }
+      if (current.some((a) => a.alias?.includes(trg?.[0] ?? ""))) {
+        notifHetAlias();
         return current;
       }
     }
@@ -98,7 +92,7 @@ export const checkGeneConflict = (current: IGenesComp[], val: IGenesComp) => {
   return [...current, val];
 };
 
-const notifHomo = () =>
+const notifHetAlias = () =>
   notif({
     c: "red",
     t: "Конфликт генов",
@@ -112,7 +106,7 @@ const notifExcessSuper = () =>
     m: "Неверное сочетание с Super-формой",
   });
 
-const notifHetAlias = () =>
+const notifHomo = () =>
   notif({
     c: "red",
     t: "Конфликт генов",
@@ -123,7 +117,7 @@ const notifSameHet = () =>
   notif({
     c: "red",
     t: "Конфликт генов",
-    m: "Уже выбран визуал, невозможно добавить Het",
+    m: "Уже добавлен визуал или Het для данного гена",
   });
 
 const priority = {
@@ -150,10 +144,13 @@ export const sortSnakeGenes = (arr: IGenesComp[] | null): IGenesComp[] => {
   return sortBy(kek, [(o) => (o.isPos ? 5 : (priority[o.label.substring(0, 3).toLowerCase()] ?? 0))]);
 };
 
+export const emptyMMTrait = { id: 0, label: "Normal", gene: "other", hasSuper: false, hasHet: false, isPos: false };
+
 export const fromMMtoPill = (m: IMMTrait): IGenesComp => {
-  const gene = m.class_label.includes("rec") ? "rec" : "inc-dom";
-  const label = m.name;
-  const hasHet = !m.class_label.includes("vis-rec");
+  const gene = m.class_label.includes("rec") ? "rec" : m.class_label.includes("other") ? "other" : "inc-dom";
+  const label = m.name.startsWith("Pos") ? m.name.split("Pos ")[1] : m.name;
+  const hasHet = m.class_label === "het-rec" || m.class_label === "dom-codom";
+  const isPos = m.class_label.includes("pos-other");
 
   return {
     id: m.id,
@@ -161,5 +158,6 @@ export const fromMMtoPill = (m: IMMTrait): IGenesComp => {
     gene,
     hasSuper: false,
     hasHet,
+    isPos,
   };
 };

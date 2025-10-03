@@ -1,7 +1,7 @@
 import { Anchor, Flex, Text } from "@mantine/core";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
 
-export const SexName = ({ sex, name, size = "lg", isLink = false, inline = true }) => {
+export const SexName = ({ sex, name, size = "md", isLink = false, inline = true }) => {
   return (
     <Flex gap="4px" style={inline ? { display: "inline-flex" } : {}} align="center" px={0}>
       <IconSwitch icon={sex} width="16" height="16" />

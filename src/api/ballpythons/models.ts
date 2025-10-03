@@ -69,7 +69,7 @@ export interface IMorphOddsReq {
 export type IMMTrait = {
   id: number;
   key: string;
-  class_label: "dom-codom" | "het-rec" | "pos-rec";
+  class_label: "dom-codom" | "het-rec" | "pos-rec" | "pos-other";
   name: string;
 };
 
