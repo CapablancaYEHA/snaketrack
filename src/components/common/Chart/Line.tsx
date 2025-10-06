@@ -15,7 +15,7 @@ interface ILine {
         weight: number;
       }[]
     | null;
-  feedData: IFeed[] | undefined;
+  feedData: IFeed[] | null;
   view: "ko" | "snake" | "both";
   scaleX?: any;
 }

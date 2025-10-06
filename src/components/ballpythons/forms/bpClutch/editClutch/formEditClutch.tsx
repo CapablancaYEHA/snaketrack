@@ -27,7 +27,6 @@ import style from "./styles.module.scss";
 
 const snakeId = signal<string | undefined>(undefined);
 
-// FIXME Условия отображения кнопок и компонентов
 interface IProp {
   clutch: IResBpClutch;
   initData: IClutchScheme;
@@ -301,8 +300,6 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
           </Text>
         )
       ) : null}
-
-      {isClosed && !isEmpty(clutch.finalised_ids) ? <Juveniles ids={clutch.finalised_ids} onPicClick={(i) => (snakeId.value = i)} title="Итоговые змееныши в кладке" /> : null}
 
       <MiniInfo
         opened={snakeId.value != null}

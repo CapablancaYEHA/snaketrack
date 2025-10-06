@@ -14,18 +14,20 @@ const wDel = signal<string[]>([]);
 const fDel = signal<string[]>([]);
 
 interface IProp {
-  feeding?: IFeed[];
-  weight?: {
-    date: string;
-    weight: number;
-  }[];
+  feeding: IFeed[] | null;
+  weight:
+    | {
+        date: string;
+        weight: number;
+      }[]
+    | null;
   table: any;
   id: string;
   opened: boolean;
   close: () => void;
 }
 export const EditStats: FC<IProp> = ({ opened, close, weight, feeding, table, id }) => {
-  const { mutate: update } = useSupaUpd<any>(table);
+  const { mutate: update, isPending } = useSupaUpd<any>(table);
 
   const enhWeight = useMemo(() => (weight ?? []).sort((a, b) => getDateObj(a.date!) - getDateObj(b.date!)).map((b) => ({ ...b, id: nanoid(3) })), [weight]);
   const enhFeed = useMemo(() => (feeding ?? []).sort((a, b) => getDateObj(a.feed_last_at!) - getDateObj(b.feed_last_at!)).map((b) => ({ ...b, id: nanoid(3) })), [feeding]);
@@ -49,6 +51,7 @@ export const EditStats: FC<IProp> = ({ opened, close, weight, feeding, table, id
       {
         onSuccess: () => {
           notif({ c: "green", t: "Успешно", m: "Данные статистики изменены" });
+          close();
         },
         onError: async (err) => {
           notif({
@@ -98,7 +101,7 @@ export const EditStats: FC<IProp> = ({ opened, close, weight, feeding, table, id
         ) : null}
       </Flex>
       <Flex mt="md">
-        <Button size="compact-xs" onClick={onSub} disabled={isEmpty(wDel) && isEmpty(fDel)} ml="auto" variant="filled" color="var(--mantine-color-error)">
+        <Button size="compact-xs" onClick={onSub} loading={isPending} disabled={isPending || (isEmpty(wDel) && isEmpty(fDel))} ml="auto" variant="filled" color="var(--mantine-color-error)">
           Удалить
         </Button>
       </Flex>

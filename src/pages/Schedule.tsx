@@ -11,11 +11,9 @@ import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { SkelShedule } from "@/components/common/skeletons";
 import { bpList, remList, remsByDate } from "@/api/ballpythons/configs";
 import { bcList } from "@/api/boa-constrictors/configs";
-import { ECategories, IRemResExt, IRemindersRes, IResSnakesList } from "@/api/common";
-import { useSupaGet, useUpdSnakeFeeding } from "@/api/hooks";
+import { ECategories, ESupabase, IFeedReq, IRemResExt, IRemindersRes, IResSnakesList } from "@/api/common";
+import { useSupaGet, useSupaUpd } from "@/api/hooks";
 import { getDateObj, getDateOfMonth, getIsSame } from "@/utils/time";
-
-const vis = localStorage.getItem("REMS_VISITED") as ECategories;
 
 const isFeedOpen = signal<boolean>(false);
 const curId = signal<string | undefined>(undefined);
@@ -32,15 +30,15 @@ export const Schedule = () => {
   const [rowSelection, setRowSelection] = useState<any>({});
 
   const handle = (a) => {
-    localStorage.setItem("REMS_VISITED", a);
     sigCurCat.value = a;
+    localStorage.setItem("REMS_VISITED", a);
     setRowSelection({});
   };
   const { data: bps, isPending: isBpPend, isRefetching: isBpRef, isError: isBpErr } = useSupaGet<IResSnakesList[]>(bpList(userId), sigCurCat.value === ECategories.BP);
   const { data: bcs, isPending: isBcPend, isRefetching: isBcRef, isError: isBcErr } = useSupaGet<IResSnakesList[]>(bcList(userId), sigCurCat.value === ECategories.BC);
   const { data: allRems, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
   const { data: remsThisDate, isFetching } = useSupaGet<IRemResExt[]>(remsByDate(sigCurDate.value), sigCurDate.value != null);
-  const { mutate: feed, isPending: isFeedPend } = useUpdSnakeFeeding(sigCurCat.value as ECategories);
+  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(sigCurCat.value === ECategories.BP ? ESupabase.BP : ESupabase.BC);
 
   const eventDates = (allRems ?? [])?.map((a) => getDateObj(a.scheduled_time));
   const hasEvent = (date: Date) => {
@@ -119,7 +117,7 @@ export const Schedule = () => {
           sigCurDate.value = undefined;
         }}
         selected={Object.keys(rowSelection)}
-        category={vis as ECategories}
+        category={sigCurCat.value}
         resetSelected={() => setRowSelection({})}
         remsThisDate={remsThisDate ?? []}
       />

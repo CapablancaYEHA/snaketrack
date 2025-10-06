@@ -5,6 +5,7 @@ import { ESupabase } from "../common";
 import { supaGet } from "../hooks";
 import { bcSingle } from "./configs";
 
+// TODO удалить здесь и в ДБ, после поднятия версии и когда пройдет норм время
 export const httpUpdBcFeeding = async (id, feed, mass, shed) => {
   const { data, error } = await supabase.rpc("append_feeding_boa_constrictor", {
     trg_snake: id,

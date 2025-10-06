@@ -16,8 +16,8 @@ import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { bcList } from "@/api/boa-constrictors/configs";
 import { useTransferBc } from "@/api/boa-constrictors/misc";
-import { ECategories, ESupabase, IResSnakesList } from "@/api/common";
-import { useSnakeGenes, useSupaDel, useSupaGet, useUpdSnakeFeeding } from "@/api/hooks";
+import { ECategories, ESupabase, IFeedReq, IResSnakesList } from "@/api/common";
+import { useSnakeGenes, useSupaDel, useSupaGet, useSupaUpd } from "@/api/hooks";
 import { makeListColumns } from "../common/const";
 import { maturityDict } from "../common/utils";
 
@@ -48,7 +48,7 @@ export function BcList() {
   const userId = localStorage.getItem("USER");
   const { data: genes } = useSnakeGenes(ECategories.BC);
   const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(bcList(userId), userId != null);
-  const { mutate: feed, isPending: isFeedPend } = useUpdSnakeFeeding(ECategories.BC);
+  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(ESupabase.BC);
   const { mutate: del, isPending: isDelPend } = useSupaDel(ESupabase.BC);
   const { mutate: trans, isPending: isTransPend } = useTransferBc();
   const [filt, setFilt] = useState<any[]>([]);

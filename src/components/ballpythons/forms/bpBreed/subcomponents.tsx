@@ -7,7 +7,8 @@ import { DatePickerInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { Controller, FormProvider, useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { ButtonSelect } from "@/components/common/ButtonSelect";
-import { fromMMtoPill, sortSnakeGenes } from "@/components/common/genetics/const";
+import { OddsElement } from "@/components/common/genetics/OddsCalc";
+import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
@@ -15,13 +16,20 @@ import { useCalcMmOdds } from "@/api/ballpythons/misc";
 import { ECategories, ESupabase } from "@/api/common";
 import { useSupaDel } from "@/api/hooks";
 import { notif } from "@/utils/notif";
-import { dateToSupabaseTime, getAge } from "@/utils/time";
+import { dateToSupabaseTime, getAge, getDateObj } from "@/utils/time";
 import { calcEstimatedDate, calcTimeleft, daysAfterOvul, daysAfterShed, daysCriticalThr, getPercentage } from "./breedUtils";
 import { IBreedScheme, eventsOpts, prepForMm, renderSelectOption, useUtilsBreed } from "./common";
 
 export const MaleEvent = ({ id, disabled }) => {
   const { control } = useFormContext();
-  const { fields, update, remove } = useFieldArray({ name: `malesEvents.${id}`, control });
+  const { fields, update, remove, replace } = useFieldArray<any, any, "id" | "event" | "date">({ name: `malesEvents.${id}`, control });
+  const track = fields.map((a) => a.date);
+
+  useEffect(() => {
+    const sortedItems = [...fields].sort((a, b) => getDateObj(a.date) - getDateObj(b.date));
+    replace(sortedItems);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(track), replace]);
 
   return (
     <Stack gap="xs">
@@ -59,9 +67,10 @@ export const MaleEvent = ({ id, disabled }) => {
                         disabled={disabled}
                         value={value ? new Date(value) : value}
                         onChange={(v) => {
-                          onChange(v);
+                          const tg = dateToSupabaseTime(v);
+                          onChange(tg);
                           const cur = fields[ind];
-                          update(ind, { ...cur, ...{ date: v } });
+                          update(ind, { ...cur, ...{ date: tg } });
                         }}
                         valueFormat="DD MMMM YYYY"
                         placeholder="Дата"
@@ -242,17 +251,7 @@ export const OddsInfo = ({ female, male }) => {
       <Drawer opened={isOpen} onClose={() => setOpen(false)} title="Возможные комбинации" offset={24} position="top">
         <Stack gap="lg" pt="xs">
           {data?.offspring?.map((o) => {
-            const { numerator, denominator } = o.probability;
-            return (
-              <Flex key={o.morph_name} direction="row" wrap="nowrap" gap="xs">
-                <Box fz="xs" flex="0 0 72px" p="0" component="section">{`${numerator}/${denominator} (${(numerator / denominator) * 100}%)`}</Box>
-                <Flex direction="row" wrap="wrap" gap="sm">
-                  {o.traits.map((t) => (
-                    <GenePill key={`${t.id}_${t.name}`} item={fromMMtoPill(t)} />
-                  ))}
-                </Flex>
-              </Flex>
-            );
+            return <OddsElement o={o} key={o.morph_name} />;
           })}
         </Stack>
       </Drawer>
@@ -267,17 +266,7 @@ export const OddsInfo = ({ female, male }) => {
         <Accordion.Panel>
           <Group gap="lg">
             {data?.offspring?.map((o) => {
-              const { numerator, denominator } = o.probability;
-              return (
-                <Flex key={o.morph_name} direction="row" wrap="nowrap" gap="md" w="100%" maw="100%">
-                  <Box fz="xs" flex="0 0 72px">{`${numerator}/${denominator} (${(numerator / denominator) * 100}%)`}</Box>
-                  <Flex direction="row" wrap="wrap" gap="sm">
-                    {o.traits.map((t) => (
-                      <GenePill key={`${t.id}_${t.name}`} item={fromMMtoPill(t)} />
-                    ))}
-                  </Flex>
-                </Flex>
-              );
+              return <OddsElement o={o} key={o.morph_name} />;
             })}
           </Group>
         </Accordion.Panel>
@@ -331,6 +320,14 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
           <Box w="100%" maw="100%">
             {selectedFem ? (
               <>
+                {!regFems?.map((a) => a.label).includes(femData?.snake_name) ? (
+                  <>
+                    <Text size="sm" fw={500}>
+                      Эта самка больше не у вас
+                    </Text>
+                    <Space h="sm" />
+                  </>
+                ) : null}
                 <BriefInfo snake={femData} />
                 <Space h="md" />
                 <FormProvider {...innerInstance}>
@@ -367,6 +364,14 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
             {malesData?.map((male, ind) => (
               <Fragment key={male?.id}>
                 <Box style={{ width: "100%", maxWidth: "100%" }}>
+                  {!regMales?.map((a) => a.label).includes(male?.snake_name) ? (
+                    <>
+                      <Text size="sm" fw={500}>
+                        Этот самец больше не у вас
+                      </Text>
+                      <Space h="sm" />
+                    </>
+                  ) : null}
                   <BriefInfo snake={male} />
                   <Space h="md" />
                   {isClutchMade ? null : (
@@ -426,18 +431,17 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
                       </Group>
                     ) : null}
                   </div>
-
-                  {isAddAllowed && !isClutchMade ? (
-                    <Box style={{ justifySelf: "flex-end" }}>
-                      <Space h="md" />
-                      <Button size="compact-xs" right={0} onClick={() => appendFetch({ snake: undefined })}>
-                        Добавить самца
-                      </Button>
-                    </Box>
-                  ) : null}
                 </Box>
               </Fragment>
             ))}
+            {isAddAllowed && !isClutchMade ? (
+              <Box style={{ alignSelf: "flex-end" }}>
+                <Space h="md" />
+                <Button size="compact-xs" right={0} onClick={() => appendFetch({ snake: undefined })}>
+                  Добавить самца
+                </Button>
+              </Box>
+            ) : null}
           </Stack>
         </Flex>
       </Group>

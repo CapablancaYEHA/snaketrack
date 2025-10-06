@@ -95,17 +95,19 @@ export type IFeed = {
 };
 
 export type IFeedReq = {
+  upd: {
+    feeding: IFeed[] | null;
+    weight: { date: string; weight: number; is_clean?: boolean | null } | null;
+    shed: string | null;
+  };
   id: string;
-  feed: IFeed | null;
-  mass: { date: string; weight: number; is_clean?: boolean | null } | null;
-  shed: string | null;
 };
 
 export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture" | "notes" | "last_action" | "from_clutch"> {
   id: string;
   owner_name: string;
   status: string;
-  feeding?: IFeed[];
+  feeding: IFeed[] | null;
   shed: string[] | null;
 }
 
@@ -139,7 +141,7 @@ export type TSnakeQueue = UseQueryResult<IResSnakesList[], ISupabaseErr>;
 export interface IGenesComp {
   id: number;
   label: string;
-  gene: "inc-dom" | "dom" | "rec" | "poly" | "other";
+  gene: "inc-dom" | "dom" | "rec" | "poly" | "other" | "combo";
   hasSuper: boolean;
   alias?: string | null;
   hasHet: boolean;

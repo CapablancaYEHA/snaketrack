@@ -24,7 +24,7 @@ export function useUtilsBreed({ fem, fetchFields }: IInit) {
     ECategories.BP,
   ) as TSnakeQueue;
 
-  const isAddAllowed = regMales?.length >= 1 && (fetchFields?.length || 0) < 3;
+  const isAddAllowed = regMales?.length >= 1 && malesData?.filter((a) => a)?.length === fetchFields?.length && (fetchFields?.length || 0) < 3;
 
   return { isListPen, isQuePen: isPending, isAddAllowed, femData, malesData, regFems, regMales };
 }

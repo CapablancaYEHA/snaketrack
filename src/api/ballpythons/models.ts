@@ -73,17 +73,18 @@ export type IMMTrait = {
   name: string;
 };
 
+export type IMMOff = {
+  probability: {
+    numerator: number;
+    denominator: number;
+  };
+  traits: IMMTrait[];
+  traits_count: number;
+  morph_name: string;
+  morph_link: null;
+};
 export interface IMorphOddsRes {
-  offspring: {
-    probability: {
-      numerator: number;
-      denominator: number;
-    };
-    traits: IMMTrait[];
-    traits_count: number;
-    morph_name: string;
-    morph_link: null;
-  }[];
+  offspring: IMMOff[];
 }
 
 export interface IReqCreateBpClutch {

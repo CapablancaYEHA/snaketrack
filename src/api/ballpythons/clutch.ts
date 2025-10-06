@@ -77,8 +77,6 @@ const httpUpdateBpClutch = async (a: IReqUpdBpClutch) => {
   return await supabase.from(ESupabase.BP_CL).update(a.upd).eq("id", a.id).throwOnError();
 };
 
-// TODO Триггер в БД на обновление таблицы связей запускать только для определенной роли юзера?
-// Для заплатившего юзера, чтобы не забивать таблицу и не строить потом древо для всех подряд
 interface IFinaliseClutchReq {
   snakes: IReqCreateSnake[];
   clutchUpd: IReqUpdBpClutch;

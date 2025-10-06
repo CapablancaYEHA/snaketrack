@@ -9,6 +9,8 @@ export const geneToColor = {
   rec: "#b7295a",
   poly: "#009bbb",
   other: "#737373",
+  combo: "#b8860b",
+  locality: "#7ab800",
 };
 
 export const redef = {

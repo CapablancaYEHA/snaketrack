@@ -16,8 +16,8 @@ export function Calculator() {
   });
 
   const handle = (a) => {
-    localStorage.setItem("CALCS_VISITED", a);
     sigCurCat.value = a;
+    localStorage.setItem("CALCS_VISITED", a);
     formInstance.resetField("parentOne");
     formInstance.resetField("parentTwo");
   };

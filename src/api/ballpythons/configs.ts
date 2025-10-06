@@ -1,8 +1,10 @@
 import { dateToSupabaseTime, getEndOf, getStartOf } from "@/utils/time";
 import { ESupabase } from "../common";
 
-/* FIXME? нужно ли создать view для этой таблицы? */
+/* FIXME? нужно ли создать view для таблицы змей */
 // FIXME Нужно прикрутить\проверить пагинацию к этой и подобным?
+
+// TODO к Спискам добавить neq("status", "archived")
 export const bpList = (userId) => ({ t: ESupabase.BP, f: (b) => b.eq("owner_id", userId), id: userId });
 
 export const bpSingle = (id) => ({ t: ESupabase.BP, f: (b) => b.eq("id", id).limit(1).single(), id });

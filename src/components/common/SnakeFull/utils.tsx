@@ -19,23 +19,23 @@ export const snakeFeedColumns = [
     cell: ({ row, cell }) => {
       const res = codeToFeeder(cell.getValue() as any);
       return row.original.regurgitation ? (
-        <Flex gap="md" wrap="wrap">
+        <Flex gap="xs" wrap="wrap">
           <Text fw={500} component="span" c="var(--mantine-color-error)">
             Срыг{" "}
           </Text>
           {res ? (
-            <Text component="span" size="xs" style={{ alignSelf: "center", whiteSpace: "nowrap" }}>
+            <Text component="span" size="xs" style={{ alignSelf: "center" }}>
               {res}
             </Text>
           ) : null}
         </Flex>
       ) : row.original.refuse ? (
-        <Flex gap="md" wrap="wrap">
+        <Flex gap="xs" wrap="wrap">
           <Text fw={500} component="span" c="#00FFC0">
             Отказ{" "}
           </Text>
           {res ? (
-            <Text component="span" size="xs" style={{ alignSelf: "center", whiteSpace: "nowrap" }}>
+            <Text component="span" size="xs" style={{ alignSelf: "center" }}>
               {res}
             </Text>
           ) : null}

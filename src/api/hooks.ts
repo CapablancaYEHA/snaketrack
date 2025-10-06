@@ -5,9 +5,7 @@ import { isEmpty } from "lodash-es";
 import { upgAlias } from "@/components/common/genetics/const";
 import { categToConfig } from "@/components/common/utils";
 import { toDataUrl } from "@/utils/supabaseImg";
-import { httpUpdBpFeeding } from "./ballpythons/snake";
-import { httpUpdBcFeeding } from "./boa-constrictors/snake";
-import { ECategories, ESupabase, IFeedReq, IGenesComp, ISupabaseErr, categoryToBaseTable, categoryToGenesTable } from "./common";
+import { ECategories, ESupabase, IGenesComp, ISupabaseErr, categoryToBaseTable, categoryToGenesTable } from "./common";
 
 interface IQueryConfig {
   t: ESupabase;
@@ -147,25 +145,6 @@ export function useBase64(url: string, flag: boolean) {
     queryKey: ["base64", url],
     queryFn: () => toDataUrl(url),
     enabled: flag,
-  });
-}
-
-export function useUpdSnakeFeeding(category: ECategories, invalWhat?: IInval) {
-  const func = category === ECategories.BP ? httpUpdBpFeeding : httpUpdBcFeeding;
-  const table = category === ECategories.BP ? ESupabase.BP : ESupabase.BC;
-  const queryClient = useQueryClient();
-  return useMutation<any, ISupabaseErr, IFeedReq>({
-    mutationFn: ({ id, feed, mass, shed }) => func(id, feed, mass, shed),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        ...(invalWhat
-          ? {
-              queryKey: invalWhat.qk,
-              exact: invalWhat.e,
-            }
-          : { queryKey: [table] }),
-      });
-    },
   });
 }
 

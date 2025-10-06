@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import * as yup from "yup";
-import { IFeedReq } from "@/api/common";
 import { dateToSupabaseTime } from "@/utils/time";
 
 export const defVals = {
@@ -80,7 +79,7 @@ export const schema = yup.object().shape(
 
 export type ISubmitType = yup.InferType<typeof schema>;
 
-export const prepareForSubmit = (fd: ISubmitType): Omit<IFeedReq, "id"> => {
+export const prepareForSubmit = (fd: ISubmitType) => {
   let time = dateToSupabaseTime(fd.feed_last_at);
 
   let feed = fd.feed_weight || fd.refuse || fd.regurgitation || fd.feed_ko ? { ...fd, feed_last_at: time } : null;

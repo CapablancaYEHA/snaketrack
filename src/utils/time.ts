@@ -27,7 +27,7 @@ export const getEndOf = (a: string | Dayjs | Date, unit: OpUnitType = "day") => 
 
 export const getDateShort = (a: string) => dayjs(a).locale("ru").format("D.MM.YY");
 export const getDateHours = (a: string) => dayjs(a).locale("ru").format("D MMMM YYYY HH:mm:ss");
-export const dateToSupabaseTime = (a: any): string => dayjs(a).format("YYYY-MM-DD HH:mm:ss.SSSZZ");
+export const dateToSupabaseTime = (a: any): string => dayjs(a).locale("ru").format("YYYY-MM-DD HH:mm:ss.SSSZZ");
 
 export const getAge = (a: string) => {
   const years = dayjs().diff(dayjs(a), "year");

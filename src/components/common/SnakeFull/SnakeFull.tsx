@@ -12,8 +12,8 @@ import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
 import { detailsDict, subjectDict } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { ECategories, ESupabase, IFeed, IResSnakesList, categoryToBaseTable } from "@/api/common";
-import { useUpdSnakeFeeding } from "@/api/hooks";
+import { ECategories, ESupabase, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
+import { useSupaUpd } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
 import { EditStats } from "../forms/editStats/formEditStats";
 import { snakeFeedColumns } from "./utils";
@@ -31,7 +31,7 @@ export function SnakeFull({ title, category, data }: IProp) {
   const location = useLocation();
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
-  const { mutate: feed, isPending: isFeedPend } = useUpdSnakeFeeding(category, { qk: [categoryToBaseTable[category], location.query.id], e: true });
+  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(category === ECategories.BP ? ESupabase.BP : ESupabase.BC);
 
   const feedTable = useMemo(() => data?.feeding?.filter((a) => Object.values(a)?.some((b) => b != null)), [toString(data?.feeding)]) as IFeed[];
 
@@ -98,11 +98,11 @@ export function SnakeFull({ title, category, data }: IProp) {
             <Select label="Детализация графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" />
             <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" />
           </Flex>
-          <ChartLine weightData={data?.weight} feedData={data.feeding} scaleX={scale} view={view} />
+          <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} />
         </>
       )}
-      <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} size="compact-xs" ml="auto">
-        Изменить данные
+      <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} disabled={isEmpty(data?.feeding) && isEmpty(data?.weight)} size="compact-xs" ml="auto">
+        Корректировать данные
       </Button>
       <StackTable
         data={feedTable ?? []}
