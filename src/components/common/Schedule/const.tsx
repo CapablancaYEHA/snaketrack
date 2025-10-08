@@ -1,5 +1,6 @@
 import fallback from "@assets/placeholder.png";
 import { Checkbox, Flex, Image, Stack } from "@mantine/core";
+import { signal } from "@preact/signals";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
 import { SexName } from "@/components/common/sexName";
@@ -7,6 +8,7 @@ import { ECategories, IRemResExt, IRemindersRes, IResSnakesList } from "@/api/co
 import { SnakeEventsBlock } from "../SnakeCard";
 import { RemControls } from "./remControls";
 
+export const snakesWithRems = signal<string[]>([]);
 const columnHelper = createColumnHelper<IResSnakesList>();
 
 export const makeScheduleColumns = ({ openFeed }) => [
@@ -16,8 +18,8 @@ export const makeScheduleColumns = ({ openFeed }) => [
       <Flex gap="sm" w="100%">
         <Checkbox
           size="sm"
-          checked={row.getIsSelected()}
-          disabled={!row.getCanSelect()}
+          checked={snakesWithRems.value?.includes(row.original.id) || row.getIsSelected()}
+          disabled={snakesWithRems.value?.includes(row.original.id) || !row.getCanSelect()}
           onChange={() => {
             const sel = row.getIsSelected();
             row.toggleSelected(!sel);

@@ -1,10 +1,10 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { Indicator, LoadingOverlay, SegmentedControl, Stack, Text, Title } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { Reminder } from "@/components/common/Schedule/Reminder";
-import { makeScheduleColumns } from "@/components/common/Schedule/const";
+import { makeScheduleColumns, snakesWithRems } from "@/components/common/Schedule/const";
 import { sigCurCat, sigCurDate, sigIsModOpen } from "@/components/common/Schedule/signals";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
@@ -48,6 +48,11 @@ export const Schedule = () => {
   const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : (bcs ?? []);
 
   const isSmthPending = (isBpPend && sigCurCat.value === ECategories.BP) || (isBcPend && sigCurCat.value === ECategories.BC) || isRemPending;
+
+  useEffect(() => {
+    snakesWithRems.value = allRems?.map((c) => c.snake);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allRems?.length]);
 
   return (
     <>

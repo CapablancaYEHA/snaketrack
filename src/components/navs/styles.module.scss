@@ -33,3 +33,28 @@
     }
   }
 }
+
+.footer {
+  position: fixed;
+  width: 100%;
+  max-width: 100%;
+  bottom: 0;
+  z-index: 5;
+
+  & > footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0 auto;
+    width: 100%;
+    max-width: $max-width;
+
+    & a {
+      color: var(--mantine-color-dark-2);
+      transition: color 0.3s ease-in-out;
+      &:hover {
+        color: var(--mantine-color-dark-1);
+      }
+    }
+  }
+}

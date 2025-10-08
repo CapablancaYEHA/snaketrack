@@ -8,6 +8,7 @@ import { signal } from "@preact/signals";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Pullable } from "./components/common/PullToRefresh/Pullable";
 import { Header } from "./components/navs/Header";
+import { Footer } from "./components/navs/Footer";
 import { Sidebar } from "./components/navs/sidebar/Sidebar";
 import { ProtectedRoute, protectedRoutes } from "./components/route";
 import { UseOneSignal } from "./lib/client_push";
@@ -63,6 +64,7 @@ export function App() {
           <Notifications />
           <Pullable />
           <Header session={session} />
+		  <Footer />
           {!isMwTablet ? <Sidebar /> : null}
           <Box className="box-main" component="main">
             <Router>
