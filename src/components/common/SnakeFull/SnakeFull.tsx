@@ -10,9 +10,9 @@ import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
-import { detailsDict, subjectDict } from "@/components/common/utils";
+import { categToTitle, detailsDict, subjectDict } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { ECategories, ESupabase, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
+import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
 import { EditStats } from "../forms/editStats/formEditStats";
@@ -31,7 +31,7 @@ export function SnakeFull({ title, category, data }: IProp) {
   const location = useLocation();
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
-  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(category === ECategories.BP ? ESupabase.BP : ESupabase.BC);
+  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[category]);
 
   const feedTable = useMemo(() => data?.feeding?.filter((a) => Object.values(a)?.some((b) => b != null)), [toString(data?.feeding)]) as IFeed[];
 
@@ -122,13 +122,13 @@ export function SnakeFull({ title, category, data }: IProp) {
           isFeedOpen.value = false;
         }}
         snake={data}
-        title={category === ECategories.BP ? "Региус" : "Удав"}
+        title={categToTitle[category]}
         handleAction={feed}
         isPend={isFeedPend}
       />
       <ChartBubble shedData={data.shed} />
       <Space h="lg" />
-      <EditStats table={category === ECategories.BP ? ESupabase.BP : ESupabase.BC} opened={isEditMode.value} close={() => (isEditMode.value = false)} weight={data?.weight ?? []} feeding={data?.feeding ?? []} id={location.query.id} />
+      <EditStats table={categoryToBaseTable[category]} opened={isEditMode.value} close={() => (isEditMode.value = false)} weight={data?.weight ?? []} feeding={data?.feeding ?? []} id={location.query.id} />
     </Stack>
   );
 }

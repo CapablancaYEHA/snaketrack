@@ -81,6 +81,11 @@ export const categToConfigList = {
   [ECategories.BC]: bcList,
 };
 
+export const categToTitle = {
+  [ECategories.BP]: "Региус",
+  [ECategories.BC]: "Удав",
+};
+
 export const calcStatusOptions = () => Object.entries(bStToLabel).map(([key, val]) => ({ label: val, value: key }));
 
 export const calcProjGenes = (arr?: IGenesComp[]) => {

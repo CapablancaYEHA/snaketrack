@@ -58,9 +58,10 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
           ...(mass ? { weight: (snake?.weight ?? []).concat(mass) } : {}),
           ...(feed ? { feeding: (snake?.feeding ?? []).concat(feed) } : {}),
           ...(shed ? { shed: (snake?.shed ?? []).concat(shed) } : {}),
-        } as any,
+          last_action: "update",
+        },
         id: snake?.id!,
-      },
+      } as any,
       {
         onSuccess: () => {
           notif({ c: "green", t: "Успешно", m: "Событие добавлено" });

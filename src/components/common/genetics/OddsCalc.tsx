@@ -5,7 +5,7 @@ import { isEmpty } from "lodash-es";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { prepForMm } from "@/components/ballpythons/forms/bpBreed/common";
 import { useCalcMmOdds } from "@/api/ballpythons/misc";
-import { IMMOff, IMorphOddsReq, IMorphOddsRes } from "@/api/ballpythons/models";
+import { IMMOff } from "@/api/ballpythons/models";
 import { ECategories } from "@/api/common";
 import { notif } from "@/utils/notif";
 import { emptyMMTrait, fromMMtoPill } from "./const";

@@ -1,16 +1,14 @@
-import { useState } from "preact/hooks";
 import { Flex, SegmentedControl, Stack, Text, Title } from "@mantine/core";
-import { BpList } from "@/components/ballpythons/BpList";
-import { BcList } from "@/components/boa-constrictors/BcList";
+import { SnakeCollectionList, catVisited } from "@/components/common/SnakeCollectionList";
 import { ECategories } from "@/api/common";
 
 export function SnakeCategories() {
   const vis = localStorage.getItem("SNAKES_VISITED");
-  const [val, setVal] = useState(vis ?? "");
+  catVisited.value = vis ?? ("" as any);
 
   const handle = (a) => {
+    catVisited.value = a;
     localStorage.setItem("SNAKES_VISITED", a);
-    setVal(a);
   };
 
   return (
@@ -22,7 +20,7 @@ export function SnakeCategories() {
       </Flex>
       <SegmentedControl
         size="xs"
-        value={val}
+        value={catVisited.value}
         onChange={handle}
         w="100%"
         maw="320px"
@@ -37,10 +35,8 @@ export function SnakeCategories() {
           },
         ]}
       />
-      {vis === ECategories.BP ? (
-        <BpList />
-      ) : vis === ECategories.BC ? (
-        <BcList />
+      {catVisited.value ? (
+        <SnakeCollectionList />
       ) : (
         <Text fw={500} component="span">
           Перейдите в категорию для просмотра коллекции

@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/client_supabase";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
-import { ECategories, EQuKeys, ESupabase, ISupabaseErr, ITransferReq, categoryToMmCat } from "../common";
+import { ECategories, EQuKeys, ESupabase, ISupabaseErr, categoryToMmCat } from "../common";
 import { IMorphOddsReq, IMorphOddsRes } from "./models";
 
 export const httpUldSnPic = (file: File, source: ESupabase) => {
@@ -18,31 +18,6 @@ export const httpReplacePic = async (url: string, file: File, source: ESupabase)
   }
   return supabase.storage.from(source).upload(`${userId}/${nanoid(8)}`, file);
 };
-
-// Transfer
-const httpTransferBp = async (userId: string, snekId: string) => {
-  const { data, error } = await supabase.rpc("transfer_snake", {
-    trg_user: userId,
-    trg_snake: snekId,
-    action: "transfer",
-  });
-  if (error) {
-    throw error;
-  }
-  return data;
-};
-
-export function useTransferBp() {
-  const queryClient = useQueryClient();
-  return useMutation<any, ISupabaseErr, ITransferReq>({
-    mutationFn: ({ userId, snekId }) => httpTransferBp(userId, snekId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [ESupabase.BP],
-      });
-    },
-  });
-}
 
 // Calc Odds
 const httpCalcMmOdds = async (p1: string[], p2: string[], categ): Promise<IMorphOddsRes> => {

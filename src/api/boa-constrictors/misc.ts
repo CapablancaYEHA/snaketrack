@@ -14,15 +14,3 @@ const httpTransferBc = async (userId: string, snekId: string) => {
   }
   return data;
 };
-
-export function useTransferBc() {
-  const queryClient = useQueryClient();
-  return useMutation<any, ISupabaseErr, ITransferReq>({
-    mutationFn: ({ userId, snekId }) => httpTransferBc(userId, snekId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [ESupabase.BC],
-      });
-    },
-  });
-}

@@ -5,7 +5,7 @@ import { isEmpty } from "lodash-es";
 import { upgAlias } from "@/components/common/genetics/const";
 import { categToConfig } from "@/components/common/utils";
 import { toDataUrl } from "@/utils/supabaseImg";
-import { ECategories, ESupabase, IGenesComp, ISupabaseErr, categoryToBaseTable, categoryToGenesTable } from "./common";
+import { ECategories, ESupabase, IGenesComp, ISupabaseErr, ITransferReq, categoryToBaseTable, categoryToGenesTable, categoryToTransferFunc } from "./common";
 
 interface IQueryConfig {
   t: ESupabase;
@@ -162,5 +162,29 @@ export function useSnakeGenes(cat: ECategories) {
     queryFn: () => httpGetSnakeGenes(cat),
     enabled: true,
     staleTime: 60000 * 60 * 4, // 4 часа
+  });
+}
+
+const httpTransferSnake = async (userId: string, snekId: string, category) => {
+  const { data, error } = await supabase.rpc(categoryToTransferFunc[category], {
+    trg_user: userId,
+    trg_snake: snekId,
+    action: "transfer",
+  });
+  if (error) {
+    throw error;
+  }
+  return data;
+};
+
+export function useTransferSnake(cat: ECategories) {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, ITransferReq>({
+    mutationFn: ({ userId, snekId }) => httpTransferSnake(userId, snekId, cat),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [categoryToBaseTable[cat]],
+      });
+    },
   });
 }

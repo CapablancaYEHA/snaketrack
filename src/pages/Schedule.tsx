@@ -9,9 +9,11 @@ import { sigCurCat, sigCurDate, sigIsModOpen } from "@/components/common/Schedul
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { SkelShedule } from "@/components/common/skeletons";
-import { bpList, remList, remsByDate } from "@/api/ballpythons/configs";
+import { categToTitle } from "@/components/common/utils";
+import { bpList } from "@/api/ballpythons/configs";
 import { bcList } from "@/api/boa-constrictors/configs";
-import { ECategories, ESupabase, IFeedReq, IRemResExt, IRemindersRes, IResSnakesList } from "@/api/common";
+import { ECategories, IFeedReq, IRemResExt, IRemindersRes, IResSnakesList, categoryToBaseTable } from "@/api/common";
+import { remList, remsByDate } from "@/api/common_configs";
 import { useSupaGet, useSupaUpd } from "@/api/hooks";
 import { getDateObj, getDateOfMonth, getIsSame } from "@/utils/time";
 
@@ -38,13 +40,14 @@ export const Schedule = () => {
   const { data: bcs, isPending: isBcPend, isRefetching: isBcRef, isError: isBcErr } = useSupaGet<IResSnakesList[]>(bcList(userId), sigCurCat.value === ECategories.BC);
   const { data: allRems, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
   const { data: remsThisDate, isFetching } = useSupaGet<IRemResExt[]>(remsByDate(sigCurDate.value), sigCurDate.value != null);
-  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(sigCurCat.value === ECategories.BP ? ESupabase.BP : ESupabase.BC);
+  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[sigCurCat.value]);
 
   const eventDates = (allRems ?? [])?.map((a) => getDateObj(a.scheduled_time));
   const hasEvent = (date: Date) => {
     return eventDates.some((eventDate) => getIsSame(eventDate, date));
   };
 
+  // FIXME вот с этим чо делать
   const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : (bcs ?? []);
 
   const isSmthPending = (isBpPend && sigCurCat.value === ECategories.BP) || (isBcPend && sigCurCat.value === ECategories.BC) || isRemPending;
@@ -133,7 +136,7 @@ export const Schedule = () => {
           isFeedOpen.value = false;
         }}
         snake={dataToUse?.find((b) => b.id === curId.value)}
-        title={sigCurCat.value === ECategories.BP ? "Региус" : "Удав"}
+        title={categToTitle[sigCurCat.value]}
         handleAction={feed}
         isPend={isFeedPend}
       />

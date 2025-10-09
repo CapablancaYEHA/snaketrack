@@ -39,10 +39,20 @@ export const categoryToBaseTable = {
   [ECategories.BC]: ESupabase.BC,
 };
 
+export const categoryToBucket = {
+  [ECategories.BP]: ESupabase.BP_PICS,
+  [ECategories.BC]: ESupabase.BC_PICS,
+};
+
 export const categoryToMmCat = {
   [ECategories.BP]: "bps",
   [ECategories.BC]: "bcs",
   [ECategories.CS]: "corns",
+};
+
+export const categoryToTransferFunc = {
+  [ECategories.BP]: "transfer_snake",
+  [ECategories.BC]: "transfer_boa_constrictor",
 };
 
 export const enum EQuKeys {
@@ -94,11 +104,12 @@ export type IFeed = {
   regurgitation?: boolean;
 };
 
-export type IFeedReq = {
+export type IFeedReq = Omit<IUpdReq, "feeding" | "weight" | "shed"> & {
   upd: {
     feeding: IFeed[] | null;
     weight: { date: string; weight: number; is_clean?: boolean | null } | null;
     shed: string | null;
+    last_action: "create" | "transfer" | "update" | "archive";
   };
   id: string;
 };

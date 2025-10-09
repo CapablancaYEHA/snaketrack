@@ -14,19 +14,6 @@ export const calcFeedEvent = (feed?: IFeed, size = "sm") => {
     temp = `${temp + getDate(feed?.feed_last_at!)}\n${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г\n` : ""}${feed?.feed_ko ? `${codeToFeeder(feed.feed_ko)}` : ""}`;
   }
 
-  if (feed?.refuse) {
-    return (
-      <>
-        <Text style={{ whiteSpace: "pre-wrap" }} component="span" size={size}>
-          {temp}
-        </Text>
-        {"  "}
-        <Text fw={500} component="span" c="#00FFC0" size={size}>
-          Отказ
-        </Text>
-      </>
-    );
-  }
   if (feed?.regurgitation) {
     return (
       <>
@@ -36,6 +23,20 @@ export const calcFeedEvent = (feed?: IFeed, size = "sm") => {
         {"  "}
         <Text fw={500} component="span" c="var(--mantine-color-error)" size={size}>
           Срыг
+        </Text>
+      </>
+    );
+  }
+
+  if (feed?.refuse) {
+    return (
+      <>
+        <Text style={{ whiteSpace: "pre-wrap" }} component="span" size={size}>
+          {temp}
+        </Text>
+        {"  "}
+        <Text fw={500} component="span" c="#00FFC0" size={size}>
+          Отказ
         </Text>
       </>
     );

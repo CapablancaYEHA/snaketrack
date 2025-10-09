@@ -4,7 +4,7 @@ import { Button, Checkbox, Flex, Modal, Stack, Text, Title } from "@mantine/core
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { nanoid } from "nanoid";
-import { IFeed } from "@/api/common";
+import { IFeed, IFeedReq } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { getDate, getDateObj } from "@/utils/time";
@@ -27,7 +27,7 @@ interface IProp {
   close: () => void;
 }
 export const EditStats: FC<IProp> = ({ opened, close, weight, feeding, table, id }) => {
-  const { mutate: update, isPending } = useSupaUpd<any>(table);
+  const { mutate: update, isPending } = useSupaUpd<Partial<IFeedReq>>(table);
 
   const enhWeight = useMemo(() => (weight ?? []).sort((a, b) => getDateObj(a.date!) - getDateObj(b.date!)).map((b) => ({ ...b, id: nanoid(3) })), [weight]);
   const enhFeed = useMemo(() => (feeding ?? []).sort((a, b) => getDateObj(a.feed_last_at!) - getDateObj(b.feed_last_at!)).map((b) => ({ ...b, id: nanoid(3) })), [feeding]);
@@ -45,7 +45,8 @@ export const EditStats: FC<IProp> = ({ opened, close, weight, feeding, table, id
         upd: {
           ...(!isEmpty(wDel) ? { weight: enhWeight?.filter((a) => !wDel.value.includes(a.id)) } : {}),
           ...(!isEmpty(fDel) ? { feeding: enhFeed?.filter((a) => !fDel.value.includes(a.id)) } : {}),
-        },
+          last_action: "update",
+        } as any,
         id,
       },
       {

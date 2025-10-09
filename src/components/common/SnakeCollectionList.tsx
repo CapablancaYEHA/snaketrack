@@ -7,50 +7,34 @@ import { debounce, isEmpty } from "lodash-es";
 import { sexHardcode } from "@/components/ballpythons/forms/bpBreed/common";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
-import { tableFiltMulti, tableFiltSingle } from "@/components/common/StackTable/filters";
-import { DeleteBp } from "@/components/common/forms/deleteSnake/formDeleteBp";
+import { DeleteSnake } from "@/components/common/forms/deleteSnake/formDeleteSnake";
 import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { TransferSnake } from "@/components/common/forms/transferSnake/formTransferSnake";
 import { SkelTable } from "@/components/common/skeletons";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { bcList } from "@/api/boa-constrictors/configs";
-import { useTransferBc } from "@/api/boa-constrictors/misc";
-import { ECategories, ESupabase, IFeedReq, IResSnakesList } from "@/api/common";
-import { useSnakeGenes, useSupaDel, useSupaGet, useSupaUpd } from "@/api/hooks";
-import { makeListColumns } from "../common/const";
-import { maturityDict } from "../common/utils";
+import { ECategories, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
+import { useSnakeGenes, useSupaDel, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
+import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
+import { makeListColumns } from "./const";
+import { categToConfigList, categToTitle, maturityDict } from "./utils";
+
+export const catVisited = signal<ECategories>("" as any);
 
 const curId = signal<string | undefined>(undefined);
 const isTransOpen = signal<boolean>(false);
 const isFeedOpen = signal<boolean>(false);
 const isDeleteOpen = signal<boolean>(false);
 
-const columns = makeListColumns({
-  openFeed: (uuid) => {
-    isFeedOpen.value = true;
-    curId.value = uuid;
-  },
-  openTrans: (uuid) => {
-    isTransOpen.value = true;
-    curId.value = uuid;
-  },
-  openDelete: (uuid) => {
-    isDeleteOpen.value = true;
-    curId.value = uuid;
-  },
-  category: ECategories.BC,
-});
-
-export function BcList() {
+export function SnakeCollectionList() {
   const isMinSm = useMediaQuery(startSm);
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
-  const { data: genes } = useSnakeGenes(ECategories.BC);
-  const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(bcList(userId), userId != null);
-  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(ESupabase.BC);
-  const { mutate: del, isPending: isDelPend } = useSupaDel(ESupabase.BC);
-  const { mutate: trans, isPending: isTransPend } = useTransferBc();
+  const { data: genes } = useSnakeGenes(catVisited.value);
+  const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(categToConfigList[catVisited.value](userId), userId != null);
+  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[catVisited.value]);
+  const { mutate: del, isPending: isDelPend } = useSupaDel(categoryToBaseTable[catVisited.value]);
+  const { mutate: trans, isPending: isTransPend } = useTransferSnake(catVisited.value);
   const [filt, setFilt] = useState<any[]>([]);
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
@@ -63,10 +47,10 @@ export function BcList() {
   return (
     <>
       <Flex wrap="nowrap" maw="100%" w="100%">
-        <Button color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} variant={isFilterNull ? "default" : "filled"} onClick={open} size="compact-xs">
+        <Button variant={isFilterNull ? "default" : "filled"} color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} onClick={open} size="compact-xs">
           Фильтры {isFilterNull ? "" : "применены"}
         </Button>
-        <Btn fullWidth={false} component="a" href="/snakes/add/boa-constrictors" ml="auto">
+        <Btn fullWidth={false} component="a" href={`/snakes/add/${catVisited.value}`} ml="auto">
           Добавить
         </Btn>
       </Flex>
@@ -77,13 +61,34 @@ export function BcList() {
           Произошла ошибка запроса
         </Text>
       ) : isEmpty(snakes) ? (
-        <Text fw={500}>Удавов у вас нет</Text>
+        <Text fw={500}>{categToTitle[catVisited.value]}ов у вас нет</Text>
       ) : (
         <>
           <Text size="xs" ta="left" w="100%">
             Закрепленная колонка отображает дополнительное меню на ховер
           </Text>
-          <StackTable data={snakes ?? []} columns={columns} columnFilters={filt} setColumnFilters={setFilt} globalFilter={globalFilter} setGlobalFilter={debSearch} />
+          <StackTable
+            data={snakes ?? []}
+            columns={makeListColumns({
+              openFeed: (uuid) => {
+                isFeedOpen.value = true;
+                curId.value = uuid;
+              },
+              openTrans: (uuid) => {
+                isTransOpen.value = true;
+                curId.value = uuid;
+              },
+              openDelete: (uuid) => {
+                isDeleteOpen.value = true;
+                curId.value = uuid;
+              },
+              category: catVisited.value,
+            })}
+            columnFilters={filt}
+            setColumnFilters={setFilt}
+            globalFilter={globalFilter}
+            setGlobalFilter={debSearch}
+          />
         </>
       )}
       <TransferSnake
@@ -104,11 +109,11 @@ export function BcList() {
           isFeedOpen.value = false;
         }}
         snake={target}
-        title="Удав"
+        title={categToTitle[catVisited.value]}
         handleAction={feed}
         isPend={isFeedPend}
       />
-      <DeleteBp
+      <DeleteSnake
         opened={isDeleteOpen.value}
         close={() => {
           curId.value = undefined;

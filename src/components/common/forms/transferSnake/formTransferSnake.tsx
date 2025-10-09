@@ -29,7 +29,6 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, hand
   const { data, isFetching } = useUserSuggestion(search);
   const sugg = (data ?? [])?.map((a) => ({ label: a.username, value: a.createdat, id: a.id }));
 
-  //   const { mutate, isPending } = useTransferBp();
   const subm = () => {
     handleTrans(
       { userId: breeder?.id!, snekId },
@@ -50,7 +49,9 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, hand
   return (
     <Modal opened={opened} onClose={close} centered transitionProps={{ transition: "fade", duration: 200 }} title={<Title order={3}>Передать змею бридеру</Title>}>
       <Text>
-        Новым хозяином змейки{" "}
+        Перадача осуществляется со всей статистикой, вы больше не будете иметь доступа к изменению данных.
+        <br />
+        Новым хозяимном змейки{" "}
         <Text fw={500} span>
           {snekName}
         </Text>
@@ -80,7 +81,7 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, hand
         )}
       />
       <Space h="xl" />
-      <Btn onClick={subm} disabled={isEmpty(breeder)} loading={isPend}>
+      <Btn onClick={subm} disabled={isEmpty(breeder) || isPend} loading={isPend}>
         Передать
       </Btn>
     </Modal>

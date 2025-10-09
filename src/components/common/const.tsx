@@ -35,7 +35,8 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) =
       id: "sex",
       header: undefined,
       cell: undefined,
-      filterFn: (row: any, columnId, filterValue) => (!filterValue[0] ? true : filterValue.includes(row.original.sex)),
+      enableColumnFilter: true,
+      filterFn: "equals",
     }),
     colHelper.accessor("feeding", {
       header: () => "События",

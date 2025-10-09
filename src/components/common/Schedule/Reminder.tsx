@@ -45,6 +45,7 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
     true,
   );
 
+  // FIXME делать сразу SQL запросом?
   const dataBp = remsThisDate?.filter((a) => a.category === ECategories.BP);
   const dataBc = remsThisDate?.filter((a) => a.category === ECategories.BC);
 

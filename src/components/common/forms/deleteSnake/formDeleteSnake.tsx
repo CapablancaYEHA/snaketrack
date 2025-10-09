@@ -13,7 +13,7 @@ type IProp = {
   isPend: boolean;
 };
 
-export const DeleteBp: FC<IProp> = ({ opened, close, target, handleAction, isPend }) => {
+export const DeleteSnake: FC<IProp> = ({ opened, close, target, handleAction, isPend }) => {
   const subm = () => {
     handleAction(
       { id: target!.id },
@@ -36,7 +36,7 @@ export const DeleteBp: FC<IProp> = ({ opened, close, target, handleAction, isPen
       </Title>
       <Space h="xs" />
       <Text component="div">
-        Все данные по змее
+        Все данные по змее{" "}
         {target ? (
           <Box pos="relative" top="3px" display="inline">
             <SexName sex={target.sex} name={target.snake_name} size="md" />
