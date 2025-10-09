@@ -1,10 +1,14 @@
 import { FC, useState } from "preact/compat";
-import { Box, Button, Flex, Space, Stack, Text } from "@mantine/core";
+import { Fragment } from "preact/jsx-runtime";
+import { Box, Button, Divider, Flex, Space, Stack, Text } from "@mantine/core";
+import { isEmpty } from "lodash-es";
 import { SexName } from "@/components/common/sexName";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { IRemResExt } from "@/api/common";
+import { ECategories, IRemResExt } from "@/api/common";
 import { declWord } from "@/utils/other";
 import { dateAddDays, getDateCustom } from "@/utils/time";
+import { listReminderContents } from "./const";
+import { sigDeletedId } from "./signals";
 
 interface IProp {
   rem?: IRemResExt;
@@ -58,4 +62,28 @@ export const SnakeRem: FC<IProp> = ({ rem, handleDel, isPend }) => {
       </Stack>
     </Flex>
   );
+};
+
+const labels = ["Региусы", "Удавы", "Маисы"];
+interface IRemContentProp {
+  remsThisDate?: IRemResExt[];
+  del: (id: string) => void;
+  isDelPend: boolean;
+}
+export const RemContentCateg: FC<IRemContentProp> = ({ remsThisDate, del, isDelPend }) => {
+  const result = listReminderContents(Object.values(ECategories), remsThisDate);
+
+  return result.map((r, index, arr) => {
+    return !isEmpty(r) ? (
+      <Fragment key={`${labels[index]}_${index}`}>
+        <Divider w="100%" maw="100%" label={labels[index]} labelPosition="center" mt={index > 0 && !isEmpty(arr[index - 1]) ? "xs" : undefined} />
+        {r?.map((a, ind, self) => (
+          <Fragment key={a.id}>
+            <SnakeRem rem={a} handleDel={del} key={a.id} isPend={isDelPend && a.id === sigDeletedId.value} />
+            {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
+          </Fragment>
+        ))}
+      </Fragment>
+    ) : null;
+  });
 };

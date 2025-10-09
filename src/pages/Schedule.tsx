@@ -14,6 +14,7 @@ import { bpList } from "@/api/ballpythons/configs";
 import { bcList } from "@/api/boa-constrictors/configs";
 import { ECategories, IFeedReq, IRemResExt, IRemindersRes, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { remList, remsByDate } from "@/api/common_configs";
+import { csList } from "@/api/corn-snakes/configs";
 import { useSupaGet, useSupaUpd } from "@/api/hooks";
 import { getDateObj, getDateOfMonth, getIsSame } from "@/utils/time";
 
@@ -36,8 +37,10 @@ export const Schedule = () => {
     localStorage.setItem("REMS_VISITED", a);
     setRowSelection({});
   };
+  // FIXME переписать на один хук?
   const { data: bps, isPending: isBpPend, isRefetching: isBpRef, isError: isBpErr } = useSupaGet<IResSnakesList[]>(bpList(userId), sigCurCat.value === ECategories.BP);
   const { data: bcs, isPending: isBcPend, isRefetching: isBcRef, isError: isBcErr } = useSupaGet<IResSnakesList[]>(bcList(userId), sigCurCat.value === ECategories.BC);
+  const { data: css, isPending: isCsPend, isRefetching: isCsRef, isError: isCsErr } = useSupaGet<IResSnakesList[]>(csList(userId), sigCurCat.value === ECategories.CS);
   const { data: allRems, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
   const { data: remsThisDate, isFetching } = useSupaGet<IRemResExt[]>(remsByDate(sigCurDate.value), sigCurDate.value != null);
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[sigCurCat.value]);
@@ -47,10 +50,9 @@ export const Schedule = () => {
     return eventDates.some((eventDate) => getIsSame(eventDate, date));
   };
 
-  // FIXME вот с этим чо делать
-  const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : (bcs ?? []);
+  const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : sigCurCat.value === ECategories.BC ? (bcs ?? []) : (css ?? []);
 
-  const isSmthPending = (isBpPend && sigCurCat.value === ECategories.BP) || (isBcPend && sigCurCat.value === ECategories.BC) || isRemPending;
+  const isSmthPending = (isBpPend && sigCurCat.value === ECategories.BP) || (isBcPend && sigCurCat.value === ECategories.BC) || (isCsPend && sigCurCat.value === ECategories.CS) || isRemPending;
 
   useEffect(() => {
     snakesWithRems.value = allRems?.map((c) => c.snake);
@@ -64,11 +66,11 @@ export const Schedule = () => {
           Напоминания о кормлениях
         </Title>
         {isSmthPending ? <SkelShedule /> : null}
-        {isBpErr || isBcErr || isRemError ? (
+        {isBpErr || isBcErr || isCsErr || isRemError ? (
           <Text fw={500} c="var(--mantine-color-error)">
             Произошла ошибка запроса
           </Text>
-        ) : isEmpty(bps) && isEmpty(bcs) ? (
+        ) : isEmpty(bps) && isEmpty(bcs) && isEmpty(css) ? (
           <Text fw={500}>Нет змеек, для которых можно было бы составить расписание</Text>
         ) : (
           <>
@@ -110,6 +112,10 @@ export const Schedule = () => {
                   label: "Удавы",
                   value: ECategories.BC,
                 },
+                {
+                  label: "Маисы",
+                  value: ECategories.CS,
+                },
               ]}
             />
             <Text size="xs">Закрепленная колонка отображает дополнительное меню на ховер</Text>
@@ -141,7 +147,7 @@ export const Schedule = () => {
         isPend={isFeedPend}
       />
 
-      {isBpRef || isBcRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+      {isBpRef || isBcRef || isCsRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </>
   );
 };

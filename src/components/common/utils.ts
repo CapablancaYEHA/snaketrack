@@ -3,6 +3,7 @@ import { bpList, bpSingle } from "@/api/ballpythons/configs";
 import { EBreedStat } from "@/api/ballpythons/models";
 import { bcList, bcSingle } from "@/api/boa-constrictors/configs";
 import { ECategories, IGenesComp } from "@/api/common";
+import { csList, csSingle } from "@/api/corn-snakes/configs";
 
 export const detailsDict = [
   { label: "Год", value: "years" },
@@ -74,16 +75,19 @@ export const maturityDict = [
 export const categToConfig = {
   [ECategories.BP]: bpSingle,
   [ECategories.BC]: bcSingle,
+  [ECategories.CS]: csSingle,
 };
 
 export const categToConfigList = {
   [ECategories.BP]: bpList,
   [ECategories.BC]: bcList,
+  [ECategories.CS]: csList,
 };
 
 export const categToTitle = {
   [ECategories.BP]: "Региус",
   [ECategories.BC]: "Удав",
+  [ECategories.CS]: "Маис",
 };
 
 export const calcStatusOptions = () => Object.entries(bStToLabel).map(([key, val]) => ({ label: val, value: key }));

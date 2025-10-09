@@ -1,5 +1,4 @@
 import { FC } from "preact/compat";
-import { Fragment } from "preact/jsx-runtime";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Divider, Flex, Loader, Modal, NumberInput, Space, Stack, Text, Title } from "@mantine/core";
 import { isEmpty } from "lodash-es";
@@ -13,7 +12,7 @@ import { declWord } from "@/utils/other";
 import { dateToSupabaseTime, getDate, getIsSame } from "@/utils/time";
 import { makeSubmit } from "./const";
 import { sigCurDate, sigDeletedId, sigIsModOpen } from "./signals";
-import { SnakeRem } from "./subcomponents";
+import { RemContentCateg } from "./subcomponents";
 
 interface IProp {
   snakesInRems: string[];
@@ -44,10 +43,6 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
     },
     true,
   );
-
-  // FIXME делать сразу SQL запросом?
-  const dataBp = remsThisDate?.filter((a) => a.category === ECategories.BP);
-  const dataBc = remsThisDate?.filter((a) => a.category === ECategories.BC);
 
   const closeAndRes = () => {
     sigDeletedId.value = undefined;
@@ -105,28 +100,7 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
             <>
               <Stack gap="xs" align="start">
                 <Text size="sm">{getIsSame(new Date(), sigCurDate.value) ? "Сегодня по плану кормление для" : "В эту дату кормление для"}</Text>
-                {!isEmpty(dataBp) ? (
-                  <>
-                    <Divider w="100%" maw="100%" label="Региусы" labelPosition="center" />
-                    {dataBp?.map((a, ind, self) => (
-                      <Fragment key={a.id}>
-                        <SnakeRem rem={a} handleDel={del} key={a.id} isPend={isDelPend && a.id === sigDeletedId.value} />
-                        {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
-                      </Fragment>
-                    ))}
-                  </>
-                ) : null}
-                {!isEmpty(dataBc) ? (
-                  <>
-                    {!isEmpty(dataBp) ? <Divider w="100%" maw="100%" label="Удавы" labelPosition="center" mt="xs" /> : null}
-                    {dataBc?.map((b, ind, self) => (
-                      <Fragment key={b.id}>
-                        <SnakeRem rem={b} handleDel={del} key={b.id} isPend={isDelPend && b.id === sigDeletedId.value} />
-                        {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
-                      </Fragment>
-                    ))}
-                  </>
-                ) : null}
+                <RemContentCateg remsThisDate={remsThisDate} del={del} isDelPend={isDelPend} />
               </Stack>
               {!isEmpty(selected) ? (
                 <>

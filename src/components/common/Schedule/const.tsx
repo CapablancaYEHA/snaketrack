@@ -93,3 +93,5 @@ export const composeSnakesType = (dt: IRemResExt[]) => {
 
   return res;
 };
+
+export const listReminderContents = (categories: ECategories[], remsThisDate?: IRemResExt[]) => categories.map((categ) => remsThisDate?.filter((b) => b.category === categ));

@@ -1,6 +1,6 @@
 import { UseQueryResult } from "@tanstack/react-query";
 
-export const enum ECategories {
+export enum ECategories {
   BP = "ball-pythons",
   BC = "boa-constrictors",
   CS = "corn-snakes",
@@ -11,9 +11,10 @@ export const enum ESupabase {
   BP = "ballpythons",
   BP_BREED = "bp_breeding",
   BP_CL = "bp_clutch",
-  PROF = "profiles",
   BC = "boa_constrictors",
+  CS = "corn_snakes",
   REM = "feed_reminders",
+  PROF = "profiles",
   // views
   BP_BREED_V = "user_breeding_view",
   BP_CL_V = "clutch_view",
@@ -26,6 +27,7 @@ export const enum ESupabase {
   // storage
   BP_PICS = "bp-pics",
   BC_PICS = "bc-pics",
+  CS_PICS = "cs-pics",
 }
 
 export const categoryToGenesTable = {
@@ -37,11 +39,13 @@ export const categoryToGenesTable = {
 export const categoryToBaseTable = {
   [ECategories.BP]: ESupabase.BP,
   [ECategories.BC]: ESupabase.BC,
+  [ECategories.CS]: ESupabase.CS,
 };
 
 export const categoryToBucket = {
   [ECategories.BP]: ESupabase.BP_PICS,
   [ECategories.BC]: ESupabase.BC_PICS,
+  [ECategories.CS]: ESupabase.CS_PICS,
 };
 
 export const categoryToMmCat = {
@@ -53,6 +57,7 @@ export const categoryToMmCat = {
 export const categoryToTransferFunc = {
   [ECategories.BP]: "transfer_snake",
   [ECategories.BC]: "transfer_boa_constrictor",
+  [ECategories.CS]: "transfer_corn_snake",
 };
 
 export const enum EQuKeys {

@@ -33,6 +33,10 @@ export function SnakeCategories() {
             label: "Удавы",
             value: ECategories.BC,
           },
+          {
+            label: "Маисы",
+            value: ECategories.CS,
+          },
         ]}
       />
       {catVisited.value ? (
