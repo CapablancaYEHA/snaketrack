@@ -27,7 +27,7 @@ export const makeHatchlingPlaceholder = ({ id, ind, date }): IHatchling => {
     snake_name: `${id}_${ind + 1}`,
     date_hatch: date,
     sex: null,
-    status: "alive",
+    status: "collection",
     genes: [{ label: "Normal", gene: "other", hasSuper: false, hasHet: false, id: -1 }],
   };
 };

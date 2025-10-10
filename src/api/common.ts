@@ -72,6 +72,8 @@ export interface ISupabaseErr {
   hint?: string | null;
 }
 
+export type ISnakeStatuses = "collection" | "isolation" | "for_sale" | "sold" | "reserved" | "deceased" | "archived";
+
 export interface IReqCreateSnake {
   snake_name: string;
   sex: "male" | "female" | null;
@@ -92,7 +94,7 @@ export interface IReqCreateSnake {
   from_clutch?: string | null;
   mother_id?: string | null;
   father_id?: string | null;
-  status?: "alive" | "archived";
+  status?: ISnakeStatuses;
 }
 
 export type IUpdReq = {

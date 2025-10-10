@@ -18,7 +18,7 @@ export const stdErr = (e: any) =>
   });
 
 export const statusHardcode = [
-  { label: "ОК", value: "alive" },
+  { label: "ОК", value: "collection" },
   { label: "Не выжил", value: "deceased" },
 ];
 

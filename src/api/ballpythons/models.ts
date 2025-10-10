@@ -1,4 +1,4 @@
-import { IGenesComp } from "../common";
+import { IGenesComp, ISnakeStatuses } from "../common";
 
 enum EEvents {
   "pairing" = "pairing",
@@ -106,7 +106,7 @@ export interface IHatchling {
   date_hatch: string;
   sex: "male" | "female" | null;
   genes: IGenesComp[];
-  status: "alive" | "deceased";
+  status: Extract<ISnakeStatuses, "collection" | "deceased">;
 }
 
 export enum EClSt {

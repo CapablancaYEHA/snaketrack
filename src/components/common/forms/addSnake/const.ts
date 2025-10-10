@@ -75,7 +75,7 @@ export const prepareForSubmit = (a): Omit<IReqCreateSnake, "picture"> => {
         ];
   let d = {
     ...a,
-    status: "alive",
+    status: "collection",
     genes,
     date_hatch: dateToSupabaseTime(a.date_hatch),
     feeding: [

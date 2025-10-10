@@ -37,6 +37,27 @@ export const breedToColor = {
   [EBreedStat.CLUTCH]: "#F5F5DC",
 };
 
+// TODO использовать
+const snakeStatusToColor = {
+  collection: "#9382ff",
+  isolation: "#ff95ed",
+  for_sale: "#2ebc7b",
+  sold: "#af2e2e",
+  reserved: "#ffd74a",
+  deceased: "#c4c4c4",
+  archived: "#ff7c42",
+};
+
+const snakeStatusToLabel = {
+  collection: "Коллекция",
+  isolation: "Карантин",
+  for_sale: "Продаётся",
+  sold: "Продан",
+  reserved: "Бронь",
+  deceased: "Умер",
+  archived: "Архив",
+};
+
 export const maturityDict = [
   {
     label: "Младше 2 месяцев",
