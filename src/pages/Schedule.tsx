@@ -65,13 +65,36 @@ export const Schedule = () => {
         <Title component="span" order={4} c="yellow.6">
           Напоминания о кормлениях
         </Title>
+        <SegmentedControl
+          style={{ alignSelf: "center" }}
+          opacity={isSmthPending ? 0 : 1}
+          value={sigCurCat.value as any}
+          onChange={handle}
+          w="100%"
+          maw="252px"
+          size="xs"
+          data={[
+            {
+              label: "Региусы",
+              value: ECategories.BP,
+            },
+            {
+              label: "Удавы",
+              value: ECategories.BC,
+            },
+            {
+              label: "Маисы",
+              value: ECategories.CS,
+            },
+          ]}
+        />
         {isSmthPending ? <SkelShedule /> : null}
         {isBpErr || isBcErr || isCsErr || isRemError ? (
           <Text fw={500} c="var(--mantine-color-error)">
             Произошла ошибка запроса
           </Text>
         ) : isEmpty(bps) && isEmpty(bcs) && isEmpty(css) ? (
-          <Text fw={500}>Нет змеек, для которых можно было бы составить расписание</Text>
+          <Text fw={500}>Нет змей в этой категории, для которых можно составить расписание</Text>
         ) : (
           <>
             <Calendar
@@ -95,29 +118,7 @@ export const Schedule = () => {
                 ) : null;
               }}
             />
-            <SegmentedControl
-              style={{ alignSelf: "center" }}
-              opacity={isSmthPending ? 0 : 1}
-              value={sigCurCat.value as any}
-              onChange={handle}
-              w="100%"
-              maw="252px"
-              size="xs"
-              data={[
-                {
-                  label: "Региусы",
-                  value: ECategories.BP,
-                },
-                {
-                  label: "Удавы",
-                  value: ECategories.BC,
-                },
-                {
-                  label: "Маисы",
-                  value: ECategories.CS,
-                },
-              ]}
-            />
+
             <Text size="xs">Закрепленная колонка отображает дополнительное меню на ховер</Text>
             {sigCurCat.value ? <StackTable data={dataToUse} columns={columns} onRowSelect={setRowSelection} rowSelection={rowSelection} /> : null}
           </>
