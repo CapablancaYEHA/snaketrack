@@ -1,10 +1,11 @@
 import fallback from "@assets/placeholder.png";
-import { Image, Stack, Text } from "@mantine/core";
+import { Box, Image, Indicator, Stack, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IResSnakesList } from "@/api/common";
 import { getAge } from "@/utils/time";
 import { Controls, GenesList, SnakeEventsBlock } from "../common/SnakeCard";
 import { SexName } from "../common/sexName";
+import { snakeStatusToColor, snakeStatusToLabel } from "./Market/utils";
 import { hatchFiltFn } from "./StackTable/filters";
 
 const colHelper = createColumnHelper<IResSnakesList>();
@@ -58,9 +59,25 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) =
       header: () => "Гены",
       cell: ({ cell }) => <GenesList genes={cell.getValue()} />,
       size: 8,
-      maxSize: 5,
+      maxSize: 4,
       minSize: 200,
       filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => row.original.genes.map((b) => b.label).includes(a)),
+    }),
+    colHelper.accessor("status", {
+      header: () => "Статус",
+      cell: ({ cell }) => (
+        <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[cell.getValue()]} processing>
+          <Box>
+            <Text fw={500} size="xs" ml="sm">
+              {snakeStatusToLabel[cell.getValue()]}
+            </Text>
+          </Box>
+        </Indicator>
+      ),
+      size: 12,
+      maxSize: 1,
+      minSize: 98,
+      enableSorting: false,
     }),
   ];
 };

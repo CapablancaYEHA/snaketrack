@@ -24,6 +24,7 @@ export const schema = yup.object<Schema>().shape({
     .test("fileSize", "Вес сжатого фото более 1Мb", (v) => (!v ? true : v.size <= 1048576))
     .nullable(),
   notes: yup.string().nullable(),
+  status: yup.string().nullable(),
 });
 
 export const makeDefault = (raw) => {

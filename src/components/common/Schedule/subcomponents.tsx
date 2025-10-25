@@ -41,7 +41,7 @@ export const SnakeRem: FC<IProp> = ({ rem, handleDel, isPend }) => {
       </Stack>
       <Stack ml="auto" gap="xs" align="end">
         <Box onClick={() => setOpen(true)} style={{ cursor: "pointer" }} pl="xs" pr="xs" pb="xs">
-          <IconSwitch icon="bin" width="18" height="18" />
+          <IconSwitch icon="bin" width="18" height="18" style={{ opacity: 0.4 }} />
         </Box>
         {isOpen ? (
           <Box>

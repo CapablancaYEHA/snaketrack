@@ -1,0 +1,36 @@
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.bin {
+  & path {
+    stroke: var(--mantine-color-error);
+  }
+}
+
+.mantine-Carousel-indicator {
+  width: 4px !important;
+  height: 4px !important;
+  border-radius: 50%;
+  background-color: #717171;
+  transition: width 250ms ease;
+
+  &[data-orientation] {
+    width: 4px !important;
+    height: 4px !important;
+    border-radius: 50%;
+  }
+
+  &[data-active] {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: white;
+  }
+}

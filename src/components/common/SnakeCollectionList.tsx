@@ -1,7 +1,6 @@
 import { useState } from "preact/hooks";
-import { startSm } from "@/styles/theme";
 import { Button, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useDisclosure } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
 import { sexHardcode } from "@/components/ballpythons/forms/bpBreed/common";
@@ -27,7 +26,6 @@ const isFeedOpen = signal<boolean>(false);
 const isDeleteOpen = signal<boolean>(false);
 
 export function SnakeCollectionList() {
-  const isMinSm = useMediaQuery(startSm);
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
   const { data: genes } = useSnakeGenes(catVisited.value);
@@ -136,7 +134,7 @@ export function SnakeCollectionList() {
           content: {
             height: "auto",
             width: "auto",
-            maxWidth: isMinSm ? "640px" : "100%",
+            maxWidth: 640,
           },
         }}
         keepMounted
@@ -147,7 +145,7 @@ export function SnakeCollectionList() {
         </Flex>
         <Space h="md" />
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
-          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Возраст" onChange={(a) => tableFiltMulti(setFilt, a, "date_hatch")} data={maturityDict} isDataHasLabel />
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Возраст" onChange={(a) => tableFiltMulti(setFilt, a, "date_hatch")} data={maturityDict} dataHasLabel />
           <MaxSelectedMulti miw={0} flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "genes")} data={(genes ?? [])?.map((g) => g.label)} />
         </Flex>
       </Drawer>

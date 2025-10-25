@@ -1,4 +1,6 @@
 import { render } from "preact";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+ import { NuqsAdapter } from 'nuqs/adapters/react';
 import { LocationProvider, Route, Router } from "preact-iso";
 import { useEffect, useState } from "preact/hooks";
 import { Box, LoadingOverlay, MantineProvider } from "@mantine/core";
@@ -22,6 +24,7 @@ import { tabletThreshold, theme } from "./styles/theme";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
+import '@mantine/carousel/styles.css';
 import "./styles/global.scss";
 
 
@@ -58,7 +61,9 @@ export function App() {
   const isMwTablet = useMediaQuery(tabletThreshold);
 
   return (
+	<NuqsAdapter>
     <QueryClientProvider client={queryClient}>
+		{/* <ReactQueryDevtools initialIsOpen={false} /> */}
       <LocationProvider>
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <Notifications />
@@ -74,7 +79,8 @@ export function App() {
               {isPending.value ? (
                 <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 1.0 }} />
               ) : (
-                ["/profile", "/snakes", "/snakes/:type?id=:id", "/snakes/add/:type", "/snakes/edit/:type?id=:id", "/breeding", "/breeding/add/:type", "/breeding/:type?id=:id", "/clutches", "/clutches/edit/:type?id=:id", "/schedule", "/market", "/calculator"].map((a) => (
+                ["/profile", "/snakes", "/snakes/:type?id=:id", "/snakes/add/:type", "/snakes/edit/:type?id=:id", "/breeding", "/breeding/add/:type",
+					"/breeding/:type?id=:id", "/clutches", "/clutches/edit/:type?id=:id", "/schedule", "/market", "/market/add/:type?id=:id", "/market/edit/:type?id=:id", "/market/view/:type?id=:id", "/calculator"].map((a) => (
                   <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />
                 ))
               )}
@@ -84,6 +90,7 @@ export function App() {
         </MantineProvider>
       </LocationProvider>
     </QueryClientProvider>
+	</NuqsAdapter>
   );
 }
 

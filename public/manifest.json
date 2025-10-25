@@ -1,5 +1,8 @@
 {
   "name": "HsssStats",
+  "short_name": "HsssStats",
+  "id": "72ab999a-97d6-capablanca-79a3da3148ca",
+  "description": "Husbandry and marketplace for snakes",
   "icons": [
     {
       "src": "https://snaketrack.ru/favicon-192x192.png",
@@ -16,5 +19,7 @@
   "start_url": "https://snaketrack.ru",
   "display": "standalone",
   "display_override": ["tabbed"],
-  "background_color": "#000000"
+  "background_color": "#000000",
+  "theme_color": "black",
+  "lang": "ru"
 }

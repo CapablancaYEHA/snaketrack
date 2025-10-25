@@ -9,6 +9,9 @@ import { EditBreed } from "@/pages/EditBreed";
 import { EditClutch } from "@/pages/EditClutch";
 import { EditSnake } from "@/pages/EditSnake";
 import { Market } from "@/pages/Market";
+import { MarketAdd } from "@/pages/MarketAddAvd";
+import { MarketAdv } from "@/pages/MarketAdv";
+import { MarketEdit } from "@/pages/MarketEditAdv";
 import { Schedule } from "@/pages/Schedule";
 import { Snake } from "@/pages/Snake";
 import { SnakeCategories } from "@/pages/SnakeCategories";
@@ -47,6 +50,9 @@ export const protectedRoutes = {
   "/clutches/edit/:type?id=:id": EditClutch,
   "/schedule": Schedule,
   "/market": Market,
+  "/market/view/:type?id=:id": MarketAdv,
+  "/market/add/:type?id=:id": MarketAdd,
+  "/market/edit/:type?id=:id": MarketEdit,
   "/calculator": Calculator,
 };
 
@@ -56,4 +62,5 @@ export const sidebarLinks = [
   { id: 3, link: "/breeding" },
   { id: 4, link: "/clutches" },
   { id: 5, link: "/schedule" },
+  { id: 7, link: "/market" },
 ];

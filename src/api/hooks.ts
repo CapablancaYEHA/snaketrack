@@ -1,11 +1,11 @@
 import { useCallback } from "preact/hooks";
 import { supabase } from "@/lib/client_supabase";
-import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isEmpty } from "lodash-es";
 import { upgAlias } from "@/components/common/genetics/const";
 import { categToConfig } from "@/components/common/utils";
 import { toDataUrl } from "@/utils/supabaseImg";
-import { ECategories, ESupabase, IGenesComp, ISupabaseErr, ITransferReq, categoryToBaseTable, categoryToGenesTable, categoryToTransferFunc } from "./common";
+import { ECategories, ESupabase, IDadataSearch, IGenesComp, ISupabaseErr, ITransferReq, categoryToBaseTable, categoryToGenesTable, categoryToTransferFunc } from "./common";
 
 interface IQueryConfig {
   t: ESupabase;
@@ -38,6 +38,42 @@ export function useSupaGet<T>(config: IQueryConfig, isEnabled: boolean) {
     queryKey: queKeys,
     queryFn: () => supaGet(config),
     enabled: isEnabled,
+    ...config?.o,
+  });
+}
+
+const PAGE_SIZE = 10;
+
+export const supaInfiniteGet = async (pageParam, config: IQueryConfig) => {
+  const from = pageParam * PAGE_SIZE;
+  const to = from + PAGE_SIZE - 1;
+  const query = supabase.from(config.t).select(config?.s || "*");
+
+  const { data, error } = await config.f(query).range(from, to);
+
+  if (error) {
+    throw error;
+  }
+
+  return {
+    data: data || [],
+    nextPage: data?.length === PAGE_SIZE ? pageParam + 1 : undefined,
+  };
+};
+
+interface IInfinRes<T> {
+  pages: { data: T }[];
+}
+
+export function useSupaInfiniteGet<T>(config: IQueryConfig, isEnabled: boolean) {
+  const queKeys = [config.t, config.id].filter((a) => !isEmpty(a));
+  return useInfiniteQuery<any, ISupabaseErr, IInfinRes<T>>({
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey: queKeys,
+    queryFn: ({ pageParam }) => supaInfiniteGet(pageParam, config),
+    initialPageParam: 0,
+    enabled: isEnabled,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
     ...config?.o,
   });
 }
@@ -140,10 +176,11 @@ export function useSnakeQueue(snakes: (string | undefined)[], categ: ECategories
   });
 }
 
-export function useBase64(url: string, flag: boolean) {
+export function useBase64(url?: string | string[] | null, flag?: boolean) {
+  // const res = await Promise.all(url.map((p) => toDataUrl(p)));
   return useQuery<any, ISupabaseErr, string>({
     queryKey: ["base64", url],
-    queryFn: () => toDataUrl(url),
+    queryFn: Array.isArray(url) ? () => Promise.all(url.map((p) => toDataUrl(p))) : () => toDataUrl(url),
     enabled: flag,
   });
 }
@@ -156,11 +193,11 @@ const httpGetSnakeGenes = async (cat: ECategories) => {
   return upgAlias(data);
 };
 
-export function useSnakeGenes(cat: ECategories) {
+export function useSnakeGenes(cat: ECategories, isEnabled = true) {
   return useQuery<IGenesComp[], ISupabaseErr>({
     queryKey: [categoryToGenesTable[cat], cat],
     queryFn: () => httpGetSnakeGenes(cat),
-    enabled: true,
+    enabled: isEnabled,
     staleTime: 60000 * 60 * 4, // 4 часа
   });
 }
@@ -186,5 +223,53 @@ export function useTransferSnake(cat: ECategories) {
         queryKey: [categoryToBaseTable[cat]],
       });
     },
+  });
+}
+
+// Market
+async function httpDadata(str: string) {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await fetch("https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address", {
+      method: "POST",
+      body: JSON.stringify({
+        query: str,
+        language: "RU",
+        from_bound: {
+          value: "city",
+        },
+        to_bound: {
+          value: "city",
+        },
+        locations: [
+          {
+            country: "Россия",
+          },
+        ],
+      }),
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Token ${import.meta.env.VITE_REACT_APP_DADATA_KEY}`,
+        "X-Secret": import.meta.env.VITE_REACT_APP_DADATA_SECRET,
+        credentials: "include",
+      },
+    });
+
+    if (!response.ok) {
+      throw { message: `Response status: ${response.status}` };
+    }
+
+    const result = await response.json();
+    return result.suggestions;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export function useDadata() {
+  return useMutation<IDadataSearch[], { message?: string }, string>({
+    mutationFn: (a) => httpDadata(a),
   });
 }

@@ -15,11 +15,13 @@ export const enum ESupabase {
   CS = "corn_snakes",
   REM = "feed_reminders",
   PROF = "profiles",
+  MRKT = "market",
   // views
   BP_BREED_V = "user_breeding_view",
   BP_CL_V = "clutch_view",
   PROF_V = "three_cols_profiles",
   REM_V = "feed_reminders_view",
+  MRKT_V = "market_view",
   // genes
   BP_G = "bpgenes",
   BC_G = "boagenes",
@@ -72,7 +74,7 @@ export interface ISupabaseErr {
   hint?: string | null;
 }
 
-export type ISnakeStatuses = "collection" | "isolation" | "for_sale" | "sold" | "reserved" | "deceased" | "archived";
+export type ISnakeStatuses = "collection" | "isolation" | "on_sale" | "sold" | "reserved" | "deceased" | "archived";
 
 export interface IReqCreateSnake {
   snake_name: string;
@@ -169,4 +171,54 @@ export interface IGenesComp {
 export type ITransferReq = {
   userId: string;
   snekId: string;
+};
+
+export interface ICreateSaleReq {
+  sale_price: number;
+  pictures: string[];
+  description: string;
+  city_code: string;
+  city_name?: string | null;
+  snake_id: string;
+  category: ECategories;
+  status: Extract<ISnakeStatuses, "on_sale" | "sold" | "reserved">;
+  // TODO расширить до других стран, соответственно потом в city_code будет падать их вариация кладр
+  country: string;
+  // TODO поле о дате поднятии объявления
+}
+
+export interface IMarketRes extends ICreateSaleReq {
+  id: string;
+  date_hatch: string;
+  sex: "male" | "female" | null;
+  genes: IGenesComp[];
+  owner_id: string;
+  created_at: string;
+  updated_at: string;
+  completed_at: string;
+  username: string;
+  user_createdat: string;
+}
+
+export interface IEditSale extends Partial<ICreateSaleReq> {
+  updated_at?: string;
+  completed_at?: string;
+}
+
+export type IEditSaleReq = {
+  upd: IEditSale;
+  id: string;
+};
+
+export type IDadataSearch = {
+  data: {
+    city: string;
+    city_with_type: string;
+    country: string;
+    region: string;
+    region_with_type: string;
+    city_kladr_id: string;
+  };
+  unrestricted_value: string;
+  value: string;
 };

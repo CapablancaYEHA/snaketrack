@@ -1,5 +1,5 @@
 import { forwardRef } from "preact/compat";
-import { Button, FileButton, Space, Stack, Text } from "@mantine/core";
+import { AspectRatio, Button, FileButton, Image, Space, Stack, Text } from "@mantine/core";
 import { IconSwitch } from "./navs/sidebar/icons/switch";
 
 interface IProp {
@@ -20,7 +20,13 @@ export const FileUpload = forwardRef<any, IProp>(({ onUpload, url, err, clearFil
                 <Text {...props} fw="bold" size="sm">
                   Фото
                   <span style={{ maxHeight: 109, display: "block" }}>
-                    {url ? <img src={url} width={196} height={110} alt="uploaded_snake_pic" style={{ objectFit: "contain", objectPosition: "bottom left" }} /> : <IconSwitch icon="img" width="64" height="64" />}
+                    {url ? (
+                      <AspectRatio ratio={16 / 9} maw={196}>
+                        <Image src={url} width="100%" alt="uploaded_snake_pic" fit="cover" />
+                      </AspectRatio>
+                    ) : (
+                      <IconSwitch icon="img" width="64" height="64" />
+                    )}
                   </span>
                 </Text>
               </Stack>
@@ -38,7 +44,7 @@ export const FileUpload = forwardRef<any, IProp>(({ onUpload, url, err, clearFil
         {url && withRemove ? (
           <div>
             <Button color="red" onClick={clearFile} size="compact-xs" mt={18}>
-              Убрать
+              Очистить
             </Button>
           </div>
         ) : null}

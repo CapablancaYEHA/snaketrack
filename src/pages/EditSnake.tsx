@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
 import { useEffect } from "preact/hooks";
-import { Loader, Stack, Text } from "@mantine/core";
+import { LoadingOverlay, Stack, Text } from "@mantine/core";
 import { FormEditSnake } from "@/components/common/forms/editSnake/formEditSnake";
 import { categToConfig, categToTitle } from "@/components/common/utils";
 import { IResSnakesList, categoryToBaseTable, categoryToBucket } from "@/api/common";
@@ -18,15 +18,15 @@ export function EditSnake() {
   let def = { ...init, blob: init?.picture, picture: base64 };
 
   useEffect(() => {
-    if (isError) {
+    if (isError || !location.query.id) {
       notif({ c: "red", t: "Ошибка", code: error?.code, m: "Змейка не найдена" });
     }
-  }, [isError, error]);
+  }, [isError, error, location.query.id]);
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       {isPending && isPen ? (
-        <Loader color="dark.1" size="lg" />
+        <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />
       ) : isError ? (
         <Text fw={500} c="var(--mantine-color-error)">
           Редактирование невозможно

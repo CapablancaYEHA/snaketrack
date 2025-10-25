@@ -32,7 +32,7 @@ main {
   min-width: 0;
   max-width: $max-width;
   width: 100%;
-  margin: $header-height auto $footer-height auto;
+  margin: $header-height auto $footer-height auto !important;
   overflow: auto;
   //   overflow-x: auto;
 
@@ -103,4 +103,25 @@ a {
 
 .mantine-Notifications-notification {
   min-height: 32px;
+}
+
+.mantine-Carousel-indicators {
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  padding: 5px;
+  border-radius: 1.25rem;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.mantine-Carousel-indicator {
+  width: 4px !important;
+  height: 4px !important;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  transition: width 250ms ease;
+
+  &[data-active] {
+    background-color: white;
+  }
 }

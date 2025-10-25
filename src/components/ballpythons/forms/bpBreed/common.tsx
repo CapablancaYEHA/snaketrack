@@ -143,3 +143,12 @@ export const sexHardcode = [
   { label: "Самец", value: "male" },
   { label: "Самка", value: "female" },
 ];
+
+export const adStatsHardcode = [
+  { label: "В продаже", value: "on_sale" },
+  { label: "Продан", value: "sold" },
+  { label: "Бронь", value: "reserved" },
+];
+
+// TODO
+export const adStatsProfile = [...adStatsHardcode];

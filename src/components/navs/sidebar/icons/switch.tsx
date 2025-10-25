@@ -14,6 +14,7 @@ import { FemaleIcon } from "./Female";
 import { ImgIcon } from "./Img";
 import { KebabIcon } from "./Kebab";
 import { MaleIcon } from "./Male";
+import { MarketIcon } from "./Market";
 import { NoDataIcon } from "./NoData";
 import { NoFilterIcon } from "./NoFilter";
 import { PackIcon } from "./Pack";
@@ -27,9 +28,10 @@ interface IProp {
   width?: string;
   height?: string;
   style?: CSSProperties;
+  className?: string;
 }
 
-export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style }) => {
+export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style, className }) => {
   switch (icon) {
     case "calculator":
       return <CalculatorIcon width={width} height={height} style={style} />;
@@ -49,6 +51,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <ImgIcon width={width} height={height} />;
     case "male":
       return <MaleIcon width={width} height={height} style={style} />;
+    case "market":
+      return <MarketIcon width={width} height={height} style={style} />;
     case "female":
       return <FemaleIcon width={width} height={height} style={style} />;
     case "unisex":
@@ -62,7 +66,7 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
     case "check":
       return <CheckIcon width={width} height={height} />;
     case "bin":
-      return <BinIcon width={width} height={height} style={style} />;
+      return <BinIcon width={width} height={height} className={className} style={style} />;
     case "arr-up":
       return <ArrUpIcon width={width} height={height} style={style} />;
     case "arr-bi":

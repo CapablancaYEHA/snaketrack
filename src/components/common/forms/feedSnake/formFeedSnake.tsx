@@ -122,6 +122,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
                 hideControls
                 error={error?.message}
                 allowDecimal={false}
+                allowNegative={false}
                 flex="1 1 50%"
               />
             );
@@ -155,7 +156,21 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
         name="feed_weight"
         control={control}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <NumberInput onChange={onChange} value={value as any} suffix=" г" label="Масса КО" placeholder="Не заполнено" hideControls error={error?.message} allowDecimal={false} w={{ base: "100%", xs: "50%" }} allowLeadingZeros={false} />;
+          return (
+            <NumberInput
+              onChange={onChange}
+              value={value as any}
+              suffix=" г"
+              label="Масса КО"
+              placeholder="Не заполнено"
+              hideControls
+              error={error?.message}
+              allowDecimal={false}
+              w={{ base: "100%", xs: "50%" }}
+              allowLeadingZeros={false}
+              allowNegative={false}
+            />
+          );
         }}
       />
       <Space h="lg" />

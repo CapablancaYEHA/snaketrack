@@ -1,5 +1,5 @@
 import { useEffect } from "preact/hooks";
-import { Loader, Stack, Text } from "@mantine/core";
+import { Loader, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { FormAddBbBreed } from "@/components/ballpythons/forms/bpBreed/addBpBreed/formAddBbBreed";
 import { useProfile } from "@/api/profile/hooks";
 import { notif } from "@/utils/notif";
@@ -17,7 +17,7 @@ export function AddBreed() {
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       {isPending ? (
-        <Loader color="dark.1" size="lg" />
+        <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />
       ) : isError ? (
         <Text fw={500} c="var(--mantine-color-error)">
           Планирование невозможно

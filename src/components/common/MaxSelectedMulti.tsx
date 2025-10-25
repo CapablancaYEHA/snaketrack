@@ -1,6 +1,6 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { CheckIcon, Combobox, Group, MantineStyleProps, Pill, PillsInput, useCombobox } from "@mantine/core";
-import { debounce } from "lodash-es";
+import { debounce, isEmpty } from "lodash-es";
 
 type IDt = {
   label: string;
@@ -11,12 +11,13 @@ interface IProp {
   label: string;
   data: (IDt | string)[];
   onChange: (v: string[]) => void;
-  isDataHasLabel?: boolean;
+  dataHasLabel?: boolean;
   [key: string]: any;
   flex?: MantineStyleProps["flex"];
+  initVal?: any[];
 }
 
-export function MaxSelectedMulti({ data, label, onChange, isDataHasLabel, flex, ...rest }: IProp) {
+export function MaxSelectedMulti({ data, label, onChange, dataHasLabel, flex, initVal, ...rest }: IProp) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
@@ -53,7 +54,7 @@ export function MaxSelectedMulti({ data, label, onChange, isDataHasLabel, flex, 
   const values = value.slice(0, MAX_DISPLAYED_VALUES).map((item: any) => {
     return (
       <Pill key={item} withRemoveButton onRemove={() => handleValueRemove(item)}>
-        {isDataHasLabel ? (data as any).find((f) => (f as any).value === item)?.label : item}
+        {dataHasLabel ? (data as any).find((f) => (f as any).value === item)?.label : item}
       </Pill>
     );
   });
@@ -77,6 +78,10 @@ export function MaxSelectedMulti({ data, label, onChange, isDataHasLabel, flex, 
         </Combobox.Option>
       );
     });
+
+  useEffect(() => {
+    if (!isEmpty(initVal)) setValue(initVal as any);
+  }, []);
 
   return (
     <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false} position="bottom">

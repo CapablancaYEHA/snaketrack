@@ -87,7 +87,7 @@ export const MaleEvent = ({ id, disabled }) => {
             </Stack>
             {disabled ? null : (
               <div style={{ display: "flex", justifyContent: "center", flex: "1 0 auto", alignSelf: "center", color: "red", cursor: "pointer" }} onClick={() => remove(ind)}>
-                <IconSwitch icon="bin" width="24" height="24" />
+                <IconSwitch icon="bin" width="24" height="24" style={{ opacity: 0.4 }} />
               </div>
             )}
           </Flex>
@@ -118,7 +118,7 @@ export const FemaleEvent = ({ isClutchMade, shed, ovul }) => {
                   rightSection={
                     value ? (
                       <div onClick={() => setValue("female_prelay_shed_date", null, { shouldDirty: true })} style={{ cursor: "pointer" }}>
-                        <IconSwitch icon="bin" width="18" height="18" />
+                        <IconSwitch icon="bin" width="18" height="18" style={{ opacity: 0.4 }} />
                       </div>
                     ) : null
                   }
@@ -162,7 +162,7 @@ export const FemaleEvent = ({ isClutchMade, shed, ovul }) => {
                         }}
                         style={{ cursor: "pointer" }}
                       >
-                        <IconSwitch icon="bin" width="18" height="18" />
+                        <IconSwitch icon="bin" width="18" height="18" style={{ opacity: 0.4 }} />
                       </div>
                     ) : null
                   }

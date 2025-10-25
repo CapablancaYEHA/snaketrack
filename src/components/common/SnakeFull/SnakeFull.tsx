@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
-import { Button, Flex, Image, NumberFormatter, Paper, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Button, Flex, Image, Indicator, NumberFormatter, Paper, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -15,6 +15,7 @@ import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
+import { snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
 import { EditStats } from "../forms/editStats/formEditStats";
 import { snakeFeedColumns } from "./utils";
 
@@ -41,12 +42,25 @@ export function SnakeFull({ title, category, data }: IProp) {
         Подробная информация о змее
       </Title>
       <Flex gap="sm">
-        <Button size="compact-xs" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
+        <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
           Редактировать
         </Button>
         <Button size="compact-xs" onClick={() => (isFeedOpen.value = true)}>
           Добавить событие
         </Button>
+        {["on_sale", "reserved", "sold"].includes(data.status) ? (
+          <Flex align="center">
+            <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[data.status]} processing>
+              <Text fw={500} size="xs" ml="sm">
+                {snakeStatusToLabel[data.status]}
+              </Text>
+            </Indicator>
+          </Flex>
+        ) : (
+          <Button size="compact-xs" variant="default" component="a" href={`/market/add/${category}?id=${location.query.id}`}>
+            Выставить на продажу
+          </Button>
+        )}
       </Flex>
       {/* <Box m="0 auto">
         <SegmentedControl
@@ -66,17 +80,17 @@ export function SnakeFull({ title, category, data }: IProp) {
           </Flex>
           <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "180px", sm: "260px" }} />
         </Stack>
-        <Stack>
-          <Text size="md">Дата рождения — {getDate(data.date_hatch)}</Text>
-          <Text size="md">⌛ {getAge(data.date_hatch)}</Text>
+        <Stack gap="sm">
+          <Text size="sm">Дата рождения — {getDate(data.date_hatch)}</Text>
+          <Text size="sm">⌛ {getAge(data.date_hatch)}</Text>
           {data.price ? (
-            <Text size="md" component="div">
-              Стоимость приобретения — <NumberFormatter suffix=" ₽" value={data.price} thousandSeparator=" " />
+            <Text size="sm" component="div">
+              Стоимость приобретения — <NumberFormatter prefix="₽ " value={data.price} thousandSeparator=" " />
             </Text>
           ) : null}
         </Stack>
       </Flex>
-      <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
+      <Flex gap="md" style={{ flexFlow: "row wrap" }}>
         {sortSnakeGenes(data.genes as any).map((a) => (
           <GenePill item={a} key={`${a.label}_${a.id}`} />
         ))}
@@ -89,7 +103,7 @@ export function SnakeFull({ title, category, data }: IProp) {
         <Text size="sm">{data.notes ?? "Пусто"}</Text>
       </Paper>
       {!data?.weight && !isEmpty(data.feeding) && data.feeding?.every((a) => Object.values(a)?.every((b) => b == null)) ? (
-        <Text size="md" fw={500} ta="center" w="100%">
+        <Text size="sm" fw={500} ta="center" w="100%">
           Информация об изменении веса\кормлениях отсутствует
         </Text>
       ) : (
@@ -111,7 +125,7 @@ export function SnakeFull({ title, category, data }: IProp) {
         initSort={[
           {
             id: "feed_last_at",
-            desc: false,
+            desc: true,
           },
         ]}
       />

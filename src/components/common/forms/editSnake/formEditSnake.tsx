@@ -12,7 +12,6 @@ import { IUpdReq } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
-import { dateToSupabaseTime } from "@/utils/time";
 import { sexHardcode } from "../../../ballpythons/forms/bpBreed/common";
 import { filterSubmitByDirty, uplErr } from "../const";
 import { makeDefault, schema } from "./const";
@@ -64,7 +63,6 @@ export const FormEditSnake = ({ init, table, storage, title, category }) => {
           ...submitBody,
           picture: picture || undefined,
           last_action: "update",
-          date_hatch: dateToSupabaseTime(sbm.date_hatch),
         },
         id: location.query.id,
       },
@@ -128,13 +126,22 @@ export const FormEditSnake = ({ init, table, storage, title, category }) => {
             name="price"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput rightSection="₽" label="Цена покупки" flex="1 1 50%" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} />;
+              return (
+                <NumberInput rightSection="₽" label="Цена покупки" flex="1 1 50%" placeholder="Без цены" hideControls thousandSeparator=" " error={error} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} />
+              );
             }}
           />
         ) : null}
       </Flex>
 
       <Flex gap="lg" wrap="nowrap" className={styles.w70}>
+        <Controller
+          name="sex"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <Select data={sexHardcode} value={value} onChange={onChange} label="Пол" error={error?.message} flex="0 1 50%" />;
+          }}
+        />
         <Controller
           name="sex"
           control={control}
