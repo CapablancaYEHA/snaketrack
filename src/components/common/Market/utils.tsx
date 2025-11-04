@@ -1,5 +1,5 @@
 import fallback from "@assets/placeholder.png";
-import { AspectRatio, Box, Flex, Image, Indicator, NumberFormatter, Stack, Text } from "@mantine/core";
+import { AspectRatio, Box, Flex, Image, Indicator, NumberFormatter, Stack, Text, darken } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IMarketRes } from "@/api/common";
@@ -14,10 +14,21 @@ export const marketColumns = [
     header: () => " ",
     cell: ({ cell, row }) => (
       <MarketControls id={row.original.id} owner={row.original.owner_id} cat={row.original.category}>
-        <Stack gap="xs" maw="100%" w="100%">
+        <Stack gap="xs" maw="100%" w="100%" pos="relative">
           <AspectRatio ratio={16 / 9}>
             <Image src={cell.getValue()[0]} fit="cover" radius="md" h="auto" fallbackSrc={fallback} loading="lazy" />
           </AspectRatio>
+          {row.original.status !== "on_sale" ? (
+            <Box pos="absolute" bg={darken("var(--mantine-color-dark-4)", 0.5)} right={8} top={8} pr="xs" pl="sm" style={{ borderRadius: 4 }}>
+              <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[row.original.status]} processing zIndex={3}>
+                <Box>
+                  <Text fw={500} size="xs" ml="sm">
+                    {snakeStatusToLabel[row.original.status]}
+                  </Text>
+                </Box>
+              </Indicator>
+            </Box>
+          ) : null}
           <Flex align="center" gap="xs">
             <IconSwitch icon={row.original.sex as any} width="20" height="20" style={{ minWidth: 0 }} />
             <Text size="xs">'{getAge(row.original.date_hatch)}</Text>
@@ -55,20 +66,16 @@ export const marketColumns = [
     minSize: 200,
     enableSorting: false,
   }),
-  columnHelper.accessor("status", {
-    header: () => "Статус",
+  columnHelper.accessor("username", {
+    header: () => "Продавец",
     cell: ({ cell }) => (
-      <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[cell.getValue()]} processing>
-        <Box>
-          <Text fw={500} size="xs" ml="sm">
-            {snakeStatusToLabel[cell.getValue()]}
-          </Text>
-        </Box>
-      </Indicator>
+      <Text fw={500} size="xs">
+        {cell.getValue()}
+      </Text>
     ),
     size: 11,
-    maxSize: 2,
-    minSize: 98,
+    maxSize: 1,
+    minSize: 140,
     enableSorting: false,
   }),
 ];

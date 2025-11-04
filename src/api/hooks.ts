@@ -42,11 +42,12 @@ export function useSupaGet<T>(config: IQueryConfig, isEnabled: boolean) {
   });
 }
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 export const supaInfiniteGet = async (pageParam, config: IQueryConfig) => {
   const from = pageParam * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
+
   const query = supabase.from(config.t).select(config?.s || "*");
 
   const { data, error } = await config.f(query).range(from, to);

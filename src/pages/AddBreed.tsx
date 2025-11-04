@@ -1,5 +1,5 @@
 import { useEffect } from "preact/hooks";
-import { Loader, LoadingOverlay, Stack, Text } from "@mantine/core";
+import { LoadingOverlay, Stack, Text } from "@mantine/core";
 import { FormAddBbBreed } from "@/components/ballpythons/forms/bpBreed/addBpBreed/formAddBbBreed";
 import { useProfile } from "@/api/profile/hooks";
 import { notif } from "@/utils/notif";

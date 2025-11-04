@@ -6,9 +6,9 @@ export function chaining(sort, single, multi) {
     const f = Object.entries(single);
     f.forEach(([k, v]) => {
       // @ts-ignore
-      const [func, arg] = v.split("-");
+      const [func, ...arg] = v.split("-");
       // @ts-ignore
-      this[func](k, arg);
+      this[func](k, arg.join("-"));
     });
   }
   if (!isEmpty(multi)) {
@@ -39,14 +39,13 @@ export function chaining(sort, single, multi) {
 const handleSerialize = (str: { [x: string]: string }) =>
   Object.entries(str)
     .map(([k, v]) => `${k}:${v}`)
-    .join("");
+    .join(";");
 
 const handleParse = (query: string) => {
-  const [k, rest] = query.split(":");
-
-  return {
-    [k]: rest,
-  };
+  return query.split(";").reduce((tot, cur) => {
+    const [k, rest] = cur.split(":");
+    return { ...tot, [k]: rest };
+  }, {});
 };
 
 export const singleParser = createParser({
@@ -59,7 +58,41 @@ export const multiParser = createParser({
   serialize: handleSerialize,
 });
 
-export const handleSingleSel = (arg, k, setter) => setter(arg ? { [k]: `eq-${arg}` } : null);
-export const handleMultiIn = (arg, k, setter) => setter(isEmpty(arg) ? null : { [k]: `in-${arg}` });
-export const handleMultiNotIn = (arg, k, setter) => setter(isEmpty(arg) ? null : { [k]: `not_in-${arg}` });
-export const handleMultiContainsJson = (arg, k, setter) => setter(isEmpty(arg) ? null : { [k]: `contains-${arg}` });
+export const handleSingleSel = (arg, k, setter) =>
+  setter((s) => {
+    if (isEmpty(arg)) {
+      const n = { ...s };
+      delete n[k];
+      return isEmpty(n) ? null : n;
+    }
+    return { ...s, [k]: `eq-${arg}` };
+  });
+
+export const handleMultiIn = (arg, k, setter) =>
+  setter((s) => {
+    if (isEmpty(arg)) {
+      const n = { ...s };
+      delete n[k];
+      return isEmpty(n) ? null : n;
+    }
+    return { ...s, [k]: `in-${arg}` };
+  });
+export const handleMultiNotIn = (arg, k, setter) =>
+  setter((s) => {
+    if (isEmpty(arg)) {
+      const n = { ...s };
+      delete n[k];
+      return isEmpty(n) ? null : n;
+    }
+    return { ...s, [k]: `not_in-${arg}` };
+  });
+
+export const handleMultiContainsJson = (arg, k, setter) =>
+  setter((s) => {
+    if (isEmpty(arg)) {
+      const n = { ...s };
+      delete n[k];
+      return isEmpty(n) ? null : n;
+    }
+    return { ...s, [k]: `contains-${arg}` };
+  });

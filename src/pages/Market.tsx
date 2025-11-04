@@ -1,6 +1,5 @@
-import { useLocation } from "preact-iso";
 import { useEffect } from "preact/hooks";
-import { Box, Button, Checkbox, Drawer, Flex, LoadingOverlay, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Checkbox, Drawer, Flex, Loader, LoadingOverlay, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { useDisclosure, useInViewport } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
 import { useQueryState } from "nuqs";
@@ -13,9 +12,11 @@ import { SkelTable } from "@/components/common/skeletons";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, ESupabase, IMarketRes } from "@/api/common";
 import { useSnakeGenes, useSupaInfiniteGet } from "@/api/hooks";
+import { useProfile } from "@/api/profile/hooks";
 
 export function Market() {
   const { ref, inViewport } = useInViewport();
+  const userId = localStorage.getItem("USER");
   const [cat, setCat] = useQueryState("cat");
   const [sqlFilt, setSqlFilt] = useQueryState<any>("single", singleParser);
   const [sqlMultFilt, setSqlMultFilt] = useQueryState<any>("multi", multiParser);
@@ -27,14 +28,12 @@ export function Market() {
   const { data, isLoading, isRefetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useSupaInfiniteGet<IMarketRes[]>({ t: ESupabase.MRKT_V, f: filter, id: [cat, sort, sqlFilt, sqlMultFilt] }, Boolean(cat));
   const market = data?.pages.flatMap((p) => p.data);
   const { data: genes } = useSnakeGenes(cat as any, Boolean(cat));
-
-  const isFilterNull = isEmpty(sqlFilt) && (isEmpty(sqlMultFilt) || sqlMultFilt["status"]);
+  const { data: profile } = useProfile(userId, userId != null);
 
   useEffect(() => {
-    if (!cat) setCat(localStorage.getItem("MARKET_VISITED"));
+    if (!cat) setCat(localStorage.getItem("MARKET_VISITED") ?? ECategories.BP);
+    if (isEmpty(sqlMultFilt)) setSqlMultFilt({ status: "in-on_sale" });
     setSort("created_at:desc");
-    // FIXME
-    // setSqlMultFilt({ status: "in-on_sale" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -45,6 +44,10 @@ export function Market() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inViewport, hasNextPage, isFetchingNextPage]);
 
+  const isFilterNull = isEmpty(sqlFilt) && isEmpty(Object.keys(sqlMultFilt ?? {})?.filter((k) => k !== "status"));
+
+  const isNoname = profile?.username == null;
+
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
@@ -52,11 +55,20 @@ export function Market() {
           Маркет
         </Title>
         {cat ? (
-          <Button size="compact-xs" variant="default" component="a" href={`/market/add/${cat}`} ml="auto">
-            Разместить объявление
-          </Button>
+          <Tooltip label={<Text size="xs">Нужно задать имя аккаунта</Text>} disabled={!isNoname} withArrow multiline position="bottom">
+            <Button size="compact-xs" variant="default" component={isNoname ? "button" : "a"} href={isNoname ? "" : `/market/add/${cat}`} ml="auto" disabled={isNoname}>
+              Разместить объявление
+            </Button>
+          </Tooltip>
         ) : null}
       </Flex>
+      <Checkbox
+        size="xs"
+        label="Показать только мои объявления"
+        checked={sqlFilt?.["owner_id"]?.split("eq-")[1] === localStorage.getItem("USER")}
+        onChange={() => handleSingleSel(sqlFilt?.["owner_id"]?.split("eq-")[1] === localStorage.getItem("USER") ? null : localStorage.getItem("USER"), "owner_id", setSqlFilt)}
+        style={{ whiteSpace: "pre-wrap" }}
+      />
       <SegmentedControl
         style={{ alignSelf: "center" }}
         size="xs"
@@ -66,7 +78,7 @@ export function Market() {
           localStorage.setItem("MARKET_VISITED", a);
         }}
         w="100%"
-        maw="320px"
+        maw="252px"
         data={[
           {
             label: "Региусы",
@@ -89,8 +101,8 @@ export function Market() {
       </Box>
       <Select
         data={[
-          { label: "Свежие", value: "created_at:desc" },
-          { label: "Старые", value: "created_at:asc" },
+          { label: "Новые", value: "created_at:desc" },
+          { label: "Давние", value: "created_at:asc" },
           { label: "Сначала дороже", value: "sale_price:desc" },
           { label: "Сначала дешевле", value: "sale_price:asc" },
           { label: "Сначала старше", value: "date_hatch:asc" },
@@ -121,12 +133,11 @@ export function Market() {
         keepMounted
       >
         <Flex gap="md" wrap="nowrap" align="end">
-          <Select flex="1 1 50%" miw={0} data={sexHardcode} value={sqlFilt?.["sex"] ? sqlFilt["sex"].split("-")[1] : null} onChange={(a: any) => handleSingleSel(a, "sex", setSqlFilt)} label="Пол" placeholder="Не выбран" />
           <MaxSelectedMulti
             miw={0}
             flex="1 1 50%"
             label="Только в городах"
-            initVal={sqlMultFilt?.["city_code"] ? !sqlMultFilt["city_code"].includes("not_in") && sqlMultFilt["city_code"].split("-")[1].split(",") : null}
+            initVal={sqlMultFilt?.["city_code"]?.startsWith("in") && sqlMultFilt?.["city_code"]?.split("-")?.[1]?.split(",")}
             onChange={(a: any) => handleMultiIn(a, "city_code", setSqlMultFilt)}
             data={[
               {
@@ -140,14 +151,11 @@ export function Market() {
             ]}
             dataHasLabel
           />
-        </Flex>
-        <Space h="md" />
-        <Flex gap="md" wrap="nowrap" align="end">
           <MaxSelectedMulti
             miw={0}
             flex="1 1 50%"
             label="Исключить города"
-            initVal={sqlMultFilt?.["city_code"] ? sqlMultFilt["city_code"].includes("not_in") && sqlMultFilt["city_code"].split("-")[1].split(",") : null}
+            initVal={sqlMultFilt?.["city_code"]?.startsWith("not_in") && sqlMultFilt?.["city_code"]?.split("-")?.[1]?.split(",")}
             onChange={(a: any) => handleMultiNotIn(a, "city_code", setSqlMultFilt)}
             data={[
               {
@@ -161,6 +169,10 @@ export function Market() {
             ]}
             dataHasLabel
           />
+        </Flex>
+        <Space h="md" />
+        <Flex gap="md" wrap="nowrap" align="end">
+          <Select flex="1 1 50%" miw={0} data={sexHardcode} value={sqlFilt?.["sex"] ? sqlFilt["sex"].split("-")[1] : null} onChange={(a: any) => handleSingleSel(a, "sex", setSqlFilt)} label="Пол" placeholder="Не выбран" />
           <MaxSelectedMulti
             flex="1 1 50%"
             label="Гены"
@@ -174,7 +186,7 @@ export function Market() {
           <MaxSelectedMulti
             miw={0}
             flex="1 1 50%"
-            label="Статус продажи"
+            label="Доступность"
             initVal={sqlMultFilt?.["status"] ? sqlMultFilt["status"].includes("in") && sqlMultFilt["status"].split("-")[1].split(",") : null}
             onChange={(a: any) => handleMultiIn(a, "status", setSqlMultFilt)}
             data={adStatsHardcode}
@@ -216,7 +228,19 @@ export function Market() {
         <StackTable data={market ?? []} columns={marketColumns} />
       )}
       {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
-      <Box ref={ref} w="100%" h="1" />
+      <Box ref={ref} w="100%" h={2} />
+      {isFetchingNextPage ? (
+        <Flex justify="center" maw="100%" w="100%">
+          <Loader size="sm" />
+        </Flex>
+      ) : null}
+      {data?.pages?.length > 1 && !hasNextPage ? (
+        <Box maw="100%" w="100%">
+          <Text size="xs" ta="center">
+            Больше нет элементов для загрузки
+          </Text>
+        </Box>
+      ) : null}
     </Stack>
   );
 }

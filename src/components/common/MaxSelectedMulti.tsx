@@ -80,8 +80,9 @@ export function MaxSelectedMulti({ data, label, onChange, dataHasLabel, flex, in
     });
 
   useEffect(() => {
-    if (!isEmpty(initVal)) setValue(initVal as any);
-  }, []);
+    if (isEmpty(initVal)) setValue([]);
+    else setValue(initVal as any);
+  }, [initVal]);
 
   return (
     <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false} position="bottom">

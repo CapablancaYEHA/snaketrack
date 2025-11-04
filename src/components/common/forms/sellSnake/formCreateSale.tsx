@@ -79,7 +79,7 @@ export const FormCreateSale = ({ init, category, info }) => {
             id: info.snake_id,
           });
           notif({ c: "green", t: "Успешно", m: "Объявление размещено" });
-          //   location.route("/market");
+          location.route("/market");
         },
         onError: (err) => {
           notif({ c: "red", m: err.message });
@@ -100,8 +100,8 @@ export const FormCreateSale = ({ init, category, info }) => {
 
   return (
     <>
-      <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
-        <Stack flex={{ base: "1", sm: "0 1 50%" }} gap="sm">
+      <Flex align="stretch" gap="sm" className={styles.w70col}>
+        <Stack gap="sm">
           <Flex justify="flex-start" gap="xs" align="center">
             <Text fw={500}>{categToTitle[category]}</Text>
             <SexName sex={info.sex} name={info.snake_name} />
@@ -152,24 +152,29 @@ export const FormCreateSale = ({ init, category, info }) => {
           }}
         />
       </Flex>
-      <Controller
-        name="sale_price"
-        control={control}
-        render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <NumberInput required rightSection="₽" label="Цена продажи" flex="1 1 50%" hideControls thousandSeparator=" " error={error?.message} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} />;
-        }}
-      />
-      <Autocomp
-        required
-        data={data}
-        onChange={debSearch}
-        onOptionSubmit={(a) => {
-          setValue("city_code", a.city_code);
-          setValue("city_name", a.city_name);
-        }}
-        value={val}
-        isPending={isPending}
-      />
+      <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
+        <Controller
+          name="sale_price"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <NumberInput required rightSection="₽" label="Цена продажи" flex="1 1 auto" hideControls thousandSeparator=" " error={error?.message} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} />;
+          }}
+        />
+        <Box flex="1 1 auto">
+          <Autocomp
+            required
+            data={data}
+            onChange={debSearch}
+            onOptionSubmit={(a) => {
+              setValue("city_code", a.city_code);
+              setValue("city_name", a.city_name);
+            }}
+            value={val}
+            isPending={isPending}
+          />
+        </Box>
+      </Flex>
+
       <Box className={styles.w70} maw="100%">
         <Controller
           name="description"
@@ -188,14 +193,14 @@ export const FormCreateSale = ({ init, category, info }) => {
                 onChange={onChange}
                 value={value}
                 error={error?.message}
-                h={120}
-                styles={{ wrapper: { height: "100%" }, input: { height: "100%" } }}
+                autosize
+                styles={{ wrapper: { height: "100%" }, input: { height: 120 } }}
               />
             );
           }}
         />
       </Box>
-      <Flex align="flex-start" maw="100%" w="100%" gap="xl">
+      <Flex align="flex-start" maw="100%" gap="xl" className={styles.w70}>
         <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)}>
           Создать
         </Btn>

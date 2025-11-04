@@ -1,13 +1,15 @@
+import { useRef } from "preact/hooks";
 import { Combobox, Loader, Stack, Text, TextInput, useCombobox } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 
 export const Autocomp = ({ data, onChange, value, onOptionSubmit, required = false, isPending = false }) => {
+  const ref = useRef<HTMLInputElement | null>(null);
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
   const opts = data?.map((item) => {
-    const res = `${item.data.city}, ${item.data.region_with_type}`;
+    const res = `${item.data.city}${item.data.region.includes(item.data.city) ? "" : `, ${item.data.region_with_type}`}`;
     return (
       <Combobox.Option value={{ city_name: res, city_code: item.data.city_kladr_id } as any} key={res}>
         <Stack gap="sm">
@@ -29,6 +31,7 @@ export const Autocomp = ({ data, onChange, value, onOptionSubmit, required = fal
     >
       <Combobox.Target>
         <TextInput
+          ref={ref}
           required={required}
           label="Город"
           placeholder=""
@@ -38,7 +41,11 @@ export const Autocomp = ({ data, onChange, value, onOptionSubmit, required = fal
             combobox.resetSelectedOption();
             combobox.openDropdown();
           }}
-          onClick={() => combobox.openDropdown()}
+          onClick={() => {
+            combobox.openDropdown();
+            ref.current?.select?.();
+          }}
+          onFocus={() => undefined}
           onBlur={() => combobox.closeDropdown()}
           rightSection={isPending && <Loader size={18} />}
         />

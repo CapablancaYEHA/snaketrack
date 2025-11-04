@@ -381,12 +381,11 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
                         label="Добавить событие"
                         handleSelect={(v) => {
                           const newArr = [
-                            ...(malesEvents?.[male?.id] || []),
                             {
                               event: v,
                               date: null,
                             },
-                          ];
+                          ].concat(malesEvents?.[male?.id] || []);
                           innerInstance.setValue(`malesEvents.${male?.id}` as any, newArr);
                         }}
                       />

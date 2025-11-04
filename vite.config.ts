@@ -1,5 +1,5 @@
 import preact from "@preact/preset-vite";
-import basicSsl from "@vitejs/plugin-basic-ssl";
+// import basicSsl from "@vitejs/plugin-basic-ssl";
 import path from "path";
 import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
@@ -23,7 +23,7 @@ export default defineConfig({
       "@styles": path.resolve(__dirname, "./src/styles"),
     },
   },
-  //   FIXME убрать плагин
+  // FIXME убрать плагин
   plugins: [
     preact(),
     eslint(),

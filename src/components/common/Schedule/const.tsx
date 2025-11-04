@@ -49,6 +49,12 @@ export const makeScheduleColumns = ({ openFeed }) => [
     maxSize: 9,
     minSize: 150,
   }),
+  columnHelper.accessor((row: any) => row.snake_name, {
+    id: "names",
+    header: undefined,
+    cell: undefined,
+    enableSorting: true,
+  }),
 ];
 
 export const getSnakesInReminder = (a: IRemindersRes | undefined, snakes: IResSnakesList[]) => {

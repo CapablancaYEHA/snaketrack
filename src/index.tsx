@@ -1,6 +1,5 @@
 import { render } from "preact";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
- import { NuqsAdapter } from 'nuqs/adapters/react';
+import { NuqsAdapter } from 'nuqs/adapters/react';
 import { LocationProvider, Route, Router } from "preact-iso";
 import { useEffect, useState } from "preact/hooks";
 import { Box, LoadingOverlay, MantineProvider } from "@mantine/core";
@@ -27,8 +26,6 @@ import "@mantine/dates/styles.css";
 import '@mantine/carousel/styles.css';
 import "./styles/global.scss";
 
-
-// TODO нужна возможность зайти на страницу змеи по ID но она должна иметь другой презентационный вид, нежели сам пользователь её видит (для магаза?)
 const isPending = signal(true);
 
 export function App() {
@@ -63,7 +60,6 @@ export function App() {
   return (
 	<NuqsAdapter>
     <QueryClientProvider client={queryClient}>
-		{/* <ReactQueryDevtools initialIsOpen={false} /> */}
       <LocationProvider>
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <Notifications />

@@ -68,7 +68,7 @@ export const FormEditSale = ({ init, info, category }) => {
         upd: {
           ...submitBody,
           pictures: pics || undefined,
-          ...(!submitBody.status || submitBody.status === "reserved" ? { updated_at: dateToSupabaseTime(new Date()) } : { completed_at: dateToSupabaseTime(new Date()) }),
+          ...(submitBody.status === "sold" ? { completed_at: dateToSupabaseTime(new Date()) } : { updated_at: dateToSupabaseTime(new Date()) }),
         },
         id: location.query.id,
       },
@@ -103,8 +103,8 @@ export const FormEditSale = ({ init, info, category }) => {
 
   return (
     <>
-      <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
-        <Stack flex={{ base: "1", sm: "0 1 50%" }} gap="sm">
+      <Flex align="stretch" gap="sm" className={styles.w70col}>
+        <Stack gap="sm">
           <Flex justify="flex-start" gap="xs" align="center">
             <Text fw={500}>{categToTitle[category]}</Text>
             <SexName sex={info.sex} name={info.snake_name} />
@@ -154,31 +154,37 @@ export const FormEditSale = ({ init, info, category }) => {
           }}
         />
       </Flex>
-      <Controller
-        name={"status"}
-        control={control}
-        render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <Select allowDeselect={false} required data={adStatsHardcode} value={value} onChange={onChange} label={"Статус"} error={error?.message} size="sm" />;
-        }}
-      />
-      <Controller
-        name="sale_price"
-        control={control}
-        render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <NumberInput required rightSection="₽" label="Цена продажи" flex="1 1 50%" hideControls thousandSeparator=" " error={error?.message} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} />;
-        }}
-      />
-      <Autocomp
-        required
-        data={data}
-        onChange={debSearch}
-        onOptionSubmit={(a) => {
-          setValue("city_code", a.city_code);
-          setValue("city_name", a.city_name);
-        }}
-        value={val || init.city_name}
-        isPending={isPending}
-      />
+      <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
+        <Controller
+          name={"status"}
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <Select allowDeselect={false} required data={adStatsHardcode} value={value} onChange={onChange} label={"Статус"} error={error?.message} size="sm" flex="1 1 50%" />;
+          }}
+        />
+        <Controller
+          name="sale_price"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <NumberInput required rightSection="₽" label="Цена продажи" flex="1 1 50%" hideControls thousandSeparator=" " error={error?.message} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} />;
+          }}
+        />
+      </Flex>
+      <Flex gap="lg" wrap="nowrap" className={styles.w70col}>
+        <Box>
+          <Autocomp
+            required
+            data={data}
+            onChange={debSearch}
+            onOptionSubmit={(a) => {
+              setValue("city_code", a.city_code);
+              setValue("city_name", a.city_name);
+            }}
+            value={val || init.city_name}
+            isPending={isPending}
+          />
+        </Box>
+      </Flex>
       <Box className={styles.w70} maw="100%">
         <Controller
           name="description"
@@ -197,14 +203,14 @@ export const FormEditSale = ({ init, info, category }) => {
                 onChange={onChange}
                 value={value}
                 error={error?.message}
-                h={120}
-                styles={{ wrapper: { height: "100%" }, input: { height: "100%" } }}
+                autosize
+                styles={{ wrapper: { height: "100%" }, input: { height: 120 } }}
               />
             );
           }}
         />
       </Box>
-      <Flex align="flex-start" maw="100%" w="100%" gap="xl">
+      <Flex align="flex-start" maw="100%" gap="xl" className={styles.w70}>
         <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending} disabled={!isDirty || isAdPend}>
           Сохранить
         </Btn>

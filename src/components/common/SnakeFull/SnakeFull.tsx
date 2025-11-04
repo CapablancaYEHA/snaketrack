@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
-import { Button, Flex, Image, Indicator, NumberFormatter, Paper, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Flex, Image, Indicator, NumberFormatter, Paper, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -41,27 +41,27 @@ export function SnakeFull({ title, category, data }: IProp) {
       <Title component="span" order={4} c="yellow.6">
         Подробная информация о змее
       </Title>
-      <Flex gap="sm">
+      <Flex gap="sm" maw="100%" w="100%" wrap="wrap">
         <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
           Редактировать
         </Button>
         <Button size="compact-xs" onClick={() => (isFeedOpen.value = true)}>
           Добавить событие
         </Button>
-        {["on_sale", "reserved", "sold"].includes(data.status) ? (
-          <Flex align="center">
-            <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[data.status]} processing>
-              <Text fw={500} size="xs" ml="sm">
-                {snakeStatusToLabel[data.status]}
-              </Text>
-            </Indicator>
-          </Flex>
-        ) : (
+        {!["on_sale", "reserved", "sold"].includes(data.status) ? (
           <Button size="compact-xs" variant="default" component="a" href={`/market/add/${category}?id=${location.query.id}`}>
             Выставить на продажу
           </Button>
-        )}
+        ) : null}
+        <Box ml="auto" pl="md">
+          <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[data.status]} processing zIndex={3}>
+            <Text fw={500} size="xs" ml="sm">
+              {snakeStatusToLabel[data.status]}
+            </Text>
+          </Indicator>
+        </Box>
       </Flex>
+
       {/* <Box m="0 auto">
         <SegmentedControl
           value={value}

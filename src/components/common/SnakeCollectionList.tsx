@@ -29,7 +29,7 @@ export function SnakeCollectionList() {
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
   const { data: genes } = useSnakeGenes(catVisited.value);
-  const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(categToConfigList[catVisited.value](userId), userId != null);
+  const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(categToConfigList[catVisited.value]?.(userId), userId != null);
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[catVisited.value]);
   const { mutate: del, isPending: isDelPend } = useSupaDel(categoryToBaseTable[catVisited.value]);
   const { mutate: trans, isPending: isTransPend } = useTransferSnake(catVisited.value);
@@ -86,6 +86,12 @@ export function SnakeCollectionList() {
             setColumnFilters={setFilt}
             globalFilter={globalFilter}
             setGlobalFilter={debSearch}
+            initSort={[
+              {
+                id: "names",
+                desc: false,
+              },
+            ]}
           />
         </>
       )}

@@ -31,6 +31,7 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) =
       id: "names",
       header: undefined,
       cell: undefined,
+      enableSorting: true,
     }),
     colHelper.accessor((row: any) => row.sex, {
       id: "sex",
@@ -66,7 +67,7 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) =
     colHelper.accessor("status", {
       header: () => "Статус",
       cell: ({ cell }) => (
-        <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[cell.getValue()]} processing>
+        <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[cell.getValue()]} processing zIndex={3}>
           <Box>
             <Text fw={500} size="xs" ml="sm">
               {snakeStatusToLabel[cell.getValue()]}

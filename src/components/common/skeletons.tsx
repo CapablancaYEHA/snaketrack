@@ -43,6 +43,70 @@ export const SkelTable = () => (
         <Skeleton height={16} radius="xl" flex="1" miw={16} />
       </Flex>
     </Flex>
+    <Flex wrap="nowrap" w="100%" gap="md">
+      <Skeleton height={110} radius="md" flex="1 1 1%" />
+      <Box flex="1 1 0px">
+        <Skeleton height={16} radius="xl" mt={8} miw={16} />
+      </Box>
+      <Box flex="1 1 0px">
+        <Skeleton height={16} mb={6} radius="xl" mt={8} miw={16} />
+        <Skeleton height={16} mb={6} radius="xl" />
+        <Skeleton height={16} mb={6} radius="xl" />
+      </Box>
+      <Flex gap="xs" flex="1 1 0px" mt={8}>
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+      </Flex>
+    </Flex>
+    <Flex wrap="nowrap" w="100%" gap="md">
+      <Skeleton height={110} radius="md" flex="1 1 1%" />
+      <Box flex="1 1 0px">
+        <Skeleton height={16} radius="xl" mt={8} miw={16} />
+      </Box>
+      <Box flex="1 1 0px">
+        <Skeleton height={16} mb={6} radius="xl" mt={8} miw={16} />
+        <Skeleton height={16} mb={6} radius="xl" />
+        <Skeleton height={16} mb={6} radius="xl" />
+      </Box>
+      <Flex gap="xs" flex="1 1 0px" mt={8}>
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+      </Flex>
+    </Flex>
+    <Flex wrap="nowrap" w="100%" gap="md">
+      <Skeleton height={110} radius="md" flex="1 1 1%" />
+      <Box flex="1 1 0px">
+        <Skeleton height={16} radius="xl" mt={8} miw={16} />
+      </Box>
+      <Box flex="1 1 0px">
+        <Skeleton height={16} mb={6} radius="xl" mt={8} miw={16} />
+        <Skeleton height={16} mb={6} radius="xl" />
+        <Skeleton height={16} mb={6} radius="xl" />
+      </Box>
+      <Flex gap="xs" flex="1 1 0px" mt={8}>
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+      </Flex>
+    </Flex>
+    <Flex wrap="nowrap" w="100%" gap="md">
+      <Skeleton height={110} radius="md" flex="1 1 1%" />
+      <Box flex="1 1 0px">
+        <Skeleton height={16} radius="xl" mt={8} miw={16} />
+      </Box>
+      <Box flex="1 1 0px">
+        <Skeleton height={16} mb={6} radius="xl" mt={8} miw={16} />
+        <Skeleton height={16} mb={6} radius="xl" />
+        <Skeleton height={16} mb={6} radius="xl" />
+      </Box>
+      <Flex gap="xs" flex="1 1 0px" mt={8}>
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+        <Skeleton height={16} radius="xl" flex="1" miw={16} />
+      </Flex>
+    </Flex>
   </>
 );
 

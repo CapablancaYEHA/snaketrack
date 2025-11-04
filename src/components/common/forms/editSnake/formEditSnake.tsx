@@ -142,13 +142,6 @@ export const FormEditSnake = ({ init, table, storage, title, category }) => {
             return <Select data={sexHardcode} value={value} onChange={onChange} label="Пол" error={error?.message} flex="0 1 50%" />;
           }}
         />
-        <Controller
-          name="sex"
-          control={control}
-          render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <Select data={sexHardcode} value={value} onChange={onChange} label="Пол" error={error?.message} flex="0 1 50%" />;
-          }}
-        />
         {/* FIX здесь нужно проверка на наличие разнополой пары */}
         {/* {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null} */}
       </Flex>

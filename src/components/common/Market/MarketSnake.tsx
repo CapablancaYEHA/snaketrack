@@ -1,4 +1,4 @@
-import { Button, CopyButton, Divider, Flex, NumberFormatter, Paper, Stack, Text, Title } from "@mantine/core";
+import { Button, CopyButton, Divider, Flex, Indicator, NumberFormatter, Paper, Stack, Text, Title } from "@mantine/core";
 import { Carousel } from "@/components/Carousel";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
@@ -6,7 +6,7 @@ import { categToTitle } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IMarketRes } from "@/api/common";
 import { getAge, getDateShort } from "@/utils/time";
-import { snakeStatusToLabel } from "./utils";
+import { snakeStatusToColor, snakeStatusToLabel } from "./utils";
 
 interface IProp {
   category: ECategories;
@@ -16,7 +16,7 @@ interface IProp {
 export function MarketSnake({ category, data }: IProp) {
   const dt = {
     title: snakeStatusToLabel[data.status],
-    text: `${data.sex === "female" ? 0.1 : 1.0} ${categToTitle[category]} ${data.genes.map((g) => g.label).join(" ")}`,
+    text: `${data.sex === "female" ? 0.1 : 1.0} ${categToTitle[category]} ${data.genes?.map((g) => g.label).join(" ")}`,
     url: window.location.href,
   };
 
@@ -35,8 +35,14 @@ export function MarketSnake({ category, data }: IProp) {
   };
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="md" component="section">
+    <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
       <Flex maw="100%" w="100%" align="center" gap="sm">
+        <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[data.status]} processing zIndex={3}>
+          <Text fw={500} size="xs" ml="sm">
+            {snakeStatusToLabel[data.status]}
+          </Text>
+        </Indicator>
+
         <CopyButton value="window.location.href" timeout={300000}>
           {({ copied, copy }) => (
             <Button variant="default" size="compact-xs" onClick={() => share(copy)} ml="auto">
@@ -59,9 +65,7 @@ export function MarketSnake({ category, data }: IProp) {
             </Text>
           </Flex>
           <Flex gap="md" style={{ flexFlow: "row wrap" }}>
-            {sortSnakeGenes(data.genes as any).map((a) => (
-              <GenePill item={a} key={`${a.label}_${a.id}`} />
-            ))}
+            {sortSnakeGenes(data.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} />)}
           </Flex>
           <Text size="xl" fw={500}>
             <NumberFormatter prefix="₽ " value={data.sale_price} thousandSeparator=" " />

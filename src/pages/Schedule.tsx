@@ -120,7 +120,20 @@ export const Schedule = () => {
             />
 
             <Text size="xs">Закрепленная колонка отображает дополнительное меню на ховер</Text>
-            {sigCurCat.value ? <StackTable data={dataToUse} columns={columns} onRowSelect={setRowSelection} rowSelection={rowSelection} /> : null}
+            {sigCurCat.value ? (
+              <StackTable
+                data={dataToUse}
+                columns={columns}
+                onRowSelect={setRowSelection}
+                rowSelection={rowSelection}
+                initSort={[
+                  {
+                    id: "names",
+                    desc: false,
+                  },
+                ]}
+              />
+            ) : null}
           </>
         )}
       </Stack>

@@ -23,7 +23,7 @@ export function SnakeCategories() {
         value={catVisited.value}
         onChange={handle}
         w="100%"
-        maw="320px"
+        maw="252px"
         data={[
           {
             label: "Региусы",
