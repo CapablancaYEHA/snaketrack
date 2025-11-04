@@ -10,7 +10,7 @@ import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
-import { categToTitle, detailsDict, subjectDict } from "@/components/common/utils";
+import { categToTitle, detailsDict, sliceDict, subjectDict } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
@@ -32,6 +32,7 @@ export function SnakeFull({ title, category, data }: IProp) {
   const location = useLocation();
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
+  const [slice, setSlice] = useState<"all" | "2" | "6" | "12">("all");
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[category]);
 
   const feedTable = useMemo(() => data?.feeding?.filter((a) => Object.values(a)?.some((b) => b != null)), [toString(data?.feeding)]) as IFeed[];
@@ -90,7 +91,7 @@ export function SnakeFull({ title, category, data }: IProp) {
           ) : null}
         </Stack>
       </Flex>
-      <Flex gap="md" style={{ flexFlow: "row wrap" }}>
+      <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
         {sortSnakeGenes(data.genes as any).map((a) => (
           <GenePill item={a} key={`${a.label}_${a.id}`} />
         ))}
@@ -108,11 +109,12 @@ export function SnakeFull({ title, category, data }: IProp) {
         </Text>
       ) : (
         <>
-          <Flex justify="space-between" w="100%" gap="sm">
-            <Select label="Детализация графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" />
-            <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" />
+          <Flex w="100%" gap="xs" wrap="wrap">
+            <Select label="Масштаб графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" flex="0 1 auto" />
+            <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" flex="0 1 auto" />
+            <Select label="Отображать данные" data={sliceDict} value={slice} onChange={setSlice as any} size="xs" flex="0 1 auto" />
           </Flex>
-          <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} />
+          <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} dateSlice={slice} />
         </>
       )}
       <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} disabled={isEmpty(data?.feeding) && isEmpty(data?.weight)} size="compact-xs" ml="auto">

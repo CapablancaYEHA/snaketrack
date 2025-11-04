@@ -19,6 +19,13 @@ export const subjectDict = [
   { label: "Вес и Кормления", value: "both" },
 ];
 
+export const sliceDict = [
+  { label: "За всё время", value: "all" },
+  { label: "Последние 2 мес", value: "2 " },
+  { label: "Последние 6 мес", value: "6" },
+  { label: "Последний год", value: "12" },
+];
+
 export const bStToLabel = {
   [EBreedStat.PLAN]: "Планирование",
   [EBreedStat.WOO]: "Ухаживания",

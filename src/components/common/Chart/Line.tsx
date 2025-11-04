@@ -17,11 +17,12 @@ interface ILine {
     | null;
   feedData: IFeed[] | null;
   view: "ko" | "snake" | "both";
+  dateSlice?: string;
   scaleX?: any;
 }
 
-export const ChartLine: FC<ILine> = ({ weightData, feedData, scaleX = "weeks", view = "both" }) => {
-  const chartData = makeLineData(weightData ?? [], feedData ?? [], view);
+export const ChartLine: FC<ILine> = ({ weightData, feedData, scaleX = "weeks", view = "both", dateSlice }) => {
+  const chartData = makeLineData(weightData ?? [], feedData ?? [], view, dateSlice);
 
   return (
     <div style={{ position: "relative", width: "100%" }}>

@@ -50,7 +50,7 @@ export const calcFeedEvent = (feed?: IFeed, size = "sm") => {
 };
 
 export const GenesList = ({ genes }) => (
-  <Flex wrap="wrap" gap="xs">
+  <Flex wrap="wrap" gap="sm">
     {sortSnakeGenes(genes).map((a) => (
       <GenePill key={`${a.label}_${a.id}`} item={a} />
     ))}

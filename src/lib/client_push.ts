@@ -23,8 +23,8 @@ export function UseOneSignal(uid) {
                 {
                   autoPrompt: true,
                   delay: {
-                    pageViews: 2,
-                    timeDelay: 10,
+                    pageViews: 1,
+                    timeDelay: 0,
                   },
                 },
               ],

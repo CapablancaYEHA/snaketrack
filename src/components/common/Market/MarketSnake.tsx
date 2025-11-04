@@ -64,7 +64,7 @@ export function MarketSnake({ category, data }: IProp) {
               <strong>Возраст:</strong> {getAge(data.date_hatch)}
             </Text>
           </Flex>
-          <Flex gap="md" style={{ flexFlow: "row wrap" }}>
+          <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
             {sortSnakeGenes(data.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} />)}
           </Flex>
           <Text size="xl" fw={500}>

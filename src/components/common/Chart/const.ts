@@ -1,4 +1,4 @@
-import { adapterLocale, getDate, getDateObj } from "@/utils/time";
+import { adapterLocale, dateTimeDiff, getDate, getDateObj, isOlderThan, isYoungerThan } from "@/utils/time";
 
 adapterLocale();
 
@@ -207,26 +207,29 @@ const findLastValid = (ind: number, arr: any[]) => {
   return arr[ind].feed_weight ? arr[ind].feed_weight : findLastValid(ind - 1, arr);
 };
 
-export const makeLineData = (weight, feed, view: "ko" | "snake" | "both") => {
+export const makeLineData = (weight, feed, view: "ko" | "snake" | "both", slice?: string) => {
   if (view === "both" && feed.length === 0 && weight.length === 0) {
     return {
       datasets: [],
     };
   }
   let res: any[] = [];
+  const preFeed = (feed ?? [])?.sort((a, b) => getDateObj(a.feed_last_at) - getDateObj(b.feed_last_at));
+  const feedFiltered = slice === "all" ? preFeed : preFeed?.filter((d) => isYoungerThan(d.feed_last_at, Number(slice)));
+
   const koSet = {
     ...dataKO,
-
-    data: (feed ?? [])
-      ?.sort((a, b) => getDateObj(a.feed_last_at) - getDateObj(b.feed_last_at))
-      ?.map((a, ind, self) => {
-        const lastValid = a.feed_weight ?? findLastValid(ind - 1, self);
-        return { y: lastValid, x: a.feed_last_at, regurgitation: a.regurgitation || false, refuse: a.refuse || false };
-      }),
+    data: feedFiltered?.map((a, ind, self) => {
+      const lastValid = a.feed_weight ?? findLastValid(ind - 1, self);
+      return { y: lastValid, x: a.feed_last_at, regurgitation: a.regurgitation || false, refuse: a.refuse || false };
+    }),
   };
+
+  const preSnake = (weight ?? [])?.map((a) => ({ y: a.weight, x: a.date, is_clean: a.is_clean })).sort((a, b) => getDateObj(a.x) - getDateObj(b.x));
+  const snakeFiltered = slice === "all" ? preSnake : preSnake?.filter((d) => isYoungerThan(d.x, Number(slice)));
   const snakeSet = {
     ...dataSnake,
-    data: (weight ?? [])?.map((a) => ({ y: a.weight, x: a.date, is_clean: a.is_clean })).sort((a, b) => getDateObj(a.x) - getDateObj(b.x)),
+    data: snakeFiltered,
   };
 
   if (view === "both") {
