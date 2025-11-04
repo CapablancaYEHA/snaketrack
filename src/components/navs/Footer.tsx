@@ -20,7 +20,7 @@ export function Footer() {
         <Text size="xs" fw={500} c="dark.2">
           © {getDateCustom(new Date(), "YYYY")} snaketrack.ru
         </Text>
-        <Anchor href={`https://yoomoney.ru/transfer/quickpay?requestId=${req}`} target="_blank" rel="nofollow noopener noreferrer" underline="never" inline size="xs" fw={500} ml="auto">
+        <Anchor onClick={() => fetch} href={`https://yoomoney.ru/fundraise/${req}`} target="_blank" rel="nofollow noopener noreferrer" underline="never" inline size="xs" fw={500} ml="auto">
           Задонатить на кофе 💓
         </Anchor>
       </Flex>
