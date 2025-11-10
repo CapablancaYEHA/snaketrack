@@ -4,17 +4,19 @@ interface IProp {
   c?: "red" | "green";
   m?: string;
   t?: string | null;
+  p?: string;
   close?: number;
   code?: string;
 }
 
-export const notif = ({ c = "green", m = "Что-то пошло не так", t, close = 5000, code }: IProp) =>
+export const notif = ({ c = "green", m = "Что-то пошло не так", t, close = 5000, code, p }: IProp) =>
   notifications.show({
     title: t,
     message: code && codeToMsg[code] != null ? codeToMsg[code] : m,
     color: c,
     autoClose: close,
     withBorder: true,
+    position: p as any,
   });
 
 const codeToMsg = {

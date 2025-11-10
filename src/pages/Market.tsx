@@ -1,6 +1,7 @@
 import { useEffect } from "preact/hooks";
+import { startSm } from "@/styles/theme";
 import { Box, Button, Checkbox, Drawer, Flex, Loader, LoadingOverlay, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
-import { useDisclosure, useInViewport } from "@mantine/hooks";
+import { useDisclosure, useInViewport, useMediaQuery } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
 import { useQueryState } from "nuqs";
 import { adStatsHardcode, sexHardcode } from "@/components/ballpythons/forms/bpBreed/common";
@@ -16,6 +17,7 @@ import { useProfile } from "@/api/profile/hooks";
 
 export function Market() {
   const { ref, inViewport } = useInViewport();
+  const isMinSm = useMediaQuery(startSm);
   const userId = localStorage.getItem("USER");
   const [cat, setCat] = useQueryState("cat");
   const [sqlFilt, setSqlFilt] = useQueryState<any>("single", singleParser);
@@ -127,7 +129,7 @@ export function Market() {
           content: {
             height: "auto",
             width: "auto",
-            maxWidth: 640,
+            maxWidth: isMinSm ? "640px" : "100%",
           },
         }}
         keepMounted

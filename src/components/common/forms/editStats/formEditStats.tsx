@@ -86,7 +86,7 @@ export const EditStats: FC<IProp> = ({ opened, close, weight, feeding, table, id
             <Stack gap="xs">
               <Text fw={500}>Масса</Text>
               {enhWeight.map((a) => (
-                <Checkbox key={a.id} value={a.id} size="xs" label={`${getDate(a.date)}\n${a.weight}г ${!a.is_clean ? "- с экскрецией" : ""}`} color="var(--mantine-color-error)" style={{ whiteSpace: "pre-wrap" }} />
+                <Checkbox key={a.id} value={a.id} size="xs" label={`${getDate(a.date)}\n${a.weight}г ${a.is_clean === false ? "- с экскрецией" : ""}`} color="var(--mantine-color-error)" style={{ whiteSpace: "pre-wrap" }} />
               ))}
             </Stack>
           </Checkbox.Group>

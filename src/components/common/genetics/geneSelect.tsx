@@ -13,8 +13,9 @@ type IPill = {
   item: IGenesComp;
   size?: MantineSize;
   onLeftClick?: (a: IGenesComp) => void;
+  withWrap?: boolean;
 };
-export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick }) => {
+export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick, withWrap }) => {
   const isHet = (item.gene === "rec" || (item.gene === "inc-dom" && item.hasHet)) && item.label.toLowerCase().includes("het");
   const isPercent = item.label.startsWith("50%") || item.label.startsWith("66%");
 
@@ -29,6 +30,7 @@ export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick }
           boxShadow: `0 0 0 1px ${geneToColor[item.gene]}`,
           cursor: "default",
           ...(item.isPos ? { paddingLeft: "24px" } : {}),
+          ...(withWrap ? { whiteSpace: "normal", height: "auto", flex: "1" } : {}),
         },
       }}
       key={item.label}

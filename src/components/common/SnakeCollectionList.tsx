@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
+import { startSm } from "@/styles/theme";
 import { Button, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
 import { sexHardcode } from "@/components/ballpythons/forms/bpBreed/common";
@@ -26,6 +27,7 @@ const isFeedOpen = signal<boolean>(false);
 const isDeleteOpen = signal<boolean>(false);
 
 export function SnakeCollectionList() {
+  const isMinSm = useMediaQuery(startSm);
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
   const { data: genes } = useSnakeGenes(catVisited.value);
@@ -140,7 +142,7 @@ export function SnakeCollectionList() {
           content: {
             height: "auto",
             width: "auto",
-            maxWidth: 640,
+            maxWidth: isMinSm ? "640px" : "100%",
           },
         }}
         keepMounted

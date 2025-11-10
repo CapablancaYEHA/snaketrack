@@ -76,7 +76,7 @@ export function BreedList() {
               content: {
                 height: "auto",
                 width: "auto",
-                maxWidth: 640,
+                maxWidth: isMinSm ? "640px" : "100%",
               },
             }}
             keepMounted

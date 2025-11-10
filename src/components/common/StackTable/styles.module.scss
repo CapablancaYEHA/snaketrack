@@ -74,6 +74,9 @@
           border-bottom-left-radius: var(--mantine-radius-md);
         }
       }
+      &:not(:last-of-type) {
+        border-bottom: 1px solid black;
+      }
     }
   }
 }

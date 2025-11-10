@@ -39,6 +39,7 @@ export function MaxSelectedMulti({ data, label, onChange, dataHasLabel, flex, in
       onChange?.(res);
       return res;
     });
+    setSearch("");
   };
 
   const handleValueRemove = (val: any) => {

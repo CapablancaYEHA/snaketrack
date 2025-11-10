@@ -17,6 +17,7 @@ import { useSupaUpd } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
 import { snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
 import { EditStats } from "../forms/editStats/formEditStats";
+import styles from "./styles.module.scss";
 import { snakeFeedColumns } from "./utils";
 
 const isFeedOpen = signal<boolean>(false);
@@ -109,10 +110,10 @@ export function SnakeFull({ title, category, data }: IProp) {
         </Text>
       ) : (
         <>
-          <Flex w="100%" gap="xs" wrap="wrap">
-            <Select label="Масштаб графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" flex="0 1 auto" />
-            <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" flex="0 1 auto" />
-            <Select label="Отображать данные" data={sliceDict} value={slice} onChange={setSlice as any} size="xs" flex="0 1 auto" />
+          <Flex w="100%" gap="xs" wrap="wrap" className={styles.selectables}>
+            <Select label="Масштаб графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" />
+            <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" />
+            <Select label="Отображать данные" data={sliceDict} value={slice} onChange={setSlice as any} size="xs" />
           </Flex>
           <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} dateSlice={slice} />
         </>
