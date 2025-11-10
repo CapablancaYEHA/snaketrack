@@ -6,34 +6,34 @@
 
 .inner {
   display: flex;
+  flex-flow: column nowrap;
   flex: 1;
   align-items: center;
   justify-content: center;
+  padding: var(--mantine-spacing-xs);
   border-radius: var(--mantine-radius-md);
+  background-color: var(--mantine-color-dark-6);
   overflow: hidden;
   cursor: pointer;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
-.male {
-  background: #74deff;
-}
+// .male {
+//   background: #74deff;
+// }
 
-.female {
-  background: #ff7979;
-}
+// .female {
+//   background: #ff7979;
+// }
 
 .isRoot {
-  border-color: rgba(0, 0, 0, 0.4);
+  //   border: 3px solid rgba(0, 0, 0, 0.4);
+  box-shadow: rgb(147, 130, 255) 0px 0px 4px 4px !important;
 }
 
 .isHover {
   border-color: rgba(0, 0, 0, 0.8);
-}
-
-.id {
-  font-size: 7px;
-  line-height: 1;
-  opacity: 0.5;
 }
 
 .sub {
@@ -49,9 +49,9 @@
 }
 
 .sub.male {
-  background: #fdaed8;
+  background: #ff7979;
 }
 
 .sub.female {
-  background: #a4ecff;
+  background: #74deff;
 }
