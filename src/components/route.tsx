@@ -8,6 +8,7 @@ import { ClutchList } from "@/pages/ClutchList";
 import { EditBreed } from "@/pages/EditBreed";
 import { EditClutch } from "@/pages/EditClutch";
 import { EditSnake } from "@/pages/EditSnake";
+import { ImportSnake } from "@/pages/ImportSnake";
 import { Market } from "@/pages/Market";
 import { MarketAdd } from "@/pages/MarketAddAvd";
 import { MarketAdv } from "@/pages/MarketAdv";
@@ -42,6 +43,7 @@ export const protectedRoutes = {
   "/snakes": SnakeCategories,
   "/snakes/:type?id=:id": Snake,
   "/snakes/add/:type": AddSnake,
+  "/snakes/import/:type": ImportSnake,
   "/snakes/edit/:type?id=:id": EditSnake,
   "/breeding": BreedList,
   "/breeding/add/:type": AddBreed,

@@ -90,7 +90,9 @@ export interface IReqCreateSnake {
   feed_weight?: string | null;
   feed_ko?: string | null;
   feed_comment?: string;
+  feeding?: IFeed[] | null;
   picture: string | null;
+  shed?: string[] | null;
   notes: string | null;
   last_action?: "create" | "transfer" | "update" | "archive";
   from_clutch?: string | null;
@@ -123,12 +125,11 @@ export type IFeedReq = Omit<IUpdReq, "feeding" | "weight" | "shed"> & {
   id: string;
 };
 
-export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture" | "notes" | "last_action" | "from_clutch"> {
+export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture" | "notes" | "last_action" | "from_clutch" | "shed"> {
   id: string;
   owner_name: string;
   status: string;
   feeding: IFeed[] | null;
-  shed: string[] | null;
 }
 
 export interface IRemindersRes {

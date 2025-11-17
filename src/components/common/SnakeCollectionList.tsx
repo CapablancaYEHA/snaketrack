@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Button, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
+import { Button, CloseButton, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
@@ -46,11 +46,14 @@ export function SnakeCollectionList() {
 
   return (
     <>
-      <Flex wrap="nowrap" maw="100%" w="100%">
+      <Flex wrap="nowrap" maw="100%" w="100%" gap="sm">
         <Button variant={isFilterNull ? "default" : "filled"} color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} onClick={open} size="compact-xs">
           Фильтры {isFilterNull ? "" : "применены"}
         </Button>
-        <Btn fullWidth={false} component="a" href={`/snakes/add/${catVisited.value}`} ml="auto">
+        <Button fullWidth={false} size="compact-xs" variant="default" component="a" href={`/snakes/import/${catVisited.value}`} ml="auto">
+          Импортировать
+        </Button>
+        <Btn fullWidth={false} size="compact-xs" component="a" href={`/snakes/add/${catVisited.value}`}>
           Добавить
         </Btn>
       </Flex>
@@ -148,7 +151,14 @@ export function SnakeCollectionList() {
         keepMounted
       >
         <Flex gap="md" wrap="nowrap" align="end" flex="1 1 auto">
-          <TextInput flex="1 1 50%" placeholder="Свободный поиск" onChange={(e: any) => setGlobalFilter(e.target.value!)} value={globalFilter} leftSection={<IconSwitch icon="search" />} />
+          <TextInput
+            flex="1 1 50%"
+            placeholder="Поиск по примечаниям, именам"
+            onChange={(e: any) => setGlobalFilter(e.target.value!)}
+            value={globalFilter}
+            rightSection={<CloseButton aria-label="Clear input" onClick={() => setGlobalFilter("")} style={{ display: globalFilter ? undefined : "none" }} />}
+            leftSection={<IconSwitch icon="search" />}
+          />
           <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltSingle(setFilt, a, "sex")} label="Пол" placeholder="Не выбран" />
         </Flex>
         <Space h="md" />

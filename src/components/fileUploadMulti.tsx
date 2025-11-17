@@ -39,7 +39,10 @@ export const FileUploadMulti = forwardRef<any, IProp>(({ onUpload, url, err, cle
                 </Flex>
                 <Box>
                   {isEmpty(innerFiles) ? (
-                    <IconSwitch icon="img" width="64" height="64" />
+                    <Flex gap="xs" align="center">
+                      <IconSwitch icon="img" width="64" height="64" />
+                      <IconSwitch icon="plus" width="24" height="24" />
+                    </Flex>
                   ) : (
                     <Flex gap="sm" wrap="wrap">
                       {innerFiles?.map((u, ind) => (
@@ -61,6 +64,7 @@ export const FileUploadMulti = forwardRef<any, IProp>(({ onUpload, url, err, cle
                           </Box>
                         </Box>
                       ))}
+                      {innerFiles && innerFiles?.length < 5 ? <IconSwitch icon="plus" width="24" height="24" /> : null}
                     </Flex>
                   )}
                 </Box>

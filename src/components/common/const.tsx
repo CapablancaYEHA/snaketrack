@@ -43,6 +43,11 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) =
       enableColumnFilter: true,
       filterFn: "equals",
     }),
+    colHelper.accessor((row: any) => row.notes, {
+      id: "notes",
+      header: undefined,
+      cell: undefined,
+    }),
     colHelper.accessor("feeding", {
       header: () => "События",
       cell: ({ cell, row }) => <SnakeEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} />,

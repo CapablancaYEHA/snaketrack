@@ -41,7 +41,7 @@ export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick, 
     >
       {item.isPos ? (
         <div className={styles.possible}>
-          <Text className={styles.circle} size="xs" fw={500}>
+          <Text className={styles.circle} size="0.6rem" fw={500}>
             P
           </Text>
         </div>
