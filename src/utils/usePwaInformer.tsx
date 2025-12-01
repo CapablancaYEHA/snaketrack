@@ -29,7 +29,7 @@ const Informed = ({ handle, platform }) => {
 export function usePwaInformer() {
   const k = localStorage.getItem("PWA_INFO") !== "accepted";
   const isBrowser = useMediaQuery(mediaBrowser);
-  const [isShow, setShow] = useState(!isBrowser && (k ?? true));
+  const [isShow, setShow] = useState(isBrowser && (k ?? true));
   const ua = navigator.userAgent;
   const iOS = ua.match(/iPhone|iPad|iPod/);
   const andr = ua.match(/Android/);
