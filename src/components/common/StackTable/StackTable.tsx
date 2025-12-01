@@ -30,6 +30,11 @@ export const StackTable = <T extends object>({ maxHeight, columns, data, setColu
     columns: cols,
     data: data ?? [],
     globalFilterFn: "includesString",
+    getColumnCanGlobalFilter: (c) => {
+      const value = table.getCoreRowModel().flatRows[0]?._getAllCellsByColumnId()[c.id]?.getValue() ?? "";
+
+      return typeof value === "string" || typeof value === "number";
+    },
     getRowId: (row: any) => row?.id,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,

@@ -69,7 +69,7 @@ export function App() {
           <Pullable />
           <Header session={session} />
 		  <Footer />
-          {!isMwTablet ? <Sidebar /> : null}
+		  {isPending.value ? null : !isMwTablet ? <Sidebar /> : null}
           <Box className="box-main" component="main">
             <Router>
               <Route path="/login" component={Login} />
@@ -79,7 +79,7 @@ export function App() {
               {isPending.value ? (
                 <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 1.0 }} />
               ) : (
-                ["/profile", "/snakes", "/snakes/:type?id=:id", "/snakes/add/:type", "/snakes/edit/:type?id=:id", "/breeding", "/breeding/add/:type",
+                ["/profile", "/snakes", "/snakes/:type?id=:id", "/snakes/add/:type", "/snakes/edit/:type?id=:id","/snakes/import/:type", "/breeding", "/breeding/add/:type",
 					"/breeding/:type?id=:id", "/clutches", "/clutches/edit/:type?id=:id", "/schedule", "/market", "/market/add/:type?id=:id", "/market/edit/:type?id=:id", "/market/view/:type?id=:id", "/calculator"].map((a) => (
                   <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />
                 ))

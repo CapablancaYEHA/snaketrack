@@ -89,7 +89,9 @@ export interface IReqCreateSnake {
   feed_weight?: string | null;
   feed_ko?: string | null;
   feed_comment?: string;
+  feeding?: IFeed[] | null;
   picture: string | null;
+  shed?: string[] | null;
   notes: string | null;
   last_action?: "create" | "transfer" | "update" | "archive";
   from_clutch?: string | null;
@@ -127,7 +129,6 @@ export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "se
   owner_name: string;
   status: string;
   feeding: IFeed[] | null;
-  shed: string[] | null;
 }
 
 export interface IRemindersRes {

@@ -96,10 +96,10 @@ export const OddsElement: FC<IPropOdds> = ({ o }) => {
         {isPureNormal ? <GenePill item={emptyMMTrait as any} /> : o.traits.map((t) => <GenePill key={`${t.id}_${t.name}`} item={fromMMtoPill(t)} />)}
       </Flex>
       {isPureNormal ? null : special.includes(o.morph_name.split(" ").sort().join(" ")) ? null : (
-        <>
-          <Text>=</Text>
-          <GenePill item={{ label: o.morph_name, gene: "combo" } as any} />
-        </>
+        <Flex gap="xs">
+          <Text style={{ alignSelf: "center" }}>=</Text>
+          <GenePill item={{ label: o.morph_name, gene: "combo" } as any} withWrap />
+        </Flex>
       )}
     </Flex>
   );

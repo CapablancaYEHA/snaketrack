@@ -99,6 +99,7 @@ const notifHetAlias = () =>
     c: "red",
     t: "Конфликт генов",
     m: "Ген уже добавлен (возможно, под alias-названием)",
+    p: "top-right",
   });
 
 const notifExcessSuper = () =>
@@ -106,6 +107,7 @@ const notifExcessSuper = () =>
     c: "red",
     t: "Конфликт генов",
     m: "Неверное сочетание с Super-формой",
+    p: "top-right",
   });
 
 const notifHomo = () =>
@@ -113,6 +115,7 @@ const notifHomo = () =>
     c: "red",
     t: "Конфликт генов",
     m: "Уже есть гетерозигота",
+    p: "top-right",
   });
 
 const notifSameHet = () =>
@@ -120,6 +123,7 @@ const notifSameHet = () =>
     c: "red",
     t: "Конфликт генов",
     m: "Уже добавлен визуал или Het для данного гена",
+    p: "top-right",
   });
 
 const priority = {

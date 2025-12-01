@@ -90,7 +90,9 @@ a {
 }
 
 .mantine-Drawer-content {
-  overflow: visible !important;
+  @include cute-scroll(60px);
+  overflow: auto !important;
+  height: auto;
 }
 
 .mantine-Drawer-header {

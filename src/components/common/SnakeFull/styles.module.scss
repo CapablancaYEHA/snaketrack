@@ -1,0 +1,10 @@
+.selectables {
+  & > div {
+    min-width: 140px;
+    flex: 0 1 32%;
+
+    @media (min-width: 48em) {
+      flex: 0 1 auto;
+    }
+  }
+}

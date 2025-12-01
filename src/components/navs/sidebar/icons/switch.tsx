@@ -18,6 +18,7 @@ import { MarketIcon } from "./Market";
 import { NoDataIcon } from "./NoData";
 import { NoFilterIcon } from "./NoFilter";
 import { PackIcon } from "./Pack";
+import { PlusIcon } from "./Plus";
 import { RefreshIcon } from "./Refresh";
 import { RelatedIcon } from "./Related";
 import { SearchIcon } from "./Search";
@@ -76,6 +77,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <NoDataIcon width={width} height={height} />;
     case "no-filter":
       return <NoFilterIcon width={width} height={height} />;
+    case "plus":
+      return <PlusIcon width={width} height={height} />;
     case "search":
       return <SearchIcon width={width} height={height} />;
     case "schedule":
