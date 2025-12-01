@@ -5,7 +5,8 @@ import { isEmpty } from "lodash-es";
 import { upgAlias } from "@/components/common/genetics/const";
 import { categToConfig } from "@/components/common/utils";
 import { toDataUrl } from "@/utils/supabaseImg";
-import { ECategories, ESupabase, IDadataSearch, IGenesComp, ISupabaseErr, ITransferReq, categoryToBaseTable, categoryToGenesTable, categoryToTransferFunc } from "./common";
+import { queryClient as instance } from "../lib/client_query";
+import { ECategories, EQuKeys, ESupabase, IDadataSearch, IGenesComp, ISupabaseErr, ITransferReq, categoryToBaseTable, categoryToGenesTable, categoryToTransferFunc } from "./common";
 
 interface IQueryConfig {
   t: ESupabase;
@@ -134,6 +135,8 @@ export function useSupaUpd<T>(table: ESupabase, invalWhat?: IInval) {
     },
   });
 }
+
+export const invalidateBpTree = (id: string) => instance.invalidateQueries({ queryKey: [EQuKeys.BP_TREE, id], exact: true });
 
 // TODO Нужно написать триггеры на удаление из массивов в Breeding и Clutch - ИЛИ ЖЕ
 //В Клатч сделана ошибка, что впринципе не можешь удалить змею из активной кладки или плана. У меня при удалении получается еще и триггер надо запускать чтобы вычистить из массивов

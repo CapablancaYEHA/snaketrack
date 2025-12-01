@@ -27,7 +27,7 @@ export function Login() {
       notif({
         c: "red",
         t: "Ошибка логина",
-        m: error?.message,
+        m: error?.message || "Неверные данные или письмо на почте не подтверждено",
         code: error?.code,
       });
     }

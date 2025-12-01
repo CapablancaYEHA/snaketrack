@@ -1,4 +1,5 @@
-import { Box, Flex, Skeleton, Stack } from "@mantine/core";
+import { Fragment } from "preact/jsx-runtime";
+import { Box, Flex, Skeleton, Space, Stack } from "@mantine/core";
 
 export const SkelTable = () => (
   <>
@@ -113,16 +114,32 @@ export const SkelTable = () => (
 export const SkelShedule = () => (
   <>
     <Stack align="center" w="100%" gap="sm">
-      <Skeleton height={16} radius="xl" maw="30%" />
-      <Stack w="100%" maw="40%" gap="xs">
-        {Array(10)
+      {/* <Skeleton height={16} radius="xl" maw="30%" /> */}
+      <Stack w="100%" maw={260} gap="17px">
+        {Array(7)
           .fill(" ")
           .map((a, ind) => (
-            <Skeleton height={4} radius="xl" w="100%" key={ind} />
+            <Skeleton height={20} radius="xl" w="100%" key={ind} />
           ))}
       </Stack>
     </Stack>
-
-    <SkelTable />
+    <Space h={114} />
+    {Array(4)
+      .fill(" ")
+      .map((b, indx, self) => (
+        <Fragment key={indx}>
+          <Flex maw="100%" w="100%" gap="sm">
+            <Stack flex="0 1 230px" gap="sm" align="end">
+              <Skeleton height={72} radius="sm" miw={190} />
+              <Skeleton height={16} radius="md" w="80%" />
+            </Stack>
+            <Stack flex="0 1 230px" gap="md">
+              <Skeleton height={20} radius="sm" w="70%" />
+              <Skeleton height={20} radius="sm" w="100%" />
+            </Stack>
+          </Flex>
+          {indx !== self.length - 1 ? <Space h="md" /> : null}
+        </Fragment>
+      ))}
   </>
 );

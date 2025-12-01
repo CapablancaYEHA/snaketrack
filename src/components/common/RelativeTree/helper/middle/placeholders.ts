@@ -13,6 +13,9 @@ const createNode = (gender: Gender): Mutable<Node> => ({
   siblings: [],
   spouses: [],
   children: [],
+  snake_name: "",
+  genes: [],
+  picture: "",
 });
 
 const createParents = (store: Store): readonly Relation[] => {

@@ -14,7 +14,6 @@ export const schema = yup.object<Schema>().shape({
   genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
   date_hatch: yup.string().nullable().required("Хотя бы примерно"),
   origin: yup.string().required(),
-  parents: yup.mixed().nullable(),
   price: yup
     .number()
     .transform((v) => (!v || Number.isNaN(v) ? undefined : v))

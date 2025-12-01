@@ -66,7 +66,7 @@ export const Pullable: React.FC<IPullable> = ({ onRefresh = () => window.locatio
   };
 
   const onTouchMove = (e: TouchEvent): void => {
-    if (disabled || ignoreTouches || pullStartY === 0) return;
+    if (!isCan || disabled || ignoreTouches || pullStartY === 0) return;
 
     setPullMoveY(e.touches[0].screenY);
     if (pullMoveY > 100) {

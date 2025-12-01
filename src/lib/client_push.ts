@@ -21,16 +21,22 @@ export function UseOneSignal(uid) {
             slidedown: {
               prompts: [
                 {
+                  type: "push",
                   autoPrompt: true,
                   delay: {
-                    pageViews: 1,
-                    timeDelay: 0,
+                    pageViews: 3,
+                    timeDelay: 1,
+                  },
+                  text: {
+                    actionMessage: "Пуши для напоминаний о кормлениях",
+                    acceptButton: "Сюда",
+                    cancelButton: "Нинада",
                   },
                 },
               ],
             },
           },
-          welcomeNotification: { title: "С-с-с-спасибо!", message: "Сообщим только о важном и приятном" },
+          welcomeNotification: { title: "С-с-спасибо!", message: "Сообщим только о важном и приятном" },
           allowLocalhostAsSecureOrigin: true,
         })
           .then(() => {

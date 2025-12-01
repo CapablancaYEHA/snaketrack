@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
-import { Box, Button, Flex, Image, Indicator, NumberFormatter, Paper, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Flex, Image, Indicator, NumberFormatter, Paper, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -27,9 +27,10 @@ interface IProp {
   title: string;
   category: ECategories;
   data: IResSnakesList;
+  snakeId: string;
 }
 
-export function SnakeFull({ title, category, data }: IProp) {
+export function SnakeFull({ title, category, data, snakeId }: IProp) {
   const location = useLocation();
   const [tab, setTab] = useState("common");
   const [scale, setScale] = useState("weeks");
@@ -41,9 +42,16 @@ export function SnakeFull({ title, category, data }: IProp) {
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
-      <Title component="span" order={4} c="yellow.6">
-        Подробная информация о змее
-      </Title>
+      <Box>
+        <Title component="span" order={4} c="yellow.6">
+          Подробная информация
+        </Title>
+        <Flex justify="flex-start" gap="xs" align="center">
+          <Text>{title}</Text>
+          <SexName sex={data.sex} name={data.snake_name} />
+        </Flex>
+      </Box>
+
       <Flex gap="sm" maw="100%" w="100%" wrap="wrap">
         <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
           Редактировать
@@ -66,28 +74,26 @@ export function SnakeFull({ title, category, data }: IProp) {
       </Flex>
 
       <Box m="0 auto">
-        <SegmentedControl
-          size="xs"
-          value={tab}
-          onChange={setTab}
-          data={[
-            { label: "Общее", value: "common" },
-            { label: "Семейное древо", value: "tree" },
-          ]}
-        />
+        <Tooltip label={<Text size="xs">Coming soon</Text>} disabled={category === ECategories.BP} withArrow multiline position="bottom">
+          <SegmentedControl
+            size="xs"
+            value={tab}
+            onChange={setTab}
+            data={[
+              { label: "Общее", value: "common" },
+              { label: "Семейное древо", value: "tree", disabled: category !== ECategories.BP },
+            ]}
+          />
+        </Tooltip>
       </Box>
       {tab === "tree" ? (
         <Flex maw="100%" w="100%">
-          <SFamTree />
+          <SFamTree targetId={snakeId} category={category} />
         </Flex>
       ) : (
         <>
           <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
             <Stack flex={{ base: "1", sm: "0 1 50%" }}>
-              <Flex justify="flex-start" gap="xs" align="center">
-                <Text>{title}</Text>
-                <SexName sex={data.sex} name={data.snake_name} />
-              </Flex>
               <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "180px", sm: "260px" }} />
             </Stack>
             <Stack gap="sm">

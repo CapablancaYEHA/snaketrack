@@ -1,15 +1,16 @@
 import { render } from "preact";
-import { NuqsAdapter } from 'nuqs/adapters/react';
+import { signal } from "@preact/signals";
 import { LocationProvider, Route, Router } from "preact-iso";
 import { useEffect, useState } from "preact/hooks";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { NuqsAdapter } from 'nuqs/adapters/react';
 import { Box, LoadingOverlay, MantineProvider } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { Notifications } from "@mantine/notifications";
-import { signal } from "@preact/signals";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { useNotifCookies } from "./utils/useNotifCookies";
 import { Pullable } from "./components/common/PullToRefresh/Pullable";
-import { Header } from "./components/navs/Header";
 import { Footer } from "./components/navs/Footer";
+import { Header } from "./components/navs/Header";
 import { Sidebar } from "./components/navs/sidebar/Sidebar";
 import { ProtectedRoute, protectedRoutes } from "./components/route";
 import { UseOneSignal } from "./lib/client_push";
@@ -19,6 +20,7 @@ import { NotFound } from "./pages/_404";
 import { Login } from "./pages/auth/Login";
 import { Register } from "./pages/auth/Register";
 import { Reset } from "./pages/auth/Reset";
+import { Terms } from "./pages/Terms";
 import { tabletThreshold, theme } from "./styles/theme";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
@@ -31,6 +33,7 @@ const isPending = signal(true);
 export function App() {
   const [session, setSession] = useState<any>(null);
 
+  useNotifCookies();
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session: a } }) => {
       setSession(a);
@@ -72,6 +75,7 @@ export function App() {
               <Route path="/login" component={Login} />
               <Route path="/register" component={Register} />
               <Route path="/reset" component={Reset} />
+			  <Route path="/terms" component={Terms} />
               {isPending.value ? (
                 <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 1.0 }} />
               ) : (

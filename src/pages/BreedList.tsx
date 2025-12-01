@@ -94,6 +94,9 @@ export function BreedList() {
           <Button color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} variant={isFilterNull ? "default" : "filled"} onClick={open} size="compact-xs">
             Фильтры {isFilterNull ? "" : "применены"}
           </Button>
+          <Text size="xs" ta="left" w="100%">
+            Закрепленная колонка отображает дополнительное меню на ховер
+          </Text>
           <StackTable data={tableData} columns={columns} columnFilters={filt} setColumnFilters={setFilt} />
         </>
       )}

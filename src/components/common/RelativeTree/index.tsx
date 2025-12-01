@@ -1,26 +1,27 @@
-import { FC, ReactNode, useCallback, useEffect, useState } from "preact/compat";
+import { FC, ReactNode, useEffect, useState } from "preact/compat";
 import fallback from "@assets/placeholder.png";
-import { Anchor, AspectRatio, Box, Button, CSSProperties, Drawer, Flex, Image, Stack, Text } from "@mantine/core";
+import { Anchor, AspectRatio, Box, Button, CSSProperties, Drawer, Flex, Image, Modal, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { clsx } from "clsx";
+import { isEmpty } from "lodash-es";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { useBpTree } from "@/api/ballpythons/misc";
-import { ECategories, ESupabase, IUpdReq } from "@/api/common";
-import { useSupaUpd } from "@/api/hooks";
+import { ECategories } from "@/api/common";
+import { FormAddParents } from "../forms/addParents/formAddParents";
 import { sortSnakeGenes } from "../genetics/const";
 import { GenePill } from "../genetics/geneSelect";
-import { SexName } from "../sexName";
 import calcTree from "./helper";
 import { Connector, ExtNode, Node } from "./helper/types";
 import css from "./style.module.scss";
 
-// import { tree_2 as tree } from "./tree_2";
-
 const sigIsOpen = signal<boolean>(false);
+const sigIsModalOpen = signal<boolean>(false);
 
 const close = () => (sigIsOpen.value = false);
 const open = () => (sigIsOpen.value = true);
+const closeMod = () => (sigIsModalOpen.value = false);
+const openMod = () => (sigIsModalOpen.value = true);
 
 interface ILinker {
   connector: Connector;
@@ -37,7 +38,7 @@ function Linker({ connector, width, height }: ILinker) {
         position: "absolute",
         width: Math.max(1, (x2 - x1) * width + 1),
         height: Math.max(1, (y2 - y1) * height + 1),
-        background: `#999`,
+        background: "var(--mantine-color-yellow-8)",
         transform: `translate(${x1 * width}px, ${y1 * height}px)`,
         pointerEvents: "none",
       }}
@@ -82,30 +83,32 @@ function ReactFamilyTree(props: ITree) {
 }
 
 const WIDTH = 196;
-const HEIGHT = 300;
+const HEIGHT = 260;
 
 interface FamilyNodeProps {
   node: ExtNode;
   isRoot: boolean;
   targetId: string;
-  onClick: (id: string) => void;
+  onSelect: (id: string) => void;
   onSubClick: (id: string) => void;
   style?: CSSProperties;
   selected: boolean;
 }
 
-const FamilyNode: FC<FamilyNodeProps> = ({ node, isRoot, targetId, onClick, onSubClick, style, selected }) => {
+const FamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick, style }) => {
   const isTraget = targetId === node.id;
   return (
     <div className={css.root} style={style}>
-      <Stack gap="sm" className={clsx(css.inner, isTraget && css.isRoot)} onClick={() => onClick(node.id)} style={{ transform: "translate3d(0, 0, 0)" }}>
-        <Text size="xs">{node.id}</Text>
+      <Stack gap="sm" className={clsx(css.inner, isTraget && css.isTarget)} onClick={() => onSelect(node.id)} style={{ transform: "translate3d(0, 0, 0)" }}>
+        <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="center">
+          <Text size="xs">{node.id}</Text>
+          <IconSwitch icon={node.gender} width="20" height="20" />
+        </Flex>
         <AspectRatio ratio={16 / 9} maw={196}>
           <Image radius="sm" src={node.picture} width="100%" alt="snake_in_tree" fit="cover" fallbackSrc={fallback} loading="lazy" />
         </AspectRatio>
 
-        <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="center">
-          <IconSwitch icon={node.gender} width="20" height="20" />
+        <Flex gap="xs" className={css.overflowed} style={{ flexFlow: "row wrap" }} align="start" h={74} p={2}>
           {sortSnakeGenes(node.genes as any).map((a) => (
             <GenePill item={a} key={`${a.label}_${a.id}`} size="xs" />
           ))}
@@ -116,35 +119,44 @@ const FamilyNode: FC<FamilyNodeProps> = ({ node, isRoot, targetId, onClick, onSu
   );
 };
 
-// TODO Выбор родителей из своих змей + ввод по айдишнику чисто
-
-export const SFamTree = ({ targetId = "ac627ab1cc", category = ECategories.BP }) => {
+export const SFamTree = ({ targetId, category = ECategories.BP }) => {
   const { data: tree } = useBpTree(targetId);
-  const { mutate } = useSupaUpd<IUpdReq>(ESupabase.BP);
   const [rootId, setRootId] = useState(tree?.[0].id);
   const [selectId, setSelectId] = useState<string>();
 
   const selected = tree?.find((item) => item.id === selectId);
-
-  //   const writeParentsToTarget = () =>
-  //     mutate({
-  //       upd: {
-  //         mother_id: "0266e33d3f",
-  //         father_id: "01161aaa0b",
-  //         last_action: "update",
-  //       },
-  //       id: "ac627ab1cc",
-  //     });
+  const targetNode = tree?.find((node) => node.id === targetId);
 
   useEffect(() => {
     setRootId(tree?.[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(tree)]);
 
   return rootId && tree && tree.length > 0 ? (
-    <>
-      {/* <Button onClick={writeParentsToTarget}>Сделать запись</Button> */}
-      <TransformWrapper initialScale={0.4} minScale={0.4} initialPositionX={100} initialPositionY={100} limitToBounds={false} centerOnInit>
-        <TransformComponent wrapperStyle={{ maxWidth: "100%", width: "100%", height: "auto" }} contentStyle={{ width: "100%", height: "100%" }}>
+    <Box maw="100%" w="100%">
+      <Modal centered opened={sigIsModalOpen.value} onClose={closeMod} size="xs" title={<Title order={4}>Указать родителей</Title>} keepMounted={false}>
+        <FormAddParents snakeId={targetId} />
+      </Modal>
+      {/* FIXME shadow_date_hatch для таких вот кейсов */}
+      {isEmpty(targetNode?.parents) ? (
+        <Flex maw="100%" w="100%" gap="lg">
+          <Text size="sm">Без информация о родителях невозможно построить древо</Text>
+          <Button size="compact-xs" onClick={openMod} flex="0 0 auto">
+            Добавить
+          </Button>
+        </Flex>
+      ) : null}
+
+      <Space h="md" />
+      <TransformWrapper
+        //   initialScale={0.4}
+        minScale={0.4}
+        // initialPositionX={100}
+        // initialPositionY={100}
+        limitToBounds={false}
+        centerOnInit
+      >
+        <TransformComponent wrapperStyle={{ maxWidth: "100%", width: "100%", height: "auto" }} contentStyle={{ width: "100%", height: "100%", justifyContent: "center", cursor: "grab" }}>
           <ReactFamilyTree
             nodes={tree as any}
             rootId={rootId}
@@ -155,11 +167,9 @@ export const SFamTree = ({ targetId = "ac627ab1cc", category = ECategories.BP })
                 key={node.id}
                 node={node}
                 isRoot={node.id === rootId}
-                // isRoot={node.id === targetId}
                 targetId={targetId}
-                // onClick={setSelectId}
-                selected={tree?.find((item) => item.id === selectId)}
-                onClick={(a) => {
+                selected={selected as any}
+                onSelect={(a) => {
                   open();
                   setSelectId(a);
                 }}
@@ -175,53 +185,65 @@ export const SFamTree = ({ targetId = "ac627ab1cc", category = ECategories.BP })
         </TransformComponent>
       </TransformWrapper>
       {selected ? (
-        <Drawer
-          opened={selected && sigIsOpen.value}
-          onClose={close}
-          // title=
-          position="bottom"
-          size="auto"
-          styles={{
-            inner: {
-              justifyContent: "center",
-            },
-            content: {
-              height: "auto",
-              width: "auto",
-              maxWidth: 640,
-            },
-          }}
-          overlayProps={{ backgroundOpacity: 0 }}
-          keepMounted={false}
-        >
-          {/* FIXME Ссылка на змею и отображение её имени только если ты - owner */}
-          <Stack gap="sm" align="start">
-            <Flex>
-              <Text size="md" td="underline">
-                Региус
-              </Text>
-              <Anchor href={`/snakes/${category}?id=${selected.id}`} display="flex" c="inherit" underline="always">
-                <IconSwitch icon={selected.gender} width="20" height="20" />
-                {`\u00a0`}
-                <Text td="underline">{selected.id}</Text>
-                {`\u00a0`}
-                <Text size="md" td="underline">
-                  {selected.snake_name}
-                </Text>
-              </Anchor>
-            </Flex>
-
-            <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="center">
-              {sortSnakeGenes(selected.genes as any).map((a) => (
-                <GenePill item={a} key={`${a.label}_${a.id}`} />
-              ))}
-            </Flex>
-            <AspectRatio ratio={16 / 9}>
-              <Image radius="sm" src={selected.picture} width="100%" maw="100%" alt="snake_in_drawer" fit="cover" fallbackSrc={fallback} loading="lazy" />
-            </AspectRatio>
-          </Stack>
-        </Drawer>
+        <>
+          <Drawer
+            opened={selected && sigIsOpen.value}
+            onClose={close}
+            title={<SnakeAnchor selected={selected} category={category} />}
+            position="bottom"
+            size="auto"
+            styles={{
+              inner: {
+                justifyContent: "center",
+              },
+              content: {
+                height: "auto",
+                width: "auto",
+                maxWidth: 400,
+              },
+            }}
+            overlayProps={{ backgroundOpacity: 0 }}
+            keepMounted={false}
+          >
+            <Stack gap="sm" align="start">
+              <Space h="xs" />
+              <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="center">
+                {sortSnakeGenes(selected.genes as any).map((a) => (
+                  <GenePill item={a} key={`${a.label}_${a.id}`} />
+                ))}
+              </Flex>
+              <AspectRatio ratio={16 / 9} maw="100%" w="100%" mih={170}>
+                <Image radius="sm" src={selected.picture} width="100%" maw="100%" alt="snake_in_drawer" fit="cover" fallbackSrc={fallback} loading="lazy" />
+              </AspectRatio>
+            </Stack>
+          </Drawer>
+        </>
       ) : null}
-    </>
+    </Box>
   ) : null;
+};
+
+const SnakeAnchor = ({ selected, category }) => {
+  const userId: string = localStorage.getItem("USER")!;
+  return (
+    <Flex>
+      {selected.owner_id === userId ? (
+        <Anchor href={`/snakes/${category}?id=${selected.id}`} display="flex" c="inherit" underline="always">
+          <Text td="underline">{selected.id}</Text>
+          {`\u00a0`}
+          <IconSwitch icon={selected.gender} width="20" height="20" />
+          {`\u00a0`}
+          <Text size="md" td="underline">
+            {selected.snake_name}
+          </Text>
+        </Anchor>
+      ) : (
+        <Box display="flex">
+          <Text td="underline">{selected.id}</Text>
+          {`\u00a0`}
+          <IconSwitch icon={selected.gender} width="20" height="20" />
+        </Box>
+      )}
+    </Flex>
+  );
 };
