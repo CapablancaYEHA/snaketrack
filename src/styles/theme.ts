@@ -15,4 +15,3 @@ export const tabletThreshold = "(max-width: 58em)";
 export const mobileThreshold = "(max-width: 48em)";
 export const startSm = "(min-width: 48em)";
 export const startMd = "(min-width: 58em)";
-export const mediaBrowser = "(display-mode: browser)";

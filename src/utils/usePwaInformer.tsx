@@ -1,9 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
-import { mediaBrowser } from "@/styles/theme";
 import chrome from "@assets/chrome_instr.png";
 import saf from "@assets/safari_instr.png";
 import { Button, Image, Stack, Text } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 
 const Informed = ({ handle, platform }) => {
@@ -28,8 +26,8 @@ const Informed = ({ handle, platform }) => {
 
 export function usePwaInformer() {
   const k = localStorage.getItem("PWA_INFO") !== "accepted";
-  const isBrowser = useMediaQuery(mediaBrowser);
-  const [isShow, setShow] = useState(isBrowser && (k ?? true));
+  const isStand = window.matchMedia("(display-mode: standalone)").matches;
+  const [isShow, setShow] = useState(!isStand && (k ?? true));
   const ua = navigator.userAgent;
   const iOS = ua.match(/iPhone|iPad|iPod/);
   const andr = ua.match(/Android/);
