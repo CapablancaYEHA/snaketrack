@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
-import { Box, Button, Flex, Image, Indicator, NumberFormatter, Paper, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Flex, Image, Indicator, NumberFormatter, Paper, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -16,6 +16,7 @@ import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } fro
 import { useSupaUpd } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
 import { snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
+import { SFamTree } from "../RelativeTree";
 import { EditStats } from "../forms/editStats/formEditStats";
 import styles from "./styles.module.scss";
 import { snakeFeedColumns } from "./utils";
@@ -27,10 +28,12 @@ interface IProp {
   title: string;
   category: ECategories;
   data: IResSnakesList;
+  snakeId: string;
 }
 
-export function SnakeFull({ title, category, data }: IProp) {
+export function SnakeFull({ title, category, data, snakeId }: IProp) {
   const location = useLocation();
+  const [tab, setTab] = useState("common");
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
   const [slice, setSlice] = useState<"all" | "2" | "6" | "12">("all");
@@ -40,9 +43,16 @@ export function SnakeFull({ title, category, data }: IProp) {
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
-      <Title component="span" order={4} c="yellow.6">
-        Подробная информация о змее
-      </Title>
+      <Box>
+        <Title component="span" order={4} c="yellow.6">
+          Подробная информация
+        </Title>
+        <Flex justify="flex-start" gap="xs" align="center">
+          <Text>{title}</Text>
+          <SexName sex={data.sex} name={data.snake_name} />
+        </Flex>
+      </Box>
+
       <Flex gap="sm" maw="100%" w="100%" wrap="wrap">
         <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
           Редактировать
@@ -64,88 +74,95 @@ export function SnakeFull({ title, category, data }: IProp) {
         </Box>
       </Flex>
 
-      {/* <Box m="0 auto">
-        <SegmentedControl
-          value={value}
-          onChange={setValue}
-          data={[
-            { label: "Общее", value: "common" },
-            { label: "Семейное древо", value: "tree", disabled: true },
-          ]}
-        />
-      </Box> */}
-      <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
-        <Stack flex={{ base: "1", sm: "0 1 50%" }}>
-          <Flex justify="flex-start" gap="xs" align="center">
-            <Text>{title}</Text>
-            <SexName sex={data.sex} name={data.snake_name} />
-          </Flex>
-          <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "180px", sm: "260px" }} />
-        </Stack>
-        <Stack gap="sm">
-          <Text size="sm">Дата рождения — {getDate(data.date_hatch)}</Text>
-          <Text size="sm">⌛ {getAge(data.date_hatch)}</Text>
-          {data.price ? (
-            <Text size="sm" component="div">
-              Стоимость приобретения — <NumberFormatter prefix="₽ " value={data.price} thousandSeparator=" " />
-            </Text>
-          ) : null}
-        </Stack>
-      </Flex>
-      <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
-        {sortSnakeGenes(data.genes as any).map((a) => (
-          <GenePill item={a} key={`${a.label}_${a.id}`} />
-        ))}
-      </Flex>
-      <Paper shadow="sm" radius="md" p="sm" w="100%">
-        <Text size="xs" c="dark.3">
-          Ваше примечание
-        </Text>
-        <Space h="sm" />
-        <Text size="sm">{data.notes ?? "Пусто"}</Text>
-      </Paper>
-      {!data?.weight && !isEmpty(data.feeding) && data.feeding?.every((a) => Object.values(a)?.every((b) => b == null)) ? (
-        <Text size="sm" fw={500} ta="center" w="100%">
-          Информация об изменении веса\кормлениях отсутствует
-        </Text>
+      <Box m="0 auto">
+        <Tooltip label={<Text size="xs">Coming soon</Text>} disabled={category === ECategories.BP} withArrow multiline position="bottom">
+          <SegmentedControl
+            size="xs"
+            value={tab}
+            onChange={setTab}
+            data={[
+              { label: "Общее", value: "common" },
+              { label: "Семейное древо", value: "tree", disabled: category !== ECategories.BP },
+            ]}
+          />
+        </Tooltip>
+      </Box>
+      {tab === "tree" ? (
+        <Flex maw="100%" w="100%">
+          <SFamTree targetId={snakeId} category={category} />
+        </Flex>
       ) : (
         <>
-          <Flex w="100%" gap="xs" wrap="wrap" className={styles.selectables}>
-            <Select label="Масштаб графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" />
-            <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" />
-            <Select label="Отображать данные" data={sliceDict} value={slice} onChange={setSlice as any} size="xs" />
+          <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
+            <Stack flex={{ base: "1", sm: "0 1 50%" }}>
+              <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "180px", sm: "260px" }} />
+            </Stack>
+            <Stack gap="sm">
+              <Text size="sm">Дата рождения — {getDate(data.date_hatch)}</Text>
+              <Text size="sm">⌛ {getAge(data.date_hatch)}</Text>
+              {data.price ? (
+                <Text size="sm" component="div">
+                  Стоимость приобретения — <NumberFormatter prefix="₽ " value={data.price} thousandSeparator=" " />
+                </Text>
+              ) : null}
+            </Stack>
           </Flex>
-          <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} dateSlice={slice} />
+          <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
+            {sortSnakeGenes(data.genes as any).map((a) => (
+              <GenePill item={a} key={`${a.label}_${a.id}`} />
+            ))}
+          </Flex>
+          <Paper shadow="sm" radius="md" p="sm" w="100%">
+            <Text size="xs" c="dark.3">
+              Ваше примечание
+            </Text>
+            <Space h="sm" />
+            <Text size="sm">{data.notes ?? "Пусто"}</Text>
+          </Paper>
+          {!data?.weight && !isEmpty(data.feeding) && data.feeding?.every((a) => Object.values(a)?.every((b) => b == null)) ? (
+            <Text size="sm" fw={500} ta="center" w="100%">
+              Информация об изменении веса\кормлениях отсутствует
+            </Text>
+          ) : (
+            <>
+              <Flex w="100%" gap="xs" wrap="wrap">
+                <Select label="Масштаб графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" flex="0 1 auto" />
+                <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" flex="0 1 auto" />
+                <Select label="Отображать данные" data={sliceDict} value={slice} onChange={setSlice as any} size="xs" flex="0 1 auto" />
+              </Flex>
+              <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} dateSlice={slice} />
+            </>
+          )}
+          <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} disabled={isEmpty(data?.feeding) && isEmpty(data?.weight)} size="compact-xs" ml="auto">
+            Корректировать данные
+          </Button>
+          <StackTable
+            data={feedTable ?? []}
+            columns={snakeFeedColumns}
+            maxHeight={302}
+            initSort={[
+              {
+                id: "feed_last_at",
+                desc: true,
+              },
+            ]}
+          />
+          <Space h="lg" />
+          <FeedSnake
+            opened={isFeedOpen.value}
+            close={() => {
+              isFeedOpen.value = false;
+            }}
+            snake={data}
+            title={categToTitle[category]}
+            handleAction={feed}
+            isPend={isFeedPend}
+          />
+          <ChartBubble shedData={data.shed} />
+          <Space h="lg" />
+          <EditStats table={categoryToBaseTable[category]} opened={isEditMode.value} close={() => (isEditMode.value = false)} weight={data?.weight ?? []} feeding={data?.feeding ?? []} id={location.query.id} />
         </>
       )}
-      <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} disabled={isEmpty(data?.feeding) && isEmpty(data?.weight)} size="compact-xs" ml="auto">
-        Корректировать данные
-      </Button>
-      <StackTable
-        data={feedTable ?? []}
-        columns={snakeFeedColumns}
-        maxHeight={302}
-        initSort={[
-          {
-            id: "feed_last_at",
-            desc: true,
-          },
-        ]}
-      />
-      <Space h="lg" />
-      <FeedSnake
-        opened={isFeedOpen.value}
-        close={() => {
-          isFeedOpen.value = false;
-        }}
-        snake={data}
-        title={categToTitle[category]}
-        handleAction={feed}
-        isPend={isFeedPend}
-      />
-      <ChartBubble shedData={data.shed} />
-      <Space h="lg" />
-      <EditStats table={categoryToBaseTable[category]} opened={isEditMode.value} close={() => (isEditMode.value = false)} weight={data?.weight ?? []} feeding={data?.feeding ?? []} id={location.query.id} />
     </Stack>
   );
 }

@@ -17,6 +17,7 @@ import { Schedule } from "@/pages/Schedule";
 import { Snake } from "@/pages/Snake";
 import { SnakeCategories } from "@/pages/SnakeCategories";
 import { Profile } from "@/pages/auth/Profile";
+import { usePwaInformer } from "@/utils/usePwaInformer";
 
 export const ProtectedRoute = (props) => {
   const location = useLocation();
@@ -24,6 +25,8 @@ export const ProtectedRoute = (props) => {
   if (!props.session) {
     location.route("/login");
   }
+
+  usePwaInformer();
 
   return <Route {...props} />;
 };
@@ -59,10 +62,10 @@ export const protectedRoutes = {
 };
 
 export const sidebarLinks = [
-  { id: 2, link: "/snakes" },
-  { id: 6, link: "/calculator" },
-  { id: 3, link: "/breeding" },
-  { id: 4, link: "/clutches" },
-  { id: 5, link: "/schedule" },
-  { id: 7, link: "/market" },
+  { id: 2, link: "/snakes", label: "Змеи" },
+  { id: 6, link: "/calculator", label: "Калькулятор" },
+  { id: 3, link: "/breeding", label: "Спаривания" },
+  { id: 4, link: "/clutches", label: "Кладки" },
+  { id: 5, link: "/schedule", label: "Расписание" },
+  { id: 7, link: "/market", label: "Маркет" },
 ];

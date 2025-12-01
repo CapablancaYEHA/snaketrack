@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/client_supabase";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
-import { ECategories, EQuKeys, ESupabase, ISupabaseErr, categoryToMmCat } from "../common";
+import { ECategories, EQuKeys, ESupabase, IFamilyTreeRes, ISupabaseErr, categoryToMmCat } from "../common";
 import { IMorphOddsReq, IMorphOddsRes } from "./models";
 
 export const httpUldSnPic = (file: File, source: ESupabase) => {
@@ -58,7 +58,7 @@ const httpGetBpTree = async (id) => {
 };
 
 export function useBpTree(id: string, isEnabled = true) {
-  return useQuery<any, ISupabaseErr, any[]>({
+  return useQuery<any, ISupabaseErr, IFamilyTreeRes[]>({
     queryKey: [EQuKeys.BP_TREE, id],
     queryFn: () => httpGetBpTree(id),
     enabled: isEnabled,

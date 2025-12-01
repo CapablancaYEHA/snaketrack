@@ -21,5 +21,5 @@ export function Snake() {
       </Text>
     );
 
-  return <SnakeFull title={title} category={p as any} data={data} />;
+  return <SnakeFull title={title} category={p as any} data={data} snakeId={location.query.id} />;
 }

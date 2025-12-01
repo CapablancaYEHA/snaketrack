@@ -33,7 +33,7 @@ export const schema = yup.object<Schema>().shape({
     .mixed<File[]>()
     .required("Минимум 1 фото")
     .test("fileSize", "Вес сжатого фото более 1Мb", (v) => !isEmpty(v) && v && v?.every((a) => a.size <= 1048576)),
-  description: yup.string().required("Обязательно к заполнению").min(50, "Что-то осмысленное"),
+  description: yup.string().required("Обязательно к заполнению").min(50, "Ожидаем контент объявления от 50 символов"),
   city_code: yup.string().required("Обязательно к заполнению"),
   city_name: yup.string().notRequired(),
   status: yup.string().nullable(),

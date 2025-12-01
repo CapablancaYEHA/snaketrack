@@ -22,6 +22,7 @@ import { PlusIcon } from "./Plus";
 import { RefreshIcon } from "./Refresh";
 import { RelatedIcon } from "./Related";
 import { SearchIcon } from "./Search";
+import { TelegramIcon } from "./Telegram";
 import { UnisexIcon } from "./Unisex";
 
 interface IProp {
@@ -82,6 +83,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <SearchIcon width={width} height={height} />;
     case "schedule":
       return <CalendarIcon width={width} height={height} />;
+    case "telegram":
+      return <TelegramIcon width={width} height={height} />;
     default:
       return <UnisexIcon width={width} height={height} />;
   }

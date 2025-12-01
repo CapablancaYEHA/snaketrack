@@ -84,7 +84,6 @@ export interface IReqCreateSnake {
   date_hatch: string;
   shadow_date_hatch?: string; // неизменяемая дата рождения, используется для определения siblings в дереве
   origin: string;
-  parents?: { female: string; males: string[] }; // TODO ?????
   price: number | null;
   feed_last_at?: string | null;
   feed_weight?: string | null;
@@ -125,7 +124,7 @@ export type IFeedReq = Omit<IUpdReq, "feeding" | "weight" | "shed"> & {
   id: string;
 };
 
-export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "parents" | "price" | "picture" | "notes" | "last_action" | "from_clutch" | "shed"> {
+export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "price" | "picture" | "notes" | "last_action" | "from_clutch"> {
   id: string;
   owner_name: string;
   status: string;
@@ -223,3 +222,16 @@ export type IDadataSearch = {
   unrestricted_value: string;
   value: string;
 };
+
+export interface IFamilyTreeRes {
+  children: { id: string }[];
+  gender: "female" | "male";
+  genes: IGenesComp[];
+  id: string;
+  owner_id: string;
+  parents: { id: string }[];
+  picture: string;
+  siblings: { id: string }[];
+  snake_name: string;
+  spouses: { id: string }[];
+}

@@ -1,4 +1,4 @@
-import { adapterLocale, dateTimeDiff, getDate, getDateObj, isOlderThan, isYoungerThan } from "@/utils/time";
+import { adapterLocale, getDate, getDateObj, isYoungerThan } from "@/utils/time";
 
 adapterLocale();
 

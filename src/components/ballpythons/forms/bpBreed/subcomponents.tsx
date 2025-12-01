@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { Fragment } from "preact/jsx-runtime";
 import { tabletThreshold } from "@/styles/theme";
 import fallback from "@assets/placeholder.png";
-import { Accordion, ActionIcon, Box, Button, Divider, Drawer, Flex, Group, Image, Loader, LoadingOverlay, Menu, Modal, Progress, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Accordion, Box, Button, Divider, Drawer, Flex, Group, Image, Loader, LoadingOverlay, Menu, Modal, Progress, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { Controller, FormProvider, useFieldArray, useFormContext, useWatch } from "react-hook-form";
@@ -466,15 +466,26 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
   );
 };
 
-export const ControlMenu = ({ id, onDelete, clutchId }) => {
+export const BreedControl = ({ children, id, onDelete, clutchId }) => {
   return (
-    <Menu shadow="md" width={200}>
-      <Menu.Target>
-        <ActionIcon size="sm" variant="transparent" color="gray" aria-label="Table Action Kebab">
-          <IconSwitch icon="kebab" />
-        </ActionIcon>
-      </Menu.Target>
-
+    <Menu
+      trigger="click-hover"
+      openDelay={200}
+      shadow="md"
+      width={164}
+      transitionProps={{ transition: "rotate-left", duration: 150 }}
+      loop={false}
+      trapFocus={false}
+      menuItemTabIndex={0}
+      position="right-end"
+      offset={8}
+      withArrow
+      arrowPosition="center"
+      closeOnClickOutside
+      keepMounted={false}
+      zIndex={30}
+    >
+      <Menu.Target>{children}</Menu.Target>
       <Menu.Dropdown>
         <Menu.Item component="a" href={`/breeding/ball-pythons?id=${id}`}>
           К планированию

@@ -5,7 +5,7 @@ import { IResBpBreedingList } from "@/api/ballpythons/models";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff, getDate } from "@/utils/time";
 import { GenePill } from "../../../common/genetics/geneSelect";
-import { ControlMenu } from "./subcomponents";
+import { BreedControl } from "./subcomponents";
 
 export const daysAfterOvul = 44;
 export const daysAfterShed = 29;
@@ -18,6 +18,13 @@ export const makeBpBreedColumns = ({ setBreedId }) => {
   return [
     columnHelper.accessor("female_name", {
       header: () => "Самка",
+      cell: ({ cell, row }) => (
+        <BreedControl id={row.original.id} onDelete={setBreedId} clutchId={row.original.clutch_id}>
+          <Text maw="100%" w="100%">
+            {cell.getValue()}
+          </Text>
+        </BreedControl>
+      ),
       filterFn: "arrIncludesSome",
       size: 1,
       maxSize: 2,
@@ -47,7 +54,7 @@ export const makeBpBreedColumns = ({ setBreedId }) => {
       ),
       filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => row.original.traits.map((b) => b.label).includes(a)),
       size: 5,
-      maxSize: 5,
+      maxSize: 6,
       minSize: 220,
     }),
     columnHelper.accessor("breed_status", {
@@ -58,16 +65,9 @@ export const makeBpBreedColumns = ({ setBreedId }) => {
         </Text>
       ),
       filterFn: "arrIncludesSome",
-      size: 10,
+      size: 11,
       maxSize: 2,
       minSize: 180,
-    }),
-    columnHelper.display({
-      id: "action",
-      cell: ({ row }) => <ControlMenu id={row.original.id} onDelete={setBreedId} clutchId={row.original.clutch_id} />,
-      size: 12,
-      maxSize: 1,
-      minSize: 36,
     }),
   ];
 };

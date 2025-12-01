@@ -9,7 +9,7 @@ export const renderLinks = (url, alwaysShow = false, callback = undefined) =>
     <div key={a.id} class={styles.item} onClick={callback}>
       <a href={a.link} class={`${styles.link} ${url.includes(a.link) ? styles.active : ""} ${alwaysShow ? "" : styles.hidden}`}>
         <Text span size="xs">
-          {a.link.slice(1)}
+          {a.label}
         </Text>
       </a>
       <section class={`${url.includes(a.link) ? styles.active : ""}`}>
