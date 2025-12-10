@@ -1,6 +1,6 @@
-import { IResBpBreedingList } from "@/api/ballpythons/models";
+import { IResBreedingList } from "@/api/breeding/models";
 
-export const makeDefaultValues = (data?: IResBpBreedingList | null) => {
+export const makeDefaultValues = (data?: IResBreedingList | null) => {
   if (!data) return undefined;
   return {
     female_id: data.female_id,

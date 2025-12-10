@@ -12,31 +12,32 @@ import { GenePill } from "@/components/common/genetics/geneSelect";
 import { calcProjGenes } from "@/components/common/utils";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { useFinaliseBpClutch } from "@/api/ballpythons/clutch";
-import { EClSt, IReqUpdBpClutch, IResBpClutch } from "@/api/ballpythons/models";
-import { ESupabase } from "@/api/common";
-import { useSupaUpd } from "@/api/hooks";
+import { EClSt, IReqUpdClutch, IResClutch } from "@/api/breeding/models";
+import { ECategories, ESupaBreed, categoryToShort } from "@/api/common";
+import { useFinaliseClutch, useSupaUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff } from "@/utils/time";
-import { daysAfterLaid, daysCriticalThr, getPercentage } from "../../bpBreed/breedUtils";
+import { daysCriticalThr, daysIncubation, getPercentage } from "../../snakeBreed/breedUtils";
 import { calcAnim } from "../clutchUtils";
+import { IClutchEditScheme, clutchEditSchema, prepForClutchUpdate, prepForFinal, prepForHatch, stdErr } from "../common";
 import { FormApprovedBabies, Juveniles, MiniInfo } from "../subcomponents";
-import { IClutchScheme, clutchSchema, prepForFinal, prepForHatch, prepForUpdate, stdErr } from "./const";
 import style from "./styles.module.scss";
 
 const snakeId = signal<string | undefined>(undefined);
 
 interface IProp {
-  clutch: IResBpClutch;
-  initData: IClutchScheme;
+  clutch: IResClutch;
+  initData: IClutchEditScheme;
   fathersToPick: any[];
+  category: ECategories;
 }
-export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) => {
+export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, category }) => {
+  const cat = categoryToShort[category];
   const location = useLocation();
-  const form = useForm<IClutchScheme>({
+  const form = useForm<IClutchEditScheme>({
     defaultValues: initData,
-    resolver: yupResolver(clutchSchema as any),
+    resolver: yupResolver(clutchEditSchema as any),
   });
 
   const {
@@ -65,18 +66,18 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
   const ids = [clutch.female_id].concat(clutch.males_ids);
   const { female_genes, male_genes } = clutch;
 
-  const { mutate: update } = useSupaUpd<IReqUpdBpClutch>(ESupabase.BP_CL, { qk: [ESupabase.BP_CL_V], e: true });
-  const { mutate: finalise } = useFinaliseBpClutch(clutch.id);
+  const { mutate: update } = useSupaUpd<IReqUpdClutch>(ESupaBreed[`${cat.toUpperCase()}_CL`], { qk: [ESupaBreed[`${cat.toUpperCase()}_CL_V`], location.query.id], e: true });
+  const { mutate: finalise } = useFinaliseClutch(category, clutch.id);
 
   const dateLaid = watch("date_laid");
-  const left = dateTimeDiff(dateAddDays(dateLaid, daysAfterLaid), "days");
+  const left = dateTimeDiff(dateAddDays(dateLaid, daysIncubation[category]), "days");
   const isLaid = clutch.status === EClSt.LA;
   const isHatch = clutch.status === EClSt.HA;
   const isClosed = clutch.status === EClSt.CL;
-  const isCanHatch = dateTimeDiff(dateAddDays(clutch.date_laid, daysAfterLaid), "days") <= daysCriticalThr;
+  const isCanHatch = dateTimeDiff(dateAddDays(dateLaid, daysIncubation[category]), "days") <= daysCriticalThr;
 
   const onSub = async (sbm) => {
-    update(prepForUpdate(sbm, dirtyFields, location.query.id), {
+    update(prepForClutchUpdate(sbm, dirtyFields, location.query.id), {
       onSuccess: () => {
         notif({ c: "green", t: "Успешно", m: "Детали кладки обновлены" });
         location.route("/clutches");
@@ -90,7 +91,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
   const onHatch = (sbm) => {
     update(prepForHatch(sbm, dirtyFields, location.query.id), {
       onSuccess: () => {
-        notif({ c: "green", t: "Успешно", m: "Поздравляем с рождением малышей! 🥳" });
+        notif({ c: "green", p: "top-right", t: "Успешно", m: "Поздравляем с рождением малышей! 🥳" });
       },
       onError: async (err) => {
         stdErr(err);
@@ -102,6 +103,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
     finalise(prepForFinal(sbm, location.query.id) as any, {
       onSuccess: () => {
         notif({ c: "green", t: "Успешно", m: "Змейки зарегистрированы" });
+        location.route("/clutches");
       },
       onError: async (err) => {
         stdErr(err);
@@ -175,7 +177,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
             <Flex>
               <Box w="100%" maw="100%">
                 <Progress.Root size="lg">
-                  <Progress.Section value={getPercentage(daysAfterLaid, left)} color="green" animated={calcAnim(clutch.status, left)} striped={calcAnim(clutch.status, left)} />
+                  <Progress.Section value={getPercentage(daysIncubation[category], left)} color="green" animated={calcAnim(clutch.status, left)} striped={calcAnim(clutch.status, left)} />
                 </Progress.Root>
               </Box>
             </Flex>
@@ -203,7 +205,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
             name="infertile_eggs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput disabled={isHatch || isClosed} label="Неоплоды" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return <NumberInput disabled={isHatch || isClosed} label="Неоплоды" onChange={onChange} value={value as any} allowDecimal={false} allowNegative={false} allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
             }}
           />
         </Flex>
@@ -270,7 +272,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
             ) : null}
 
             <FormProvider {...form}>
-              <FormApprovedBabies futureSnakes={futureSnakes} isClosed={isClosed} />
+              <FormApprovedBabies futureSnakes={futureSnakes} isShow={isHatch && !isClosed} />
             </FormProvider>
           </Stack>
           {clutch.males_ids.length > 1 && !isClosed ? (
@@ -300,7 +302,6 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
           </Text>
         )
       ) : null}
-
       <MiniInfo
         opened={snakeId.value != null}
         close={() => {
@@ -309,6 +310,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick }) =
         snakeId={snakeId.value}
         sex={null}
         withTitle={false}
+        category={category}
       />
     </>
   );

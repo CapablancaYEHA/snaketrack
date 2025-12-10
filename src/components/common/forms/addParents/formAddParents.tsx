@@ -10,6 +10,7 @@ import { notif } from "@/utils/notif";
 import { AutocompAsync } from "../../RelativeTree/AutocompAsync";
 import { IParentsSchema, defVals, parentsSchema } from "./const";
 
+// FIXME category = ECategories.BP после расширения на всех змей
 export const FormAddParents = ({ category = ECategories.BP, snakeId }) => {
   const userId = localStorage.getItem("USER");
   const { handleSubmit, control, setValue } = useForm({

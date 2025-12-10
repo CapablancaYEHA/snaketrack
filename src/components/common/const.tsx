@@ -16,7 +16,7 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) =
       header: () => " ",
       cell: ({ cell, row }) => (
         <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openDelete={openDelete} category={category}>
-          <Stack gap="xs">
+          <Stack gap="xs" maw="100%" w="100%">
             <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
             <AspectRatio ratio={16 / 9} maw={320}>
               <Image src={cell.getValue()} fit="cover" radius="md" w="100%" fallbackSrc={fallback} loading="lazy" />

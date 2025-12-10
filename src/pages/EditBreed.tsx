@@ -1,17 +1,18 @@
 import { useLocation } from "preact-iso";
 import { useEffect } from "preact/hooks";
 import { LoadingOverlay, Stack, Text } from "@mantine/core";
-import { makeDefaultValues } from "@/components/ballpythons/forms/bpBreed/editBpBreed/const";
-import { FormEditBpBreed } from "@/components/ballpythons/forms/bpBreed/editBpBreed/formEditBpBreed";
-import { bpBreedSingle } from "@/api/ballpythons/configs";
-import { IResBpBreedingList } from "@/api/ballpythons/models";
+import { makeDefaultValues } from "@/components/common/forms/snakeBreed/editSnakeBreed/const";
+import { FormEditSnakeBreed } from "@/components/common/forms/snakeBreed/editSnakeBreed/formEditSnakeBreed";
+import { breedSingle } from "@/api/breeding/configs";
+import { IResBreedingList } from "@/api/breeding/models";
 import { useSupaGet } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 
 export function EditBreed() {
   const location = useLocation();
+  const p = location.path.split("/").slice(-1)[0];
 
-  const { data, isError, error, isPending } = useSupaGet<IResBpBreedingList>(bpBreedSingle(location.query.id), location.query.id != null);
+  const { data, isError, error, isPending } = useSupaGet<IResBreedingList>(breedSingle(location.query.id, p as any), location.query.id != null);
 
   const composed = makeDefaultValues(data);
 
@@ -30,7 +31,7 @@ export function EditBreed() {
           Редактирование бридинга невозможно
         </Text>
       ) : (
-        <FormEditBpBreed initData={composed} />
+        <FormEditSnakeBreed initData={composed} category={p as any} />
       )}
     </Stack>
   );

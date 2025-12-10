@@ -56,7 +56,7 @@ interface IProp {
   init?: IGenesComp[];
   label?: string;
   placeholder?: string;
-  description?: string;
+  description?: string | null;
   category: ECategories;
 }
 

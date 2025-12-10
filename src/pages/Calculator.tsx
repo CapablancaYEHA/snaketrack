@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SegmentedControl, Stack, Title } from "@mantine/core";
+import { Mark, SegmentedControl, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { FormProvider, useForm } from "react-hook-form";
 import { OddsCalc } from "@/components/common/genetics/OddsCalc";
@@ -49,6 +49,9 @@ export function Calculator() {
           },
         ]}
       />
+      <Text size="sm">
+        <Mark color="orange">Примечание</Mark> рассчитанная вероятность указана для одного яйца. Больше яиц — больше шанс. Для получения итоговой вероятности умножьте указанный % на количество яиц
+      </Text>
       <FormProvider {...formInstance}>
         <OddsCalc category={sigCurCat.value} />
       </FormProvider>

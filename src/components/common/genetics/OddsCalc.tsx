@@ -3,11 +3,11 @@ import { useEffect } from "preact/hooks";
 import { Box, Flex, Loader, Space, Stack, Text } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
-import { prepForMm } from "@/components/ballpythons/forms/bpBreed/common";
 import { useCalcMmOdds } from "@/api/ballpythons/misc";
 import { IMMOff } from "@/api/ballpythons/models";
 import { ECategories } from "@/api/common";
 import { notif } from "@/utils/notif";
+import { prepForMm } from "../forms/snakeBreed/common";
 import { emptyMMTrait, fromMMtoPill } from "./const";
 import { GenePill, GenesSelect } from "./geneSelect";
 

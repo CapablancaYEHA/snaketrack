@@ -1,11 +1,11 @@
 import { useLocation } from "preact-iso";
 import { useEffect } from "preact/hooks";
 import { LoadingOverlay, Stack, Text } from "@mantine/core";
-import { FormAddBreed } from "@/components/common/forms/snakeBreed/addSnakeBreed/formAddSnakeBreed";
+import { FormAddClutch } from "@/components/common/forms/snakeClutch/addClutch/formAddClutch";
 import { useProfile } from "@/api/profile/hooks";
 import { notif } from "@/utils/notif";
 
-export function AddBreed() {
+export function AddClutch() {
   const location = useLocation();
   const cat = location.path.split("/").slice(-1)[0];
   const userId = localStorage.getItem("USER");
@@ -23,10 +23,10 @@ export function AddBreed() {
         <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />
       ) : isError ? (
         <Text fw={500} c="var(--mantine-color-error)">
-          Планирование невозможно
+          Ошибка запроса профиля
         </Text>
       ) : (
-        <FormAddBreed category={cat} />
+        <FormAddClutch category={cat as any} />
       )}
     </Stack>
   );

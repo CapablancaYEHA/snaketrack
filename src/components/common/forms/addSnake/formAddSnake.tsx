@@ -12,10 +12,10 @@ import { ECategories, ESupabase, IReqCreateSnake } from "@/api/common";
 import { useSupaCreate } from "@/api/hooks";
 import { notif } from "../../../../utils/notif";
 import { calcImgUrl, compressImage } from "../../../../utils/supabaseImg";
-import { sexHardcode } from "../../../ballpythons/forms/bpBreed/common";
 import { FileUpload } from "../../../fileUpload";
 import { Btn } from "../../../navs/btn/Btn";
 import { uplErr } from "../const";
+import { sexHardcode } from "../snakeBreed/common";
 import { defVals, prepareForSubmit, schema } from "./const";
 
 interface IProps {
@@ -24,7 +24,7 @@ interface IProps {
   title: string;
   category: ECategories;
 }
-// TODO сделать проверку родителей и что есть разнополая пара вообще
+
 // TODO в будущем - нужна выпадашка Статус - жива, умерла, карантин, продана ну и чето еще
 export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) => {
   const { mutate, isPending } = useSupaCreate<IReqCreateSnake>(table);
@@ -154,9 +154,6 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
                   <NumberInput {...(register("price") as any)} allowDecimal={false} rightSection="₽" label="Цена покупки" placeholder="Без цены" hideControls thousandSeparator=" " flex="1 1 50%" allowLeadingZeros={false} allowNegative={false} />
                 ) : null}
               </Flex>
-
-              {/* FIX здесь нужно проверка на наличие разнополой пары */}
-              {/* {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null} */}
 
               <Flex gap="lg" wrap="wrap" w="100%">
                 <Controller

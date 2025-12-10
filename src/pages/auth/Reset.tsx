@@ -10,8 +10,8 @@ export function Reset() {
   const location = useLocation();
   const token = location.query.token;
 
+  let trg = document.getElementById("layoutsdbr");
   useLayoutEffect(() => {
-    let trg = document.getElementById("layoutsdbr");
     let trgH = document.getElementById("layouthdr");
     trg?.classList.add("hide");
     trgH?.classList.add("hide");
@@ -20,7 +20,7 @@ export function Reset() {
       trg?.classList.remove("hide");
       trgH?.classList.remove("hide");
     };
-  }, []);
+  }, [trg]);
 
   useEffect(() => {
     const verifyToken = async () => {

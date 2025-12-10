@@ -2,8 +2,8 @@ import { useLayoutEffect } from "preact/hooks";
 import { Box, List, Space } from "@mantine/core";
 
 export function Terms() {
+  let trg = document.getElementById("layoutsdbr");
   useLayoutEffect(() => {
-    let trg = document.getElementById("layoutsdbr");
     let trgH = document.getElementById("layouthdr");
     trg?.classList.add("hide");
     trgH?.classList.add("hide");
@@ -12,7 +12,8 @@ export function Terms() {
       trg?.classList.remove("hide");
       trgH?.classList.remove("hide");
     };
-  }, []);
+  }, [trg]);
+
   return (
     <Box>
       <List>

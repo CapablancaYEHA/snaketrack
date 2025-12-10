@@ -17,7 +17,7 @@ export function adapterLocale() {
   dayjs.locale("ru");
 }
 
-export const getDate = (a: Date | string | Dayjs) => dayjs(a).locale("ru").format("D MMMM YYYY");
+export const getDate = (a: Date | string | Dayjs, parse?: string) => dayjs(a, parse).locale("ru").format("D MMMM YYYY");
 export const getDateCustom = (a: Date | string | Dayjs, pattern = "YYYY-MM-DD") => dayjs(a).locale("ru").format(pattern);
 export const getDateObj = (a: string | Dayjs) => dayjs(a).locale("ru").valueOf();
 export const getDateOfMonth = (a: string | Dayjs | Date) => dayjs(a).locale("ru").date();

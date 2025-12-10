@@ -6,7 +6,9 @@ import { upgAlias } from "@/components/common/genetics/const";
 import { categToConfig } from "@/components/common/utils";
 import { toDataUrl } from "@/utils/supabaseImg";
 import { queryClient as instance } from "../lib/client_query";
-import { ECategories, EQuKeys, ESupabase, IDadataSearch, IGenesComp, ISupabaseErr, ITransferReq, categoryToBaseTable, categoryToGenesTable, categoryToTransferFunc } from "./common";
+import { finaliseClutch, makeClutchFromBreed } from "./breeding/breeding";
+import { IFinaliseClutchReq, IFinaliseClutchRes, IReqCreateBreed, IUpdBreedReq } from "./breeding/models";
+import { ECategories, EQuKeys, ESupaBreed, ESupabase, IDadataSearch, IGenesComp, ISupabaseErr, ITransferReq, categoryToBaseTable, categoryToGenesTable, categoryToShort, categoryToTransferFunc } from "./common";
 
 interface IQueryConfig {
   t: ESupabase;
@@ -21,7 +23,7 @@ interface IModif<T> extends Pick<IQueryConfig, "t" | "s"> {
   bulk?: boolean;
 }
 
-export const supaGet = async (config: IQueryConfig) => {
+export const supaGet = async <T>(config: IQueryConfig): Promise<T> => {
   const query = supabase.from(config.t).select(config?.s || "*");
 
   const { data, error } = await config.f(query);
@@ -80,7 +82,7 @@ export function useSupaInfiniteGet<T>(config: IQueryConfig, isEnabled: boolean) 
   });
 }
 
-const supaCreate = async <T>({ t, p, bulk }: IModif<T>) => {
+export const supaCreate = async <T>({ t, p, bulk }: IModif<T>) => {
   const query = supabase.from(t).insert(p);
   let res;
 
@@ -114,7 +116,7 @@ export function useSupaCreate<T>(table: ESupabase, invalWhat?: IInval, isBulk?: 
   });
 }
 
-const supaUpd = async <T>({ t, p }: IModif<T>) => {
+export const supaUpd = async <T>({ t, p }: IModif<T>) => {
   const { upd, id } = p as any;
   return await supabase.from(t).update(upd).eq("id", id).throwOnError();
 };
@@ -275,5 +277,33 @@ async function httpDadata(str: string) {
 export function useDadata() {
   return useMutation<IDadataSearch[], { message?: string }, string>({
     mutationFn: (a) => httpDadata(a),
+  });
+}
+
+// Breeding
+export function useMakeClutchFromBreed(category: ECategories) {
+  const cat = categoryToShort[category];
+  const queryClient = useQueryClient();
+  return useMutation<{ id: string }, ISupabaseErr, IUpdBreedReq | IReqCreateBreed>({
+    mutationFn: (a) => makeClutchFromBreed(category, a),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ESupaBreed[`${cat.toUpperCase()}_BREED_V`]],
+      });
+    },
+  });
+}
+
+export function useFinaliseClutch(category: ECategories, id: string) {
+  const cat = categoryToShort[category];
+  const queryClient = useQueryClient();
+  return useMutation<IFinaliseClutchRes, ISupabaseErr, IFinaliseClutchReq>({
+    mutationFn: (a) => finaliseClutch(category, a),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ESupaBreed[`${cat.toUpperCase()}_CL_V`], id, categoryToBaseTable[category]],
+        exact: true,
+      });
+    },
   });
 }

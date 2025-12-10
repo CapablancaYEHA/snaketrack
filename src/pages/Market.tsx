@@ -4,11 +4,11 @@ import { Box, Button, Checkbox, Drawer, Flex, Loader, LoadingOverlay, SegmentedC
 import { useDisclosure, useInViewport, useMediaQuery } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
 import { useQueryState } from "nuqs";
-import { adStatsHardcode, sexHardcode } from "@/components/ballpythons/forms/bpBreed/common";
 import { chaining, handleMultiContainsJson, handleMultiIn, handleMultiNotIn, handleSingleSel, multiParser, singleParser } from "@/components/common/Market/filters";
 import { marketColumns } from "@/components/common/Market/utils";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
+import { adStatsHardcode, sexHardcode } from "@/components/common/forms/snakeBreed/common";
 import { SkelTable } from "@/components/common/skeletons";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, ESupabase, IMarketRes } from "@/api/common";

@@ -12,7 +12,7 @@ export const ReleasesHistory = ({ opened, close }) => {
             <Text size="sm" component="div">
               v{a.ver}
               <Text size="xs" c="dark.2" component="div">
-                {getDate(a.date)}
+                {getDate(a.date, "MM-DD-YYYY")}
               </Text>
             </Text>
             <List size="xs">

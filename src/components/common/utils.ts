@@ -1,7 +1,7 @@
-import { uniqBy } from "lodash-es";
+import { isEmpty, uniqBy } from "lodash-es";
 import { bpList, bpSingle } from "@/api/ballpythons/configs";
-import { EBreedStat } from "@/api/ballpythons/models";
 import { bcList, bcSingle } from "@/api/boa-constrictors/configs";
+import { EBreedStat } from "@/api/breeding/models";
 import { ECategories, IGenesComp } from "@/api/common";
 import { csList, csSingle } from "@/api/corn-snakes/configs";
 
@@ -101,22 +101,24 @@ export const calcStatusOptions = () => Object.entries(bStToLabel).map(([key, val
 
 export const calcProjGenes = (arr?: IGenesComp[]) => {
   if (!arr) return [];
-  const pre = arr
-    .filter((g) => g.label !== "Normal")
-    .map((a) => {
-      if (a.gene === "inc-dom") {
-        if (a.label.startsWith("Super")) {
-          const [r, ..._] = a.label.match(/(Super)?\w+$/)!;
-          return { gene: "inc-dom", label: r, isPos: a.isPos };
-        }
-        return { gene: "inc-dom", label: a.label, isPos: a.isPos };
+  const excludeNormal = arr.filter((g) => g.label !== "Normal");
+  if (isEmpty(excludeNormal)) {
+    return [{ gene: "other", label: "Normal" }];
+  }
+  const pre = excludeNormal.map((a) => {
+    if (a.gene === "inc-dom") {
+      if (a.label.startsWith("Super")) {
+        const [r, ..._] = a.label.match(/(Super)?\w+$/)!;
+        return { gene: "inc-dom", label: r, isPos: a.isPos };
       }
-      if (a.gene === "rec") {
-        const [, , , r, ..._] = a.label.match(/^((\d+)% Het |Het )?([\w\s()]+)$/)!;
+      return { gene: "inc-dom", label: a.label, isPos: a.isPos };
+    }
+    if (a.gene === "rec") {
+      const [, , , r, ..._] = a.label.match(/^((\d+)% Het |Het )?([\w\s()]+)$/)!;
 
-        return { gene: "rec", label: r, isPos: a.isPos };
-      }
-      return a;
-    });
+      return { gene: "rec", label: r, isPos: a.isPos };
+    }
+    return a;
+  });
   return uniqBy(pre, "label");
 };

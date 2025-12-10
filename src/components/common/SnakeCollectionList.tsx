@@ -4,7 +4,6 @@ import { Button, CloseButton, Drawer, Flex, LoadingOverlay, Select, Space, Text,
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
-import { sexHardcode } from "@/components/ballpythons/forms/bpBreed/common";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { DeleteSnake } from "@/components/common/forms/deleteSnake/formDeleteSnake";
@@ -17,6 +16,7 @@ import { ECategories, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/ap
 import { useSnakeGenes, useSupaDel, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
 import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
+import { sexHardcode } from "./forms/snakeBreed/common";
 import { categToConfigList, categToTitle, maturityDict } from "./utils";
 
 export const catVisited = signal<ECategories>("" as any);

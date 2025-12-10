@@ -1,20 +1,21 @@
 import { useLocation } from "preact-iso";
 import { useEffect } from "preact/hooks";
 import { LoadingOverlay, Stack, Text } from "@mantine/core";
-import { useUtilsBreed } from "@/components/ballpythons/forms/bpBreed/common";
-import { makeDefaultClutch } from "@/components/ballpythons/forms/bpClutch/editClutch/const";
-import { FormEditClutch } from "@/components/ballpythons/forms/bpClutch/editClutch/formEditClutch";
-import { bpClutchSingle } from "@/api/ballpythons/configs";
-import { IResBpClutch } from "@/api/ballpythons/models";
+import { useUtilsBreed } from "@/components/common/forms/snakeBreed/common";
+import { makeInitClutch } from "@/components/common/forms/snakeClutch/common";
+import { FormEditClutch } from "@/components/common/forms/snakeClutch/editClutch/formEditClutch";
+import { clutchSingle } from "@/api/breeding/configs";
+import { IResClutch } from "@/api/breeding/models";
 import { useSupaGet } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 
 export function EditClutch() {
   const location = useLocation();
-  const { data, isError, error, isPending } = useSupaGet<IResBpClutch>(bpClutchSingle(location.query.id), location.query.id != null);
-  const { regMales } = useUtilsBreed({ fetchFields: data?.males_ids.map((a) => ({ snake: a, id: a })) ?? [] });
+  const p = location.path.split("/").slice(-1)[0];
+  const { data, isError, error, isPending } = useSupaGet<IResClutch>(clutchSingle(location.query.id, p as any), location.query.id != null);
+  const { regMales: males } = useUtilsBreed({ fetchFields: data?.males_ids.map((a) => ({ snake: a, id: a })) ?? [], category: p as any });
 
-  const composed = makeDefaultClutch(data);
+  const composed = makeInitClutch(data);
 
   useEffect(() => {
     if (isError) {
@@ -31,7 +32,7 @@ export function EditClutch() {
           Редактирование невозможно
         </Text>
       ) : (
-        <FormEditClutch initData={composed} clutch={data} fathersToPick={regMales!} />
+        <FormEditClutch initData={composed} clutch={data} fathersToPick={males!} category={p as any} />
       )}
     </Stack>
   );

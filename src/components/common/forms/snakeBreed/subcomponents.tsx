@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { Fragment } from "preact/jsx-runtime";
 import { tabletThreshold } from "@/styles/theme";
 import fallback from "@assets/placeholder.png";
-import { Accordion, Box, Button, Divider, Drawer, Flex, Group, Image, Loader, LoadingOverlay, Menu, Modal, Progress, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Accordion, Anchor, Box, Button, Divider, Drawer, Flex, Group, Image, Loader, LoadingOverlay, Menu, Modal, Progress, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { Controller, FormProvider, useFieldArray, useFormContext, useWatch } from "react-hook-form";
@@ -13,7 +13,7 @@ import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { useCalcMmOdds } from "@/api/ballpythons/misc";
-import { ECategories, ESupabase } from "@/api/common";
+import { ECategories, ESupaBreed, categoryToShort } from "@/api/common";
 import { useSupaDel } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { dateToSupabaseTime, getAge, getDateObj } from "@/utils/time";
@@ -26,7 +26,7 @@ export const MaleEvent = ({ id, disabled }) => {
   const track = fields.map((a) => a.date);
 
   useEffect(() => {
-    const sortedItems = [...fields].sort((a, b) => getDateObj(a.date) - getDateObj(b.date));
+    const sortedItems = [...fields].sort((a, b) => getDateObj(b.date) - getDateObj(a.date));
     replace(sortedItems);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(track), replace]);
@@ -86,9 +86,11 @@ export const MaleEvent = ({ id, disabled }) => {
               />
             </Stack>
             {disabled ? null : (
-              <div style={{ display: "flex", justifyContent: "center", flex: "1 0 auto", alignSelf: "center", color: "red", cursor: "pointer" }} onClick={() => remove(ind)}>
-                <IconSwitch icon="bin" width="24" height="24" style={{ opacity: 0.4 }} />
-              </div>
+              <Flex justify="center" align="center" flex="1 0 auto" style={{ alignSelf: "center" }} onClick={() => remove(ind)}>
+                <Box p="sm" style={{ opacity: 0.4, cursor: "pointer" }}>
+                  <IconSwitch icon="bin" width="24" height="24" />
+                </Box>
+              </Flex>
             )}
           </Flex>
           {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
@@ -98,7 +100,7 @@ export const MaleEvent = ({ id, disabled }) => {
   );
 };
 
-export const FemaleEvent = ({ isClutchMade, shed, ovul }) => {
+export const FemaleEvent = ({ isClutchMade, shed, ovul, category }) => {
   const { control, setValue } = useFormContext();
 
   return (
@@ -181,13 +183,13 @@ export const FemaleEvent = ({ isClutchMade, shed, ovul }) => {
           }}
         />
       </Flex>
-      {shed || ovul ? <TimeLeft shedDate={shed} ovulDate={ovul} /> : null}
+      {shed || ovul ? <TimeLeft shedDate={shed} ovulDate={ovul} category={category} /> : null}
     </Stack>
   );
 };
 
-const TimeLeft = ({ shedDate, ovulDate }) => {
-  const { left, words } = calcTimeleft(ovulDate, shedDate);
+const TimeLeft = ({ shedDate, ovulDate, category }) => {
+  const { left, words } = calcTimeleft(category, ovulDate, shedDate);
 
   return (
     <Box>
@@ -197,12 +199,12 @@ const TimeLeft = ({ shedDate, ovulDate }) => {
             {words}
           </Text>
           <Text size="xs" fw={500}>
-            {calcEstimatedDate(ovulDate, shedDate)}
+            {calcEstimatedDate(category, ovulDate, shedDate)}
           </Text>
         </Flex>
         <Box w="100%" maw="100%">
           <Progress.Root size="lg">
-            <Progress.Section value={shedDate ? getPercentage(daysAfterShed, left) : getPercentage(daysAfterOvul, left)} color="green" animated={left > 0} striped={left > 0} />
+            <Progress.Section value={shedDate ? getPercentage(daysAfterShed[category], left) : getPercentage(daysAfterOvul[category], left)} color="green" animated={left > 0} striped={left > 0} />
           </Progress.Root>
         </Box>
       </Group>
@@ -210,20 +212,25 @@ const TimeLeft = ({ shedDate, ovulDate }) => {
   );
 };
 
-export const BriefInfo = ({ snake }) => (
-  <Stack>
-    <Flex wrap="nowrap" gap="md" direction={{ base: "column", md: "row" }}>
-      <Image src={snake?.picture} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
-      <Stack gap="xs" flex="0 1 auto">
-        <SexName sex={snake?.sex} name={snake?.snake_name} />
-        <Text size="md">⌛ {getAge(snake?.date_hatch)}</Text>
-      </Stack>
-    </Flex>
-    <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
-      {sortSnakeGenes(snake?.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} />)}
-    </Flex>
-  </Stack>
-);
+export const BriefInfo = ({ snake }) => {
+  const lastWeight = snake?.weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[snake?.weight.length - 1];
+
+  return (
+    <Stack>
+      <Flex wrap="nowrap" gap="md" direction={{ base: "column", md: "row" }}>
+        <Image src={snake?.picture} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
+        <Stack gap="xs" flex="0 1 auto">
+          <SexName sex={snake?.sex} name={snake?.snake_name} />
+          <Text size="md">⌛ {getAge(snake?.date_hatch)}</Text>
+          {lastWeight ? <Text size="md">Вес {lastWeight.weight}г</Text> : null}
+        </Stack>
+      </Flex>
+      <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
+        {sortSnakeGenes(snake?.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} />)}
+      </Flex>
+    </Stack>
+  );
+};
 
 export const OddsInfo = ({ female, male }) => {
   const isMwTablet = useMediaQuery(tabletThreshold);
@@ -275,7 +282,7 @@ export const OddsInfo = ({ female, male }) => {
   );
 };
 
-export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFinalize }) => {
+export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFinalize, category, existingClutchId }) => {
   const innerInstance = useFormContext<IBreedScheme>();
 
   const selectedFem = useWatch({
@@ -298,11 +305,11 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
     name: "males_ids",
   });
 
-  const { isListPen, isQuePen, isAddAllowed, femData, malesData, regFems, regMales } = useUtilsBreed({ fem: selectedFem, fetchFields });
+  const { isListPen, isQuePen, isAddAllowed, femData, malesData, regFems, regMales } = useUtilsBreed({ fem: selectedFem, fetchFields, category });
 
-  const isClutchMade = innerInstance.getValues("breed_status") === "clutch";
+  const isClutchMade = innerInstance.getValues("breed_status") === "clutch" && existingClutchId != null;
 
-  const { left } = calcTimeleft(wOvul, wShed);
+  const { left } = calcTimeleft(category, wOvul, wShed);
 
   return (
     <>
@@ -331,7 +338,7 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
                 <BriefInfo snake={femData} />
                 <Space h="md" />
                 <FormProvider {...innerInstance}>
-                  <FemaleEvent isClutchMade={isClutchMade} ovul={wOvul} shed={wShed} />
+                  <FemaleEvent isClutchMade={isClutchMade} ovul={wOvul} shed={wShed} category={category} />
                 </FormProvider>
               </>
             ) : null}
@@ -445,8 +452,8 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
         </Flex>
       </Group>
       {innerInstance.formState.errors?.["malesEvents"] ? <span>{JSON.stringify(innerInstance.formState.errors?.["malesEvents"].message)}</span> : null}
-      <Flex gap="xl" align="center" mt="lg">
-        <Button type="submit" onClick={innerInstance.handleSubmit(onSub)} disabled={!innerInstance.formState.isDirty || isClutchMade} size="xs">
+      <Flex gap="xl" align="center" mt="lg" maw="100%" w="100%">
+        <Button type="submit" onClick={innerInstance.handleSubmit(onSub)} disabled={!innerInstance.formState.isDirty || isClutchMade} size="xs" ml="auto">
           {btnText}
         </Button>
         {left <= daysCriticalThr && !isClutchMade ? (
@@ -456,9 +463,9 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
         ) : isClutchMade ? (
           <div>
             Уже есть кладка{" "}
-            <a href={`/clutches/edit/:ball-pythons?id=${innerInstance.getValues("clutch_id" as any)}`} target="_blank" rel="noreferrer" style={{ textDecoration: "underline" }}>
+            <Anchor href={`/clutches/edit/${category}?id=${innerInstance.getValues("clutch_id" as any)}`} style={{ textDecoration: "underline" }}>
               Перейти
-            </a>
+            </Anchor>
           </div>
         ) : null}
       </Flex>
@@ -466,7 +473,7 @@ export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFina
   );
 };
 
-export const BreedControl = ({ children, id, onDelete, clutchId }) => {
+export const BreedControl = ({ children, id, onDelete, clutchId, category }) => {
   return (
     <Menu
       trigger="click-hover"
@@ -487,11 +494,11 @@ export const BreedControl = ({ children, id, onDelete, clutchId }) => {
     >
       <Menu.Target>{children}</Menu.Target>
       <Menu.Dropdown>
-        <Menu.Item component="a" href={`/breeding/ball-pythons?id=${id}`}>
-          К планированию
+        <Menu.Item component="a" href={`/breeding/${category}?id=${id}`}>
+          К проекту
         </Menu.Item>
         {clutchId ? (
-          <Menu.Item component="a" href={`/clutches/edit/:ball-pythons?id=${clutchId}`}>
+          <Menu.Item component="a" href={`/clutches/edit/${category}?id=${clutchId}`}>
             Посмотреть кладку
           </Menu.Item>
         ) : null}
@@ -503,9 +510,10 @@ export const BreedControl = ({ children, id, onDelete, clutchId }) => {
   );
 };
 
-export const BreedDelete = ({ opened, close, breedId }) => {
-  const { mutate, isPending } = useSupaDel(ESupabase.BP_BREED, {
-    qk: [ESupabase.BP_BREED_V],
+export const BreedDelete = ({ opened, close, breedId, category }) => {
+  const cat = categoryToShort[category];
+  const { mutate, isPending } = useSupaDel(ESupaBreed[`${cat?.toUpperCase()}_BREED`], {
+    qk: [ESupaBreed[`${cat.toUpperCase()}_BREED_V`]],
     e: false,
   });
 
@@ -514,7 +522,7 @@ export const BreedDelete = ({ opened, close, breedId }) => {
       { id: breedId },
       {
         onSuccess: () => {
-          notif({ c: "green", t: "Успешно", m: "План удалён" });
+          notif({ c: "green", t: "Успешно", m: "План проекта удалён" });
           close();
         },
         onError: async (err) => {

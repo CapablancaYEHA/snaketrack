@@ -1,33 +1,35 @@
 import { useState } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Button, Drawer, Flex, LoadingOverlay, Space, Stack, Text, Title } from "@mantine/core";
+import { Button, Drawer, Flex, LoadingOverlay, SegmentedControl, Space, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
-import { calcBreedTraits } from "@/components/ballpythons/const";
-import { makeBpBreedColumns } from "@/components/ballpythons/forms/bpBreed/breedUtils";
-import { BreedDelete } from "@/components/ballpythons/forms/bpBreed/subcomponents";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { tableFiltMulti } from "@/components/common/StackTable/filters";
+import { calcTraitsForFilter } from "@/components/common/forms/const";
+import { makeBreedColumns } from "@/components/common/forms/snakeBreed/breedUtils";
+import { BreedDelete } from "@/components/common/forms/snakeBreed/subcomponents";
 import { SkelTable } from "@/components/common/skeletons";
-import { calcProjGenes, calcStatusOptions } from "@/components/common/utils";
+import { calcProjGenes, calcStatusOptions, categToTitle } from "@/components/common/utils";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { bpBreedList } from "@/api/ballpythons/configs";
-import { IResBpBreedingList } from "@/api/ballpythons/models";
+import { breedList } from "@/api/breeding/configs";
+import { IResBreedingList } from "@/api/breeding/models";
+import { ECategories } from "@/api/common";
 import { useSupaGet } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 
 const breedId = signal<string | undefined>(undefined);
+const vis = localStorage.getItem("BREED_VISITED") as ECategories;
 
-const columns = makeBpBreedColumns({
-  setBreedId: (uuid) => {
-    breedId.value = uuid;
-  },
-});
+const sigVisBreed = signal<ECategories>(vis ?? ECategories.BP);
+const handle = (a) => {
+  sigVisBreed.value = a;
+  localStorage.setItem("BREED_VISITED", a);
+};
 
-interface IBreedExt extends IResBpBreedingList {
+interface IBreedExt extends IResBreedingList {
   traits: { label: string; gene: string }[];
 }
 
@@ -37,22 +39,47 @@ export function BreedList() {
   const isMinSm = useMediaQuery(startSm);
   const [filt, setFilt] = useState<any[]>([]);
   const { data: dt, isError } = useProfile(userId, userId != null);
-  const { data: breed, isPending, isRefetching, isError: isBreedErr } = useSupaGet<IResBpBreedingList[]>(bpBreedList(userId), !isEmpty(dt));
+  const { data: breed, isPending, isRefetching, isError: isBreedErr } = useSupaGet<IResBreedingList[]>(breedList(userId, sigVisBreed.value), !isEmpty(dt));
 
   const tableData: IBreedExt[] = (breed ?? [])?.map((m) => ({ ...m, traits: calcProjGenes(m.female_genes.concat(m.male_genes.flat())) }));
 
   const isFilterNull = isEmpty(filt);
 
+  const title = `${categToTitle[sigVisBreed.value]}ов`;
+
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
         <Title component="span" order={4} c="yellow.6">
-          Планы спариваний Региусов
+          Проекты / планы спариваний {title}
         </Title>
-        <Btn fullWidth={false} component="a" href="/breeding/add/ball-pythons" ml="auto">
+        <Btn fullWidth={false} size="compact-xs" component="a" href={`/breeding/add/${sigVisBreed.value}`} ml="auto">
           Добавить
         </Btn>
       </Flex>
+      <SegmentedControl
+        style={{ alignSelf: "center" }}
+        value={sigVisBreed.value as any}
+        onChange={handle}
+        w="100%"
+        maw="252px"
+        size="xs"
+        data={[
+          {
+            label: "Региусы",
+            value: ECategories.BP,
+          },
+          {
+            label: "Удавы",
+            value: ECategories.BC,
+            disabled: true,
+          },
+          {
+            label: "Маисы",
+            value: ECategories.CS,
+          },
+        ]}
+      />
       {isPending ? <SkelTable /> : null}
       {isError || isBreedErr ? (
         <Text fw={500} c="var(--mantine-color-error)">
@@ -87,7 +114,7 @@ export function BreedList() {
             </Flex>
             <Space h="md" />
             <Flex gap="md" wrap="nowrap" flex="1 1 auto">
-              <MaxSelectedMulti flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "traits")} data={calcBreedTraits(breed)} />
+              <MaxSelectedMulti flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "traits")} data={calcTraitsForFilter(breed)} />
               <MaxSelectedMulti flex="1 1 50%" label="Статус" onChange={(a: any) => tableFiltMulti(setFilt, a, "breed_status")} data={calcStatusOptions()} />
             </Flex>
           </Drawer>
@@ -97,7 +124,17 @@ export function BreedList() {
           <Text size="xs" ta="left" w="100%">
             Закрепленная колонка отображает дополнительное меню на ховер
           </Text>
-          <StackTable data={tableData} columns={columns} columnFilters={filt} setColumnFilters={setFilt} />
+          <StackTable
+            data={tableData}
+            columns={makeBreedColumns({
+              setBreedId: (uuid) => {
+                breedId.value = uuid;
+              },
+              category: sigVisBreed.value,
+            })}
+            columnFilters={filt}
+            setColumnFilters={setFilt}
+          />
         </>
       )}
       <BreedDelete
@@ -106,6 +143,7 @@ export function BreedList() {
           breedId.value = undefined;
         }}
         breedId={breedId.value}
+        category={sigVisBreed.value}
       />
       {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </Stack>

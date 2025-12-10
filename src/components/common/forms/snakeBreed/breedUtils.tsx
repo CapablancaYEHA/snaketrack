@@ -1,25 +1,41 @@
 import { Flex, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { bStToLabel, breedToColor } from "@/components/common/utils";
-import { IResBpBreedingList } from "@/api/ballpythons/models";
+import { IResBreedingList } from "@/api/breeding/models";
+import { ECategories } from "@/api/common";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff, getDate } from "@/utils/time";
 import { GenePill } from "../../../common/genetics/geneSelect";
 import { BreedControl } from "./subcomponents";
 
-export const daysAfterOvul = 44;
-export const daysAfterShed = 29;
-export const daysAfterLaid = 60;
+export const daysAfterOvul = {
+  [ECategories.BP]: 44,
+  [ECategories.CS]: 30,
+};
+export const daysAfterShed = {
+  [ECategories.BP]: 29,
+  [ECategories.CS]: 14,
+};
+export const daysIncubation = {
+  [ECategories.BP]: 60,
+  [ECategories.CS]: 65,
+};
 export const daysCriticalThr = 10;
 
-const columnHelper = createColumnHelper<IResBpBreedingList>();
+//   Boa constrictor gestation period is around 120 days. If no babies after 105 days, check for a post-ovulation shed. If it's not, wait longer.
+//   Boa constrictors give birth approximately 105 days after postovulatory shedding and approximately 123 days after ovulation
+//   In comparing the mean gestation length of primiparous and pluriparous, there were no significant differences.
+//   Females considered in our study showed a post-ovulatory shed about three weeks after ovulation.
+//   This confirms what is reported in the literature. Indeed, pregnant Boa constrictor females generally exhibit post-ovulatory shed approximately 16–20 days after ovulation
 
-export const makeBpBreedColumns = ({ setBreedId }) => {
+const columnHelper = createColumnHelper<IResBreedingList>();
+
+export const makeBreedColumns = ({ setBreedId, category }) => {
   return [
     columnHelper.accessor("female_name", {
       header: () => "Самка",
       cell: ({ cell, row }) => (
-        <BreedControl id={row.original.id} onDelete={setBreedId} clutchId={row.original.clutch_id}>
+        <BreedControl id={row.original.id} onDelete={setBreedId} clutchId={row.original.clutch_id} category={category}>
           <Text maw="100%" w="100%">
             {cell.getValue()}
           </Text>
@@ -41,7 +57,7 @@ export const makeBpBreedColumns = ({ setBreedId }) => {
       filterFn: "arrIncludesSome",
       size: 3,
       maxSize: 2,
-      minSize: 144,
+      minSize: 164,
     }),
     columnHelper.accessor("traits" as any, {
       header: () => "Гены в проекте",
@@ -72,18 +88,18 @@ export const makeBpBreedColumns = ({ setBreedId }) => {
   ];
 };
 
-export const calcTimeleft = (ovul?: string | null, shed?: string | null) => {
-  const left = shed ? dateTimeDiff(dateAddDays(shed, daysAfterShed), "days") : dateTimeDiff(dateAddDays(ovul!, daysAfterOvul), "days");
+export const calcTimeleft = (category: ECategories, ovul?: string | null, shed?: string | null) => {
+  const left = shed ? dateTimeDiff(dateAddDays(shed, daysAfterShed[category]), "days") : dateTimeDiff(dateAddDays(ovul!, daysAfterOvul[category]), "days");
   const words = declWord(left, ["день", "дня", "дней"]);
 
   return {
     left,
-    words: `До конца инкубации ~${words}`,
+    words: `До кладки ~${words}`,
   };
 };
 
-export const calcEstimatedDate = (ovul: string | null, shed: string | null) => {
-  const res = shed ? getDate(dateAddDays(shed, daysAfterShed)) : getDate(dateAddDays(ovul!, daysAfterOvul));
+export const calcEstimatedDate = (category: ECategories, ovul: string | null, shed: string | null) => {
+  const res = shed ? getDate(dateAddDays(shed, daysAfterShed[category])) : getDate(dateAddDays(ovul!, daysAfterOvul[category]));
   return `Ожидаемая дата кладки ${res}`;
 };
 

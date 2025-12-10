@@ -47,6 +47,7 @@ export function useCalcMmOdds(categ: ECategories) {
   });
 }
 
+// TODO FIXME сделать универсальную rpc функцию для запросов к closure
 const httpGetBpTree = async (id) => {
   const { data, error } = await supabase.rpc("rpc_bp_family_tree", {
     target_id: id,

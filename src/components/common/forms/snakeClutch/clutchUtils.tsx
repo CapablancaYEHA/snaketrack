@@ -1,11 +1,11 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { EClSt, IHatchling, IResBpClutch } from "@/api/ballpythons/models";
+import { EClSt, IHatchling, IResClutch } from "@/api/breeding/models";
 import { getDateObj } from "@/utils/time";
 import { SInfo, SPics } from "./subcomponents";
 
-const columnHelper = createColumnHelper<IResBpClutch>();
+const columnHelper = createColumnHelper<IResClutch>();
 
-export const makeBpClutchColumns = ({ setSnake }) => [
+export const makeClutchColumns = ({ setSnake, category }) => [
   columnHelper.accessor("date_laid" as any, {
     header: () => "Дата кладки",
     cell: ({ row }) => <SPics clutch={row.original} onPicClick={setSnake} />,
@@ -16,7 +16,7 @@ export const makeBpClutchColumns = ({ setSnake }) => [
   }),
   columnHelper.display({
     id: "whole2",
-    cell: ({ row }) => <SInfo clutch={row.original} onPicClick={setSnake} />,
+    cell: ({ row }) => <SInfo clutch={row.original} onPicClick={setSnake} category={category} />,
     size: 3,
     maxSize: 9,
   }),

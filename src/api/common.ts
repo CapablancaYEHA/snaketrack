@@ -6,19 +6,16 @@ export enum ECategories {
   CS = "corn-snakes",
 }
 
-// названия таблиц
+// названия таблиц не могут содержать дефисы!!!
 export const enum ESupabase {
+  // base
   BP = "ballpythons",
-  BP_BREED = "bp_breeding",
-  BP_CL = "bp_clutch",
   BC = "boa_constrictors",
   CS = "corn_snakes",
   REM = "feed_reminders",
   PROF = "profiles",
   MRKT = "market",
   // views
-  BP_BREED_V = "user_breeding_view",
-  BP_CL_V = "clutch_view",
   PROF_V = "three_cols_profiles",
   REM_V = "feed_reminders_view",
   MRKT_V = "market_view",
@@ -32,6 +29,22 @@ export const enum ESupabase {
   CS_PICS = "cs-pics",
 }
 
+export enum ESupaBreed {
+  BP_BREED = "bp_breeding",
+  BP_CL = "bp_clutch",
+  BC_BREED = "bc_breeding",
+  BC_CL = "bc_clutch",
+  CS_BREED = "cs_breeding",
+  CS_CL = "cs_clutch",
+  // view
+  BP_BREED_V = "user_breeding_view",
+  BP_CL_V = "clutch_view",
+  BC_BREED_V = "bc_breeding_view",
+  BC_CL_V = "bc_clutch_view",
+  CS_BREED_V = "cs_breeding_view",
+  CS_CL_V = "cs_clutch_view",
+}
+
 export const categoryToGenesTable = {
   [ECategories.BP]: ESupabase.BP_G,
   [ECategories.BC]: ESupabase.BC_G,
@@ -42,6 +55,13 @@ export const categoryToBaseTable = {
   [ECategories.BP]: ESupabase.BP,
   [ECategories.BC]: ESupabase.BC,
   [ECategories.CS]: ESupabase.CS,
+};
+
+// FIXME
+export const categoryToShort = {
+  [ECategories.BP]: "bp",
+  [ECategories.BC]: "bc",
+  [ECategories.CS]: "cs",
 };
 
 export const categoryToBucket = {
@@ -129,6 +149,7 @@ export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "se
   owner_name: string;
   status: string;
   feeding: IFeed[] | null;
+  shed?: string[] | null;
 }
 
 export interface IRemindersRes {

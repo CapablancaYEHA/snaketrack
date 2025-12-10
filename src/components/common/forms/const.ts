@@ -1,4 +1,7 @@
+import { uniq } from "lodash-es";
+import { IResBreedingList } from "@/api/breeding/models";
 import { notif } from "@/utils/notif";
+import { calcProjGenes } from "../utils";
 
 export const uplErr = (e: any) =>
   notif({
@@ -14,4 +17,11 @@ export const filterSubmitByDirty = (subm, dirty) => {
     if (dirty[key]) res[key] = subm[key];
   }
   return res;
+};
+
+export const calcTraitsForFilter = (all: IResBreedingList[] | undefined) => {
+  if (!all) return [];
+  let res = all.map((a) => a.female_genes.concat(a.male_genes.flat())).flat();
+  let resmore = calcProjGenes(res).map((a) => a.label);
+  return uniq(resmore, "label");
 };

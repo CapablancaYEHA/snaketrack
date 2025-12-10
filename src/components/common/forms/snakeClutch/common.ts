@@ -1,9 +1,9 @@
 import { isEmpty } from "lodash-es";
 import * as yup from "yup";
-import { EClSt, IReqUpdBpClutch, IResBpClutch } from "@/api/ballpythons/models";
+import { EClSt, ICreateClutchReq, IReqUpdClutch, IResClutch } from "@/api/breeding/models";
 import { notif } from "@/utils/notif";
 import { dateToSupabaseTime } from "@/utils/time";
-import { makeHatchlingPlaceholder } from "../clutchUtils";
+import { makeHatchlingPlaceholder } from "./clutchUtils";
 
 type Schema = {
   file: File;
@@ -22,12 +22,22 @@ export const statusHardcode = [
   { label: "Не выжил", value: "deceased" },
 ];
 
-export const clutchSchema = yup.object<Schema>().shape({
+export const initClutchAddValues = {
+  female_id: undefined,
+  males_ids: [],
+  date_laid: undefined,
+  date_hatch: undefined,
+  eggs: undefined,
+  slugs: undefined,
+  infertile_eggs: null,
+};
+
+const baseClutchSchema = yup.object<Schema>().shape({
   date_laid: yup.string().required("Дата кладки обязательна"),
   date_hatch: yup.string().optional().nullable(),
-  eggs: yup.number().required("Требуется цифра"),
-  slugs: yup.number().required("Требуется цифра"),
-  infertile_eggs: yup.number().optional(),
+  eggs: yup.number().required("Требуется число"),
+  slugs: yup.number().required("Требуется число"),
+  infertile_eggs: yup.number().optional().notRequired(),
   id: yup.string().notRequired(),
   placeholders: yup.array().of(yup.mixed()).optional().nullable(),
   future_animals: yup.array().of(
@@ -43,13 +53,31 @@ export const clutchSchema = yup.object<Schema>().shape({
       genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
     }),
   ),
-  father_id: yup.string().required("Самец обязателен для проекта"),
+});
+
+export const clutchEditSchema = baseClutchSchema.shape({
+  father_id: yup.string().required("Самец обязателен в кладке"),
   mother_id: yup.string(),
 });
 
-export type IClutchScheme = yup.InferType<typeof clutchSchema>;
+export const clutchAddSchema = baseClutchSchema.shape({
+  female_id: yup.string().required("Самка обязательна в кладке"),
+  males_ids: yup
+    .array()
+    .of(
+      yup.object().shape({
+        id: yup.string(),
+        snake: yup.string().required("Самец обязателен в кладке"),
+      }),
+    )
+    .required("Поле обязательно")
+    .min(1, "Количество самцов не может быть 0"),
+});
 
-export const makeDefaultClutch = (data?: IResBpClutch | null) => {
+export type IClutchEditScheme = yup.InferType<typeof clutchEditSchema>;
+export type IClutchAddScheme = yup.InferType<typeof clutchAddSchema>;
+
+export const makeInitClutch = (data?: IResClutch | null) => {
   if (!data) return undefined as any;
   return {
     date_laid: new Date(data.date_laid),
@@ -64,7 +92,7 @@ export const makeDefaultClutch = (data?: IResBpClutch | null) => {
   };
 };
 
-export const prepForUpdate = (sub, dirtyObject, clutch_id): IReqUpdBpClutch => {
+export const prepForClutchUpdate = (sub, dirtyObject, clutch_id): IReqUpdClutch => {
   let upd: any = {};
 
   for (let k in sub) {
@@ -83,7 +111,11 @@ export const prepForUpdate = (sub, dirtyObject, clutch_id): IReqUpdBpClutch => {
   };
 };
 
-export const prepForHatch = (sub, dirtyObject, clutch_id): IReqUpdBpClutch => {
+export const prepForClutchCreate = (sbm): ICreateClutchReq => {
+  return { males_ids: sbm.males_ids.map((a) => a.snake), female_id: sbm.female_id, date_laid: dateToSupabaseTime(sbm.date_laid), eggs: sbm.eggs, slugs: sbm.slugs, infertile_eggs: sbm.infertile_eggs };
+};
+
+export const prepForHatch = (sub, dirtyObject, clutch_id): IReqUpdClutch => {
   let upd: any = {};
 
   for (let k in sub) {
@@ -93,13 +125,14 @@ export const prepForHatch = (sub, dirtyObject, clutch_id): IReqUpdBpClutch => {
   }
 
   const hatchDate = sub.date_hatch ? dateToSupabaseTime(sub.date_hatch) : undefined;
+  const laidDate = sub.date_laid ? dateToSupabaseTime(sub.date_laid) : undefined;
   const babies = isEmpty(sub.placeholders) ? null : sub.placeholders.map((_, ind) => makeHatchlingPlaceholder({ id: clutch_id, ind, date: hatchDate }));
 
   delete upd.placeholders;
   delete upd.future_animals;
 
   return {
-    upd: { ...upd, date_hatch: hatchDate, clutch_babies: babies, status: EClSt.HA },
+    upd: { ...upd, date_hatch: hatchDate, date_laid: laidDate, clutch_babies: babies, status: EClSt.HA },
     id: clutch_id,
   };
 };

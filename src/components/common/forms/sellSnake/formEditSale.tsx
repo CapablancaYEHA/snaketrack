@@ -4,7 +4,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Flex, NumberInput, Select, Stack, Text, Textarea } from "@mantine/core";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm } from "react-hook-form";
-import { adStatsHardcode } from "@/components/ballpythons/forms/bpBreed/common";
 import { Autocomp } from "@/components/common/forms/sellSnake/Autocomp";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { FileUploadMulti } from "@/components/fileUploadMulti";
@@ -20,6 +19,7 @@ import { SexName } from "../../sexName";
 import { categToTitle } from "../../utils";
 import { filterSubmitByDirty, uplErr } from "../const";
 import styles from "../editSnake/styles.module.scss";
+import { adStatsHardcode } from "../snakeBreed/common";
 import { ISellScheme, schema } from "./const";
 
 export const FormEditSale = ({ init, info, category }) => {

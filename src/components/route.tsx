@@ -1,6 +1,7 @@
 import { Route, useLocation } from "preact-iso";
 import { isEmpty } from "lodash-es";
 import { AddBreed } from "@/pages/AddBreed";
+import { AddClutch } from "@/pages/AddClutch";
 import { AddSnake } from "@/pages/AddSnake";
 import { BreedList } from "@/pages/BreedList";
 import { Calculator } from "@/pages/Calculator";
@@ -52,6 +53,7 @@ export const protectedRoutes = {
   "/breeding/add/:type": AddBreed,
   "/breeding/:type?id=:id": EditBreed,
   "/clutches": ClutchList,
+  "/clutches/add/:type": AddClutch,
   "/clutches/edit/:type?id=:id": EditClutch,
   "/schedule": Schedule,
   "/market": Market,
@@ -64,7 +66,7 @@ export const protectedRoutes = {
 export const sidebarLinks = [
   { id: 2, link: "/snakes", label: "Змеи" },
   { id: 6, link: "/calculator", label: "Калькулятор" },
-  { id: 3, link: "/breeding", label: "Спаривания" },
+  { id: 3, link: "/breeding", label: "Бридинг" },
   { id: 4, link: "/clutches", label: "Кладки" },
   { id: 5, link: "/schedule", label: "Расписание" },
   { id: 7, link: "/market", label: "Маркет" },

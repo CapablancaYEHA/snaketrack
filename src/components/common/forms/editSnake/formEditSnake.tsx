@@ -12,8 +12,8 @@ import { IUpdReq } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
-import { sexHardcode } from "../../../ballpythons/forms/bpBreed/common";
 import { filterSubmitByDirty, uplErr } from "../const";
+import { sexHardcode } from "../snakeBreed/common";
 import { makeDefault, schema } from "./const";
 import styles from "./styles.module.scss";
 

@@ -18,7 +18,6 @@ import { getAge, getDate } from "@/utils/time";
 import { snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
 import { SFamTree } from "../RelativeTree";
 import { EditStats } from "../forms/editStats/formEditStats";
-import styles from "./styles.module.scss";
 import { snakeFeedColumns } from "./utils";
 
 const isFeedOpen = signal<boolean>(false);

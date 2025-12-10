@@ -36,8 +36,8 @@ export function Login() {
     }
   };
 
+  let trg = document.getElementById("layoutsdbr");
   useLayoutEffect(() => {
-    let trg = document.getElementById("layoutsdbr");
     let trgH = document.getElementById("layouthdr");
     trg?.classList.add("hide");
     trgH?.classList.add("hide");
@@ -46,7 +46,7 @@ export function Login() {
       trg?.classList.remove("hide");
       trgH?.classList.remove("hide");
     };
-  }, []);
+  }, [trg]);
 
   return (
     <Box className={styles.wrap} py="lg">

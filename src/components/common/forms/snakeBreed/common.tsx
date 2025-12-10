@@ -3,25 +3,28 @@ import { Group } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 import * as yup from "yup";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { bpList, bpSingle } from "@/api/ballpythons/configs";
-import { IBreedStat, IReqCreateBPBreed, IUpdBreedReq } from "@/api/ballpythons/models";
+import { IBreedStat, IReqCreateBreed, IUpdBreedReq } from "@/api/breeding/models";
 import { ECategories, IResSnakesList, TSnakeQueue } from "@/api/common";
 import { useSnakeQueue, useSupaGet } from "@/api/hooks";
+import { categToConfig, categToConfigList } from "../../utils";
 
 interface IInit {
   fem?: string | null;
   fetchFields: Record<"id" | "snake", string>[];
+  category: ECategories;
 }
-export function useUtilsBreed({ fem, fetchFields }: IInit) {
+
+export function useUtilsBreed({ fem, fetchFields, category }: IInit) {
   const userId = localStorage.getItem("USER");
-  const { data: regi, isPending: isListPen } = useSupaGet<IResSnakesList[]>(bpList(userId), userId != null);
+  // TODO переписать эту функцию сразу на запрос к тем колонкам которые мне нужны
+  const { data: regi, isPending: isListPen } = useSupaGet<IResSnakesList[]>(categToConfigList[category](userId), userId != null);
   const regFems = regi?.filter((a) => a.sex === "female")?.map((b) => ({ label: b.snake_name, value: b.id }));
   const regMales = regi?.filter((a) => a.sex === "male")?.map((b) => ({ label: b.snake_name, value: b.id }));
-  const { data: femData } = useSupaGet<IResSnakesList>(bpSingle(fem ?? ""), fem != null);
+  const { data: femData } = useSupaGet<IResSnakesList>(categToConfig[category](fem ?? ""), fem != null);
 
   const { data: malesData, isPending } = useSnakeQueue(
     fetchFields?.filter((a) => a.snake != null)?.map((a) => a.snake),
-    ECategories.BP,
+    category,
   ) as TSnakeQueue;
 
   const isAddAllowed = regMales?.length >= 1 && malesData?.filter((a) => a)?.length === fetchFields?.length && (fetchFields?.length || 0) < 3;
@@ -91,7 +94,7 @@ export const prepForMm = (parent: IResSnakesList) => {
     });
 };
 
-export const prepForCreate = (submit, status?: IBreedStat): IReqCreateBPBreed => {
+export const prepForCreate = (submit, status?: IBreedStat): IReqCreateBreed => {
   const userId: string = localStorage.getItem("USER")!;
 
   return {
@@ -150,5 +153,5 @@ export const adStatsHardcode = [
   { label: "Бронь", value: "reserved" },
 ];
 
-// TODO
+// TODO дополнить статусами
 export const adStatsProfile = [...adStatsHardcode];

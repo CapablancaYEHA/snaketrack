@@ -8,20 +8,19 @@ import { Controller, useFormContext } from "react-hook-form";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill, GenesSelect } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
-import { calcProjGenes } from "@/components/common/utils";
+import { calcProjGenes, categToConfigList } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { bpSingle } from "@/api/ballpythons/configs";
-import { IResBpClutch } from "@/api/ballpythons/models";
+import { EClSt, IResClutch } from "@/api/breeding/models";
 import { ECategories, IResSnakesList } from "@/api/common";
 import { useSupaGet } from "@/api/hooks";
 import { declWord } from "@/utils/other";
-import { dateAddDays, dateTimeDiff, getAge, getDate } from "@/utils/time";
-import { daysAfterLaid, getPercentage } from "../bpBreed/breedUtils";
-import { sexHardcode } from "../bpBreed/common";
+import { dateAddDays, dateTimeDiff, getAge, getDate, getDateObj } from "@/utils/time";
+import { daysIncubation, getPercentage } from "../snakeBreed/breedUtils";
+import { sexHardcode } from "../snakeBreed/common";
 import { calcAnim } from "./clutchUtils";
-import { IClutchScheme, statusHardcode } from "./editClutch/const";
+import { IClutchEditScheme, statusHardcode } from "./common";
 
-export const SPics = ({ clutch, onPicClick, className }: { clutch: IResBpClutch; onPicClick: Function; className?: string }) => {
+export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; onPicClick: Function; className?: string }) => {
   const pics = [clutch.female_picture].concat(clutch.male_pictures);
   const ids = [clutch.female_id].concat(clutch.males_ids);
 
@@ -56,13 +55,13 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResBpClutch;
   );
 };
 
-export const SInfo = ({ clutch, onPicClick }: { clutch: IResBpClutch; onPicClick: Function }) => {
+export const SInfo = ({ clutch, onPicClick, category }: { clutch: IResClutch; onPicClick: Function; category: ECategories }) => {
   const ids = clutch.finalised_ids;
 
   return (
     <Flex gap="xl" flex="0 1 520px">
       <Stack gap="md" flex={ids ? "1 0 290px" : "1 1 auto"}>
-        <ClutchProgress date_laid={clutch.date_laid} curStatus={clutch.status} />
+        <ClutchProgress laidDate={clutch.date_laid} hatchDate={clutch.date_hatch} curStatus={clutch.status} category={category} />
         <Space h="lg" />
         <Flex gap="xl" wrap="nowrap">
           <Stack gap="xs">
@@ -132,8 +131,10 @@ export const Juveniles = ({ ids, onPicClick, title = "Змееныши" }) => {
   );
 };
 
-export const ClutchProgress = ({ date_laid, curStatus, barOnly = false }) => {
-  const left = dateTimeDiff(dateAddDays(date_laid, daysAfterLaid), "days");
+export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOnly = false }) => {
+  const left = dateTimeDiff(dateAddDays(laidDate, daysIncubation[category]), "days");
+  const isHatch = curStatus === EClSt.HA;
+  const isClosed = curStatus === EClSt.CL;
 
   return (
     <>
@@ -142,21 +143,30 @@ export const ClutchProgress = ({ date_laid, curStatus, barOnly = false }) => {
           <Title order={6}>
             Дата кладки
             <Text size="sm" fw={500}>
-              {getDate(date_laid)}
+              {getDate(laidDate)}
             </Text>
           </Title>
-          <Title order={6} ta="right">
-            Ожидаем
-            <Text size="sm" fw={500}>
-              ~{getDate(dateAddDays(date_laid, daysAfterLaid))}
-            </Text>
-          </Title>
+          {(isHatch || isClosed) && hatchDate ? (
+            <Title order={6} ta="right">
+              Кладка инкубирована
+              <Text size="sm" fw={500}>
+                {getDate(hatchDate)}
+              </Text>
+            </Title>
+          ) : (
+            <Title order={6} ta="right">
+              Ожидаем
+              <Text size="sm" fw={500}>
+                ~{getDate(dateAddDays(laidDate, daysIncubation[category]))}
+              </Text>
+            </Title>
+          )}
         </Flex>
       )}
       <Flex>
         <Box w="100%" maw="100%">
           <Progress.Root size="lg">
-            <Progress.Section value={getPercentage(daysAfterLaid, left)} color="green" animated={calcAnim(curStatus, left)} striped={calcAnim(curStatus, left)} />
+            <Progress.Section value={getPercentage(daysIncubation[category], left)} color="green" animated={calcAnim(curStatus, left)} striped={calcAnim(curStatus, left)} />
           </Progress.Root>
         </Box>
       </Flex>
@@ -167,8 +177,9 @@ export const ClutchProgress = ({ date_laid, curStatus, barOnly = false }) => {
   );
 };
 
-export const MiniInfo = ({ opened, close, snakeId, sex, withTitle = true }) => {
-  const { data, isPending, isError } = useSupaGet<IResSnakesList>(bpSingle(snakeId), snakeId != null);
+export const MiniInfo = ({ opened, close, snakeId, sex, category, withTitle = true }) => {
+  const { data, isPending, isError } = useSupaGet<IResSnakesList>(categToConfigList[category](snakeId), snakeId != null);
+  const lastWeight = data?.weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[data?.weight.length - 1];
 
   return (
     <Modal centered opened={opened} onClose={close} size="xs" title={withTitle && sex ? <Title order={4}>{sex} в кладке</Title> : undefined}>
@@ -182,10 +193,11 @@ export const MiniInfo = ({ opened, close, snakeId, sex, withTitle = true }) => {
         ) : (
           <>
             <Image src={data?.picture ?? fallback} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" mih={110} mah={112} fallbackSrc={fallback} loading="lazy" />
-            <Anchor href={`/snakes/ball-pythons?id=${data.id}`} c="inherit">
+            <Anchor href={`/snakes/${category}?id=${data.id}`} c="inherit">
               <SexName sex={data?.sex} name={data?.snake_name} isLink />
             </Anchor>
             <Text size="md">⌛ {getAge(data?.date_hatch)}</Text>
+            {lastWeight ? <Text size="md">Вес {lastWeight.weight}г</Text> : null}
             <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
               {sortSnakeGenes(data.genes as any).map((a) => (
                 <GenePill item={a} key={`${a.label}_${a.id}`} />
@@ -198,10 +210,10 @@ export const MiniInfo = ({ opened, close, snakeId, sex, withTitle = true }) => {
   );
 };
 
-export const FormApprovedBabies = ({ futureSnakes, isClosed }) => {
+export const FormApprovedBabies = ({ futureSnakes, isShow }) => {
   const isMinSm = useMediaQuery(startSm);
   const isMinMd = useMediaQuery(startMd);
-  const innerInstance = useFormContext<IClutchScheme>();
+  const innerInstance = useFormContext<IClutchEditScheme>();
 
   const { errors } = innerInstance.formState;
 
@@ -234,7 +246,7 @@ export const FormApprovedBabies = ({ futureSnakes, isClosed }) => {
           name={`future_animals.${ind}.genes`}
           control={innerInstance.control}
           render={({ field: { onChange, value } }) => {
-            return <GenesSelect onChange={(a) => onChange(a)} label={ind === 0 ? "Морфы" : isLabel ? " " : undefined} init={value as any} placeholder="Необязательно" category={ECategories.BP} />;
+            return <GenesSelect description={null} onChange={(a) => onChange(a)} label={ind === 0 ? "Морфы" : isLabel ? " " : undefined} init={value as any} placeholder="Необязательно" category={ECategories.BP} />;
           }}
         />
       </Box>
@@ -246,7 +258,7 @@ export const FormApprovedBabies = ({ futureSnakes, isClosed }) => {
     </>
   );
 
-  return !isEmpty(futureSnakes) && !isClosed ? (
+  return !isEmpty(futureSnakes) && isShow ? (
     isMinMd ? (
       futureSnakes.map((f, ind) => (
         <SimpleGrid cols={5} spacing="xs" verticalSpacing="xs" key={f.id}>
