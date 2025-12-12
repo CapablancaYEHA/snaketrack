@@ -15,6 +15,8 @@ import calcTree from "./helper";
 import { Connector, ExtNode, Node } from "./helper/types";
 import css from "./style.module.scss";
 
+const magic_number = 780;
+
 const sigIsOpen = signal<boolean>(false);
 const sigIsModalOpen = signal<boolean>(false);
 
@@ -72,6 +74,7 @@ function ReactFamilyTree(props: ITree) {
         position: "relative",
         width: data.canvas.width * width,
         height: data.canvas.height * height,
+        minHeight: magic_number,
       }}
     >
       {data.connectors.map((connector, idx) => (
@@ -108,13 +111,16 @@ const FamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick,
           <Image radius="sm" src={node.picture} width="100%" alt="snake_in_tree" fit="cover" fallbackSrc={fallback} loading="lazy" />
         </AspectRatio>
 
-        <Flex gap="xs" className={css.overflowed} style={{ flexFlow: "row wrap" }} align="start" h={74} p={2}>
-          {sortSnakeGenes(node.genes as any).map((a) => (
-            <GenePill item={a} key={`${a.label}_${a.id}`} size="xs" />
-          ))}
-        </Flex>
+        <Box mah={88} h="100%" p={2} className={css.overflowed}>
+          <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="start">
+            {sortSnakeGenes(node.genes as any).map((a) => (
+              <GenePill item={a} key={`${a.label}_${a.id}`} size="xs" />
+            ))}
+          </Flex>
+        </Box>
       </Stack>
-      {node.hasSubTree && <div className={clsx(css.sub, css[node.gender])} onClick={() => onSubClick(node.id)} />}
+      {/* FIXME разобраться с subtree */}
+      {/* {node.hasSubTree && <div className={clsx(css.sub, css[node.gender])} onClick={() => onSubClick(node.id)} />} */}
     </div>
   );
 };
@@ -146,8 +152,7 @@ export const SFamTree = ({ targetId, category = ECategories.BP }) => {
           </Button>
         </Flex>
       ) : null}
-
-      <Space h="md" />
+      <Space h="xs" />
       <TransformWrapper
         //   initialScale={0.4}
         minScale={0.4}

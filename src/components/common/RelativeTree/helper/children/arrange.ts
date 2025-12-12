@@ -10,7 +10,7 @@ const arrangeNextFamily = (family: Family, nextFamily: Family, right: number): v
   const unit = family.parents[0]!;
   const index = nextFamily.children.findIndex(sameAs(unit));
 
-  index === 0 ? (nextFamily.X = getUnitX(family, unit) - nextFamily.children[index]!.pos) : (nextFamily.children[index]!.pos = getUnitX(family, unit) - nextFamily.X);
+  index === 0 ? (nextFamily.X = getUnitX(family, unit) - nextFamily.children[index]?.pos) : (nextFamily.children[index]!.pos = getUnitX(family, unit) - nextFamily.X);
 
   const nextIdx: number = nextIndex(index);
 

@@ -81,7 +81,7 @@ export const checkGeneConflict = (current: IGenesComp[], val: IGenesComp) => {
     }
     if (reHet.test(val.label)) {
       let trg = val.label.match(reHet);
-      if (current.some((a) => a.label?.includes(trg?.[0] ?? ""))) {
+      if (current.some((a) => a.label?.replace("Albino", "")?.includes(trg?.[0] ?? ""))) {
         notifSameHet();
         return current;
       }

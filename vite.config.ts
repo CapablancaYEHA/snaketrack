@@ -1,11 +1,9 @@
 import preact from "@preact/preset-vite";
-// import basicSsl from "@vitejs/plugin-basic-ssl";
 import path from "path";
+// import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 import eslint from "vite-plugin-eslint";
 import pkg from "./package.json";
-
-// const assets = ["placeholder.png", "fav.png"];
 
 export default defineConfig({
   define: {
@@ -23,7 +21,6 @@ export default defineConfig({
       "@styles": path.resolve(__dirname, "./src/styles"),
     },
   },
-  // FIXME убрать плагин
   plugins: [
     preact(),
     eslint(),
@@ -31,6 +28,13 @@ export default defineConfig({
     //   name: "test",
     //   domains: ["*.custom.com"],
     //   certDir: "/Users/.../.devServer/cert",
+    // }),
+    // visualizer({
+    //   open: true, // Automatically opens the visualizer in your browser after build
+    //   filename: "stats.html", // Output file name
+    //   gzipSize: true, // Show sizes after gzip compression
+    //   brotliSize: true, // Show sizes after brotli compression
+    //   template: "treemap", // Can be 'treemap', 'list', 'sunburst', 'network', or 'raw-data' (JSON)
     // }),
   ],
   server: {
@@ -42,16 +46,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          const HugeLibraries = ["chart.js", "@mantine", "@supabase"];
+          const HugeLibraries = ["chart.js", "@mantine", "@supabase", "@tanstack", "browser-image-compression"];
           if (HugeLibraries.some((libName) => id.includes(`node_modules/${libName}`))) {
             return id.toString().split("node_modules/")[1].split("/")[0].toString();
           }
         },
-        // entryFileNames: `[name].[hash].js`,
-        // chunkFileNames: `[name].[hash].js`,
-        // assetFileNames: function (file) {
-        //   return assets.includes(file.name) ? `assets/[name][extname]` : `assets/[name]-[hash].[ext]`;
-        // },
       },
     },
   },

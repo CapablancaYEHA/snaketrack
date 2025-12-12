@@ -1,6 +1,6 @@
 import { useEffect } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Box, Button, Checkbox, Drawer, Flex, Loader, LoadingOverlay, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
+import { Box, Button, Checkbox, Drawer, Flex, Loader, LoadingOverlay, Mark, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { useDisclosure, useInViewport, useMediaQuery } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
 import { useQueryState } from "nuqs";
@@ -57,11 +57,18 @@ export function Market() {
           Маркет
         </Title>
         {cat ? (
-          <Tooltip label={<Text size="xs">Нужно задать имя аккаунта</Text>} disabled={!isNoname} withArrow multiline position="bottom">
+          <Stack gap="xs" ml="auto" align="start" justify="start">
+            {isNoname ? (
+              <Text size="xs">
+                <Mark color="orange" px="4px">
+                  Нужно задать имя аккаунта
+                </Mark>
+              </Text>
+            ) : null}
             <Button size="compact-xs" variant="default" component={isNoname ? "button" : "a"} href={isNoname ? "" : `/market/add/${cat}`} ml="auto" disabled={isNoname}>
               Разместить объявление
             </Button>
-          </Tooltip>
+          </Stack>
         ) : null}
       </Flex>
       <Checkbox

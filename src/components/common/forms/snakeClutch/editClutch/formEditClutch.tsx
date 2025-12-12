@@ -259,7 +259,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
                   {kidsFields?.map((a) => (
                     <Flex key={a.id} gap="sm" wrap="nowrap" miw="0px" mih="0px">
                       <IconSwitch icon="unisex" width="20" height="20" />
-                      <Image src={null} fit="cover" radius="sm" w="auto" h={48} loading="lazy" flex="1 1 48px" fallbackSrc={fallback} />
+                      <Image src={null} fit="cover" radius="sm" w="auto" h={48} loading="lazy" flex="1 1 48px" fallbackSrc={fallback} bd="1px solid rgba(128,128,128,0.3)" />
                     </Flex>
                   ))}
                 </Flex>

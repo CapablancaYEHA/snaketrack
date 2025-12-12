@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
-import { Box, Button, Flex, Image, Indicator, NumberFormatter, Paper, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
+import { Box, Button, Flex, Image, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -52,26 +52,28 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
         </Flex>
       </Box>
 
-      <Flex gap="sm" maw="100%" w="100%" wrap="wrap">
-        <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
-          Редактировать
-        </Button>
-        <Button size="compact-xs" onClick={() => (isFeedOpen.value = true)}>
-          Добавить событие
-        </Button>
-        {!["on_sale", "reserved", "sold"].includes(data.status) ? (
-          <Button size="compact-xs" variant="default" component="a" href={`/market/add/${category}?id=${location.query.id}`}>
-            Выставить на продажу
+      {tab !== "tree" ? (
+        <Flex gap="sm" maw="100%" w="100%" wrap="wrap">
+          <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
+            Редактировать
           </Button>
-        ) : null}
-        <Box ml="auto" pl="md">
-          <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[data.status]} processing zIndex={3}>
-            <Text fw={500} size="xs" ml="sm">
-              {snakeStatusToLabel[data.status]}
-            </Text>
-          </Indicator>
-        </Box>
-      </Flex>
+          <Button size="compact-xs" onClick={() => (isFeedOpen.value = true)}>
+            Добавить событие
+          </Button>
+          {!["on_sale", "reserved", "sold"].includes(data.status) ? (
+            <Button size="compact-xs" variant="default" component="a" href={`/market/add/${category}?id=${location.query.id}`}>
+              Выставить на продажу
+            </Button>
+          ) : null}
+          <Box ml="auto" pl="md">
+            <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[data.status]} processing zIndex={3}>
+              <Text fw={500} size="xs" ml="sm">
+                {snakeStatusToLabel[data.status]}
+              </Text>
+            </Indicator>
+          </Box>
+        </Flex>
+      ) : null}
 
       <Box m="0 auto">
         <Tooltip label={<Text size="xs">Coming soon</Text>} disabled={category === ECategories.BP} withArrow multiline position="bottom">
@@ -87,9 +89,11 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
         </Tooltip>
       </Box>
       {tab === "tree" ? (
-        <Flex maw="100%" w="100%">
-          <SFamTree targetId={snakeId} category={category} />
-        </Flex>
+        <RemoveScroll>
+          <Flex maw="100%" w="100%">
+            <SFamTree targetId={snakeId} category={category} />
+          </Flex>
+        </RemoveScroll>
       ) : (
         <>
           <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
