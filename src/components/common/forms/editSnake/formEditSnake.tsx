@@ -14,8 +14,8 @@ import { notif } from "@/utils/notif";
 import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
 import { filterSubmitByDirty, uplErr } from "../const";
 import { sexHardcode } from "../snakeBreed/common";
+import styles from "../styles.module.scss";
 import { makeDefault, schema } from "./const";
-import styles from "./styles.module.scss";
 
 export const FormEditSnake = ({ init, table, storage, title, category }) => {
   const location = useLocation();

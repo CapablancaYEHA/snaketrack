@@ -110,7 +110,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
                       </Box>
                     </Popover.Target>
                     <Popover.Dropdown style={{ pointerEvents: "none" }} p="xs">
-                      <Text size="xs">Активно, если масса без экскреции</Text>
+                      <Text size="xs">Активно, если масса "чистая" без экскреции </Text>
                     </Popover.Dropdown>
                   </Popover>
                 }

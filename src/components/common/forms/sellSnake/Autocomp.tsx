@@ -2,7 +2,7 @@ import { useRef } from "preact/hooks";
 import { Combobox, Loader, Stack, Text, TextInput, useCombobox } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 
-export const Autocomp = ({ data, onChange, value, onOptionSubmit, required = false, isPending = false }) => {
+export const Autocomp = ({ data, onChange, value, onOptionSubmit, error, required = false, isPending = false, label }) => {
   const ref = useRef<HTMLInputElement | null>(null);
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -33,7 +33,7 @@ export const Autocomp = ({ data, onChange, value, onOptionSubmit, required = fal
         <TextInput
           ref={ref}
           required={required}
-          label="Город"
+          label={label}
           placeholder=""
           value={value}
           onChange={(event) => {
@@ -48,6 +48,7 @@ export const Autocomp = ({ data, onChange, value, onOptionSubmit, required = fal
           onFocus={() => undefined}
           onBlur={() => combobox.closeDropdown()}
           rightSection={isPending && <Loader size={18} />}
+          error={error}
         />
       </Combobox.Target>
       <Combobox.Dropdown mah={180} style={{ overflowY: "auto" }} hidden={isPending || data === null}>

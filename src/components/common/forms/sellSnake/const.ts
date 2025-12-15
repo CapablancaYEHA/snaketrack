@@ -7,6 +7,8 @@ export const makeInit = (raw) => {
     pictures: raw.pictures,
     city_code: undefined,
     city_name: undefined,
+    contacts_group: undefined,
+    contacts_messager: undefined,
   };
 };
 
@@ -17,6 +19,8 @@ export const makeInitEdit = (raw) => {
     description: raw.description,
     city_code: raw.city_code,
     city_name: raw.city_name,
+    contacts_group: raw.contacts_group,
+    contacts_telegram: raw.contacts_messager,
   };
 };
 
@@ -37,6 +41,14 @@ export const schema = yup.object<Schema>().shape({
   city_code: yup.string().required("Обязательно к заполнению"),
   city_name: yup.string().notRequired(),
   status: yup.string().nullable(),
+  contacts_group: yup
+    .string()
+    .nullable()
+    .test("test_group", "Нужна полная ссылка", (v) => (!v ? true : v.startsWith("http"))),
+  contacts_telegram: yup
+    .string()
+    .nullable()
+    .test("test_telegram", "Некорректный формат", (v) => (!v ? true : /^@?[a-z\d_]+$/i.test(v))),
 });
 
 export type ISellScheme = yup.InferType<typeof schema>;

@@ -183,7 +183,6 @@ export function useSnakeQueue(snakes: (string | undefined)[], categ: ECategories
 }
 
 export function useBase64(url?: string | string[] | null, flag?: boolean) {
-  // const res = await Promise.all(url.map((p) => toDataUrl(p)));
   return useQuery<any, ISupabaseErr, string>({
     queryKey: ["base64", url],
     queryFn: Array.isArray(url) ? () => Promise.all(url.map((p) => toDataUrl(p))) : () => toDataUrl(url),

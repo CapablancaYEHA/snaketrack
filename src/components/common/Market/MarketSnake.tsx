@@ -1,11 +1,12 @@
-import { Button, CopyButton, Divider, Flex, Indicator, NumberFormatter, Paper, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Button, CopyButton, Divider, Flex, Indicator, NumberFormatter, Paper, Stack, Text, Title } from "@mantine/core";
 import { Carousel } from "@/components/Carousel";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { categToTitle } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IMarketRes } from "@/api/common";
-import { getAge, getDateShort } from "@/utils/time";
+import { getAge, getDateCustom, getDateShort } from "@/utils/time";
+import styles from "../forms/styles.module.scss";
 import { snakeStatusToColor, snakeStatusToLabel } from "./utils";
 
 interface IProp {
@@ -78,7 +79,7 @@ export function MarketSnake({ category, data }: IProp) {
             <Flex>
               <Text size="sm">{data.username}</Text>
               <Text size="sm" ml="auto">
-                c нами с {getDateShort(data.user_createdat)}
+                c нами с {getDateCustom(data.user_createdat, "D MMM YYYY")}
               </Text>
             </Flex>
           </Stack>
@@ -96,7 +97,20 @@ export function MarketSnake({ category, data }: IProp) {
           ) : null}
         </Stack>
       </Flex>
-
+      {data.contacts_group || data.contacts_telegram ? (
+        <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
+          {data.contacts_group ? (
+            <Anchor href={data.contacts_group} target="_blank" rel="nofollow noopener noreferrer" underline="never">
+              <IconSwitch icon="vk" width="18" height="18" />
+            </Anchor>
+          ) : null}
+          {data.contacts_telegram ? (
+            <Anchor href={`https://t.me/${data.contacts_telegram.startsWith("@") ? data.contacts_telegram.slice(1) : data.contacts_telegram}`} target="_blank" rel="nofollow noopener noreferrer" underline="never">
+              <IconSwitch icon="telegram" width="18" height="18" />
+            </Anchor>
+          ) : null}
+        </Flex>
+      ) : null}
       <Paper shadow="sm" radius="md" p="sm" w="100%">
         <Text size="sm" style={{ overflowX: "hidden" }}>
           {data.description}

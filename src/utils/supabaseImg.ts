@@ -57,5 +57,5 @@ export const toDataUrl = async (url) => {
     reader.onerror = reject;
   });
   let param = await step;
-  return imageCompression.getFilefromDataUrl(param as string, "предыдущее фото");
+  return imageCompression.getFilefromDataUrl(param as string, "фото которое уже было");
 };

@@ -24,6 +24,7 @@ import { RelatedIcon } from "./Related";
 import { SearchIcon } from "./Search";
 import { TelegramIcon } from "./Telegram";
 import { UnisexIcon } from "./Unisex";
+import { VkIcon } from "./Vk";
 
 interface IProp {
   icon: string;
@@ -85,6 +86,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <CalendarIcon width={width} height={height} />;
     case "telegram":
       return <TelegramIcon width={width} height={height} />;
+    case "vk":
+      return <VkIcon width={width} height={height} />;
     default:
       return <UnisexIcon width={width} height={height} />;
   }

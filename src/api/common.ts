@@ -203,6 +203,8 @@ export interface ICreateSaleReq {
   snake_id: string;
   category: ECategories;
   status: Extract<ISnakeStatuses, "on_sale" | "sold" | "reserved">;
+  contacts_group?: string | null;
+  contacts_telegram?: string | null;
   // TODO расширить до других стран, соответственно потом в city_code будет падать их вариация кладр
   country: string;
   // TODO поле о дате поднятии объявления
@@ -219,6 +221,8 @@ export interface IMarketRes extends ICreateSaleReq {
   completed_at: string;
   username: string;
   user_createdat: string;
+  contacts_group: string | null;
+  contacts_telegram: string | null;
 }
 
 export interface IEditSale extends Partial<ICreateSaleReq> {

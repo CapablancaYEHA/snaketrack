@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Flex, NumberInput, Select, Stack, Text, Textarea } from "@mantine/core";
+import { Box, Flex, NumberInput, Select, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm } from "react-hook-form";
 import { Autocomp } from "@/components/common/forms/sellSnake/Autocomp";
@@ -18,8 +18,8 @@ import { sortSnakeGenes } from "../../genetics/const";
 import { SexName } from "../../sexName";
 import { categToTitle } from "../../utils";
 import { filterSubmitByDirty, uplErr } from "../const";
-import styles from "../editSnake/styles.module.scss";
 import { adStatsHardcode } from "../snakeBreed/common";
+import styles from "../styles.module.scss";
 import { ISellScheme, schema } from "./const";
 
 export const FormEditSale = ({ init, info, category }) => {
@@ -28,8 +28,10 @@ export const FormEditSale = ({ init, info, category }) => {
     handleSubmit,
     setValue,
     reset,
-    formState: { isDirty, dirtyFields },
+    formState: { isDirty, dirtyFields, errors },
     control,
+    getValues,
+    trigger,
   } = useForm<ISellScheme>({
     defaultValues: init,
     resolver: yupResolver(schema),
@@ -42,16 +44,16 @@ export const FormEditSale = ({ init, info, category }) => {
   const [val, setVal] = useState("");
   const { mutate: search, data, isPending } = useDadata();
   const { mutate: updAd, isPending: isAdPend } = useSupaUpd<IEditSaleReq>(ESupabase.MRKT, { qk: [ESupabase.MRKT_V], e: false });
-  const { mutate } = useSupaUpd<IUpdReq>(categoryToBaseTable[category]);
+  const { mutate, isPending: isUpdPend } = useSupaUpd<IUpdReq>(categoryToBaseTable[category]);
 
   const debSearch = debounce(setVal, 400);
 
   const onSub = async (sbm: ISellScheme) => {
     let pics: string[] | null = null;
 
-    if (sbm.pictures.length === info.blob.length && !dirtyFields["pictures"]) {
+    if (!dirtyFields["pictures"]) {
       pics = info.blob;
-    } else if (dirtyFields["pictures"]) {
+    } else {
       try {
         const res = await Promise.all(sbm.pictures.map((p) => httpUldSnPic(p, categoryToBucket[category])));
         pics = res.map((dt) => calcImgUrl(dt.data?.fullPath!));
@@ -128,25 +130,27 @@ export const FormEditSale = ({ init, info, category }) => {
             return (
               <FileUploadMulti
                 ref={resetRef}
-                clearFile={(a) => {
+                clearFile={(index) => {
                   setImgs((s) => {
-                    const pre = s?.filter((b, ind) => ind !== a);
+                    const pre = s?.filter((b, ind) => ind !== index);
                     if (isEmpty(pre)) {
                       resetRef.current?.();
                       onChange(null);
-                      setValue("pictures", null as any);
+                      setValue("pictures", null as any, { shouldDirty: true });
                       return undefined;
                     }
+                    const filteredField = getValues("pictures")?.filter((b, ind) => ind !== index);
+                    setValue("pictures", filteredField, { shouldDirty: true });
                     return pre;
                   });
                 }}
                 clearAll={() => {
                   setImgs(undefined);
                   resetRef.current?.();
-                  setValue("pictures", null as any);
+                  setValue("pictures", null as any, { shouldDirty: true });
                   onChange(null);
                 }}
-                onUpload={(files) => files?.forEach(async (a) => await compressMulti(a, (b) => onChange([...(value ?? []), b]), setImgs))}
+                onUpload={(files) => files?.forEach(async (a) => await compressMulti(a, (b) => onChange([...(getValues("pictures") ?? []), b]), setImgs))}
                 url={imgs?.filter((a) => a) || null}
                 err={error?.message}
               />
@@ -173,17 +177,36 @@ export const FormEditSale = ({ init, info, category }) => {
       <Flex gap="lg" wrap="nowrap" className={styles.w70col}>
         <Box>
           <Autocomp
+            label="Город"
             required
             data={data}
             onChange={debSearch}
             onOptionSubmit={(a) => {
               setValue("city_code", a.city_code);
               setValue("city_name", a.city_name);
+              trigger("city_code");
             }}
             value={val || init.city_name}
             isPending={isPending}
+            error={errors?.city_code?.message}
           />
         </Box>
+      </Flex>
+      <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
+        <Controller
+          name="contacts_group"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <TextInput label="Группа в VK" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} />;
+          }}
+        />
+        <Controller
+          name="contacts_telegram"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <TextInput label="Ник в Телеге" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} placeholder="юзернейм с или без @" />;
+          }}
+        />
       </Flex>
       <Box className={styles.w70} maw="100%">
         <Controller
@@ -211,7 +234,7 @@ export const FormEditSale = ({ init, info, category }) => {
         />
       </Box>
       <Flex align="flex-start" maw="100%" gap="xl" className={styles.w70}>
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending} disabled={!isDirty || isAdPend}>
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isAdPend || isUpdPend} disabled={!isDirty}>
           Сохранить
         </Btn>
       </Flex>
