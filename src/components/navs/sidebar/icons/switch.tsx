@@ -7,6 +7,7 @@ import { CalculatorIcon } from "./Calculator";
 import { CalendarIcon } from "./Calendar";
 import { CheckIcon } from "./Check";
 import { CleanIcon } from "./Clean";
+import { CopyIcon } from "./Copy";
 import { DashIcon } from "./Dash";
 import { EditIcon } from "./Edit";
 import { EggIcon } from "./Egg";
@@ -67,7 +68,9 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
     case "breeding":
       return <RelatedIcon width={width} height={height} />;
     case "check":
-      return <CheckIcon width={width} height={height} />;
+      return <CheckIcon width={width} height={height} style={style} />;
+    case "copy":
+      return <CopyIcon width={width} height={height} />;
     case "bin":
       return <BinIcon width={width} height={height} className={className} style={style} />;
     case "arr-up":

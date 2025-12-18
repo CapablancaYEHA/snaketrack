@@ -1,9 +1,8 @@
 import { FC, ReactNode, useEffect, useState } from "preact/compat";
 import fallback from "@assets/placeholder.png";
-import { Anchor, AspectRatio, Box, Button, CSSProperties, Drawer, Flex, Image, Loader, LoadingOverlay, Modal, Space, Stack, Text, Title } from "@mantine/core";
+import { Anchor, AspectRatio, Box, Button, CSSProperties, Drawer, Flex, Image, LoadingOverlay, Modal, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { clsx } from "clsx";
-import { isEmpty } from "lodash-es";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { useFamilyTree } from "@/api/ballpythons/misc";
@@ -258,16 +257,18 @@ const SnakeAnchor = ({ selected, category }) => {
   return (
     <Flex>
       {selected.owner_id === userId ? (
-        <Anchor href={`/snakes/${category}?id=${selected.id}`} display="flex" c="inherit" underline="always" style={{ flexFlow: "row nowrap" }}>
-          <Text td="underline" style={{ whiteSpace: "nowrap" }}>
+        <Anchor href={`/snakes/${category}?id=${selected.id}`} display="flex" c="inherit" underline="always" style={{ flexFlow: "row wrap" }}>
+          <Text td="underline" style={{ whiteSpace: "nowrap", marginRight: "auto" }}>
             {selected.id}
           </Text>
-          {`\u00a0`}
-          <IconSwitch icon={selected.gender} width="20" height="20" />
-          {`\u00a0`}
-          <Text size="md" td="underline">
-            {selected.snake_name}
-          </Text>
+          <Flex style={{ flexFlow: "row nowrap" }}>
+            <Box style={{ flex: "0 0 20px", minWidth: 20 }}>
+              <IconSwitch icon={selected.gender} width="20" height="20" />
+            </Box>
+            <Text size="md" td="underline">
+              {selected.snake_name}
+            </Text>
+          </Flex>
         </Anchor>
       ) : (
         <Box display="flex">

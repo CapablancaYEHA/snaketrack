@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.png";
-import { Box, Button, Flex, Image, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
+import { Box, Button, CopyButton, Flex, Image, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -96,6 +96,15 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             <Stack flex={{ base: "1", sm: "0 1 50%" }}>
               <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "180px", sm: "260px" }} />
             </Stack>
+            <Box>
+              <CopyButton value={snakeId} timeout={3000}>
+                {({ copied, copy }) => (
+                  <Button onClick={copy} size="compact-xs" variant="default" rightSection={<IconSwitch icon={copied ? "check" : "copy"} width="16" height="16" style={{ stroke: "lime" }} />}>
+                    {copied ? "Скопировано" : "Копировать id"}
+                  </Button>
+                )}
+              </CopyButton>
+            </Box>
             <Stack gap="sm">
               <Text size="sm">Дата рождения — {getDate(data.date_hatch)}</Text>
               <Text size="sm">⌛ {getAge(data.date_hatch)}</Text>
