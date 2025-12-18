@@ -220,7 +220,6 @@ export function Market() {
         </Flex> */}
       </Drawer>
       {isLoading ? <SkelTable /> : null}
-
       {!cat ? (
         <Text fw={500} component="span">
           Выберите категорию маркета

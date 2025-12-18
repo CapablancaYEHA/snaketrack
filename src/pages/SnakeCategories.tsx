@@ -2,14 +2,14 @@ import { Flex, SegmentedControl, Stack, Text, Title } from "@mantine/core";
 import { SnakeCollectionList, catVisited } from "@/components/common/SnakeCollectionList";
 import { ECategories } from "@/api/common";
 
+const handle = (a) => {
+  catVisited.value = a;
+  localStorage.setItem("SNAKES_VISITED", a);
+};
+
 export function SnakeCategories() {
   const vis = localStorage.getItem("SNAKES_VISITED");
   catVisited.value = vis ?? ("" as any);
-
-  const handle = (a) => {
-    catVisited.value = a;
-    localStorage.setItem("SNAKES_VISITED", a);
-  };
 
   return (
     <Stack align="center" justify="flex-start" gap="md" component="section">

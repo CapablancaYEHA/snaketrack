@@ -59,7 +59,7 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
     case "female":
       return <FemaleIcon width={width} height={height} style={style} />;
     case "unisex":
-      return <UnisexIcon width={width} height={height} style={style} />;
+      return <UnisexIcon width={width} height={height} style={{ ...style }} />;
     case "kebab":
       return <KebabIcon width={width} height={height} />;
     case "clutches":

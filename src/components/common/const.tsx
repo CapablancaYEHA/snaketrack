@@ -18,7 +18,7 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) =
         <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openDelete={openDelete} category={category}>
           <Stack gap="xs" maw="100%" w="100%">
             <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
-            <AspectRatio ratio={16 / 9} maw={320}>
+            <AspectRatio ratio={16 / 9} maw="100%">
               <Image src={cell.getValue()} fit="cover" radius="md" w="100%" fallbackSrc={fallback} loading="lazy" />
             </AspectRatio>
             <GenesList genes={row.original.genes} size="xs" />
@@ -27,7 +27,7 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) =
       ),
       enableSorting: false,
       size: 1,
-      maxSize: 6,
+      maxSize: 5,
       minSize: 194,
     }),
     colHelper.accessor((row: any) => row.snake_name, {
@@ -52,15 +52,15 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) =
       header: () => "События",
       cell: ({ cell, row }) => <SnakeEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} />,
       enableSorting: false,
-      size: 7,
+      size: 6,
       maxSize: 3,
       minSize: 150,
     }),
     colHelper.accessor("date_hatch", {
       header: () => "Возраст",
       cell: ({ cell }) => <Text size="sm">{getAge(cell.getValue())}</Text>,
-      size: 10,
-      maxSize: 2,
+      size: 9,
+      maxSize: 3,
       minSize: 150,
       filterFn: hatchFiltFn,
     }),

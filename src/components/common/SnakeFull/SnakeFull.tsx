@@ -15,8 +15,8 @@ import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
+import { FamilyTree } from "../FamilyTree";
 import { snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
-import { SFamTree } from "../RelativeTree";
 import { EditStats } from "../forms/editStats/formEditStats";
 import { snakeFeedColumns } from "./utils";
 
@@ -76,23 +76,19 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
       ) : null}
 
       <Box m="0 auto">
-        <Tooltip label={<Text size="xs">Coming soon</Text>} disabled={category === ECategories.BP} withArrow multiline position="bottom">
-          <SegmentedControl
-            size="xs"
-            value={tab}
-            onChange={setTab}
-            data={[
-              { label: "Общее", value: "common" },
-              { label: "Семейное древо", value: "tree", disabled: category !== ECategories.BP },
-            ]}
-          />
-        </Tooltip>
+        <SegmentedControl
+          size="xs"
+          value={tab}
+          onChange={setTab}
+          data={[
+            { label: "Общее", value: "common" },
+            { label: "Семейное древо", value: "tree" },
+          ]}
+        />
       </Box>
       {tab === "tree" ? (
-        <RemoveScroll>
-          <Flex maw="100%" w="100%">
-            <SFamTree targetId={snakeId} category={category} />
-          </Flex>
+        <RemoveScroll style={{ maxWidth: "100%", width: "100%", display: "flex" }}>
+          <FamilyTree targetId={snakeId} category={category} currentMother={data.mother_id} currentFather={data.father_id} />
         </RemoveScroll>
       ) : (
         <>

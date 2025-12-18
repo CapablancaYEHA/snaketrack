@@ -1,23 +1,29 @@
 import * as yup from "yup";
 
 export const defVals = {
-  parent: "mother",
   source: "collection",
-  mother_id: null,
-  father_id: null,
+  mother_id: undefined,
+  father_id: undefined,
 };
 
-export const parentsSchema = yup.object().shape({
-  mother_id: yup
-    .string()
-    .test("mother", "Не заполнена материнская линия", (v) => v != null && v !== "")
-    .nullable(),
-  father_id: yup
-    .string()
-    .test("father", "Не заполнена отцовская линия", (v) => v != null && v !== "")
-    .nullable(),
-  parent: yup.string(),
-  source: yup.string(),
-});
+export const parentsSchema = yup.object().shape(
+  {
+    mother_id: yup.string().when(["father_id"], ([father_id], self) => {
+      if (father_id) {
+        return self.nullable();
+      }
+      return self.test("mother", "Нужно заполнить хотя бы одного родителя", (v) => v != null && v !== "");
+    }),
+    father_id: yup.string().when(["mother_id"], ([mother_id], self) => {
+      if (mother_id) {
+        return self.nullable();
+      }
+      return self.test("father", "Нужно заполнить хотя бы одного родителя", (v) => v != null && v !== "");
+    }),
+    parent: yup.string(),
+    source: yup.string(),
+  },
+  [["mother_id", "father_id"]],
+);
 
 export type IParentsSchema = yup.InferType<typeof parentsSchema>;

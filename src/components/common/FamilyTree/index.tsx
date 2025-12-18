@@ -1,12 +1,12 @@
 import { FC, ReactNode, useEffect, useState } from "preact/compat";
 import fallback from "@assets/placeholder.png";
-import { Anchor, AspectRatio, Box, Button, CSSProperties, Drawer, Flex, Image, Modal, Space, Stack, Text, Title } from "@mantine/core";
+import { Anchor, AspectRatio, Box, Button, CSSProperties, Drawer, Flex, Image, Loader, LoadingOverlay, Modal, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { clsx } from "clsx";
 import { isEmpty } from "lodash-es";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { useBpTree } from "@/api/ballpythons/misc";
+import { useFamilyTree } from "@/api/ballpythons/misc";
 import { ECategories } from "@/api/common";
 import { FormAddParents } from "../forms/addParents/formAddParents";
 import { sortSnakeGenes } from "../genetics/const";
@@ -58,7 +58,7 @@ interface ITree {
   renderNode: (node: ExtNode) => ReactNode;
 }
 
-function ReactFamilyTree(props: ITree) {
+function RenderElems(props: ITree) {
   const data = calcTree(props.nodes, {
     rootId: props.rootId,
     placeholders: props.placeholders,
@@ -98,14 +98,19 @@ interface FamilyNodeProps {
   selected: boolean;
 }
 
-const FamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick, style }) => {
+const SFamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick, style }) => {
   const isTraget = targetId === node.id;
+
   return (
     <div className={css.root} style={style}>
       <Stack gap="sm" className={clsx(css.inner, isTraget && css.isTarget)} onClick={() => onSelect(node.id)} style={{ transform: "translate3d(0, 0, 0)" }}>
-        <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="center">
-          <Text size="xs">{node.id}</Text>
-          <IconSwitch icon={node.gender} width="20" height="20" />
+        <Flex gap="xs" style={{ flexFlow: "row nowrap" }} align="center">
+          <Text size="xs" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            {node.id}
+          </Text>
+          <Box style={{ flex: "0 0 20px", minWidth: 20 }}>
+            <IconSwitch icon={node.gender} width="20" height="20" />
+          </Box>
         </Flex>
         <AspectRatio ratio={16 / 9} maw={196}>
           <Image radius="sm" src={node.picture} width="100%" alt="snake_in_tree" fit="cover" fallbackSrc={fallback} loading="lazy" />
@@ -119,14 +124,22 @@ const FamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick,
           </Flex>
         </Box>
       </Stack>
-      {/* FIXME разобраться с subtree */}
+      {/* FIXME разобраться с subtree, зачем и как оно и где */}
       {/* {node.hasSubTree && <div className={clsx(css.sub, css[node.gender])} onClick={() => onSubClick(node.id)} />} */}
     </div>
   );
 };
 
-export const SFamTree = ({ targetId, category = ECategories.BP }) => {
-  const { data: tree } = useBpTree(targetId);
+interface IFamTree {
+  targetId: string;
+  category: ECategories;
+  isEditable?: boolean;
+  currentMother?: string | null;
+  currentFather?: string | null;
+}
+
+export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, currentFather, isEditable = true }) => {
+  const { data: tree, isError, isFetching } = useFamilyTree(targetId, category);
   const [rootId, setRootId] = useState(tree?.[0].id);
   const [selectId, setSelectId] = useState<string>();
 
@@ -138,37 +151,49 @@ export const SFamTree = ({ targetId, category = ECategories.BP }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(tree)]);
 
+  if (isFetching) {
+    return <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />;
+  }
+
+  if (isError) {
+    return (
+      <Text fw={500} c="var(--mantine-color-error)" size="sm">
+        Ошибка запроса данных, и\или данная категория не поддерживается в этом блоке
+      </Text>
+    );
+  }
+
   return rootId && tree && tree.length > 0 ? (
     <Box maw="100%" w="100%">
       <Modal centered opened={sigIsModalOpen.value} onClose={closeMod} size="xs" title={<Title order={4}>Указать родителей</Title>} keepMounted={false}>
-        <FormAddParents snakeId={targetId} />
+        <FormAddParents snakeId={targetId} category={category} onClose={closeMod} currentMother={currentMother} currentFather={currentFather} />
       </Modal>
-      {/* FIXME shadow_date_hatch для таких вот кейсов */}
-      {isEmpty(targetNode?.parents) ? (
+      {/* FIXME shadow_date_hatch для таких вот кейсов заполнять или как */}
+      {isEditable && (targetNode?.parents?.length ?? 0) < 2 ? (
         <Flex maw="100%" w="100%" gap="lg">
-          <Text size="sm">Без информация о родителях невозможно построить древо</Text>
+          <Text size="sm">Информация о родителях неполная или отсутствует</Text>
           <Button size="compact-xs" onClick={openMod} flex="0 0 auto">
-            Добавить
+            Исправить
           </Button>
         </Flex>
       ) : null}
       <Space h="xs" />
       <TransformWrapper
-        //   initialScale={0.4}
         minScale={0.4}
+        // initialScale={0.4}
         // initialPositionX={100}
         // initialPositionY={100}
         limitToBounds={false}
         centerOnInit
       >
-        <TransformComponent wrapperStyle={{ maxWidth: "100%", width: "100%", height: "auto" }} contentStyle={{ width: "100%", height: "100%", justifyContent: "center", cursor: "grab" }}>
-          <ReactFamilyTree
+        <TransformComponent wrapperStyle={{ maxWidth: "100%", width: "100%", height: "auto", cursor: "grab" }} contentStyle={{ width: "100%", height: "100%", justifyContent: "center" }}>
+          <RenderElems
             nodes={tree as any}
             rootId={rootId}
             width={WIDTH}
             height={HEIGHT}
             renderNode={(node) => (
-              <FamilyNode
+              <SFamilyNode
                 key={node.id}
                 node={node}
                 isRoot={node.id === rootId}
@@ -212,7 +237,7 @@ export const SFamTree = ({ targetId, category = ECategories.BP }) => {
           >
             <Stack gap="sm" align="start">
               <Space h="xs" />
-              <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="center">
+              <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="start">
                 {sortSnakeGenes(selected.genes as any).map((a) => (
                   <GenePill item={a} key={`${a.label}_${a.id}`} />
                 ))}
@@ -233,8 +258,10 @@ const SnakeAnchor = ({ selected, category }) => {
   return (
     <Flex>
       {selected.owner_id === userId ? (
-        <Anchor href={`/snakes/${category}?id=${selected.id}`} display="flex" c="inherit" underline="always">
-          <Text td="underline">{selected.id}</Text>
+        <Anchor href={`/snakes/${category}?id=${selected.id}`} display="flex" c="inherit" underline="always" style={{ flexFlow: "row nowrap" }}>
+          <Text td="underline" style={{ whiteSpace: "nowrap" }}>
+            {selected.id}
+          </Text>
           {`\u00a0`}
           <IconSwitch icon={selected.gender} width="20" height="20" />
           {`\u00a0`}
@@ -244,7 +271,7 @@ const SnakeAnchor = ({ selected, category }) => {
         </Anchor>
       ) : (
         <Box display="flex">
-          <Text td="underline">{selected.id}</Text>
+          <Text>{selected.id}</Text>
           {`\u00a0`}
           <IconSwitch icon={selected.gender} width="20" height="20" />
         </Box>

@@ -21,6 +21,22 @@ import { categToConfigList, categToTitle, maturityDict } from "./utils";
 
 export const catVisited = signal<ECategories>("" as any);
 
+const base = {
+  openFeed: (uuid) => {
+    isFeedOpen.value = true;
+    curId.value = uuid;
+  },
+  openTrans: (uuid) => {
+    isTransOpen.value = true;
+    curId.value = uuid;
+  },
+  openDelete: (uuid) => {
+    isDeleteOpen.value = true;
+    curId.value = uuid;
+  },
+  category: catVisited.value,
+};
+
 const curId = signal<string | undefined>(undefined);
 const isTransOpen = signal<boolean>(false);
 const isFeedOpen = signal<boolean>(false);
@@ -72,21 +88,7 @@ export function SnakeCollectionList() {
           </Text>
           <StackTable
             data={snakes ?? []}
-            columns={makeListColumns({
-              openFeed: (uuid) => {
-                isFeedOpen.value = true;
-                curId.value = uuid;
-              },
-              openTrans: (uuid) => {
-                isTransOpen.value = true;
-                curId.value = uuid;
-              },
-              openDelete: (uuid) => {
-                isDeleteOpen.value = true;
-                curId.value = uuid;
-              },
-              category: catVisited.value,
-            })}
+            columns={makeListColumns({ ...base, category: catVisited.value })}
             columnFilters={filt}
             setColumnFilters={setFilt}
             globalFilter={globalFilter}

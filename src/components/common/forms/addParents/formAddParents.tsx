@@ -1,20 +1,20 @@
 import { useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Flex, Radio, SegmentedControl, Select, Space, Stack } from "@mantine/core";
+import { Flex, Radio, SegmentedControl, Select, Space, Stack } from "@mantine/core";
 import { debounce } from "lodash-es";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { Btn } from "@/components/navs/btn/Btn";
 import { ECategories, IResSnakesList, IUpdReq, categoryToBaseTable } from "@/api/common";
 import { snakeListByGender } from "@/api/common_configs";
-import { invalidateBpTree, useSupaGet, useSupaUpd } from "@/api/hooks";
+import { invalidateSnakeTree, useSupaGet, useSupaUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
-import { AutocompAsync } from "../../RelativeTree/AutocompAsync";
+import { AutocompAsync } from "../../FamilyTree/AutocompAsync";
 import { IParentsSchema, defVals, parentsSchema } from "./const";
 
-// FIXME category = ECategories.BP после расширения на всех змей
-export const FormAddParents = ({ category = ECategories.BP, snakeId }) => {
+export const FormAddParents = ({ category, snakeId, onClose, currentFather, currentMother }) => {
   const userId = localStorage.getItem("USER");
   const { handleSubmit, control, setValue } = useForm({
-    defaultValues: defVals,
+    defaultValues: { ...defVals, parent: currentMother != null ? "father" : "mother" },
     resolver: yupResolver(parentsSchema),
   });
 
@@ -26,8 +26,8 @@ export const FormAddParents = ({ category = ECategories.BP, snakeId }) => {
   const isFemEbl = (category === ECategories.BP ? femSearch?.length >= 10 : femSearch?.length >= 36) && !femSearch?.includes("_");
   const isMaleEbl = (category === ECategories.BP ? maleSearch?.length >= 10 : maleSearch?.length >= 36) && !maleSearch?.includes("_");
 
-  const { data: regFems } = useSupaGet<IResSnakesList[]>(snakeListByGender(category, "female", userId), userId != null);
-  const { data: regMales } = useSupaGet<IResSnakesList[]>(snakeListByGender(category, "male", userId), userId != null);
+  const { data: regFems } = useSupaGet<IResSnakesList[]>(snakeListByGender(category, "female", snakeId, userId), userId != null);
+  const { data: regMales } = useSupaGet<IResSnakesList[]>(snakeListByGender(category, "male", snakeId, userId), userId != null);
   const { data: femTrg, isFetching: isFemFetch } = useSupaGet<IResSnakesList>({ t: categoryToBaseTable[category], f: (b) => b.eq("id", femSearch).limit(1).single(), id: femSearch }, isFemEbl);
   const { data: maleTrg, isFetching: isMaleFetch } = useSupaGet<IResSnakesList>({ t: categoryToBaseTable[category], f: (b) => b.eq("id", maleSearch).limit(1).single(), id: maleSearch }, isMaleEbl);
   const { mutate, isPending } = useSupaUpd<IUpdReq>(categoryToBaseTable[category]);
@@ -43,8 +43,10 @@ export const FormAddParents = ({ category = ECategories.BP, snakeId }) => {
       },
       {
         onSuccess: () => {
-          notif({ c: "green", t: "Успешно", m: "Инфа о родителях добавлена" });
-          invalidateBpTree(snakeId);
+          notif({ c: "green", t: "Успешно", m: "Инфа о родстве добавлена" });
+          // FIXME надо подумать что делать с этим инвалидейтом и куда редиректить, иначе слишком много запросов
+          invalidateSnakeTree(snakeId, category);
+          onClose();
         },
         onError: (err) => {
           notif({ c: "red", m: err.message });
@@ -70,10 +72,12 @@ export const FormAddParents = ({ category = ECategories.BP, snakeId }) => {
                 {
                   label: "Мать (Dam)",
                   value: "mother",
+                  disabled: currentMother != null,
                 },
                 {
                   label: "Отец (Sire)",
                   value: "father",
+                  disabled: currentFather != null,
                 },
               ]}
             />
@@ -140,9 +144,9 @@ export const FormAddParents = ({ category = ECategories.BP, snakeId }) => {
         />
       ) : null}
       <Space h="md" />
-      <Button size="compact-xs" variant="default" onClick={handleSubmit(onSub)} disabled={isPending}>
+      <Btn size="compact-xs" variant="default" style={{ alignSelf: "end" }} onClick={handleSubmit(onSub)} disabled={isPending}>
         Сохранить
-      </Button>
+      </Btn>
     </Stack>
   );
 };

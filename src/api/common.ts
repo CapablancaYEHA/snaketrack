@@ -57,7 +57,7 @@ export const categoryToBaseTable = {
   [ECategories.CS]: ESupabase.CS,
 };
 
-// FIXME
+// FIXME чтото это как-то убого или оставим?
 export const categoryToShort = {
   [ECategories.BP]: "bp",
   [ECategories.BC]: "bc",
@@ -83,7 +83,7 @@ export const categoryToTransferFunc = {
 };
 
 export const enum EQuKeys {
-  BP_TREE = "bp_family_tree",
+  FAM_TREE = "snake_family_tree",
 }
 
 export interface ISupabaseErr {
@@ -144,7 +144,7 @@ export type IFeedReq = Omit<IUpdReq, "feeding" | "weight" | "shed"> & {
   id: string;
 };
 
-export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "price" | "picture" | "notes" | "last_action" | "from_clutch"> {
+export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "price" | "picture" | "notes" | "last_action" | "from_clutch" | "mother_id" | "father_id"> {
   id: string;
   owner_name: string;
   status: string;
@@ -207,7 +207,7 @@ export interface ICreateSaleReq {
   contacts_telegram?: string | null;
   // TODO расширить до других стран, соответственно потом в city_code будет падать их вариация кладр
   country: string;
-  // TODO поле о дате поднятии объявления
+  // TODO поле о дате поднятии объявления (не обновление а именно поднятие, которое отдельная функция)
 }
 
 export interface IMarketRes extends ICreateSaleReq {

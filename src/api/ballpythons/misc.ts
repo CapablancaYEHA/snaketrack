@@ -47,10 +47,11 @@ export function useCalcMmOdds(categ: ECategories) {
   });
 }
 
-// TODO FIXME сделать универсальную rpc функцию для запросов к closure
-const httpGetBpTree = async (id) => {
-  const { data, error } = await supabase.rpc("rpc_bp_family_tree", {
+// FIXME Позже удалить ненужную функцию rpc_bp_family_tree в Супабейз
+const httpGetTree = async (id, category) => {
+  const { data, error } = await supabase.rpc("rpc_snake_family_tree", {
     target_id: id,
+    category,
   });
   if (error) {
     throw error;
@@ -58,10 +59,10 @@ const httpGetBpTree = async (id) => {
   return data;
 };
 
-export function useBpTree(id: string, isEnabled = true) {
+export function useFamilyTree(id: string, category, isEnabled = true) {
   return useQuery<any, ISupabaseErr, IFamilyTreeRes[]>({
-    queryKey: [EQuKeys.BP_TREE, id],
-    queryFn: () => httpGetBpTree(id),
+    queryKey: [EQuKeys.FAM_TREE, id, category],
+    queryFn: () => httpGetTree(id, category),
     enabled: isEnabled,
   });
 }

@@ -142,8 +142,6 @@ export const FormEditSnake = ({ init, table, storage, title, category }) => {
             return <Select data={sexHardcode} value={value} onChange={onChange} label="Пол" error={error?.message} flex="0 1 50%" />;
           }}
         />
-        {/* FIX здесь нужно проверка на наличие разнополой пары */}
-        {/* {wOrigin === "breed" ? <div>выпадашки с родителями</div> : null} */}
       </Flex>
       <Box className={styles.w70} maw="100%">
         <Textarea {...register("notes")} label="Заметки, примечания" w="100%" maw="100%" autosize id="txarea_helper_editSnake" />
