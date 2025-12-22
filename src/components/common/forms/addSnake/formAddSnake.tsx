@@ -7,16 +7,16 @@ import { DatePickerInput } from "@mantine/dates";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Feeder } from "@/components/common/Feeder/Feeder";
 import { GenesSelect } from "@/components/common/genetics/geneSelect";
-import { httpUldSnPic } from "@/api/ballpythons/misc";
-import { ECategories, ESupabase, IReqCreateSnake } from "@/api/common";
+import { ECategories, EGenesView, ESupabase, IReqCreateSnake } from "@/api/common";
 import { useSupaCreate } from "@/api/hooks";
+import { httpUldSnPic } from "@/api/misc/hooks";
 import { notif } from "../../../../utils/notif";
 import { calcImgUrl, compressImage } from "../../../../utils/supabaseImg";
 import { FileUpload } from "../../../fileUpload";
 import { Btn } from "../../../navs/btn/Btn";
 import { uplErr } from "../const";
 import { sexHardcode } from "../snakeBreed/common";
-import { defVals, prepareForSubmit, schema } from "./const";
+import { defVals, prepareSnakeCreate, schema } from "./const";
 
 interface IProps {
   table: ESupabase;
@@ -53,7 +53,7 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
       picture = calcImgUrl(r?.fullPath!);
     }
     mutate(
-      { ...prepareForSubmit(sbm), picture },
+      { ...prepareSnakeCreate(sbm), picture },
       {
         onSuccess: () => {
           notif({ c: "green", t: "Успешно", m: "Змейка сохранена" });
@@ -100,7 +100,7 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
                   name="genes"
                   control={control}
                   render={({ field: { onChange } }) => {
-                    return <GenesSelect onChange={(a) => onChange(a)} label="Морфы" category={category} />;
+                    return <GenesSelect onChange={(a) => onChange(a)} label="Морфы" category={category} view={EGenesView.STD} />;
                   }}
                 />
               </Flex>

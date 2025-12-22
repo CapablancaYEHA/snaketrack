@@ -1,6 +1,6 @@
 import { sortBy } from "lodash-es";
-import { IMMTrait } from "@/api/ballpythons/models";
-import { IGenesComp } from "@/api/common";
+import { EGenesView, IGenesComp } from "@/api/common";
+import { IMMTrait } from "@/api/misc/models";
 import { notif } from "@/utils/notif";
 
 export const geneToColor = {
@@ -30,20 +30,24 @@ export const upgAlias = (arr: IGenesComp[]) =>
     return tot.concat(cur);
   }, [] as IGenesComp[]);
 
-export const upgradeOptions = (arr: IGenesComp[], search: string) => {
+export const upgradeOptions = (arr: IGenesComp[], search: string, view: EGenesView) => {
   if (search.trim().length === 0) return arr;
   let inp = search.trim().toLowerCase();
+  const isCalc = view === EGenesView.CALC;
   return arr
     .reduce((tot, cur) => {
+      if (isCalc && Boolean(cur.is_beauty_only)) {
+        return tot;
+      }
       if (cur.hasHet) {
         if (inp.toLowerCase().includes("he")) {
-          let res = fullHet.map((a) => ({ ...cur, label: `${a} ${cur.label}` }));
+          let res = !isCalc ? fullHet.map((a) => ({ ...cur, label: `${a} ${cur.label}` })) : ["Het"].map((a) => ({ ...cur, label: `${a} ${cur.label}` }));
           return tot.concat(cur).concat(res);
         }
-        if (inp.indexOf("6") === 0) {
+        if (!isCalc && inp.indexOf("6") === 0) {
           return tot.concat(cur).concat({ ...cur, label: `66% Het ${cur.label}` });
         }
-        if (inp.indexOf("5") === 0) {
+        if (!isCalc && inp.indexOf("5") === 0) {
           return tot.concat(cur).concat({ ...cur, label: `50% Het ${cur.label}` });
         }
         return tot.concat(cur);

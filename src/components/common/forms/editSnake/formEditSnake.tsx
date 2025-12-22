@@ -7,9 +7,9 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { GenesSelect } from "@/components/common/genetics/geneSelect";
 import { FileUpload } from "@/components/fileUpload";
 import { Btn } from "@/components/navs/btn/Btn";
-import { httpReplacePic, httpUldSnPic } from "@/api/ballpythons/misc";
-import { IUpdReq } from "@/api/common";
+import { EGenesView, IUpdReq } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
+import { httpReplacePic, httpUldSnPic } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressImage } from "@/utils/supabaseImg";
 import { filterSubmitByDirty, uplErr } from "../const";
@@ -102,7 +102,7 @@ export const FormEditSnake = ({ init, table, storage, title, category }) => {
           name="genes"
           control={control}
           render={({ field: { onChange, value } }) => {
-            return <GenesSelect onChange={(a) => onChange(a)} init={value} label="Морфы" category={category} />;
+            return <GenesSelect onChange={(a) => onChange(a)} init={value} label="Морфы" category={category} view={EGenesView.STD} />;
           }}
         />
       </Flex>

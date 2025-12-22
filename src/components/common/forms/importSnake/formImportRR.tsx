@@ -1,12 +1,14 @@
 import { useLocation } from "preact-iso";
 import { FC } from "preact/compat";
-import { useState } from "preact/hooks";
-import { Button, FileButton, Flex, Highlight, List, Mark, Space, Stack, Text } from "@mantine/core";
+import { useEffect, useState } from "preact/hooks";
+import { Box, Button, FileButton, Flex, Highlight, List, Mark, Space, Stack, Text } from "@mantine/core";
 import { isEmpty } from "lodash-es";
+import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, ESupabase, IReqCreateSnake } from "@/api/common";
 import { useSupaCreate } from "@/api/hooks";
 import { getAge } from "@/utils/time";
 import { SexName } from "../../sexName";
+import css from "./styles.module.scss";
 import { IParsedRocket } from "./types";
 import { createSnakes, handleJson, handlePost } from "./utils";
 
@@ -16,12 +18,15 @@ interface IProps {
   category: ECategories;
 }
 
-export const FormImportSnake: FC<IProps> = ({ table, title, category }) => {
+export const FormImportRR: FC<IProps> = ({ table, title, category }) => {
   const location = useLocation();
   const [file, setFile] = useState<IParsedRocket | null>(null);
+  const [sneks, setSneks] = useState<IReqCreateSnake[] | null>(null);
   const { mutate, isPending } = useSupaCreate<IReqCreateSnake[]>(table, undefined, true);
 
-  let sneks = file !== null ? createSnakes(file, category) : null;
+  useEffect(() => {
+    setSneks(createSnakes(file, category) as any);
+  }, [file, category]);
 
   return (
     <>
@@ -55,22 +60,22 @@ export const FormImportSnake: FC<IProps> = ({ table, title, category }) => {
         )}
       </FileButton>
       <Space h="xs" />
-      {sneks == null ? null : isEmpty(sneks) ? (
-        <Text fw={500} c="var(--mantine-color-error)">
-          Обработка JSON не показала змей для импорта
+      {isEmpty(sneks) && file != null ? (
+        <Text fw={500} c="var(--mantine-color-error)" size="sm">
+          Обработка JSON не показала змей для импорта. Вероятно страница Импорта не совпадает с желаемой категорией
         </Text>
-      ) : (
+      ) : sneks && !isEmpty(sneks) && file != null ? (
         <>
-          <Text>{title}ы, которые будут добавлены в коллекцию</Text>
+          <Text>{title}ы, которых можно добавить в коллекцию</Text>
           <Flex gap="md" wrap="wrap" maw="100%" w="100%">
             {sneks.map((s, ind, self) => (
               <Stack gap="xs" key={`${s.date_hatch}_${s.snake_name}`} flex="0 1 110px" pos="relative">
                 <SexName sex={s?.sex} name={s?.snake_name} size="xs" />
                 <Text size="xs">⌛ {getAge(s?.date_hatch)}</Text>
                 <Text size="xs">{s.notes}</Text>
-                {/* <Box pos="absolute" bottom={4} right={4} onClick={() => (sneks = self.filter((_, i) => i !== ind))} className={css.circle}>
+                <Box pos="absolute" bottom={4} right={4} onClick={() => setSneks((n: any) => n?.filter((_, i) => i !== ind))} className={css.circle}>
                   <IconSwitch icon="bin" width="18" height="18" className={css.bin} />
-                </Box> */}
+                </Box>
               </Stack>
             ))}
           </Flex>
@@ -79,7 +84,7 @@ export const FormImportSnake: FC<IProps> = ({ table, title, category }) => {
             Подтвердить
           </Button>
         </>
-      )}
+      ) : null}
     </>
   );
 };

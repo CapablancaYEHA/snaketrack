@@ -3,9 +3,9 @@ import { useEffect } from "preact/hooks";
 import { Box, Flex, Loader, Space, Stack, Text } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
-import { useCalcMmOdds } from "@/api/ballpythons/misc";
-import { IMMOff } from "@/api/ballpythons/models";
-import { ECategories } from "@/api/common";
+import { ECategories, EGenesView } from "@/api/common";
+import { useCalcMmOdds } from "@/api/misc/hooks";
+import { IMMOff } from "@/api/misc/models";
 import { notif } from "@/utils/notif";
 import { prepForMm } from "../forms/snakeBreed/common";
 import { emptyMMTrait, fromMMtoPill } from "./const";
@@ -48,14 +48,14 @@ export const OddsCalc: FC<IProp> = ({ category }) => {
           name="parentOne"
           control={innerInstance.control}
           render={({ field: { onChange } }) => {
-            return <GenesSelect onChange={(a) => onChange(a)} category={category} label="Родитель 1" description=" " />;
+            return <GenesSelect onChange={(a) => onChange(a)} category={category} label="Родитель 1" description=" " view={EGenesView.CALC} />;
           }}
         />
         <Controller
           name="parentTwo"
           control={innerInstance.control}
           render={({ field: { onChange } }) => {
-            return <GenesSelect onChange={(a) => onChange(a)} category={category} label="Родитель 2" description=" " />;
+            return <GenesSelect onChange={(a) => onChange(a)} category={category} label="Родитель 2" description=" " view={EGenesView.CALC} />;
           }}
         />
       </Flex>

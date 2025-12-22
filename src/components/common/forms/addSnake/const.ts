@@ -61,7 +61,7 @@ export const defVals = {
   notes: null,
 };
 
-export const prepareForSubmit = (a): Omit<IReqCreateSnake, "picture"> => {
+export const prepareSnakeCreate = (a): Omit<IReqCreateSnake, "picture"> => {
   let genes = isEmpty(a.genes) ? [{ label: "Normal", gene: "other" }] : a.genes;
   let l = a.feed_last_at != null ? dateToSupabaseTime(a.feed_last_at) : null;
   let w =

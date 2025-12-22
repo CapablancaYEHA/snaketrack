@@ -8,9 +8,9 @@ import { Autocomp } from "@/components/common/forms/sellSnake/Autocomp";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { FileUploadMulti } from "@/components/fileUploadMulti";
 import { Btn } from "@/components/navs/btn/Btn";
-import { httpUldSnPic } from "@/api/ballpythons/misc";
 import { ESupabase, ICreateSaleReq, IUpdReq, categoryToBaseTable, categoryToBucket } from "@/api/common";
 import { useDadata, useSupaCreate, useSupaUpd } from "@/api/hooks";
+import { httpUldSnPic } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressMulti } from "@/utils/supabaseImg";
 import { getAge, getDate } from "@/utils/time";
@@ -19,9 +19,9 @@ import { SexName } from "../../sexName";
 import { categToTitle } from "../../utils";
 import { uplErr } from "../const";
 import styles from "../styles.module.scss";
-import { ISellScheme, schema } from "./const";
+import { ISellScheme, schemaBase } from "./const";
 
-export const FormCreateSale = ({ init, category, info }) => {
+export const FormCreateSaleFromColection = ({ init, category, info }) => {
   const location = useLocation();
   const {
     handleSubmit,
@@ -33,7 +33,7 @@ export const FormCreateSale = ({ init, category, info }) => {
     trigger,
   } = useForm<ISellScheme>({
     defaultValues: init,
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schemaBase),
     mode: "onSubmit",
     reValidateMode: "onChange",
   });

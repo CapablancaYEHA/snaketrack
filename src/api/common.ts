@@ -187,6 +187,12 @@ export interface IGenesComp {
   alias?: string | null;
   hasHet: boolean;
   isPos?: boolean;
+  is_beauty_only?: boolean | null;
+}
+
+export const enum EGenesView {
+  STD = "standard",
+  CALC = "calc",
 }
 
 export type ITransferReq = {

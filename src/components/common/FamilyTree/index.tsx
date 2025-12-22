@@ -5,8 +5,8 @@ import { signal } from "@preact/signals";
 import { clsx } from "clsx";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { useFamilyTree } from "@/api/ballpythons/misc";
 import { ECategories } from "@/api/common";
+import { useFamilyTree } from "@/api/misc/hooks";
 import { FormAddParents } from "../forms/addParents/formAddParents";
 import { sortSnakeGenes } from "../genetics/const";
 import { GenePill } from "../genetics/geneSelect";
@@ -103,7 +103,7 @@ const SFamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick
   return (
     <div className={css.root} style={style}>
       <Stack gap="sm" className={clsx(css.inner, isTraget && css.isTarget)} onClick={() => onSelect(node.id)} style={{ transform: "translate3d(0, 0, 0)" }}>
-        <Flex gap="xs" style={{ flexFlow: "row nowrap" }} align="center">
+        <Flex component="section" gap="xs" style={{ flexFlow: "row nowrap" }} align="center" maw="100%">
           <Text size="xs" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {node.id}
           </Text>

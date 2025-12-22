@@ -11,7 +11,7 @@ import { SexName } from "@/components/common/sexName";
 import { calcProjGenes, categToConfigList } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { EClSt, IResClutch } from "@/api/breeding/models";
-import { ECategories, IResSnakesList } from "@/api/common";
+import { ECategories, EGenesView, IResSnakesList } from "@/api/common";
 import { useSupaGet } from "@/api/hooks";
 import { declWord } from "@/utils/other";
 import { dateAddDays, dateTimeDiff, getAge, getDate, getDateObj } from "@/utils/time";
@@ -246,7 +246,7 @@ export const FormApprovedBabies = ({ futureSnakes, isShow }) => {
           name={`future_animals.${ind}.genes`}
           control={innerInstance.control}
           render={({ field: { onChange, value } }) => {
-            return <GenesSelect description={null} onChange={(a) => onChange(a)} label={ind === 0 ? "Морфы" : isLabel ? " " : undefined} init={value as any} placeholder="Необязательно" category={ECategories.BP} />;
+            return <GenesSelect view={EGenesView.STD} description={null} onChange={(a) => onChange(a)} label={ind === 0 ? "Морфы" : isLabel ? " " : undefined} init={value as any} placeholder="Необязательно" category={ECategories.BP} />;
           }}
         />
       </Box>

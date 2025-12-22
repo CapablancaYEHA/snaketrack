@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
 import { Stack } from "@mantine/core";
-import { FormImportSnake } from "@/components/common/forms/importSnake/formImportSnake";
+import { FormImportRR } from "@/components/common/forms/importSnake/formImportRR";
 import { categToTitle } from "@/components/common/utils";
 import { categoryToBaseTable } from "@/api/common";
 
@@ -11,7 +11,7 @@ export function ImportSnake() {
   const title = categToTitle[p];
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
-      <FormImportSnake table={t} title={title} category={p as any} />
+      <FormImportRR table={t} title={title} category={p as any} />
     </Stack>
   );
 }

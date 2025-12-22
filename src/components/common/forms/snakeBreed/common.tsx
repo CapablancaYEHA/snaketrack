@@ -84,12 +84,8 @@ export const eventsOpts = [
 
 export const prepForMm = (parent: IResSnakesList) => {
   return parent.genes
-    .filter((f) => !f.isPos)
+    .filter((f) => !f.isPos && !f.is_beauty_only)
     .map((a) => {
-      if (a.gene === "rec") {
-        let trg = a.label.split("% ");
-        return trg[trg.length - 1];
-      }
       return a.label;
     });
 };

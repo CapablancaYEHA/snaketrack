@@ -2,7 +2,7 @@ import { FC } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 import { CheckIcon, Combobox, Group, MantineSize, Pill, PillsInput, Text, useCombobox } from "@mantine/core";
 import { debounce } from "lodash-es";
-import { ECategories, IGenesComp } from "@/api/common";
+import { ECategories, EGenesView, IGenesComp } from "@/api/common";
 import { useSnakeGenes } from "@/api/hooks";
 import { checkGeneConflict, geneToColor, redef, upgradeOptions } from "./const";
 import styles from "./styles.module.scss";
@@ -58,9 +58,10 @@ interface IProp {
   placeholder?: string;
   description?: string | null;
   category: ECategories;
+  view: EGenesView;
 }
 
-export const GenesSelect: FC<IProp> = ({ onChange, init, label, category, placeholder = "Normal, no Het", description = "Нажмите и удерживайте выбраный ген, чтобы пометить его как Possible" }) => {
+export const GenesSelect: FC<IProp> = ({ onChange, view, init, label, category, placeholder = "Normal, no Het", description = "Нажмите и удерживайте выбраный ген, чтобы пометить его как Possible" }) => {
   const combobox = useCombobox({
     onDropdownClose: () => {
       combobox.resetSelectedOption();
@@ -91,7 +92,7 @@ export const GenesSelect: FC<IProp> = ({ onChange, init, label, category, placeh
 
   const values = value.map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} onLeftClick={handleAssignPos} />);
 
-  const options = upgradeOptions(traits ?? [], search).map((item) => (
+  const options = upgradeOptions(traits ?? [], search, view).map((item) => (
     <Combobox.Option value={item as any} key={item.label} active={value.includes(item)}>
       <Group gap="sm">
         {value.some((a) => a.label === item.label) ? <CheckIcon size={12} /> : null}

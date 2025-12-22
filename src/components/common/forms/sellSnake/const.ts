@@ -1,5 +1,20 @@
 import { isEmpty } from "lodash-es";
 import * as yup from "yup";
+import { IGenesComp, IReqCreateSnake } from "@/api/common";
+import { dateToSupabaseTime } from "@/utils/time";
+
+export const emptyDefault = {
+  sale_price: undefined,
+  pictures: undefined,
+  city_code: undefined,
+  city_name: undefined,
+  contacts_group: undefined,
+  contacts_messager: undefined,
+  sex: null,
+  snake_name: "",
+  date_hatch: undefined,
+  genes: [],
+};
 
 export const makeInit = (raw) => {
   return {
@@ -28,7 +43,7 @@ type Schema = {
   file: File[];
 };
 
-export const schema = yup.object<Schema>().shape({
+export const schemaBase = yup.object<Schema>().shape({
   sale_price: yup
     .number()
     .transform((v) => (!v || Number.isNaN(v) ? undefined : v))
@@ -51,4 +66,32 @@ export const schema = yup.object<Schema>().shape({
     .test("test_telegram", "Некорректный формат", (v) => (!v ? true : /^@?[a-z\d_]+$/i.test(v))),
 });
 
-export type ISellScheme = yup.InferType<typeof schema>;
+export type ISellScheme = yup.InferType<typeof schemaBase>;
+
+export const schemaEmpty = schemaBase.shape({
+  snake_name: yup
+    .string()
+    .trim()
+    .optional()
+    .test((v) => (!v ? true : /^[a-zA-Zа-яА-Я0-9_-\s]{3,30}$/.test(v))),
+  sex: yup.string().nullable(),
+  genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
+  date_hatch: yup.string().nullable().required("Хотя бы примерно"),
+});
+
+export type ISellEmptyScheme = yup.InferType<typeof schemaEmpty>;
+
+export interface IReqCreateSnakeForAdv extends Omit<IReqCreateSnake, "weight" | "origin" | "price" | "notes"> {}
+
+export const createSnakeFromEmpty = (a): IReqCreateSnakeForAdv => {
+  let genes = isEmpty(a.genes) ? [{ label: "Normal", gene: "other" }] : a.genes;
+
+  return {
+    picture: null,
+    sex: a.sex,
+    snake_name: a.snake_name || genes?.map((h) => h.label).join(", "),
+    status: "on_sale",
+    genes: genes as IGenesComp[],
+    date_hatch: dateToSupabaseTime(a.date_hatch),
+  };
+};

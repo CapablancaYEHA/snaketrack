@@ -1,14 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../lib/client_supabase";
 import { ESupabase, ISupabaseErr } from "../common";
-
-interface IResProfile {
-  id: string;
-  usermail: string;
-  createdat: string;
-  username: string;
-  role: "free" | "premium";
-}
+import { IReqChangeName, IResProfile } from "./models";
 
 export async function logout() {
   localStorage.removeItem("USER");
@@ -17,10 +10,6 @@ export async function logout() {
 
 const updUsername = async (name: string, id: string) => supabase.from(ESupabase.PROF).update({ username: name }).eq("id", id).throwOnError();
 
-type IReqChangeName = {
-  name: string;
-  id: string;
-};
 export function useUpdName() {
   const queryClient = useQueryClient();
   return useMutation<any, ISupabaseErr, IReqChangeName>({

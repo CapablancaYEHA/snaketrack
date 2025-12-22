@@ -12,14 +12,18 @@ import { TransferSnake } from "@/components/common/forms/transferSnake/formTrans
 import { SkelTable } from "@/components/common/skeletons";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { ECategories, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
+import { IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSnakeGenes, useSupaDel, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
+import { catVisited } from "@/pages/SnakeCategories";
 import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
 import { sexHardcode } from "./forms/snakeBreed/common";
 import { categToConfigList, categToTitle, maturityDict } from "./utils";
 
-export const catVisited = signal<ECategories>("" as any);
+const curId = signal<string | undefined>(undefined);
+const isTransOpen = signal<boolean>(false);
+const isFeedOpen = signal<boolean>(false);
+const isDeleteOpen = signal<boolean>(false);
 
 const base = {
   openFeed: (uuid) => {
@@ -34,13 +38,7 @@ const base = {
     isDeleteOpen.value = true;
     curId.value = uuid;
   },
-  category: catVisited.value,
 };
-
-const curId = signal<string | undefined>(undefined);
-const isTransOpen = signal<boolean>(false);
-const isFeedOpen = signal<boolean>(false);
-const isDeleteOpen = signal<boolean>(false);
 
 export function SnakeCollectionList() {
   const isMinSm = useMediaQuery(startSm);

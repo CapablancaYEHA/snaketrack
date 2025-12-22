@@ -64,7 +64,7 @@ export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isS
 
   return (
     <Stack gap="xs">
-      {isShowWeight ? <Text size="sm">Текущий вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text> : null}
+      {isShowWeight ? <Text size="sm">Вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text> : null}
       {isShowFeed ? <Text size="sm">Последнее кормление: {calcFeedEvent(lastFeed)}</Text> : null}
       {isShowShed ? <Text size="sm">Последняя линька: {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text> : null}
     </Stack>
