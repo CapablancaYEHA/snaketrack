@@ -1,7 +1,7 @@
 import { notifications } from "@mantine/notifications";
 
 interface IProp {
-  c?: "red" | "green";
+  c?: "red" | "green" | "teal" | "orange";
   m?: string;
   t?: string | null;
   p?: string;

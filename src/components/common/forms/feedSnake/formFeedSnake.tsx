@@ -8,12 +8,15 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { Feeder } from "@/components/common/Feeder/Feeder";
 import { codeToFeeder } from "@/components/common/Feeder/const";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { IFeedReq, IResSnakesList, ISupabaseErr } from "@/api/common";
+import { ESupabase, IFeedReq, IReqUpdViv, IResSnakesList, ISupabaseErr, IVivRes } from "@/api/common";
+import { useSupaGet, useSupaUpd } from "@/api/hooks";
+import { useProfile } from "@/api/profile/hooks";
 import { notif } from "../../../../utils/notif";
 import { getDate, getDateObj } from "../../../../utils/time";
 import { Btn } from "../../../navs/btn/Btn";
 import { SexName } from "../../sexName";
-import { defVals, prepareForSubmit, schema } from "./const";
+import { prepVivUpd } from "../Vivarium/const";
+import { calcSchema, defVals, prepareForSubmit } from "./const";
 
 type IProp = {
   opened: boolean;
@@ -25,7 +28,11 @@ type IProp = {
 };
 
 export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction, isPend }) => {
+  const userId = localStorage.getItem("USER");
+  const { data: profile } = useProfile(userId, userId != null);
   const [isPop, func] = useDisclosure(false);
+  const { data: viv, isError } = useSupaGet<IVivRes>({ t: ESupabase.VIV, f: (b) => b.eq("owner_id", userId).limit(1).single(), id: userId }, userId != null);
+  const { mutate: updViv } = useSupaUpd<IReqUpdViv>(ESupabase.VIV);
   const lastFeed = snake?.feeding?.sort((a, b) => getDateObj(a.feed_last_at!) - getDateObj(b.feed_last_at!))?.[snake?.feeding.length - 1];
   const lastWeight = snake?.weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[snake?.weight.length - 1];
   const {
@@ -37,7 +44,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
     setValue,
   } = useForm({
     defaultValues: defVals,
-    resolver: yupResolver(schema as any),
+    resolver: yupResolver(calcSchema(Boolean(profile?.is_vivarium_on)) as any),
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
@@ -50,7 +57,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
   };
 
   const onSub = async (sbm) => {
-    const { feed, mass, shed } = prepareForSubmit(sbm);
+    const { feed, mass, shed, ko_cat } = prepareForSubmit(sbm);
 
     handleAction(
       {
@@ -66,6 +73,24 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
         onSuccess: () => {
           notif({ c: "green", t: "Успешно", m: "Событие добавлено" });
           fullClose();
+          if (profile?.is_vivarium_on && !isError && viv?.[ko_cat ?? ""]) {
+            const kek = prepVivUpd(viv, feed?.feed_weight!, ko_cat!) as any;
+            if (kek != null)
+              updViv(
+                {
+                  id: viv.id,
+                  upd: kek,
+                },
+                {
+                  onSuccess: () => {
+                    notif({ c: "orange", t: "Успешно", m: "Виварий актуализирован" });
+                  },
+                  onError: (e) => {
+                    notif({ c: "red", t: "Вивариум не обновлен", m: e.message, code: e.code });
+                  },
+                },
+              );
+          }
         },
         onError: (err) => {
           notif({

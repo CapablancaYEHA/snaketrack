@@ -9,6 +9,7 @@ import { ClutchList } from "@/pages/ClutchList";
 import { EditBreed } from "@/pages/EditBreed";
 import { EditClutch } from "@/pages/EditClutch";
 import { EditSnake } from "@/pages/EditSnake";
+import { EditVivarium } from "@/pages/EditVivarium";
 import { ImportSnake } from "@/pages/ImportSnake";
 import { Market } from "@/pages/Market";
 import { MarketAdd } from "@/pages/MarketAddAvd";
@@ -17,6 +18,7 @@ import { MarketEdit } from "@/pages/MarketEditAdv";
 import { Schedule } from "@/pages/Schedule";
 import { Snake } from "@/pages/Snake";
 import { SnakeCategories } from "@/pages/SnakeCategories";
+import { Vivarium } from "@/pages/Vivarium";
 import { Profile } from "@/pages/auth/Profile";
 import { usePwaInformer } from "@/utils/usePwaInformer";
 
@@ -61,10 +63,13 @@ export const protectedRoutes = {
   "/market/add/:type?id=:id": MarketAdd,
   "/market/edit/:type?id=:id": MarketEdit,
   "/calculator": Calculator,
+  "/vivarium": Vivarium,
+  "/vivarium/edit": EditVivarium,
 };
 
 export const sidebarLinks = [
   { id: 2, link: "/snakes", label: "Змеи" },
+  { id: 8, link: "/vivarium", label: "Виварий" },
   { id: 6, link: "/calculator", label: "Калькулятор" },
   { id: 3, link: "/breeding", label: "Бридинг" },
   { id: 4, link: "/clutches", label: "Кладки" },

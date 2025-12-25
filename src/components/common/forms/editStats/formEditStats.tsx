@@ -30,8 +30,8 @@ interface IProp {
 export const EditStats: FC<IProp> = ({ opened, close, weight, feeding, table, id }) => {
   const { mutate: update, isPending } = useSupaUpd<Partial<IFeedReq>>(table);
 
-  const enhWeight = useMemo(() => (weight ?? []).sort((a, b) => getDateObj(a.date!) - getDateObj(b.date!)).map((b) => ({ ...b, id: nanoid(3) })), [weight]);
-  const enhFeed = useMemo(() => (feeding ?? []).sort((a, b) => getDateObj(a.feed_last_at!) - getDateObj(b.feed_last_at!)).map((b) => ({ ...b, id: nanoid(3) })), [feeding]);
+  const enhWeight = useMemo(() => (weight ?? []).sort((a, b) => getDateObj(a.date!) - getDateObj(b.date!)).map((b) => ({ ...b, id: nanoid(4) })), [weight]);
+  const enhFeed = useMemo(() => (feeding ?? []).sort((a, b) => getDateObj(a.feed_last_at!) - getDateObj(b.feed_last_at!)).map((b) => ({ ...b, id: nanoid(4) })), [feeding]);
 
   useEffect(() => {
     if (!opened) {

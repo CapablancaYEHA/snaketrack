@@ -36,7 +36,7 @@ export const schema = yup.object<Schema>().shape({
       }
       return Boolean(arr?.[0]);
     }),
-  feed_comment: yup.string().max(150, "Ограничение 150 символов").nullable(),
+  feed_comment: yup.string().max(250, "Ограничение 250 символов").nullable(),
   picture: yup
     .mixed<File>()
     .test("fileSize", "Вес сжатого фото более 1Мb", (v) => (!v ? true : v.size <= 1048576))

@@ -34,6 +34,7 @@ export function useProfile(id, isEnabled = false) {
     queryKey: [ESupabase.PROF, id],
     queryFn: async () => httpGetProfile(id),
     enabled: isEnabled,
+    staleTime: 60 * 1000,
   });
 }
 

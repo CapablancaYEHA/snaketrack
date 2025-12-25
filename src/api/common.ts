@@ -15,6 +15,7 @@ export const enum ESupabase {
   REM = "feed_reminders",
   PROF = "profiles",
   MRKT = "market",
+  VIV = "vivarium",
   // views
   PROF_V = "three_cols_profiles",
   REM_V = "feed_reminders_view",
@@ -265,4 +266,25 @@ export interface IFamilyTreeRes {
   siblings: { id: string }[];
   snake_name: string;
   spouses: { id: string }[];
+}
+
+export interface IVivRes {
+  id: string;
+  owner_id: string;
+  rat: { [key: string]: number };
+  mouse: { [key: string]: number };
+}
+
+export interface IReqCreateViv {
+  rat?: {
+    [key: string]: number;
+  };
+  mouse?: {
+    [key: string]: number;
+  };
+}
+
+export interface IReqUpdViv {
+  upd: IReqCreateViv;
+  id: string;
 }

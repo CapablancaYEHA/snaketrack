@@ -1,3 +1,4 @@
+import { FC } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 import { Fragment } from "preact/jsx-runtime";
 import { tabletThreshold } from "@/styles/theme";
@@ -282,7 +283,15 @@ export const OddsInfo = ({ female, male }) => {
   );
 };
 
-export const FormComposedBody = ({ onSub, btnText = "Сохранить", onFinalize, category, existingClutchId }) => {
+type ICltForm = {
+  existingClutchId?: string | null;
+  onSub: (a?: any) => void;
+  onFinalize: (a?: any) => void;
+  btnText?: string;
+  category: ECategories;
+};
+
+export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохранить", onFinalize, category, existingClutchId }) => {
   const innerInstance = useFormContext<IBreedScheme>();
 
   const selectedFem = useWatch({
