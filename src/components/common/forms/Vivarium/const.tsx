@@ -10,6 +10,11 @@ export const defEndMice = 5;
 export const stepRats = 100;
 export const stepMice = 10;
 
+const feederToDefaultDiap = {
+  rat: [{ range: [defStartRats, defEndRats], quant: 0 }],
+  mouse: [{ range: [defStartMice, defEndMice], quant: 0 }],
+};
+
 export const defVals = {
   rats_range: [{ range: [defStartRats, defEndRats], quant: 0 }],
   mice_range: [{ range: [defStartMice, defEndMice], quant: 0 }],
@@ -17,15 +22,23 @@ export const defVals = {
   isMice: false,
 };
 
-export const prepDiap = (k: { [key: string]: number }) =>
-  Object.entries(k).map(([left, right]) => ({
+type IInitDiap = {
+  [key: string]: number;
+};
+export const prepDiap = (k: IInitDiap | null, feeder) => {
+  if (!k || isEmpty(k)) {
+    return feederToDefaultDiap[feeder];
+  }
+
+  return Object.entries(k).map(([left, right]) => ({
     range: left.split("_").map((n) => Number(n)),
     quant: right,
   }));
+};
 
 export const composeInit = (dt: IVivRes) => ({
-  rats_range: prepDiap(dt.rat),
-  mice_range: prepDiap(dt.mouse),
+  rats_range: prepDiap(dt.rat, "rat"),
+  mice_range: prepDiap(dt.mouse, "mouse"),
   isRats: !isEmpty(dt.rat),
   isMice: !isEmpty(dt.mouse),
 });

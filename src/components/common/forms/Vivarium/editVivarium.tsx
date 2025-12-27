@@ -127,7 +127,6 @@ export const FormEditVivarium = ({ viv, initRat, initMouse }) => {
           <Space h="sm" />
           {fieldsMice.map((row, ind, self) => (
             <Fragment key={row.id}>
-              {console.log("wMice?.[ind - 1]?", wMice?.[ind - 1]?.range[1] ?? 0)}
               <Flex maw="100%" w="100%" columnGap="md" rowGap="xl" align="center">
                 <RangeSlider
                   onChange={(a) => setValue(`mice_range.${ind}.range`, a)}
