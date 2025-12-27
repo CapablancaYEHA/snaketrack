@@ -8,7 +8,7 @@ export const defEndRats = 40;
 export const defStartMice = 0;
 export const defEndMice = 5;
 export const stepRats = 100;
-export const stepMice = 5;
+export const stepMice = 10;
 
 export const defVals = {
   rats_range: [{ range: [defStartRats, defEndRats], quant: 0 }],

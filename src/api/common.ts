@@ -284,6 +284,11 @@ export interface IReqCreateViv {
   };
 }
 
+export const enum IVivFeeder {
+  RAT = "rat",
+  MS = "mouse",
+}
+
 export interface IReqUpdViv {
   upd: IReqCreateViv;
   id: string;

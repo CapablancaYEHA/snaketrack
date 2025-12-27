@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import * as yup from "yup";
+import { IVivFeeder } from "@/api/common";
 import { dateToSupabaseTime } from "@/utils/time";
 
 export const defVals = {
@@ -106,5 +107,13 @@ export const prepareForSubmit = (fd: ISubmitType) => {
     delete feed.shed;
   }
 
-  return { feed, mass, shed, ko_cat: fd.feed_ko?.split("_")?.[0] };
+  let viv;
+  const splited = fd.feed_ko?.split("_");
+  if (splited?.length ?? 0 > 2) {
+    viv = splited?.[1];
+  }
+  const [pre, rest] = splited ?? [];
+  viv = [IVivFeeder.MS, IVivFeeder.RAT].includes((pre ?? "") as any) ? splited?.[0] : splited?.[1];
+
+  return { feed, mass, shed, ko_cat: viv };
 };
