@@ -80,7 +80,7 @@ export const FormEditVivarium = ({ viv, initRat, initMouse }) => {
       {wIsRats ? (
         <>
           <Space h="sm" />
-          {fieldsRats.map((row, ind) => (
+          {fieldsRats.map((row, ind, self) => (
             <Fragment key={row.id}>
               <Flex maw="100%" w="100%" columnGap="md" rowGap="xl" align="center">
                 <RangeSlider
@@ -109,9 +109,11 @@ export const FormEditVivarium = ({ viv, initRat, initMouse }) => {
                   {errors?.rats_range?.[ind]?.message}
                 </Text>
               ) : null}
-              <Button variant="default" size="compact-xs" onClick={() => appendRats({ range: [(wRats?.[wRats.length - 1]?.range[1] ?? 0) + 1, (wRats?.[wRats.length - 1]?.range[1] ?? 0) + stepRats], quant: 0 })} style={{ alignSelf: "end" }}>
-                Ещё граммовка
-              </Button>
+              {ind === self.length - 1 ? (
+                <Button variant="default" size="compact-xs" onClick={() => appendRats({ range: [(wRats?.[wRats.length - 1]?.range[1] ?? 0) + 1, (wRats?.[wRats.length - 1]?.range[1] ?? 0) + stepRats], quant: 0 })} style={{ alignSelf: "end" }}>
+                  Ещё граммовка
+                </Button>
+              ) : null}
             </Fragment>
           ))}
         </>
@@ -123,7 +125,7 @@ export const FormEditVivarium = ({ viv, initRat, initMouse }) => {
       {wIsMice ? (
         <>
           <Space h="sm" />
-          {fieldsMice.map((row, ind) => (
+          {fieldsMice.map((row, ind, self) => (
             <Fragment key={row.id}>
               {console.log("wMice?.[ind - 1]?", wMice?.[ind - 1]?.range[1] ?? 0)}
               <Flex maw="100%" w="100%" columnGap="md" rowGap="xl" align="center">
@@ -153,9 +155,11 @@ export const FormEditVivarium = ({ viv, initRat, initMouse }) => {
                   {errors?.mice_range?.[ind]?.message}
                 </Text>
               ) : null}
-              <Button variant="default" size="compact-xs" onClick={() => appendMice({ range: [(wMice?.[wMice.length - 1]?.range[1] ?? 0) + 1, (wMice?.[wMice.length - 1]?.range[1] ?? 0) + stepMice], quant: 0 })} style={{ alignSelf: "end" }}>
-                Ещё граммовка
-              </Button>
+              {ind === self.length - 1 ? (
+                <Button variant="default" size="compact-xs" onClick={() => appendMice({ range: [(wMice?.[wMice.length - 1]?.range[1] ?? 0) + 1, (wMice?.[wMice.length - 1]?.range[1] ?? 0) + stepMice], quant: 0 })} style={{ alignSelf: "end" }}>
+                  Ещё граммовка
+                </Button>
+              ) : null}
             </Fragment>
           ))}
         </>
