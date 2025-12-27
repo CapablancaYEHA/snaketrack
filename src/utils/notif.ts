@@ -1,7 +1,7 @@
 import { notifications } from "@mantine/notifications";
 
 interface IProp {
-  c?: "red" | "green" | "teal" | "orange";
+  c?: "red" | "green" | "teal" | "orange" | "cyan";
   m?: string;
   t?: string | null;
   p?: string;
@@ -23,7 +23,6 @@ const codeToMsg = {
   email_not_confirmed: "E-mail не подтвержден",
   invalid_credentials: "Неверный данные для логина",
   23505: "Данное имя пользователя уже занято",
-  23503: "Нельзя удалить змею, т.к. она участвует в кладках или планах",
   409: "Фото с таким именем уже существует",
   42501: "Недостаточно прав",
 };

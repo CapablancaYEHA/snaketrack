@@ -1,19 +1,25 @@
 import { Fragment } from "preact/jsx-runtime";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Checkbox, Flex, NumberInput, RangeSlider, Space, Stack } from "@mantine/core";
+import { Button, Checkbox, Flex, NumberInput, RangeSlider, Space, Stack, Text } from "@mantine/core";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ESupabase, IReqCreateViv } from "@/api/common";
 import { useSupaCreate } from "@/api/hooks";
 import { notif } from "@/utils/notif";
-import { IVivScheme, defEnd, defStart, defVals, dummy, prepForCreate } from "./const";
+import { IVivScheme, defEndMice, defEndRats, defStartMice, defStartRats, defVals, prepForCreate, stepMice, stepRats, vivScheme } from "./const";
 
 export const FormAddVivarium = () => {
   const { mutate, isPending } = useSupaCreate<IReqCreateViv>(ESupabase.VIV);
 
-  const { handleSubmit, register, control, setValue } = useForm<IVivScheme>({
+  const {
+    handleSubmit,
+    register,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm<IVivScheme>({
     defaultValues: defVals,
-    resolver: yupResolver(dummy as any),
+    resolver: yupResolver(vivScheme),
   });
 
   const {
@@ -67,17 +73,24 @@ export const FormAddVivarium = () => {
                   minRange={5}
                   maw="100%"
                   flex="1 1 65%"
-                  min={ind === 0 ? defStart : (wRats?.[ind - 1]?.range[1] ?? 0) + 1}
-                  max={ind === 0 ? defEnd : (wRats?.[ind - 1]?.range[1] ?? 0) + 40}
+                  min={ind === 0 ? defStartRats : (wRats?.[ind - 1]?.range[1] ?? 0) + 1}
+                  max={ind === 0 ? defEndRats : (wRats?.[ind - 1]?.range[1] ?? 0) + stepRats}
                 />
                 <NumberInput size="xs" onChange={(a) => setValue(`rats_range.${ind}.quant`, Number(a))} value={wRats?.[ind]?.quant} suffix=" шт" hideControls allowNegative={false} allowDecimal={false} allowLeadingZeros={false} flex="1 1 25%" />
-                {ind === 0 ? null : (
+                {ind === 0 ? (
+                  <Flex flex="0 0 32px" />
+                ) : (
                   <Flex p="4px" style={{ cursor: "pointer" }} onClick={() => removeRats(ind)} align="center" justify="center">
                     <IconSwitch icon="bin" width="24" height="24" style={{ opacity: 0.6, stroke: "red" }} />
                   </Flex>
                 )}
               </Flex>
-              <Button variant="default" size="compact-xs" onClick={() => appendRats({ range: [(wRats?.[wRats.length - 1]?.range[1] ?? 0) + 1, (wRats?.[wRats.length - 1]?.range[1] ?? 0) + 20], quant: 0 })} style={{ alignSelf: "end" }}>
+              {errors?.rats_range?.[ind]?.message ? (
+                <Text size="xs" c="var(--mantine-color-error)">
+                  {errors?.rats_range?.[ind]?.message}
+                </Text>
+              ) : null}
+              <Button variant="default" size="compact-xs" onClick={() => appendRats({ range: [(wRats?.[wRats.length - 1]?.range[1] ?? 0) + 1, (wRats?.[wRats.length - 1]?.range[1] ?? 0) + stepRats], quant: 0 })} style={{ alignSelf: "end" }}>
                 Ещё граммовка
               </Button>
             </Fragment>
@@ -100,20 +113,27 @@ export const FormAddVivarium = () => {
                   color="blue"
                   labelAlwaysOn
                   label={(a) => `${a} г`}
-                  minRange={5}
+                  minRange={3}
                   maw="100%"
                   flex="1 1 65%"
-                  min={ind === 0 ? defStart : (wMice?.[ind - 1]?.range[1] ?? 0) + 1}
-                  max={ind === 0 ? defEnd : (wMice?.[ind - 1]?.range[1] ?? 0) + 40}
+                  min={ind === 0 ? defStartMice : (wMice?.[ind - 1]?.range[1] ?? 0) + 1}
+                  max={ind === 0 ? defEndMice : (wMice?.[ind - 1]?.range[1] ?? 0) + stepMice}
                 />
                 <NumberInput size="xs" onChange={(a) => setValue(`mice_range.${ind}.quant`, Number(a))} value={wMice?.[ind]?.quant} suffix=" шт" hideControls allowNegative={false} allowDecimal={false} allowLeadingZeros={false} flex="1 1 25%" />
-                {ind === 0 ? null : (
+                {ind === 0 ? (
+                  <Flex flex="0 0 32px" />
+                ) : (
                   <Flex p="4px" style={{ cursor: "pointer" }} onClick={() => removeMice(ind)} align="center" justify="center">
                     <IconSwitch icon="bin" width="24" height="24" style={{ opacity: 0.6, stroke: "red" }} />
                   </Flex>
                 )}
               </Flex>
-              <Button variant="default" size="compact-xs" onClick={() => appendMice({ range: [(wMice?.[wMice.length - 1]?.range[1] ?? 0) + 1, (wMice?.[wMice.length - 1]?.range[1] ?? 0) + 20], quant: 0 })} style={{ alignSelf: "end" }}>
+              {errors?.mice_range?.[ind]?.message ? (
+                <Text size="xs" c="var(--mantine-color-error)">
+                  {errors?.mice_range?.[ind]?.message}
+                </Text>
+              ) : null}
+              <Button variant="default" size="compact-xs" onClick={() => appendMice({ range: [(wMice?.[wMice.length - 1]?.range[1] ?? 0) + 1, (wMice?.[wMice.length - 1]?.range[1] ?? 0) + stepMice], quant: 0 })} style={{ alignSelf: "end" }}>
                 Ещё граммовка
               </Button>
             </Fragment>

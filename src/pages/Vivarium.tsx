@@ -38,7 +38,7 @@ export function Vivarium() {
         <Title component="span" order={4} c="yellow.6">
           Виварий
         </Title>
-        {isRefetching ? (
+        {isRefetching || isProfPend ? (
           <Flex w="130" maw="130" ml="auto" gap="sm" align="center" wrap="nowrap" justify="end">
             <Box>
               <Loader size="xs" />
@@ -48,7 +48,7 @@ export function Vivarium() {
             </Text>
           </Flex>
         ) : (
-          <Switch color="teal" label="Авто-апдейт" ml="auto" onChange={(e) => toggle(e.currentTarget.checked)} checked={profile?.is_vivarium_on} disabled={isEmpty(viv) || isProfPend || isRefetching} style={{ cursor: "pointer" }} />
+          <Switch color="teal" label="Авто-апдейт" ml="auto" onChange={(e) => toggle(e.currentTarget.checked)} checked={profile?.is_vivarium_on} disabled={isEmpty(viv) || isProfPend || isRefetching} />
         )}
       </Flex>
       {!isEmpty(viv) ? (

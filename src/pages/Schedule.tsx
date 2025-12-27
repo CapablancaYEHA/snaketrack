@@ -46,7 +46,7 @@ export const Schedule = () => {
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[sigCurCat.value]);
 
   const eventDates = (allRems ?? [])?.map((a) => getDateObj(a.scheduled_time));
-  const hasEvent = (date: Date) => {
+  const hasEvent = (date: string) => {
     return eventDates.some((eventDate) => getIsSame(eventDate, date));
   };
 

@@ -20,8 +20,8 @@ export const calcSchema = (isVivOn?: boolean) =>
   yup.object().shape(
     {
       feed_last_at: yup.string().nullable().required("Дата обязательна"),
-      feed_ko: yup.string().when(["weight", "shed", "regurgitation"], ([weight, shed, regurgitation], self) => {
-        return isVivOn && !weight && !shed && !regurgitation
+      feed_ko: yup.string().when(["weight", "shed", "regurgitation", "refuse"], ([weight, shed, regurgitation, refuse], self) => {
+        return isVivOn && !weight && !shed && !regurgitation && !refuse
           ? self.required("Обязательно при отслеживании Вивария").test("checkit", "При конкретизации КО, тип — обязателен, остальное опционально", (val) => {
               if (!val) return true;
               const arr = val.split("_");
@@ -46,8 +46,8 @@ export const calcSchema = (isVivOn?: boolean) =>
         }
         return !shed && !refuse && !regurgitation ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required("Заполняется по условиям") : self.optional().nullable();
       }),
-      feed_weight: yup.number().when(["weight", "shed", "regurgitation"], ([weight, shed, regurgitation], self) => {
-        return isVivOn && !weight && !shed && !regurgitation ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required("Обязательно при отслеживании Вивария") : self.transform((v) => (!v || Number.isNaN(v) ? null : v)).nullable();
+      feed_weight: yup.number().when(["weight", "shed", "regurgitation", "refuse"], ([weight, shed, regurgitation, refuse], self) => {
+        return isVivOn && !weight && !shed && !regurgitation && !refuse ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required("Обязательно при отслеживании Вивария") : self.transform((v) => (!v || Number.isNaN(v) ? null : v)).nullable();
       }),
       shed: yup.boolean().when(["refuse", "regurgitation", "weight", "feed_ko", "feed_weight"], ([refuse, regurgitation, weight, feed_ko, feed_weight], self) => {
         if (feed_ko || feed_weight) {
@@ -106,5 +106,5 @@ export const prepareForSubmit = (fd: ISubmitType) => {
     delete feed.shed;
   }
 
-  return { feed, mass, shed, ko_cat: fd.feed_ko?.split("-")?.[0] };
+  return { feed, mass, shed, ko_cat: fd.feed_ko?.split("_")?.[0] };
 };

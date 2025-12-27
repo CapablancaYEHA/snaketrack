@@ -3,12 +3,16 @@ import * as yup from "yup";
 import { IVivRes } from "@/api/common";
 import { notif } from "@/utils/notif";
 
-export const defStart = 0;
-export const defEnd = 40;
+export const defStartRats = 0;
+export const defEndRats = 40;
+export const defStartMice = 0;
+export const defEndMice = 5;
+export const stepRats = 100;
+export const stepMice = 5;
 
 export const defVals = {
-  rats_range: [{ range: [defStart, defEnd], quant: 0 }],
-  mice_range: [{ range: [defStart, defEnd], quant: 0 }],
+  rats_range: [{ range: [defStartRats, defEndRats], quant: 0 }],
+  mice_range: [{ range: [defStartMice, defEndMice], quant: 0 }],
   isRats: true,
   isMice: false,
 };
@@ -31,33 +35,87 @@ export const vivScheme = yup.object().shape({
   isMice: yup.boolean(),
   rats_range: yup.array().when(["isRats"], ([isRats], self) => {
     if (isRats) {
-      return self.of(
-        yup
-          .object({
-            range: yup.array().of(yup.number().required()).required(),
-            quant: yup.number().required(),
-          })
-          .required(),
-      );
+      return self
+        .of(
+          yup
+            .object({
+              range: yup.array().of(yup.number().required()).required(),
+              quant: yup.number().required(),
+            })
+            .required(),
+        )
+        .test({
+          name: "rats_check",
+          test: (value, context) => {
+            const errs: any[] = [];
+            value
+              ?.map((o) => o.range)
+              .forEach((el, ind, arr) => {
+                if (ind >= 1) {
+                  const [start, end] = el;
+                  const above = arr.slice(0, ind);
+                  above.forEach(([startOld, endOld]) => {
+                    const isCorrect = start > endOld;
+                    if (!isCorrect) {
+                      errs.push(ind);
+                    }
+                  });
+                }
+              }, []);
+            if (!isEmpty(errs)) {
+              return context.createError({
+                path: `rats_range.${errs[0]}`,
+                message: "Диапазон пересекается с заданным выше",
+              });
+            }
+            return true;
+          },
+        });
     }
     return self.of(yup.mixed()).notRequired();
   }),
   mice_range: yup.array().when(["isMice"], ([isMice], self) => {
     if (isMice) {
-      return self.of(
-        yup
-          .object({
-            range: yup.array().of(yup.number().required()).required(),
-            quant: yup.number().required(),
-          })
-          .required(),
-      );
+      return self
+        .of(
+          yup
+            .object({
+              range: yup.array().of(yup.number().required()).required(),
+              quant: yup.number().required(),
+            })
+            .required(),
+        )
+        .test({
+          name: "mice_check",
+          test: (value, context) => {
+            const errs: any[] = [];
+            value
+              ?.map((o) => o.range)
+              .forEach((el, ind, arr) => {
+                if (ind >= 1) {
+                  const [start, end] = el;
+                  const above = arr.slice(0, ind);
+                  above.forEach(([startOld, endOld]) => {
+                    const isCorrect = start > endOld;
+                    if (!isCorrect) {
+                      errs.push(ind);
+                    }
+                  });
+                }
+              }, []);
+            if (!isEmpty(errs)) {
+              return context.createError({
+                path: `mice_range.${errs[0]}`,
+                message: "Диапазон пересекается с заданным выше",
+              });
+            }
+            return true;
+          },
+        });
     }
     return self.of(yup.mixed()).notRequired();
   }),
 });
-
-export const dummy = yup.object().shape({});
 
 export type IVivScheme = yup.InferType<typeof vivScheme>;
 
@@ -118,7 +176,7 @@ export function reducer(state, action) {
   }
 }
 
-// FIXME сделать throw вместо notif ? убрать касты as any ?
+// FIXME сделать throw вместо notif ?
 // здесь нету нотифа на случай если граммовка из несуществующей категории вообще
 export const prepVivUpd = (current: IVivRes, feed_weight: number, viv: string) => {
   const ent = Object.entries(current[viv]);

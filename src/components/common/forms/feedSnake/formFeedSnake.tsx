@@ -83,7 +83,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
                 },
                 {
                   onSuccess: () => {
-                    notif({ c: "orange", t: "Успешно", m: "Виварий актуализирован" });
+                    notif({ c: "cyan", t: "Успешно", m: "Виварий актуализирован" });
                   },
                   onError: (e) => {
                     notif({ c: "red", t: "Вивариум не обновлен", m: e.message, code: e.code });

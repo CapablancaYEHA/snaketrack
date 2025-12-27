@@ -1,5 +1,11 @@
 export const versionHistory = [
   {
+    id: 20,
+    ver: "1.8.1",
+    date: "12-27-2025",
+    list: ["Фикс багов Вивариума"],
+  },
+  {
     id: 19,
     ver: "1.8.0",
     date: "12-25-2025",
