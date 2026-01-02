@@ -19,7 +19,7 @@ export function Footer() {
     >
       <Flex gap="sm" align="center" justify="space-between" component="footer">
         <Text size="xs" fw={500} c="dark.2">
-          © {getDateCustom(new Date(), "YYYY")} snaketrack.ru
+          © 2025–{getDateCustom(new Date(), "YYYY")} snaketrack.ru
         </Text>
         <Anchor href="https://t.me/CapablancaRUS" target="_blank" rel="nofollow noopener noreferrer" underline="never">
           <IconSwitch icon="telegram" width="18" height="18" />

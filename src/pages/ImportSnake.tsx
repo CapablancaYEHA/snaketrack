@@ -12,6 +12,7 @@ export function ImportSnake() {
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <FormImportRR table={t} title={title} category={p as any} />
+      {/* <FormImportVk /> */}
     </Stack>
   );
 }

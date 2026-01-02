@@ -14,6 +14,7 @@ import { useDadata, useSupaCreate } from "@/api/hooks";
 import { httpUldSnPic } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressMulti } from "@/utils/supabaseImg";
+import { dateToSupabaseTime } from "@/utils/time";
 import { uplErr } from "../const";
 import { sexHardcode } from "../snakeBreed/common";
 import styles from "../styles.module.scss";
@@ -64,6 +65,8 @@ export const FormCreateSaleFromEmpty = ({ category }) => {
           createAdv(
             {
               sale_price: sbm.sale_price,
+              discount_until: sbm.discount_until ? dateToSupabaseTime(sbm.discount_until) : undefined,
+              discount_price: sbm.discount_price,
               description: sbm.description,
               city_code: sbm.city_code,
               city_name: sbm.city_name,
@@ -202,6 +205,26 @@ export const FormCreateSaleFromEmpty = ({ category }) => {
             error={errors?.city_code?.message}
           />
         </Box>
+      </Flex>
+      <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
+        <Controller
+          name="discount_price"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <NumberInput rightSection="₽" label="Цена со скидкой" hideControls thousandSeparator=" " error={error?.message} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} flex="1 1 50%" />;
+          }}
+        />
+        <Controller
+          name="discount_until"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return (
+              <>
+                <DatePickerInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
+              </>
+            );
+          }}
+        />
       </Flex>
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
         <Controller

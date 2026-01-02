@@ -1,4 +1,4 @@
-import dayjs, { Dayjs, OpUnitType, QUnitType } from "dayjs";
+import dayjs, { Dayjs, OpUnitType, UnitType } from "dayjs";
 import "dayjs/locale/ru";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
@@ -39,16 +39,16 @@ export const getAge = (a: string) => {
   ${days ? `${declWord(days, ["день", "дня", "дней"])}` : ""}`;
 };
 
-export const dateTimeDiff = (trg: string | Dayjs, unit: QUnitType) => {
+export const dateTimeDiff = (trg: string | Dayjs, unit: UnitType) => {
   const res = dayjs(trg).diff(dayjs(), unit);
   return res <= 0 ? 0 : res;
 };
 
 export const dateAddDays = (a: string | Dayjs, days: number) => dayjs(a).add(days, "day");
 
-export const isOlderThan = (birthDate: string | Dayjs, targetAge: number) => {
-  return dayjs().diff(dayjs(birthDate), "month") > targetAge;
+export const isOlderThan = (birthDate: string | Dayjs | Date, targetAge: number, unit: UnitType = "month") => {
+  return dayjs().diff(dayjs(birthDate), unit) > targetAge;
 };
-export const isYoungerThan = (birthDate: string | Dayjs, targetAge: number) => {
-  return dayjs().diff(dayjs(birthDate), "month") < targetAge;
+export const isYoungerThan = (birthDate: string | Dayjs, targetAge: number, unit: UnitType = "month") => {
+  return dayjs().diff(dayjs(birthDate), unit) < targetAge;
 };

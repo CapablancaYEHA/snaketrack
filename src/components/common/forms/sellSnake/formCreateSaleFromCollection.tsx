@@ -2,6 +2,7 @@ import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Flex, NumberInput, Stack, Text, TextInput, Textarea } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm } from "react-hook-form";
 import { Autocomp } from "@/components/common/forms/sellSnake/Autocomp";
@@ -13,7 +14,7 @@ import { useDadata, useSupaCreate, useSupaUpd } from "@/api/hooks";
 import { httpUldSnPic } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressMulti } from "@/utils/supabaseImg";
-import { getAge, getDate } from "@/utils/time";
+import { dateToSupabaseTime, getAge, getDate } from "@/utils/time";
 import { sortSnakeGenes } from "../../genetics/const";
 import { SexName } from "../../sexName";
 import { categToTitle } from "../../utils";
@@ -65,6 +66,7 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
     create(
       {
         ...sbm,
+        ...(sbm.discount_until ? { discount_until: dateToSupabaseTime(sbm.discount_until) } : {}),
         category,
         snake_id: info.snake_id,
         pictures: pics?.flat() as any,
@@ -179,6 +181,26 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
             error={errors?.city_code?.message}
           />
         </Box>
+      </Flex>
+      <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
+        <Controller
+          name="discount_price"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <NumberInput rightSection="₽" label="Цена со скидкой" hideControls thousandSeparator=" " error={error?.message} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} flex="1 1 50%" />;
+          }}
+        />
+        <Controller
+          name="discount_until"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return (
+              <>
+                <DatePickerInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
+              </>
+            );
+          }}
+        />
       </Flex>
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
         <Controller

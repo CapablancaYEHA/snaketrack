@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/client_supabase";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
-import { ECategories, EQuKeys, ESupabase, IFamilyTreeRes, ISupabaseErr, categoryToMmCat } from "../common";
+import { ECategories, EQuKeys, ESupabase, IFamilyTreeRes, ISupabaseErr, IVkMarketItem, categoryToMmCat } from "../common";
 import { IMorphOddsReq, IMorphOddsRes } from "./models";
 
 export const httpUldSnPic = (file: File, source: ESupabase) => {
@@ -64,5 +64,27 @@ export function useFamilyTree(id: string, category, isEnabled = true) {
     queryKey: [EQuKeys.FAM_TREE, id, category],
     queryFn: () => httpGetTree(id, category),
     enabled: isEnabled,
+  });
+}
+
+export const httpVkMarket = async (url: string): Promise<any> => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const k = await fetch("http://localhost:80/api/auth", {
+      method: "POST",
+      body: JSON.stringify({ url }),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    return k.body;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export function useVkMarket() {
+  return useMutation<IVkMarketItem[], ISupabaseErr, any>({
+    mutationFn: (a) => httpVkMarket(a),
   });
 }

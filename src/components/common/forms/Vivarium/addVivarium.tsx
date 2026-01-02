@@ -115,7 +115,7 @@ export const FormAddVivarium = () => {
                   color="blue"
                   labelAlwaysOn
                   label={(a) => `${a} г`}
-                  minRange={3}
+                  minRange={1}
                   maw="100%"
                   flex="1 1 65%"
                   min={ind === 0 ? defStartMice : (wMice?.[ind - 1]?.range[1] ?? 0) + 1}

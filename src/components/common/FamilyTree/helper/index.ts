@@ -1,14 +1,15 @@
-import Store from './store';
-import { placeholders } from './middle/placeholders';
-import { inMiddleDirection } from './middle';
-import { inParentDirection } from './parents';
-import { inChildDirection } from './children';
-import { connectors } from './connectors';
-import { correctPositions } from './utils/correctPositions';
-import { getCanvasSize } from './utils/getCanvasSize';
-import { getExtendedNodes } from './utils/getExtendedNodes';
-import { pipe } from './utils';
-import type { Node, Options, RelData } from './types';
+/* eslint-disable import/no-anonymous-default-export */
+import { inChildDirection } from "./children";
+import { connectors } from "./connectors";
+import { inMiddleDirection } from "./middle";
+import { placeholders } from "./middle/placeholders";
+import { inParentDirection } from "./parents";
+import Store from "./store";
+import type { Node, Options, RelData } from "./types";
+import { pipe } from "./utils";
+import { correctPositions } from "./utils/correctPositions";
+import { getCanvasSize } from "./utils/getCanvasSize";
+import { getExtendedNodes } from "./utils/getExtendedNodes";
 
 const calcFamilies = pipe(inMiddleDirection, inParentDirection, inChildDirection, correctPositions);
 
@@ -19,7 +20,7 @@ export default (nodes: readonly Node[], options: Options): RelData => {
   const families = calcFamilies(store).familiesArray;
 
   return {
-    families: families,
+    families,
     canvas: getCanvasSize(families),
     nodes: getExtendedNodes(families),
     connectors: connectors(families),

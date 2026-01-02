@@ -85,6 +85,7 @@ export const categoryToTransferFunc = {
 
 export const enum EQuKeys {
   FAM_TREE = "snake_family_tree",
+  VK_PARSE = "vk_parse",
 }
 
 export interface ISupabaseErr {
@@ -203,6 +204,8 @@ export type ITransferReq = {
 
 export interface ICreateSaleReq {
   sale_price: number;
+  discount_until?: string | null;
+  discount_price?: number | null;
   pictures: string[];
   description: string;
   city_code: string;
@@ -266,6 +269,24 @@ export interface IFamilyTreeRes {
   siblings: { id: string }[];
   snake_name: string;
   spouses: { id: string }[];
+}
+
+export interface IVkMarketItem {
+  availability: number;
+  description: string;
+  title: string;
+  price: {
+    amount: string; // '2000' это типа добавили 2 нуля к изначальному
+    text: string; // "20 ₽"
+    old_amount?: string; // "6000"
+    old_amount_text?: string; //"60 ₽"
+  };
+  thumb: {
+    height: number;
+    url: string;
+    width: number;
+  }[]; // нужен последний элем, там самая большая картинка
+  thumb_photo: string;
 }
 
 export interface IVivRes {

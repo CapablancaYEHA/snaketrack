@@ -13,9 +13,11 @@ export const uplErr = (e: any) =>
 
 export const filterSubmitByDirty = (subm, dirty) => {
   const res = {};
+
   for (let key in subm) {
-    if (dirty[key]) res[key] = subm[key];
+    if (dirty[key]) res[key] = key === "discount_price" && !subm[key] ? null : subm[key];
   }
+
   return res;
 };
 

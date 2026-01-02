@@ -1,6 +1,6 @@
 import { useEffect } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Box, Button, Checkbox, Drawer, Flex, Loader, LoadingOverlay, Mark, SegmentedControl, Select, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
+import { Box, Button, Checkbox, Drawer, Flex, Loader, LoadingOverlay, Mark, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure, useInViewport, useMediaQuery } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
 import { useQueryState } from "nuqs";
@@ -121,7 +121,6 @@ export function Market() {
         value={sort}
         size="xs"
         label="Сортировка"
-        clearable
       />
       <Drawer
         opened={opened}

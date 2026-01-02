@@ -13,6 +13,8 @@ export const emptyDefault = {
   sex: null,
   snake_name: "",
   date_hatch: undefined,
+  discount_price: undefined,
+  discount_until: undefined,
   genes: [],
 };
 
@@ -64,6 +66,11 @@ export const schemaBase = yup.object<Schema>().shape({
     .string()
     .nullable()
     .test("test_telegram", "Некорректный формат", (v) => (!v ? true : /^@?[a-z\d_]+$/i.test(v))),
+  discount_until: yup.string().optional().nullable(),
+  discount_price: yup
+    .number()
+    .transform((v) => (!v || Number.isNaN(v) ? 0 : v))
+    .optional(),
 });
 
 export type ISellScheme = yup.InferType<typeof schemaBase>;

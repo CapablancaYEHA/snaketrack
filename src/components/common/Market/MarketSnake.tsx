@@ -6,7 +6,7 @@ import { GenePill } from "@/components/common/genetics/geneSelect";
 import { categToTitle } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IMarketRes } from "@/api/common";
-import { getAge, getDateCustom, getDateShort } from "@/utils/time";
+import { dateTimeDiff, getAge, getDateCustom, getDateShort } from "@/utils/time";
 import { FamilyTree } from "../FamilyTree";
 import styles from "../forms/styles.module.scss";
 import { snakeStatusToColor, snakeStatusToLabel } from "./utils";
@@ -25,6 +25,7 @@ export function MarketSnake({ category, data }: IProp) {
   const [tab, setTab] = useState("common");
 
   const isCan = navigator.canShare(dt);
+  const isShowDiscount = data.discount_price && data.discount_until ? dateTimeDiff(data.discount_until, "date") > 0 : data.discount_price && !data.discount_until ? data.discount_price : false;
 
   const share = async (func) => {
     try {
@@ -85,9 +86,24 @@ export function MarketSnake({ category, data }: IProp) {
               <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
                 {sortSnakeGenes(data.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} />)}
               </Flex>
-              <Text size="xl" fw={500}>
-                <NumberFormatter prefix="₽ " value={data.sale_price} thousandSeparator=" " />
-              </Text>
+
+              {isShowDiscount ? (
+                <Flex gap="sm" align="baseline">
+                  <Text fw={500} size="xs" c="dark.3">
+                    <s>
+                      <NumberFormatter prefix="₽ " value={data.sale_price} thousandSeparator=" " />
+                    </s>
+                  </Text>
+                  <Text fw={500} size="xl">
+                    <NumberFormatter prefix="₽ " value={data.discount_price!} thousandSeparator=" " />
+                  </Text>
+                </Flex>
+              ) : (
+                <Text fw={500} size="xl">
+                  <NumberFormatter prefix="₽ " value={data.sale_price} thousandSeparator=" " />
+                </Text>
+              )}
+
               <Divider w="100%" maw="100%" opacity={0.5} />
               <Stack gap="4px">
                 <Text size="sm" fw={500}>

@@ -2,6 +2,7 @@ import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Flex, NumberInput, Select, Stack, Text, TextInput, Textarea } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm } from "react-hook-form";
 import { Autocomp } from "@/components/common/forms/sellSnake/Autocomp";
@@ -63,14 +64,15 @@ export const FormEditSale = ({ init, info, category }) => {
       }
     }
 
-    const submitBody = filterSubmitByDirty(sbm, dirtyFields) as any;
+    const dirtyBody = filterSubmitByDirty(sbm, dirtyFields) as any;
 
     updAd(
       {
         upd: {
-          ...submitBody,
+          ...dirtyBody,
           pictures: pics || undefined,
-          ...(submitBody.status === "sold" ? { completed_at: dateToSupabaseTime(new Date()) } : { updated_at: dateToSupabaseTime(new Date()) }),
+          ...(dirtyBody.status === "sold" ? { completed_at: dateToSupabaseTime(new Date()) } : { updated_at: dateToSupabaseTime(new Date()) }),
+          ...(dirtyBody.discount_until ? { discount_until: dateToSupabaseTime(dirtyBody.discount_until) } : {}),
         },
         id: location.query.id,
       },
@@ -78,7 +80,7 @@ export const FormEditSale = ({ init, info, category }) => {
         onSuccess: async () => {
           await mutate({
             upd: {
-              status: submitBody.status,
+              status: dirtyBody.status,
               last_action: "update",
             },
             id: info.snake_id,
@@ -191,6 +193,26 @@ export const FormEditSale = ({ init, info, category }) => {
             error={errors?.city_code?.message}
           />
         </Box>
+      </Flex>
+      <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
+        <Controller
+          name="discount_price"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <NumberInput rightSection="₽" label="Цена со скидкой" hideControls thousandSeparator=" " error={error?.message} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} flex="1 1 50%" />;
+          }}
+        />
+        <Controller
+          name="discount_until"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return (
+              <>
+                <DatePickerInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
+              </>
+            );
+          }}
+        />
       </Flex>
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
         <Controller
