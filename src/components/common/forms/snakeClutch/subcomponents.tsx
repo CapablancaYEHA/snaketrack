@@ -1,5 +1,5 @@
 import { startMd, startSm } from "@/styles/theme";
-import fallback from "@assets/placeholder.png";
+import fallback from "@assets/placeholder.webp";
 import { Anchor, Box, Flex, Grid, Group, Image, Loader, Modal, Progress, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";

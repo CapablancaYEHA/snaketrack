@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { FC } from "preact/compat";
 import { useEffect } from "preact/hooks";
-import fallback from "@assets/placeholder.png";
+import fallback from "@assets/placeholder.webp";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";

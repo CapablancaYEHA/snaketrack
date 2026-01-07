@@ -1,4 +1,4 @@
-import fallback from "@assets/placeholder.png";
+import fallback from "@assets/placeholder.webp";
 import { AspectRatio, Box, Flex, Image, Indicator, NumberFormatter, Stack, Text, darken } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";

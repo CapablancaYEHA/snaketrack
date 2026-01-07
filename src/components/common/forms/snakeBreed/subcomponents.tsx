@@ -2,7 +2,7 @@ import { FC } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 import { Fragment } from "preact/jsx-runtime";
 import { tabletThreshold } from "@/styles/theme";
-import fallback from "@assets/placeholder.png";
+import fallback from "@assets/placeholder.webp";
 import { Accordion, Anchor, Box, Button, Divider, Drawer, Flex, Group, Image, Loader, LoadingOverlay, Menu, Modal, Progress, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";

@@ -1,5 +1,5 @@
 import { FC, ReactNode, useEffect, useState } from "preact/compat";
-import fallback from "@assets/placeholder.png";
+import fallback from "@assets/placeholder.webp";
 import { Anchor, AspectRatio, Box, Button, CSSProperties, Drawer, Flex, Image, LoadingOverlay, Modal, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { clsx } from "clsx";

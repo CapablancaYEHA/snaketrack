@@ -1,4 +1,4 @@
-import fallback from "@assets/placeholder.png";
+import fallback from "@assets/placeholder.webp";
 import { Checkbox, Flex, Image, Stack } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { createColumnHelper } from "@tanstack/react-table";

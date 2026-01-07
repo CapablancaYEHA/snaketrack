@@ -1,6 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
-import chrome from "@assets/chrome_instr.png";
-import saf from "@assets/safari_instr.png";
+import chrome from "@assets/chrome_instr.webp";
+import saf from "@assets/safari_instr.webp";
 import { Button, Image, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 

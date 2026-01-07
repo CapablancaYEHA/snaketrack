@@ -1,9 +1,9 @@
-import land1 from "@assets/land1.png";
-import land2 from "@assets/land2.png";
-import land3 from "@assets/land3.png";
-import land4 from "@assets/land4.png";
-import land5 from "@assets/land5.png";
-import land6 from "@assets/land6.png";
+import land1 from "@assets/land1.webp";
+import land2 from "@assets/land2.webp";
+import land3 from "@assets/land3.webp";
+import land4 from "@assets/land4.webp";
+import land5 from "@assets/land5.webp";
+import land6 from "@assets/land6.webp";
 
 export const pics = [land1, land2, land3, land4, land5, land6];
 

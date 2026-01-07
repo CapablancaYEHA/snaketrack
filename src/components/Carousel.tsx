@@ -1,4 +1,4 @@
-import fallback from "@assets/placeholder.png";
+import fallback from "@assets/placeholder.webp";
 import { Carousel as Car } from "@mantine/carousel";
 import { AspectRatio, Image } from "@mantine/core";
 
