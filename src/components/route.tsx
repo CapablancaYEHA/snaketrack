@@ -1,4 +1,5 @@
 import { Route, useLocation } from "preact-iso";
+import { useEffect, useLayoutEffect } from "preact/hooks";
 import { isEmpty } from "lodash-es";
 import { AddBreed } from "@/pages/AddBreed";
 import { AddClutch } from "@/pages/AddClutch";
@@ -11,6 +12,7 @@ import { EditClutch } from "@/pages/EditClutch";
 import { EditSnake } from "@/pages/EditSnake";
 import { EditVivarium } from "@/pages/EditVivarium";
 import { ImportSnake } from "@/pages/ImportSnake";
+import { Landing } from "@/pages/Landing";
 import { Market } from "@/pages/Market";
 import { MarketAdd } from "@/pages/MarketAddAvd";
 import { MarketAdv } from "@/pages/MarketAdv";
@@ -34,14 +36,16 @@ export const ProtectedRoute = (props) => {
   return <Route {...props} />;
 };
 
-export const RedirectiveRoute = (props) => {
+export const AvoidRoute = (props) => {
   const location = useLocation();
 
-  if (props.session && !isEmpty(props.session?.user)) {
-    location.route("/snakes");
-  }
+  useLayoutEffect(() => {
+    if (props.session && !isEmpty(props.session?.user) && window.location.pathname === "/") {
+      location.route("/snakes");
+    }
+  }, [props.session]);
 
-  return <div />;
+  return <Route {...props} />;
 };
 
 export const protectedRoutes = {

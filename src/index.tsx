@@ -12,7 +12,7 @@ import { Pullable } from "./components/common/PullToRefresh/Pullable";
 import { Footer } from "./components/navs/Footer";
 import { Header } from "./components/navs/Header";
 import { Sidebar } from "./components/navs/sidebar/Sidebar";
-import { ProtectedRoute, protectedRoutes } from "./components/route";
+import { ProtectedRoute, AvoidRoute, protectedRoutes } from "./components/route";
 import { UseOneSignal } from "./lib/client_push";
 import { queryClient } from "./lib/client_query";
 import { supabase } from "./lib/client_supabase";
@@ -73,7 +73,6 @@ export function App() {
 		  {isPending.value ? null : !isMwTablet ? <Sidebar /> : null}
           <Box className="box-main" component="main">
             <Router>
-				<Route path="/" component={Landing} />
               <Route path="/login" component={Login} />
               <Route path="/register" component={Register} />
               <Route path="/reset" component={Reset} />
@@ -87,6 +86,7 @@ export function App() {
                   <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />
                 ))
               )}
+			  <AvoidRoute session={session} path='/' component={Landing} />
               {isPending.value ? (null as any) : <Route default component={NotFound} />}
             </Router>
           </Box>
