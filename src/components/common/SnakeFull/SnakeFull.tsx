@@ -96,16 +96,16 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             <Stack flex={{ base: "1", sm: "0 1 50%" }}>
               <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "180px", sm: "260px" }} />
             </Stack>
-            <Box>
-              <CopyButton value={snakeId} timeout={3000}>
-                {({ copied, copy }) => (
-                  <Button onClick={copy} size="compact-xs" variant="default" rightSection={<IconSwitch icon={copied ? "check" : "copy"} width="16" height="16" style={{ stroke: "lime" }} />}>
-                    {copied ? "Скопировано" : "Копировать id"}
-                  </Button>
-                )}
-              </CopyButton>
-            </Box>
             <Stack gap="sm">
+              <Box>
+                <CopyButton value={snakeId} timeout={3000}>
+                  {({ copied, copy }) => (
+                    <Button onClick={copy} size="compact-xs" variant="default" rightSection={<IconSwitch icon={copied ? "check" : "copy"} width="16" height="16" style={{ stroke: "lime" }} />}>
+                      {copied ? "Скопировано" : "Копировать id"}
+                    </Button>
+                  )}
+                </CopyButton>
+              </Box>
               <Text size="sm">Дата рождения — {getDate(data.date_hatch)}</Text>
               <Text size="sm">⌛ {getAge(data.date_hatch)}</Text>
               {data.price ? (

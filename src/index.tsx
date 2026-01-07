@@ -20,6 +20,7 @@ import { NotFound } from "./pages/_404";
 import { Login } from "./pages/auth/Login";
 import { Register } from "./pages/auth/Register";
 import { Reset } from "./pages/auth/Reset";
+import { Landing } from "./pages/Landing";
 import { Terms } from "./pages/Terms";
 import { tabletThreshold, theme } from "./styles/theme";
 import "@mantine/core/styles.css";
@@ -72,6 +73,7 @@ export function App() {
 		  {isPending.value ? null : !isMwTablet ? <Sidebar /> : null}
           <Box className="box-main" component="main">
             <Router>
+				<Route path="/" component={Landing} />
               <Route path="/login" component={Login} />
               <Route path="/register" component={Register} />
               <Route path="/reset" component={Reset} />

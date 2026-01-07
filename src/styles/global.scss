@@ -120,10 +120,19 @@ a {
   width: 4px !important;
   height: 4px !important;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: #717171;
   transition: width 250ms ease;
 
+  &[data-orientation] {
+    width: 4px !important;
+    height: 4px !important;
+    border-radius: 50%;
+  }
+
   &[data-active] {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
     background-color: white;
   }
 }
