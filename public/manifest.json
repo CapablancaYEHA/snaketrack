@@ -15,8 +15,8 @@
       "type": "image/png"
     }
   ],
-  "scope": ".",
-  "start_url": "https://snaketrack.ru/snakes",
+  "scope": "/",
+  "start_url": "/snakes",
   "display": "standalone",
   "display_override": ["tabbed"],
   "background_color": "#000000",
