@@ -47,7 +47,6 @@ export function useCalcMmOdds(categ: ECategories) {
   });
 }
 
-// FIXME Позже удалить ненужную функцию rpc_bp_family_tree в Супабейз
 const httpGetTree = async (id, category) => {
   const { data, error } = await supabase.rpc("rpc_snake_family_tree", {
     target_id: id,

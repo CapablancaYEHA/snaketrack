@@ -8,7 +8,7 @@ import { toDataUrl } from "@/utils/supabaseImg";
 import { queryClient as instance } from "../lib/client_query";
 import { finaliseClutch, makeClutchFromBreed } from "./breeding/breeding";
 import { IFinaliseClutchReq, IFinaliseClutchRes, IReqCreateBreed, IUpdBreedReq } from "./breeding/models";
-import { ECategories, EQuKeys, ESupaBreed, ESupabase, IDadataSearch, IGenesComp, ISupabaseErr, ITransferReq, categoryToBaseTable, categoryToGenesTable, categoryToShort, categoryToTransferFunc } from "./common";
+import { ECategories, EQuKeys, ESupaBreed, ESupabase, IDadataSearch, IGenesComp, ISupabaseErr, ITransferReq, categoryToBaseTable, categoryToGenesTable, categoryToShort } from "./common";
 
 interface IQueryConfig {
   t: ESupabase;
@@ -208,9 +208,10 @@ export function useSnakeGenes(cat: ECategories, isEnabled = true) {
 }
 
 const httpTransferSnake = async (userId: string, snekId: string, category) => {
-  const { data, error } = await supabase.rpc(categoryToTransferFunc[category], {
+  const { data, error } = await supabase.rpc("rpc_transfer_snake", {
     trg_user: userId,
     trg_snake: snekId,
+    category,
     action: "transfer",
   });
   if (error) {

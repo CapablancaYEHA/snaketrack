@@ -77,12 +77,6 @@ export const categoryToMmCat = {
   [ECategories.CS]: "corns",
 };
 
-export const categoryToTransferFunc = {
-  [ECategories.BP]: "transfer_snake",
-  [ECategories.BC]: "transfer_boa_constrictor",
-  [ECategories.CS]: "transfer_corn_snake",
-};
-
 export const enum EQuKeys {
   FAM_TREE = "snake_family_tree",
   VK_PARSE = "vk_parse",

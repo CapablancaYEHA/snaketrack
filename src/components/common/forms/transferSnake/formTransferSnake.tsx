@@ -36,6 +36,8 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, hand
         onSuccess: () => {
           notif({ c: "green", t: "Успех!", m: `Змейка ${snekName} уже у нового владельца!` });
           close();
+          setSearch("");
+          setBreeder(null);
         },
         onError: (e) => {
           notif({ c: "red", t: "Ошибка", m: e.message, code: e.code });
