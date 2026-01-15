@@ -43,7 +43,7 @@ export const calcSchema = (isVivOn?: boolean) =>
       feed_comment: yup.string().max(250, "Ограничение 250 символов").nullable(),
       weight: yup.number().when(["refuse", "regurgitation", "shed", "feed_ko", "feed_weight"], ([refuse, regurgitation, shed, feed_ko, feed_weight], self) => {
         if (feed_ko || feed_weight) {
-          return self.nullable();
+          return self.optional().nullable();
         }
         return !shed && !refuse && !regurgitation ? self.transform((v) => (!v || Number.isNaN(v) ? null : v)).required("Заполняется по условиям") : self.optional().nullable();
       }),

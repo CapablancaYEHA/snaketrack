@@ -210,24 +210,5 @@ export const prepVivUpd = (current: IVivRes, feed_weight: number, viv: string) =
         },
       };
     }
-    return undefined;
   }
 };
-
-// .test({
-//   name: "custom-validation",
-//   test: (value, context) => {
-//     const base = context.originalValue.map((o) => o.range);
-//     const res = base.map((el, ind, self) => {
-//       const [start, end] = el;
-//       //   проверка слабая, чекает только предыдущий ряд, но пересечения могут быть и раньше и позже
-//       if (ind > 0) {
-//         const [prevStart, prevEnd] = self[ind - 1];
-//         const isCorrect = start > prevEnd && end > prevEnd;
-//         return { ind, isError: !isCorrect };
-//       }
-//       return { ind, isError: false };
-//     }, []);
-//     return true;
-//   },
-// }),

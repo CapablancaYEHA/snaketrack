@@ -49,7 +49,7 @@ export const TransferSnake: FC<IProp> = ({ opened, close, snekId, snekName, hand
   const handleSearch = debounce(setSearch, 400);
 
   return (
-    <Modal opened={opened} onClose={close} centered transitionProps={{ transition: "fade", duration: 200 }} title={<Title order={3}>Передать змею бридеру</Title>}>
+    <Modal opened={opened} onClose={close} centered transitionProps={{ transition: "fade", duration: 200 }} title={<Title order={3}>Передать змею бридеру</Title>} keepMounted={false}>
       <Text>
         Перадача осуществляется со всей статистикой, вы больше не будете иметь доступа к изменению данных.
         <br />
