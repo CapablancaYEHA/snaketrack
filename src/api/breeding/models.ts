@@ -24,7 +24,7 @@ export interface IReqCreateBreed {
   males_events?: {
     [key: string]: (IEv & IDate)[];
   };
-  owner_id: string;
+  owner_id?: string;
   female_prelay_shed_date?: string; // timestampz
   female_ovulation_date?: string; // timestampz
   female_id: string;
@@ -65,7 +65,7 @@ export interface IReqCreateClutch {
   males_ids: string[];
   female_id: string;
   date_laid: string;
-  owner_id: string;
+  owner_id?: string;
   date_hatch?: string;
   eggs?: number;
   slugs?: number;

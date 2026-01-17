@@ -19,6 +19,7 @@ export const makeClutchColumns = ({ setSnake, category }) => [
     cell: ({ row }) => <SInfo clutch={row.original} onPicClick={setSnake} category={category} />,
     size: 3,
     maxSize: 9,
+    minSize: 500,
   }),
 ];
 

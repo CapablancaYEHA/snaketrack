@@ -409,7 +409,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
                     </>
                   )}
                   <FormProvider {...innerInstance}>{malesEvents && malesEvents.hasOwnProperty(male?.id) ? <MaleEvent id={male?.id} disabled={isClutchMade} /> : null}</FormProvider>
-                  <OddsInfo female={femData} male={male} />
+                  {category !== ECategories.MV ? <OddsInfo female={femData} male={male} /> : null}
                   <div>
                     {fetchFields?.slice(1)[ind] != null ? (
                       <Group justify="space-between">

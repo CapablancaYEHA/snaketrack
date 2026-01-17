@@ -40,8 +40,8 @@ export const FormImportRR: FC<IProps> = ({ table, title, category }) => {
       <List type="ordered" size="sm">
         <List.Item>
           Изменить названия ваших категорий животных на следующие (в латинской раскладке):
-          <Highlight highlight={["bps", "bcs", "corns"]} highlightStyles={{ padding: "0 4px 0 4px" }} inline size="sm">
-            для Региусов — указать bps, для Удавов — bcs, для Маисов — corns
+          <Highlight highlight={["bps", "bcs", "corns", "mvs"]} highlightStyles={{ padding: "0 4px 0 4px" }} inline size="sm">
+            для Региусов — указать bps, для Удавов — bcs, для Маисов — corns, для Хондров — mvs
           </Highlight>
         </List.Item>
         <List.Item>Сделать Резервную копию ваших данных, приложение укажет в какой папке был сохранен .zip архив</List.Item>

@@ -194,7 +194,6 @@ const CreateRem: FC<ICrRem> = ({ handleCreate, creationIds, category }) => {
         style={{ alignSelf: "end" }}
         onClick={() => {
           const dt = creationIds.map((a) => ({
-            owner_id: userId!,
             scheduled_time: dateToSupabaseTime(sigCurDate.value),
             repeat_interval: innerInstance.getValues("interval"),
             snake: a,

@@ -11,14 +11,17 @@ import { BreedControl } from "./subcomponents";
 export const daysAfterOvul = {
   [ECategories.BP]: 44,
   [ECategories.CS]: 30,
+  [ECategories.MV]: 89,
 };
 export const daysAfterShed = {
   [ECategories.BP]: 29,
   [ECategories.CS]: 14,
+  [ECategories.MV]: 38,
 };
 export const daysIncubation = {
   [ECategories.BP]: 60,
   [ECategories.CS]: 65,
+  [ECategories.MV]: 54,
 };
 export const daysCriticalThr = 10;
 

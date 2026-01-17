@@ -86,7 +86,7 @@ export function SnakeCollectionList() {
           </Text>
           <StackTable
             data={snakes ?? []}
-            columns={makeListColumns({ ...base, category: catVisited.value })}
+            columns={makeListColumns(base)}
             columnFilters={filt}
             setColumnFilters={setFilt}
             globalFilter={globalFilter}

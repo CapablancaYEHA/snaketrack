@@ -101,6 +101,10 @@ export function Market() {
             label: "Маисы",
             value: ECategories.CS,
           },
+          {
+            label: "Хондры",
+            value: ECategories.MV,
+          },
         ]}
       />
       <Box>

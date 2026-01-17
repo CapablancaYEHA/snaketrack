@@ -91,11 +91,8 @@ export const prepForMm = (parent: IResSnakesList) => {
 };
 
 export const prepForCreate = (submit, status?: IBreedStat): IReqCreateBreed => {
-  const userId: string = localStorage.getItem("USER")!;
-
   return {
     males_events: submit.malesEvents,
-    owner_id: userId,
     female_prelay_shed_date: submit.female_prelay_shed_date,
     female_ovulation_date: submit.female_ovulation_date,
     female_id: submit.female_id,

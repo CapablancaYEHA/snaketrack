@@ -75,6 +75,10 @@ export function ClutchList() {
             label: "Маисы",
             value: ECategories.CS,
           },
+          {
+            label: "Хондры",
+            value: ECategories.MV,
+          },
         ]}
       />
       {isPending ? <SkelTable /> : null}

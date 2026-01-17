@@ -8,7 +8,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill, GenesSelect } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
-import { calcProjGenes, categToConfigList } from "@/components/common/utils";
+import { calcProjGenes, categToConfig } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { EClSt, IResClutch } from "@/api/breeding/models";
 import { ECategories, EGenesView, IResSnakesList } from "@/api/common";
@@ -178,7 +178,7 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOn
 };
 
 export const MiniInfo = ({ opened, close, snakeId, sex, category, withTitle = true }) => {
-  const { data, isPending, isError } = useSupaGet<IResSnakesList>(categToConfigList[category](snakeId), snakeId != null);
+  const { data, isPending, isError } = useSupaGet<IResSnakesList>(categToConfig[category](snakeId), snakeId != null);
   const lastWeight = data?.weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[data?.weight.length - 1];
 
   return (

@@ -3,12 +3,12 @@ import { signal } from "@preact/signals";
 import { SnakeCollectionList } from "@/components/common/SnakeCollectionList";
 import { ECategories } from "@/api/common";
 
+export const catVisited = signal<ECategories>("" as any);
+
 const handle = (a) => {
   catVisited.value = a;
   localStorage.setItem("SNAKES_VISITED", a);
 };
-
-export const catVisited = signal<ECategories>("" as any);
 
 export function SnakeCategories() {
   const vis = localStorage.getItem("SNAKES_VISITED");
@@ -39,6 +39,10 @@ export function SnakeCategories() {
           {
             label: "Маисы",
             value: ECategories.CS,
+          },
+          {
+            label: "Хондры",
+            value: ECategories.MV,
           },
         ]}
       />

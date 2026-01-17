@@ -78,6 +78,10 @@ export function BreedList() {
             label: "Маисы",
             value: ECategories.CS,
           },
+          {
+            label: "Хондры",
+            value: ECategories.MV,
+          },
         ]}
       />
       {isPending ? <SkelTable /> : null}

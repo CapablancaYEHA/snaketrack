@@ -4,6 +4,7 @@ import { bcList, bcSingle } from "@/api/boa-constrictors/configs";
 import { EBreedStat } from "@/api/breeding/models";
 import { ECategories, IGenesComp } from "@/api/common";
 import { csList, csSingle } from "@/api/corn-snakes/configs";
+import { mvList, mvSingle } from "@/api/morelia_viridis/configs";
 
 export const detailsDict = [
   { label: "Год", value: "years" },
@@ -83,18 +84,21 @@ export const categToConfig = {
   [ECategories.BP]: bpSingle,
   [ECategories.BC]: bcSingle,
   [ECategories.CS]: csSingle,
+  [ECategories.MV]: mvSingle,
 };
 
 export const categToConfigList = {
   [ECategories.BP]: bpList,
   [ECategories.BC]: bcList,
   [ECategories.CS]: csList,
+  [ECategories.MV]: mvList,
 };
 
 export const categToTitle = {
   [ECategories.BP]: "Региус",
   [ECategories.BC]: "Удав",
   [ECategories.CS]: "Маис",
+  [ECategories.MV]: "Хондр",
 };
 
 export const calcStatusOptions = () => Object.entries(bStToLabel).map(([key, val]) => ({ label: val, value: key }));

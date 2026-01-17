@@ -9,7 +9,6 @@ const isFreshBreedTG = (val: IUpdBreedReq | IReqCreateBreed): val is IReqCreateB
 
 export const makeClutchFromBreed = async (category: ECategories, pl: IUpdBreedReq | IReqCreateBreed) => {
   const cat = categoryToShort[category];
-  const userId: string = localStorage.getItem("USER")!;
   if (isFreshBreedTG(pl)) {
     const { data: breedRow, error } = await supaCreate<IReqCreateBreed>({ t: ESupaBreed[`${cat.toUpperCase()}_BREED`], p: pl, bulk: false });
     if (error) {
@@ -18,7 +17,6 @@ export const makeClutchFromBreed = async (category: ECategories, pl: IUpdBreedRe
     const payload: IReqCreateClutch = {
       males_ids: pl.males_ids,
       female_id: pl.female_id,
-      owner_id: userId,
       date_laid: dateToSupabaseTime(new Date()),
     };
     const { data, error: errClutch } = await supaCreate<IReqCreateClutch>({ t: ESupaBreed[`${cat.toUpperCase()}_CL`], p: payload, bulk: false });
@@ -41,7 +39,6 @@ export const makeClutchFromBreed = async (category: ECategories, pl: IUpdBreedRe
   const payload: IReqCreateClutch = {
     males_ids: dt.breed_males_ids,
     female_id: dt.female_id,
-    owner_id: userId,
     date_laid: dateToSupabaseTime(new Date()),
   };
   const { data, error: errClutch } = await supaCreate<IReqCreateClutch>({ t: ESupaBreed[`${cat.toUpperCase()}_CL`], p: payload, bulk: false });

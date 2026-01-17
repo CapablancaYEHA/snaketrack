@@ -16,6 +16,7 @@ import { ECategories, IFeedReq, IRemResExt, IRemindersRes, IResSnakesList, categ
 import { remList, remsByDate } from "@/api/common_configs";
 import { csList } from "@/api/corn-snakes/configs";
 import { useSupaGet, useSupaUpd } from "@/api/hooks";
+import { mvList } from "@/api/morelia_viridis/configs";
 import { getDateObj, getDateOfMonth, getIsSame } from "@/utils/time";
 
 const isFeedOpen = signal<boolean>(false);
@@ -41,6 +42,7 @@ export const Schedule = () => {
   const { data: bps, isPending: isBpPend, isRefetching: isBpRef, isError: isBpErr } = useSupaGet<IResSnakesList[]>(bpList(userId), sigCurCat.value === ECategories.BP);
   const { data: bcs, isPending: isBcPend, isRefetching: isBcRef, isError: isBcErr } = useSupaGet<IResSnakesList[]>(bcList(userId), sigCurCat.value === ECategories.BC);
   const { data: css, isPending: isCsPend, isRefetching: isCsRef, isError: isCsErr } = useSupaGet<IResSnakesList[]>(csList(userId), sigCurCat.value === ECategories.CS);
+  const { data: mvs, isPending: isMvPend, isRefetching: isMvRef, isError: isMvErr } = useSupaGet<IResSnakesList[]>(mvList(userId), sigCurCat.value === ECategories.MV);
   const { data: allRems, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
   const { data: remsThisDate, isFetching } = useSupaGet<IRemResExt[]>(remsByDate(sigCurDate.value), sigCurDate.value != null);
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[sigCurCat.value]);
@@ -50,9 +52,9 @@ export const Schedule = () => {
     return eventDates.some((eventDate) => getIsSame(eventDate, date));
   };
 
-  const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : sigCurCat.value === ECategories.BC ? (bcs ?? []) : (css ?? []);
+  const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : sigCurCat.value === ECategories.BC ? (bcs ?? []) : sigCurCat.value === ECategories.CS ? (css ?? []) : (mvs ?? []);
 
-  const isSmthPending = (isBpPend && sigCurCat.value === ECategories.BP) || (isBcPend && sigCurCat.value === ECategories.BC) || (isCsPend && sigCurCat.value === ECategories.CS) || isRemPending;
+  const isSmthPending = (isBpPend && sigCurCat.value === ECategories.BP) || (isBcPend && sigCurCat.value === ECategories.BC) || (isCsPend && sigCurCat.value === ECategories.CS) || (isMvPend && sigCurCat.value === ECategories.MV) || isRemPending;
 
   useEffect(() => {
     snakesWithRems.value = allRems?.map((c) => c.snake);
@@ -86,10 +88,14 @@ export const Schedule = () => {
               label: "Маисы",
               value: ECategories.CS,
             },
+            {
+              label: "Хондры",
+              value: ECategories.MV,
+            },
           ]}
         />
         {isSmthPending ? <SkelShedule /> : null}
-        {isBpErr || isBcErr || isCsErr || isRemError ? (
+        {isBpErr || isBcErr || isCsErr || isMvErr || isRemError ? (
           <Text fw={500} c="var(--mantine-color-error)">
             Произошла ошибка запроса
           </Text>
@@ -161,7 +167,7 @@ export const Schedule = () => {
         isPend={isFeedPend}
       />
 
-      {isBpRef || isBcRef || isCsRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+      {isBpRef || isBcRef || isCsRef || isMvRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </>
   );
 };

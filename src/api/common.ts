@@ -4,6 +4,7 @@ export enum ECategories {
   BP = "ball-pythons",
   BC = "boa-constrictors",
   CS = "corn-snakes",
+  MV = "morelia-viridis",
 }
 
 // названия таблиц не могут содержать дефисы!!!
@@ -12,6 +13,7 @@ export const enum ESupabase {
   BP = "ballpythons",
   BC = "boa_constrictors",
   CS = "corn_snakes",
+  MV = "morelia_viridis",
   REM = "feed_reminders",
   PROF = "profiles",
   MRKT = "market",
@@ -24,10 +26,12 @@ export const enum ESupabase {
   BP_G = "bpgenes",
   BC_G = "boagenes",
   CS_G = "corngenes",
+  MV_G = "viridisgenes",
   // storage
   BP_PICS = "bp-pics",
   BC_PICS = "bc-pics",
   CS_PICS = "cs-pics",
+  MV_PICS = "mv-pics",
 }
 
 export enum ESupaBreed {
@@ -37,6 +41,8 @@ export enum ESupaBreed {
   BC_CL = "bc_clutch",
   CS_BREED = "cs_breeding",
   CS_CL = "cs_clutch",
+  MV_BREED = "mv_breeding",
+  MV_CL = "mv_clutch",
   // view
   BP_BREED_V = "user_breeding_view",
   BP_CL_V = "clutch_view",
@@ -44,18 +50,22 @@ export enum ESupaBreed {
   BC_CL_V = "bc_clutch_view",
   CS_BREED_V = "cs_breeding_view",
   CS_CL_V = "cs_clutch_view",
+  MV_BREED_V = "mv_breeding_view",
+  MV_CL_V = "mv_clutch_view",
 }
 
 export const categoryToGenesTable = {
   [ECategories.BP]: ESupabase.BP_G,
   [ECategories.BC]: ESupabase.BC_G,
   [ECategories.CS]: ESupabase.CS_G,
+  [ECategories.MV]: ESupabase.MV_G,
 };
 
 export const categoryToBaseTable = {
   [ECategories.BP]: ESupabase.BP,
   [ECategories.BC]: ESupabase.BC,
   [ECategories.CS]: ESupabase.CS,
+  [ECategories.MV]: ESupabase.MV,
 };
 
 // FIXME чтото это как-то убого или оставим?
@@ -63,18 +73,21 @@ export const categoryToShort = {
   [ECategories.BP]: "bp",
   [ECategories.BC]: "bc",
   [ECategories.CS]: "cs",
+  [ECategories.MV]: "mv",
 };
 
 export const categoryToBucket = {
   [ECategories.BP]: ESupabase.BP_PICS,
   [ECategories.BC]: ESupabase.BC_PICS,
   [ECategories.CS]: ESupabase.CS_PICS,
+  [ECategories.MV]: ESupabase.MV_PICS,
 };
 
 export const categoryToMmCat = {
   [ECategories.BP]: "bps",
   [ECategories.BC]: "bcs",
   [ECategories.CS]: "corns",
+  [ECategories.MV]: "mvs",
 };
 
 export const enum EQuKeys {
@@ -166,7 +179,7 @@ export interface IRemResExt extends IRemindersRes {
 }
 
 export interface IRemindersReq {
-  owner_id: string;
+  owner_id?: string;
   scheduled_time: string; // "2025-08-05T11:30:51+03:00"
   repeat_interval: number;
   snake: string;
@@ -178,7 +191,7 @@ export type TSnakeQueue = UseQueryResult<IResSnakesList[], ISupabaseErr>;
 export interface IGenesComp {
   id: number;
   label: string;
-  gene: "inc-dom" | "dom" | "rec" | "poly" | "other" | "combo";
+  gene: "inc-dom" | "dom" | "rec" | "poly" | "other" | "locality" | "combo";
   hasSuper: boolean;
   alias?: string | null;
   hasHet: boolean;

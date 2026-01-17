@@ -2,6 +2,7 @@ import fallback from "@assets/placeholder.webp";
 import { AspectRatio, Box, Image, Indicator, Stack, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IResSnakesList } from "@/api/common";
+import { catVisited } from "@/pages/SnakeCategories";
 import { getAge } from "@/utils/time";
 import { Controls, GenesList, SnakeEventsBlock } from "../common/SnakeCard";
 import { SexName } from "../common/sexName";
@@ -10,12 +11,12 @@ import { hatchFiltFn } from "./StackTable/filters";
 
 const colHelper = createColumnHelper<IResSnakesList>();
 
-export const makeListColumns = ({ openTrans, openFeed, openDelete, category }) => {
+export const makeListColumns = ({ openTrans, openFeed, openDelete }) => {
   return [
     colHelper.accessor("picture", {
       header: () => " ",
       cell: ({ cell, row }) => (
-        <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openDelete={openDelete} category={category}>
+        <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openDelete={openDelete} category={catVisited.value}>
           <Stack gap="xs" maw="100%" w="100%">
             <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
             <AspectRatio ratio={16 / 9} maw="100%">

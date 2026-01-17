@@ -1,5 +1,11 @@
 export const versionHistory = [
   {
+    id: 23,
+    ver: "1.9.0",
+    date: "01-17-2026",
+    list: ["Добавлен раздел Хондров"],
+  },
+  {
     id: 22,
     ver: "1.8.3",
     date: "01-07-2026",

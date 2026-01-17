@@ -92,25 +92,3 @@ export function Vivarium() {
     </Stack>
   );
 }
-
-//   TODO нужно подумать над частичным редактированием вивария используя уже написанные компоненты
-//   {!isEmpty(viv) && isEmpty(viv?.rat) ? (
-//     <Text fw={500} size="xs" style={{ whiteSpace: "nowrap" }}>
-//       Добавить Виварий 🐀Крыс
-//     </Text>
-//   ) : !isEmpty(viv?.rat) ? (
-//     <>
-//       <Space h="lg" />
-//       <StockVivarium entity={viv.rat} feeder="rat" id={viv.id} />
-//     </>
-//   ) : null}
-//   {!isEmpty(viv) && isEmpty(viv?.mouse) ? (
-//     <Text fw={500} size="xs" style={{ whiteSpace: "nowrap" }}>
-//       Добавить Виварий 🐁Мышей
-//     </Text>
-//   ) : !isEmpty(viv?.mouse) ? (
-//     <>
-//       <Space h="lg" />
-//       <StockVivarium entity={viv.mouse} feeder="mouse" id={viv.id} />
-//     </>
-//   ) : null}
