@@ -11,7 +11,7 @@ export const schema = yup.object<Schema>().shape({
   snake_name: yup
     .string()
     .trim()
-    .matches(/^[a-zA-Zа-яА-Я0-9_-\s]{3,30}$/, "От 3 до 30 символов (разрешены - и _, пробелы)")
+    .matches(/^[a-zA-Zа-яА-Я0-9_\-,.\s]{3,60}$/, "От 3 до 60 символов и -|_|,|.|пробел")
     .required(),
   sex: yup.string().nullable(),
   genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),

@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
-import { Box, Button, CopyButton, Flex, Image, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { AspectRatio, Box, Button, CopyButton, Flex, Image, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -18,9 +18,11 @@ import { getAge, getDate } from "@/utils/time";
 import { FamilyTree } from "../FamilyTree";
 import { snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
 import { EditStats } from "../forms/editStats/formEditStats";
+import { SnakeTags } from "../forms/snakeTags/formSnakeTags";
 import { snakeFeedColumns } from "./utils";
 
 const isFeedOpen = signal<boolean>(false);
+const isTagOpen = signal<boolean>(false);
 const isEditMode = signal<boolean>(false);
 
 interface IProp {
@@ -42,29 +44,49 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
-      <Box>
-        <Title component="span" order={4} c="yellow.6">
-          Подробная информация
-        </Title>
-        <Flex justify="flex-start" gap="xs" align="center">
-          <Text>{title}</Text>
-          <SexName sex={data.sex} name={data.snake_name} />
-        </Flex>
-      </Box>
+      <Flex wrap="nowrap" align="flex-start" maw="100%" w="100%" gap="md">
+        <Stack gap="0px">
+          <Title component="span" order={4} c="yellow.6">
+            Подробная информация
+          </Title>
+          <Flex justify="flex-start" gap="xs" align="center">
+            <Text>{title}</Text>
+            <SexName sex={data.sex} name={data.snake_name} />
+          </Flex>
+          {data.tags ? (
+            <Text fw={500} size="xs" c="pink">
+              {data.tags.map((t) => `#${t}`).join(" ")}
+            </Text>
+          ) : null}
+        </Stack>
+        <Button leftSection="< " size="compact-xs" variant="default" ml="auto" component="a" href="/snakes">
+          К списку
+        </Button>
+      </Flex>
 
       {tab !== "tree" ? (
         <Flex gap="sm" maw="100%" w="100%" wrap="wrap">
-          <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
-            Редактировать
-          </Button>
-          <Button size="compact-xs" onClick={() => (isFeedOpen.value = true)}>
-            Добавить событие
-          </Button>
-          {!["on_sale", "reserved", "sold"].includes(data.status) ? (
-            <Button size="compact-xs" variant="default" component="a" href={`/market/add/${category}?id=${location.query.id}`}>
-              Выставить на продажу
-            </Button>
-          ) : null}
+          <Stack gap="sm">
+            <Flex gap="sm">
+              <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
+                Редактировать
+              </Button>
+              <Button size="compact-xs" onClick={() => (isFeedOpen.value = true)}>
+                Добавить событие
+              </Button>
+            </Flex>
+            <Flex gap="sm">
+              <Button size="compact-xs" onClick={() => (isTagOpen.value = true)}>
+                Тэги
+              </Button>
+              {!["on_sale", "reserved", "sold"].includes(data.status) ? (
+                <Button size="compact-xs" variant="default" component="a" href={`/market/add/${category}?id=${location.query.id}`}>
+                  Выставить на продажу
+                </Button>
+              ) : null}
+            </Flex>
+          </Stack>
+
           <Box ml="auto" pl="md">
             <Indicator position="middle-start" inline size={8} color={snakeStatusToColor[data.status]} processing zIndex={3}>
               <Text fw={500} size="xs" ml="sm">
@@ -94,7 +116,18 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
         <>
           <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
             <Stack flex={{ base: "1", sm: "0 1 50%" }}>
-              <Image src={data.picture} fit="cover" radius="md" w="auto" maw="100%" fallbackSrc={fallback} loading="lazy" mah={{ base: "180px", sm: "260px" }} />
+              <AspectRatio ratio={3 / 2} maw="100%">
+                <Image
+                  src={data.picture}
+                  fit="cover"
+                  radius="md"
+                  w="auto"
+                  maw="100%"
+                  fallbackSrc={fallback}
+                  loading="lazy"
+                  // mah={{ base: "180px", sm: "260px" }}
+                />
+              </AspectRatio>
             </Stack>
             <Stack gap="sm">
               <Box>
@@ -165,6 +198,14 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             title={categToTitle[category]}
             handleAction={feed}
             isPend={isFeedPend}
+          />
+          <SnakeTags
+            opened={isTagOpen.value}
+            close={() => {
+              isTagOpen.value = false;
+            }}
+            snake={data}
+            snakeTable={categoryToBaseTable[category]}
           />
           <ChartBubble shedData={data.shed} />
           <Space h="lg" />

@@ -38,6 +38,7 @@ export const FormAddParents = ({ category, snakeId, onClose, currentFather, curr
         upd: {
           father_id: sbm.father_id,
           mother_id: sbm.mother_id,
+          last_action: "update",
         },
         id: snakeId,
       },

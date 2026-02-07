@@ -72,6 +72,7 @@ export interface IReqCreateClutch {
   infertile_eggs?: number;
   status?: EClSt;
   picture?: string;
+  notes?: string;
 }
 
 export interface IHatchling {
@@ -106,9 +107,10 @@ export interface IResClutch {
   male_genes: IGenesComp[][];
   female_genes: IGenesComp[];
   finalised_ids: string[] | null;
+  notes: string | null;
 }
 
-export interface ICreateClutchReq extends Partial<Pick<IReqCreateClutch, "males_ids" | "female_id" | "date_laid" | "eggs" | "slugs" | "infertile_eggs" | "status">> {}
+export interface ICreateClutchReq extends Partial<Pick<IReqCreateClutch, "males_ids" | "female_id" | "date_laid" | "eggs" | "slugs" | "infertile_eggs" | "status" | "notes">> {}
 
 export interface IUpdClutchReq extends Partial<Omit<IReqCreateClutch, "males_ids" | "female_id" | "owner_id">> {
   clutch_babies?: IHatchling[];

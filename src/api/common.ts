@@ -127,6 +127,7 @@ export interface IReqCreateSnake {
   mother_id?: string | null;
   father_id?: string | null;
   status?: ISnakeStatuses;
+  tags?: string[] | null;
 }
 
 export type IUpdReq = {
@@ -153,7 +154,7 @@ export type IFeedReq = Omit<IUpdReq, "feeding" | "weight" | "shed"> & {
   id: string;
 };
 
-export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "price" | "picture" | "notes" | "last_action" | "from_clutch" | "mother_id" | "father_id"> {
+export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "price" | "picture" | "notes" | "last_action" | "from_clutch" | "mother_id" | "father_id" | "tags"> {
   id: string;
   owner_name: string;
   status: string;

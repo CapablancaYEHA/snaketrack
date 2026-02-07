@@ -131,7 +131,7 @@ export function Market() {
         onClose={close}
         title={<Title order={5}>Фильтрация</Title>}
         position="top"
-        offset={16}
+        offset="calc(16px + env(safe-area-inset-top))"
         styles={{
           inner: {
             justifyContent: "center",

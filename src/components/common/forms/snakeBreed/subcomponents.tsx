@@ -222,8 +222,8 @@ export const BriefInfo = ({ snake }) => {
         <Image src={snake?.picture} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
         <Stack gap="xs" flex="0 1 auto">
           <SexName sex={snake?.sex} name={snake?.snake_name} />
-          <Text size="md">⌛ {getAge(snake?.date_hatch)}</Text>
-          {lastWeight ? <Text size="md">Вес {lastWeight.weight}г</Text> : null}
+          <Text size="xs">⌛ {getAge(snake?.date_hatch)}</Text>
+          {lastWeight ? <Text size="xs">Вес {lastWeight.weight}г</Text> : null}
         </Stack>
       </Flex>
       <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
@@ -233,10 +233,10 @@ export const BriefInfo = ({ snake }) => {
   );
 };
 
-export const OddsInfo = ({ female, male }) => {
+export const OddsInfo = ({ female, male, category }) => {
   const isMwTablet = useMediaQuery(tabletThreshold);
   const [isOpen, setOpen] = useState(false);
-  const { mutate, data, isPending, isError } = useCalcMmOdds(ECategories.BP);
+  const { mutate, data, isPending, isError } = useCalcMmOdds(category);
 
   useEffect(() => {
     if (female != null && male != null) {
@@ -256,7 +256,7 @@ export const OddsInfo = ({ female, male }) => {
   return isMwTablet ? (
     <>
       <Space h="sm" />
-      <Drawer opened={isOpen} onClose={() => setOpen(false)} title="Возможные комбинации" offset={24} position="top">
+      <Drawer opened={isOpen} onClose={() => setOpen(false)} title="Возможные комбинации" offset="calc(16px + env(safe-area-inset-top))" position="top">
         <Stack gap="lg" pt="xs">
           {data?.offspring?.map((o) => {
             return <OddsElement o={o} key={o.morph_name} />;
@@ -409,7 +409,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
                     </>
                   )}
                   <FormProvider {...innerInstance}>{malesEvents && malesEvents.hasOwnProperty(male?.id) ? <MaleEvent id={male?.id} disabled={isClutchMade} /> : null}</FormProvider>
-                  {category !== ECategories.MV ? <OddsInfo female={femData} male={male} /> : null}
+                  {category !== ECategories.MV ? <OddsInfo female={femData} male={male} category={category} /> : null}
                   <div>
                     {fetchFields?.slice(1)[ind] != null ? (
                       <Group justify="space-between">

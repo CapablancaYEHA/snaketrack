@@ -11,14 +11,19 @@ import { hatchFiltFn } from "./StackTable/filters";
 
 const colHelper = createColumnHelper<IResSnakesList>();
 
-export const makeListColumns = ({ openTrans, openFeed, openDelete }) => {
+export const makeListColumns = ({ openTrans, openFeed, openDelete, openTag }) => {
   return [
     colHelper.accessor("picture", {
       header: () => " ",
       cell: ({ cell, row }) => (
-        <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openDelete={openDelete} category={catVisited.value}>
+        <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openTag={openTag} openDelete={openDelete} category={catVisited.value}>
           <Stack gap="xs" maw="100%" w="100%">
             <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
+            {row.original.tags ? (
+              <Text fw={500} size="xs" c="pink">
+                {row.original.tags.map((t) => `#${t}`).join(" ")}
+              </Text>
+            ) : null}
             <AspectRatio ratio={16 / 9} maw="100%">
               <Image src={cell.getValue()} fit="cover" radius="md" w="100%" fallbackSrc={fallback} loading="lazy" />
             </AspectRatio>
@@ -64,6 +69,13 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete }) => {
       maxSize: 3,
       minSize: 150,
       filterFn: hatchFiltFn,
+    }),
+    colHelper.accessor((row: any) => row.tags, {
+      id: "tags",
+      header: undefined,
+      cell: undefined,
+      enableSorting: false,
+      filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => (row.original.tags ?? []).includes(a)),
     }),
     colHelper.accessor((row: any) => row.genes, {
       id: "genes",

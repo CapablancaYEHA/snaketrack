@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Button, CloseButton, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
+import { Box, Button, CloseButton, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
@@ -14,15 +14,18 @@ import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSnakeGenes, useSupaDel, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
+import { useProfile } from "@/api/profile/hooks";
 import { catVisited } from "@/pages/SnakeCategories";
 import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
 import { sexHardcode } from "./forms/snakeBreed/common";
+import { SnakeTags } from "./forms/snakeTags/formSnakeTags";
 import { categToConfigList, categToTitle, maturityDict } from "./utils";
 
 const curId = signal<string | undefined>(undefined);
 const isTransOpen = signal<boolean>(false);
 const isFeedOpen = signal<boolean>(false);
+const isTagOpen = signal<boolean>(false);
 const isDeleteOpen = signal<boolean>(false);
 
 const base = {
@@ -32,6 +35,10 @@ const base = {
   },
   openTrans: (uuid) => {
     isTransOpen.value = true;
+    curId.value = uuid;
+  },
+  openTag: (uuid) => {
+    isTagOpen.value = true;
     curId.value = uuid;
   },
   openDelete: (uuid) => {
@@ -44,6 +51,7 @@ export function SnakeCollectionList() {
   const isMinSm = useMediaQuery(startSm);
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
+  const { data: profile } = useProfile(userId, userId != null);
   const { data: genes } = useSnakeGenes(catVisited.value);
   const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(categToConfigList[catVisited.value]?.(userId), userId != null);
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[catVisited.value]);
@@ -81,6 +89,17 @@ export function SnakeCollectionList() {
         <Text fw={500}>{categToTitle[catVisited.value]}ов у вас нет</Text>
       ) : (
         <>
+          <Box style={{ alignSelf: "start" }} maw="100%" w="100%">
+            <TextInput
+              size="xs"
+              flex="1 1 auto"
+              placeholder="Поиск по примечаниям, именам"
+              onChange={(e: any) => setGlobalFilter(e.target.value!)}
+              value={globalFilter}
+              rightSection={<CloseButton aria-label="Clear input" onClick={() => setGlobalFilter("")} style={{ display: globalFilter ? undefined : "none" }} />}
+              leftSection={<IconSwitch icon="search" />}
+            />
+          </Box>
           <Text size="xs" ta="left" w="100%">
             Закрепленная колонка отображает дополнительное меню на ховер
           </Text>
@@ -122,6 +141,15 @@ export function SnakeCollectionList() {
         handleAction={feed}
         isPend={isFeedPend}
       />
+      <SnakeTags
+        opened={isTagOpen.value && Boolean(curId.value)}
+        close={() => {
+          curId.value = undefined;
+          isTagOpen.value = false;
+        }}
+        snake={target}
+        snakeTable={categoryToBaseTable[catVisited.value]}
+      />
       <DeleteSnake
         opened={isDeleteOpen.value}
         close={() => {
@@ -137,7 +165,7 @@ export function SnakeCollectionList() {
         onClose={close}
         title={<Title order={5}>Фильтрация</Title>}
         position="top"
-        offset={16}
+        offset="calc(16px + env(safe-area-inset-top))"
         styles={{
           inner: {
             justifyContent: "center",
@@ -151,20 +179,15 @@ export function SnakeCollectionList() {
         keepMounted
       >
         <Flex gap="md" wrap="nowrap" align="end" flex="1 1 auto">
-          <TextInput
-            flex="1 1 50%"
-            placeholder="Поиск по примечаниям, именам"
-            onChange={(e: any) => setGlobalFilter(e.target.value!)}
-            value={globalFilter}
-            rightSection={<CloseButton aria-label="Clear input" onClick={() => setGlobalFilter("")} style={{ display: globalFilter ? undefined : "none" }} />}
-            leftSection={<IconSwitch icon="search" />}
-          />
-          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltSingle(setFilt, a, "sex")} label="Пол" placeholder="Не выбран" />
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "genes")} data={(genes ?? [])?.map((g) => g.label)} />
         </Flex>
         <Space h="md" />
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
           <MaxSelectedMulti miw={0} flex="1 1 50%" label="Возраст" onChange={(a) => tableFiltMulti(setFilt, a, "date_hatch")} data={maturityDict} dataHasLabel />
-          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "genes")} data={(genes ?? [])?.map((g) => g.label)} />
+          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltSingle(setFilt, a, "sex")} label="Пол" placeholder="Не выбран" />
+        </Flex>
+        <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Тэги" onChange={(a) => tableFiltMulti(setFilt, a, "tags")} data={profile?.snake_tags ?? []} />
         </Flex>
       </Drawer>
       {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}

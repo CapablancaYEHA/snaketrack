@@ -93,6 +93,7 @@ a {
   @include cute-scroll(60px);
   overflow: auto !important;
   height: auto;
+  transform: inherit !important;
 }
 
 .mantine-Drawer-header {

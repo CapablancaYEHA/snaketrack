@@ -116,6 +116,7 @@ export function useSupaCreate<T>(table: ESupabase, invalWhat?: IInval, isBulk?: 
   });
 }
 
+// FIXME сделать отдельный апдейт хук для змей, чтобы не нужно было передавать дефолтный last_action: update ?
 export const supaUpd = async <T>({ t, p }: IModif<T>) => {
   const { upd, id } = p as any;
   return await supabase.from(t).update(upd).eq("id", id).throwOnError();

@@ -32,7 +32,7 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
         </Text>
       </Box>
       <Flex gap="xl" flex="1 1 auto" className={className} mih={324}>
-        <Stack gap="md" justify="space-between">
+        <Stack gap="md" justify="space-between" maw="100%" w="100%">
           {pics.map((a, ind) => (
             <Flex
               key={`${a}_${ind}_${clutch.id}`}
@@ -46,7 +46,7 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
               }}
             >
               <IconSwitch icon={ind === 0 ? "female" : "male"} width="16" height="16" />
-              <Image src={a} fit="cover" radius="sm" w="auto" h={64} loading="lazy" flex="1 1 64px" fallbackSrc={fallback} />
+              <Image src={a} fit="cover" radius="sm" w="auto" h={64} loading="lazy" flex="auto" fallbackSrc={fallback} />
             </Flex>
           ))}
         </Stack>
@@ -66,7 +66,7 @@ export const SInfo = ({ clutch, onPicClick, category }: { clutch: IResClutch; on
         <Flex gap="xl" wrap="nowrap">
           <Stack gap="xs">
             <Title order={6}>
-              Яйца
+              Яиц всего
               <Text size="sm" fw={500}>
                 {clutch.eggs ?? "Не указано"}
               </Text>
@@ -196,8 +196,8 @@ export const MiniInfo = ({ opened, close, snakeId, sex, category, withTitle = tr
             <Anchor href={`/snakes/${category}?id=${data.id}`} c="inherit">
               <SexName sex={data?.sex} name={data?.snake_name} isLink />
             </Anchor>
-            <Text size="md">⌛ {getAge(data?.date_hatch)}</Text>
-            {lastWeight ? <Text size="md">Вес {lastWeight.weight}г</Text> : null}
+            <Text size="xs">⌛ {getAge(data?.date_hatch)}</Text>
+            {lastWeight ? <Text size="xs">Вес {lastWeight.weight}г</Text> : null}
             <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
               {sortSnakeGenes(data.genes as any).map((a) => (
                 <GenePill item={a} key={`${a.label}_${a.id}`} />
@@ -217,28 +217,28 @@ export const FormApprovedBabies = ({ futureSnakes, isShow }) => {
 
   const { errors } = innerInstance.formState;
 
-  const renderItems = (ind, isLabel) => (
+  const renderItems = (ind, isLabel, size = "sm") => (
     <>
-      <TextInput {...innerInstance.register(`future_animals.${ind}.snake_name`)} required={ind === 0} label={ind === 0 ? "Кличка змеи" : isLabel ? " " : undefined} error={errors?.future_animals?.[ind]?.snake_name?.message} size="sm" />
+      <TextInput {...innerInstance.register(`future_animals.${ind}.snake_name`)} required={ind === 0} label={isLabel ? "Кличка змеи" : undefined} error={errors?.future_animals?.[ind]?.snake_name?.message} size={size} />
       <Controller
         name={`future_animals.${ind}.date_hatch`}
         control={innerInstance.control}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <DatePickerInput label={ind === 0 ? "Дата рождения" : isLabel ? " " : undefined} value={new Date(value as any)} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} size="sm" />;
+          return <DatePickerInput label={isLabel ? "Дата рождения" : undefined} value={new Date(value as any)} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} size={size as any} />;
         }}
       />
       <Controller
         name={`future_animals.${ind}.sex`}
         control={innerInstance.control}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <Select data={sexHardcode} value={value} onChange={onChange} label={ind === 0 ? "Пол" : isLabel ? " " : undefined} error={error?.message} size="sm" placeholder="Необязательно" />;
+          return <Select data={sexHardcode} value={value} onChange={onChange} label={isLabel ? "Пол" : undefined} error={error?.message} size={size} placeholder="Необязательно" />;
         }}
       />
       <Controller
         name={`future_animals.${ind}.status`}
         control={innerInstance.control}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <Select data={statusHardcode} value={value} onChange={onChange} label={ind === 0 ? "Состояние" : isLabel ? " " : undefined} error={error?.message} size="sm" />;
+          return <Select data={statusHardcode} value={value} onChange={onChange} label={isLabel ? "Состояние" : undefined} error={error?.message} size={size} />;
         }}
       />
       <Box>
@@ -246,7 +246,7 @@ export const FormApprovedBabies = ({ futureSnakes, isShow }) => {
           name={`future_animals.${ind}.genes`}
           control={innerInstance.control}
           render={({ field: { onChange, value } }) => {
-            return <GenesSelect view={EGenesView.STD} description={null} onChange={(a) => onChange(a)} label={ind === 0 ? "Морфы" : isLabel ? " " : undefined} init={value as any} placeholder="Необязательно" category={ECategories.BP} />;
+            return <GenesSelect view={EGenesView.STD} description={null} onChange={(a) => onChange(a)} label={isLabel ? "Морфы" : undefined} init={value as any} placeholder="Необязательно" category={ECategories.BP} size={size as any} />;
           }}
         />
       </Box>
@@ -262,16 +262,14 @@ export const FormApprovedBabies = ({ futureSnakes, isShow }) => {
     isMinMd ? (
       futureSnakes.map((f, ind) => (
         <SimpleGrid cols={5} spacing="xs" verticalSpacing="xs" key={f.id}>
-          {renderItems(ind, false)}
+          {renderItems(ind, ind === 0)}
         </SimpleGrid>
       ))
     ) : (
-      <Grid gutter="sm">
+      <Grid gutter="sm" align="baseline">
         {futureSnakes.map((f, ind) => (
           <Grid.Col key={f.id} span={isMinSm ? 3 : 4}>
-            <Group gap="sm" grow preventGrowOverflow>
-              {renderItems(ind, true)}
-            </Group>
+            <Box>{renderItems(ind, true, "xs")}</Box>
           </Grid.Col>
         ))}
       </Grid>

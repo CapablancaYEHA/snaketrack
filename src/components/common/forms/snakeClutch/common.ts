@@ -30,6 +30,7 @@ export const initClutchAddValues = {
   eggs: undefined,
   slugs: undefined,
   infertile_eggs: null,
+  notes: null,
 };
 
 const baseClutchSchema = yup.object<Schema>().shape({
@@ -40,12 +41,13 @@ const baseClutchSchema = yup.object<Schema>().shape({
   infertile_eggs: yup.number().optional().notRequired(),
   id: yup.string().notRequired(),
   placeholders: yup.array().of(yup.mixed()).optional().nullable(),
+  notes: yup.string().nullable(),
   future_animals: yup.array().of(
     yup.object({
       snake_name: yup
         .string()
         .trim()
-        .matches(/^[a-zA-Zа-яА-Я0-9_-\s]{3,30}$/, "От 3 до 30 символов (- _ space)")
+        .matches(/^[a-zA-Zа-яА-Я0-9_\-,.\s]{3,60}$/, "От 3 до 60 символов и -|_|,|.|пробел")
         .required(),
       sex: yup.string().optional().nullable(),
       date_hatch: yup.string().required("Дата обязательна"),
@@ -85,6 +87,7 @@ export const makeInitClutch = (data?: IResClutch | null) => {
     eggs: data.eggs,
     slugs: data.slugs,
     infertile_eggs: data.infertile_eggs,
+    notes: data.notes,
     placeholders: new Array((data.eggs || 0) - (data.infertile_eggs || 0)).fill(" "),
     future_animals: data.clutch_babies ?? [],
     father_id: data.males_ids.length > 1 ? null : data.males_ids?.[0],

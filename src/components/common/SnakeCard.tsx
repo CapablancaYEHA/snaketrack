@@ -71,7 +71,7 @@ export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isS
   );
 };
 
-export const Controls = ({ id, openFeed, openTrans, openDelete, category, children }) => {
+export const Controls = ({ id, openFeed, openTrans, openDelete, category, openTag, children }) => {
   return (
     <Menu
       openDelay={200}
@@ -115,6 +115,15 @@ export const Controls = ({ id, openFeed, openTrans, openDelete, category, childr
           }}
         >
           Передать
+        </Menu.Item>
+        <Menu.Item
+          onClick={(e) => {
+            e.stopPropagation();
+            openTag(id);
+          }}
+          style={{ whiteSpace: "nowrap" }}
+        >
+          Тэги
         </Menu.Item>
         <Menu.Item
           c="var(--mantine-color-error)"

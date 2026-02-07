@@ -2,7 +2,7 @@ import { useLocation } from "preact-iso";
 import { FC, Fragment } from "preact/compat";
 import { useEffect } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, Divider, Flex, Group, LoadingOverlay, NumberInput, Progress, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Divider, Flex, Group, LoadingOverlay, NumberInput, Progress, Select, Space, Stack, Text, Textarea, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
@@ -35,6 +35,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
     handleSubmit,
     formState: { isDirty },
     control,
+    register,
   } = useForm<IClutchAddScheme>({
     defaultValues: initClutchAddValues,
     resolver: yupResolver(clutchAddSchema as any),
@@ -91,7 +92,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
       </Text>
       <Group maw="100%" w="100%" align="start" gap="xl" grow>
         <Flex gap="md" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
-          <Text size="md">Самка в кладке</Text>
+          <Text size="md">Самка</Text>
           <Controller
             name="female_id"
             control={control}
@@ -116,7 +117,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
           </Box>
         </Flex>
         <Flex gap="md" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
-          <Text size="md">Возможные Самцы в кладке</Text>
+          <Text size="md">Самец или Самцы</Text>
           <Stack align="flex-start" w="100%" maw="100%">
             <Controller
               name={`males_ids.0.snake`}
@@ -240,7 +241,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
             name="eggs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput label="Яйца" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return <NumberInput label="Яиц всего" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
             }}
           />
           <Controller
@@ -258,6 +259,9 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
             }}
           />
         </Flex>
+        <Box maw="100%" w="100%">
+          <Textarea {...register("notes")} label="Заметки" resize="vertical" w="100%" maw="100%" id="txarea_helper_clutch" />
+        </Box>
       </Stack>
       <Flex align="flex-start" maw="100%" w="100%">
         <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onCreate)} disabled={!isDirty || isPending} loading={isPending}>

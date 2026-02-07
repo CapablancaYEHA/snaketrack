@@ -3,7 +3,7 @@ import { FC } from "preact/compat";
 import { useEffect } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Textarea, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
@@ -45,6 +45,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
     formState: { isDirty, dirtyFields },
     control,
     watch,
+    register,
   } = form;
 
   const [wEggs, wInf] = useWatch({
@@ -191,7 +192,9 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             name="eggs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput disabled={isHatch || isClosed} label="Яйца" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return (
+                <NumberInput disabled={isHatch || isClosed} label="Яиц всего" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />
+              );
             }}
           />
           <Controller
@@ -209,6 +212,9 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             }}
           />
         </Flex>
+        <Box maw="100%" w="100%">
+          <Textarea {...register("notes")} label="Заметки" resize="vertical" w="100%" maw="100%" id="txarea_helper_clutch_edit" />
+        </Box>
       </Stack>
       {!(isHatch || isClosed) ? (
         <Flex align="flex-start" maw="100%" w="100%">
@@ -221,7 +227,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
         <>
           <Divider w="100%" maw="100%" mt="md" />
           <Stack gap="lg" w="100%" maw="100%">
-            <Flex gap="md">
+            <Flex gap="md" align="baseline">
               <Controller
                 name="date_hatch"
                 control={control}
