@@ -105,11 +105,11 @@ export const calcStatusOptions = () => Object.entries(bStToLabel).map(([key, val
 
 export const calcProjGenes = (arr?: IGenesComp[]) => {
   if (!arr) return [];
-  const excludeNormal = arr.filter((g) => g.label !== "Normal");
-  if (isEmpty(excludeNormal)) {
+  const excludeNormalAndInvalid = arr.filter((g) => g && g.label !== "Normal");
+  if (isEmpty(excludeNormalAndInvalid)) {
     return [{ gene: "other", label: "Normal" }];
   }
-  const pre = excludeNormal.map((a) => {
+  const pre = excludeNormalAndInvalid.map((a) => {
     if (a.gene === "inc-dom") {
       if (a.label.startsWith("Super")) {
         const [r, ..._] = a.label.match(/(Super)?\w+$/)!;

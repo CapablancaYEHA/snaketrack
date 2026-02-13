@@ -39,7 +39,7 @@ export const makeBreedColumns = ({ setBreedId, category }) => {
       header: () => "Самка",
       cell: ({ cell, row }) => (
         <BreedControl id={row.original.id} onDelete={setBreedId} clutchId={row.original.clutch_id} category={category}>
-          <Text maw="100%" w="100%">
+          <Text maw="100%" w="100%" style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
             {cell.getValue()}
           </Text>
         </BreedControl>
@@ -47,20 +47,23 @@ export const makeBreedColumns = ({ setBreedId, category }) => {
       filterFn: "arrIncludesSome",
       size: 1,
       maxSize: 2,
-      minSize: 82,
+      minSize: 160,
     }),
     columnHelper.accessor("male_names", {
       header: () => "Самцы",
-      cell: ({ cell }) =>
-        cell
-          .getValue()
-          .map((n) => n)
-          .join(", "),
+      cell: ({ cell }) => (
+        <Text maw="100%" w="100%" style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+          {cell
+            .getValue()
+            .map((n) => n)
+            .join(", ")}
+        </Text>
+      ),
       enableSorting: false,
       filterFn: "arrIncludesSome",
       size: 3,
       maxSize: 2,
-      minSize: 164,
+      minSize: 160,
     }),
     columnHelper.accessor("traits" as any, {
       header: () => "Гены в проекте",
