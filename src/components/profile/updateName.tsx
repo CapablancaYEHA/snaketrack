@@ -49,7 +49,7 @@ export const ModalChangeName: FC<IProp> = ({ opened, close, sbmtCallback, title 
       centered
       transitionProps={{ transition: "fade", duration: 200 }}
     >
-      <form id="form_register" onSubmit={handleSubmit(onSub, undefined)}>
+      <form id="form_change_name" onSubmit={handleSubmit(onSub, undefined)}>
         <Space h="lg" />
         <TextInput
           {...register("userName", {

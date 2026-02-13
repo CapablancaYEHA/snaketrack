@@ -4,7 +4,8 @@ import { Box, Button, PasswordInput, Space, Title } from "@mantine/core";
 import { useForm } from "react-hook-form";
 import { supabase } from "../../lib/client_supabase";
 import { notif } from "../../utils/notif";
-import styles from "./styles.module.scss";
+
+// import styles from "./styles.module.scss";
 
 export function Reset() {
   const location = useLocation();
@@ -74,7 +75,7 @@ export function Reset() {
   };
 
   return (
-    <Box className={styles.wrap} component="section" py="lg">
+    <Box component="section" py="lg">
       <form id="form_register" onSubmit={handleSubmit(onSubmit, undefined)}>
         <Title order={2}>Смена пароля</Title>
         <Space h="md" />
@@ -84,6 +85,7 @@ export function Reset() {
             pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@_$!%*?&-])[A-Za-z\d@_$!%*?&-]{8,}$/,
           })}
           label="Новый пароль"
+          autoComplete="new-password"
           error={errors.userPass && <p>Только английские символы (минимум 8), обязательно: 1 прописная буква + цифра + спец символ @_-$!%*?&</p>}
         />
         <Space h="lg" />

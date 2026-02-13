@@ -1,15 +1,16 @@
 import { useEffect } from "preact/hooks";
-import { Anchor, Box, Flex, Loader, Space, Stack, Text } from "@mantine/core";
+import { Anchor, Box, Button, Flex, Loader, Space, Stack, Text } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { ReleasesHistory } from "@/components/profile/releasesHistory";
+import { ModalChangePass } from "@/components/profile/updatePass";
 import { useProfile, useUpdName } from "@/api/profile/hooks";
-import { Btn } from "../../components/navs/btn/Btn";
 import { ModalChangeName } from "../../components/profile/updateName";
 import { notif } from "../../utils/notif";
 import { getDateHours } from "../../utils/time";
 
 const ver = import.meta.env.VITE_APP_VERSION;
-const isOpen = signal(false);
+const sigChangeName = signal(false);
+const sigChangePass = signal(false);
 const isShowHist = signal(false);
 
 export function Profile() {
@@ -35,9 +36,9 @@ export function Profile() {
           <Text size="md">{data?.username ?? "Не задано"}</Text>
         </div>
         <Box flex="1 0 156px" display="flex">
-          <Btn fullWidth={false} style={{ width: "min-content", marginLeft: "auto" }} onClick={() => (isOpen.value = true)} size="xs" loading={isPend} disabled={isPend}>
+          <Button fullWidth={false} style={{ width: "min-content", marginLeft: "auto" }} onClick={() => (sigChangeName.value = true)} size="compact-sm" variant="outline" loading={isPend} disabled={isPend}>
             Сменить имя
-          </Btn>
+          </Button>
         </Box>
       </Flex>
       <div>
@@ -51,6 +52,11 @@ export function Profile() {
           Дата регистрации:
         </Text>
         {data?.createdat != null ? <Text size="md">{getDateHours(data.createdat)}</Text> : null}
+      </div>
+      <div>
+        <Button fullWidth={false} style={{ width: "min-content" }} onClick={() => (sigChangePass.value = true)} size="compact-sm" variant="subtle" loading={isPend} disabled={isPend}>
+          Изменить пароль
+        </Button>
       </div>
       <Space h="sm" />
       <Stack w="100%" gap="xs">
@@ -76,26 +82,30 @@ export function Profile() {
       {isPending ? (
         <Loader color="dark.1" size="xs" />
       ) : (
-        <ModalChangeName
-          opened={isOpen.value}
-          close={() => (isOpen.value = false)}
-          initName={data?.username ?? ""}
-          sbmtCallback={(a) =>
-            mutate(
-              { name: a, id: userId! },
-              {
-                onSuccess: () => {
-                  notif({ c: "green", t: "Успешно", m: "Имя аккаунта сохранено" });
-                  isOpen.value = false;
+        <>
+          <ModalChangeName
+            opened={sigChangeName.value}
+            close={() => (sigChangeName.value = false)}
+            initName={data?.username ?? ""}
+            sbmtCallback={(a) =>
+              mutate(
+                { name: a, id: userId! },
+                {
+                  onSuccess: () => {
+                    notif({ c: "green", t: "Успешно", m: "Имя аккаунта сохранено" });
+                    sigChangeName.value = false;
+                  },
+                  onError: (e) => {
+                    notif({ c: "red", t: "Проблема", m: "Имя занято", code: e.code });
+                  },
                 },
-                onError: (e) => {
-                  notif({ c: "red", t: "Проблема", m: "Имя занято", code: e.code });
-                },
-              },
-            )
-          }
-        />
+              )
+            }
+          />
+          <ModalChangePass opened={sigChangePass.value} close={() => (sigChangePass.value = false)} />
+        </>
       )}
+
       <ReleasesHistory opened={isShowHist.value} close={() => (isShowHist.value = false)} />
     </Stack>
   );

@@ -244,7 +244,7 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
         />
       </Box>
       <Flex align="flex-start" maw="100%" gap="xl" className={styles.w70}>
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isCrPend || isUpdPend}>
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isCrPend || isUpdPend} disabled={isCrPend || isUpdPend}>
           Создать
         </Btn>
       </Flex>

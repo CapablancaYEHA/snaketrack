@@ -169,7 +169,7 @@ export const FormEditSnake = ({ init, table, storage, title, category }) => {
         />
       </Flex>
       <Flex align="flex-start" maw="100%" w="100%" gap="xl">
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending} disabled={!isDirty}>
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending} disabled={!isDirty || isPending}>
           Сохранить
         </Btn>
       </Flex>

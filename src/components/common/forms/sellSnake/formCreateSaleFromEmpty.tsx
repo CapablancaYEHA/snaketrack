@@ -268,7 +268,7 @@ export const FormCreateSaleFromEmpty = ({ category }) => {
         />
       </Box>
       <Flex align="flex-start" maw="100%" gap="xl" className={styles.w70}>
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isMutSnakePend || isMutAdvPend}>
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isMutSnakePend || isMutAdvPend} disabled={isMutSnakePend || isMutAdvPend}>
           Создать
         </Btn>
       </Flex>

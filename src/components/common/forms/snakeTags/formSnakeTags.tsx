@@ -117,7 +117,7 @@ export const SnakeTags: FC<IProp> = ({ opened, close, snake, snakeTable }) => {
             </Flex>
           )}
         </Box>
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={submit} loading={isPending || isUpdPend} disabled={!isDirty}>
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={submit} loading={isPending || isUpdPend} disabled={!isDirty || isPending || isUpdPend}>
           Подтвердить
         </Btn>
       </Stack>

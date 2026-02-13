@@ -1,41 +1,14 @@
-import { useLocation } from "preact-iso";
 import { useLayoutEffect } from "preact/hooks";
-import { Anchor, Box, PasswordInput, Space, Text, TextInput, Title } from "@mantine/core";
-import { isEmpty } from "lodash-es";
-import { useForm } from "react-hook-form";
-import { Btn } from "../../components/navs/btn/Btn";
-import { supabase } from "../../lib/client_supabase";
-import { notif } from "../../utils/notif";
-import styles from "./styles.module.scss";
+import { Anchor, SegmentedControl, Stack, Text, Title } from "@mantine/core";
+import { EAuth, sigRegister } from "@/components/formsAuth/const";
+import { FormLoginEmailOtp } from "@/components/formsAuth/loginEmailOtp";
+import { FormLoginEmailPass } from "@/components/formsAuth/loginEmailPass";
+
+const handle = (a) => {
+  sigRegister.value = a;
+};
 
 export function Login() {
-  const location = useLocation();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const onSubmit = async (sbmtData) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: sbmtData.userMail,
-      password: sbmtData.userPass,
-    });
-
-    if (error) {
-      notif({
-        c: "red",
-        t: "Ошибка логина",
-        m: error?.message || "Неверные данные или письмо на почте не подтверждено",
-        code: error?.code,
-      });
-    }
-    if (!isEmpty(data?.session)) {
-      location.route("/snakes");
-    }
-  };
-
   let trg = document.getElementById("layoutsdbr");
   useLayoutEffect(() => {
     let trgH = document.getElementById("layouthdr");
@@ -49,45 +22,33 @@ export function Login() {
   }, [trg]);
 
   return (
-    <Box className={styles.wrap} py="lg">
-      <form id="form_login" onSubmit={handleSubmit(onSubmit, undefined)}>
-        <Title order={2}>Вход</Title>
-        <Space h="md" />
-        <p>
-          <Text span size="md" display="inline">
-            Нет аккаунта?
-          </Text>
-          {"  "}
-          <Anchor href="/register" display="inline">
-            Зарегистрироваться
-          </Anchor>
-        </p>
-        <Space h="lg" />
-        <TextInput
-          {...register("userMail", {
-            required: true,
-            pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            setValueAs: (v) => v.trim(),
-          })}
-          label="Email"
-          error={errors.userMail && <p>Формат мыла неверный</p>}
-          data-autofocus
-          style={{ width: "100%" }}
-        />
-        <Space h="lg" />
-        <PasswordInput
-          {...register("userPass", {
-            required: true,
-            minLength: 8,
-          })}
-          label="Пароль"
-          error={errors.userPass && <p>8 символов минимум - таково было требование к паролю при регистрации</p>}
-        />
-        <Space h="xl" />
-        <Btn fullWidth={false} style={{ alignSelf: "center", width: "min-content" }} type="submit">
-          Войти
-        </Btn>
-      </form>
-    </Box>
+    <Stack py="lg" gap="md" maw={400} w="100%" m="0 auto">
+      <Title order={2}>Вход</Title>
+      <Text size="md">
+        Нет аккаунта?{" "}
+        <Anchor href="/register" display="inline">
+          Зарегистрироваться
+        </Anchor>
+      </Text>
+      <SegmentedControl
+        size="xs"
+        value={sigRegister.value}
+        onChange={handle}
+        w="100%"
+        maw="300px"
+        data={[
+          {
+            label: "OTP + Почта",
+            value: EAuth.MAIL,
+          },
+          {
+            label: "Почта + Пароль",
+            value: EAuth.FULL,
+          },
+        ]}
+        m="0 auto"
+      />
+      {sigRegister.value === EAuth.FULL ? <FormLoginEmailPass /> : <FormLoginEmailOtp />}
+    </Stack>
   );
 }

@@ -146,7 +146,7 @@ export const FormAddVivarium = () => {
       ) : null}
 
       <Space h="sm" />
-      <Button size="compact-xs" onClick={handleSubmit(onSub)} style={{ alignSelf: "end" }} loading={isPending} disabled={!wIsRats && !wIsMice}>
+      <Button size="compact-xs" onClick={handleSubmit(onSub)} style={{ alignSelf: "end" }} loading={isPending} disabled={(!wIsRats && !wIsMice) || isPending}>
         Создать
       </Button>
     </Stack>

@@ -21,6 +21,7 @@ export const notif = ({ c = "green", m = "Что-то пошло не так", t
 
 const codeToMsg = {
   email_not_confirmed: "E-mail не подтвержден",
+  user_already_exists: "Вы уже зарегистрированы на этот e-mail",
   invalid_credentials: "Неверный данные для логина",
   23505: "Данное имя пользователя уже занято",
   409: "Фото с таким именем уже существует",

@@ -166,7 +166,7 @@ export const FormEditVivarium = ({ viv, initRat, initMouse }) => {
 
       <Space h="sm" />
       <Flex align="flex-start" maw="100%" w="100%" gap="xl">
-        <Button size="compact-xs" ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending} disabled={!isDirtyRats && !isDirtyMice}>
+        <Button size="compact-xs" ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isPending} disabled={(!isDirtyRats && !isDirtyMice) || isPending}>
           Сохранить
         </Button>
       </Flex>

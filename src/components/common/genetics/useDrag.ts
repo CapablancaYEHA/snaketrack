@@ -12,8 +12,8 @@ export const useDrag = () => {
     initialPos.current = {
       x: e.clientX,
       y: e.clientY,
-      objX: parseInt(ref.current.style.left),
-      objY: parseInt(ref.current.style.top),
+      objX: parseInt(ref.current.style.left, 10),
+      objY: parseInt(ref.current.style.top, 10),
     };
   };
 

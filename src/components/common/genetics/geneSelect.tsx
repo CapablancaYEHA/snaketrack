@@ -104,6 +104,7 @@ export const GenesSelect: FC<IProp> = ({ onChange, view, init, label, category, 
 
   useEffect(() => {
     if (init) setValue(init);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

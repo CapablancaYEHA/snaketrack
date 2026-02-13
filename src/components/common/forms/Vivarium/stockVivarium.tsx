@@ -62,10 +62,11 @@ export const StockVivarium: FC<IEnt> = ({ entity, feeder, id }) => {
             }}
             variant="default"
             loading={isPending}
+            disabled={isPending}
           >
             Отмена
           </Button>
-          <Button size="compact-xs" onClick={upd} disabled={!isDirty} loading={isPending}>
+          <Button size="compact-xs" onClick={upd} disabled={!isDirty || isPending} loading={isPending}>
             Сохранить
           </Button>
         </Flex>

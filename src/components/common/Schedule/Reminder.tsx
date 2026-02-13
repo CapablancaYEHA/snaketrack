@@ -150,7 +150,6 @@ interface ICrRem {
 
 const CreateRem: FC<ICrRem> = ({ handleCreate, creationIds, category }) => {
   const innerInstance = useFormContext<any>();
-  const userId = localStorage.getItem("USER");
 
   const { data: list } = useSupaGet<IResSnakesList[]>({ t: categoryToBaseTable[category], s: ["snake_name", "id", "sex"].join(", "), f: (b) => b.in("id", creationIds), id: { ids: creationIds } }, !isEmpty(creationIds));
 
