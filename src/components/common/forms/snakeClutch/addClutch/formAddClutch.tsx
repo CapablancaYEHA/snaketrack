@@ -225,7 +225,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
                 <Flex>
                   <Box w="100%" maw="100%">
                     <Progress.Root size="lg">
-                      <Progress.Section value={getPercentage(daysIncubation[category], left)} color="green" animated={calcAnim(EClSt.LA, left)} striped={calcAnim(EClSt.LA, left)} />
+                      <Progress.Section value={getPercentage(daysIncubation[category], left)} color={calcAnim(EClSt.LA, left) ? "yellow" : "green"} animated={calcAnim(EClSt.LA, left)} striped={calcAnim(EClSt.LA, left)} />
                     </Progress.Root>
                   </Box>
                 </Flex>

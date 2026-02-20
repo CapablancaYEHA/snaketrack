@@ -1,6 +1,6 @@
 import { startMd, startSm } from "@/styles/theme";
 import fallback from "@assets/placeholder.webp";
-import { Anchor, Box, Flex, Grid, Image, Loader, Modal, Progress, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
+import { ActionIcon, Anchor, Box, CopyButton, Flex, Grid, Image, Loader, Modal, Progress, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
@@ -26,11 +26,25 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
 
   return (
     <Stack flex="1 1 auto">
-      <Box>
+      <Flex gap="xs" align="center">
         <Text size="sm" c="yellow.6">
           {clutch.id}
         </Text>
-      </Box>
+        <CopyButton value={clutch.id} timeout={3000}>
+          {({ copied, copy }) => (
+            <ActionIcon
+              variant="default"
+              onClick={(e) => {
+                e.stopPropagation();
+                copy();
+              }}
+              size="sm"
+            >
+              <IconSwitch icon={copied ? "check" : "copy"} width="14" height="14" style={{ stroke: "lime" }} />
+            </ActionIcon>
+          )}
+        </CopyButton>
+      </Flex>
       <Flex gap="xl" flex="1 1 auto" className={className} mih={324}>
         <Stack gap="md" justify="space-between" maw="100%" w="100%">
           {pics.map((a, ind) => (
@@ -166,7 +180,7 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOn
       <Flex>
         <Box w="100%" maw="100%">
           <Progress.Root size="lg">
-            <Progress.Section value={getPercentage(daysIncubation[category], left)} color="green" animated={calcAnim(curStatus, left)} striped={calcAnim(curStatus, left)} />
+            <Progress.Section value={getPercentage(daysIncubation[category], left)} color={calcAnim(curStatus, left) ? "yellow" : "green"} animated={calcAnim(curStatus, left)} striped={calcAnim(curStatus, left)} />
           </Progress.Root>
         </Box>
       </Flex>

@@ -21,8 +21,11 @@ export function Footer() {
         <Text size="xs" fw={500} c="dark.2">
           © 2025–{getDateCustom(new Date(), "YYYY")} snaketrack.ru
         </Text>
-        <Anchor href="https://t.me/CapablancaRUS" target="_blank" rel="nofollow noopener noreferrer" underline="never">
+        {/* <Anchor href="https://t.me/CapablancaRUS" target="_blank" rel="nofollow noopener noreferrer" underline="never">
           <IconSwitch icon="telegram" width="18" height="18" />
+        </Anchor> */}
+        <Anchor href="https://vk.com/hissstory" target="_blank" rel="nofollow noopener noreferrer" underline="never">
+          <IconSwitch icon="vk" width="18" height="18" />
         </Anchor>
         <Anchor href={`https://yoomoney.ru/fundraise/${req}`} target="_blank" rel="nofollow noopener noreferrer" underline="never" inline size="xs" fw={500}>
           Задонатить на кофе 💓

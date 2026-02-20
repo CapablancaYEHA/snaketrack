@@ -3,7 +3,7 @@ import { FC } from "preact/compat";
 import { useEffect } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Textarea, Title } from "@mantine/core";
+import { ActionIcon, Box, Button, CopyButton, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Textarea, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
@@ -132,9 +132,19 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
 
   return (
     <>
-      <Text size="md" fw={500} c="yellow.6">
-        Просмотр и редактирование кладки {location.query.id}
-      </Text>
+      <Flex gap="sm" align="center">
+        <Text size="md" fw={500} c="yellow.6">
+          Просмотр и редактирование кладки {location.query.id}
+        </Text>
+        <CopyButton value={clutch.id} timeout={3000}>
+          {({ copied, copy }) => (
+            <ActionIcon variant="default" onClick={copy} size="sm">
+              <IconSwitch icon={copied ? "check" : "copy"} width="14" height="14" style={{ stroke: "lime" }} />
+            </ActionIcon>
+          )}
+        </CopyButton>
+      </Flex>
+
       <Flex maw="100%" w="100%" gap="lg" wrap="wrap">
         {pics?.map((a, ind) => (
           <Flex key={a} gap="sm" flex="0 1 160px" h={80} style={{ cursor: "pointer" }} onClick={() => (snakeId.value = ids?.[ind])} wrap="nowrap">
@@ -178,7 +188,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             <Flex>
               <Box w="100%" maw="100%">
                 <Progress.Root size="lg">
-                  <Progress.Section value={getPercentage(daysIncubation[category], left)} color="green" animated={calcAnim(clutch.status, left)} striped={calcAnim(clutch.status, left)} />
+                  <Progress.Section value={getPercentage(daysIncubation[category], left)} color={calcAnim(clutch.status, left) ? "yellow" : "green"} animated={calcAnim(clutch.status, left)} striped={calcAnim(clutch.status, left)} />
                 </Progress.Root>
               </Box>
             </Flex>

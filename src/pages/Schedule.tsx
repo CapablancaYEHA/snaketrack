@@ -10,13 +10,13 @@ import { StackTable } from "@/components/common/StackTable/StackTable";
 import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { SkelShedule } from "@/components/common/skeletons";
 import { categToTitle } from "@/components/common/utils";
-import { bpList } from "@/api/ballpythons/configs";
-import { bcList } from "@/api/boa-constrictors/configs";
+import { bpRemList } from "@/api/ballpythons/configs";
+import { bcRemList } from "@/api/boa-constrictors/configs";
 import { ECategories, IFeedReq, IRemResExt, IRemindersRes, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { remList, remsByDate } from "@/api/common_configs";
-import { csList } from "@/api/corn-snakes/configs";
+import { csRemList } from "@/api/corn-snakes/configs";
 import { useSupaGet, useSupaUpd } from "@/api/hooks";
-import { mvList } from "@/api/morelia_viridis/configs";
+import { mvRemList } from "@/api/morelia_viridis/configs";
 import { getDateObj, getDateOfMonth, getIsSame } from "@/utils/time";
 
 const isFeedOpen = signal<boolean>(false);
@@ -39,10 +39,10 @@ export const Schedule = () => {
     setRowSelection({});
   };
   // FIXME переписать на один хук?
-  const { data: bps, isPending: isBpPend, isRefetching: isBpRef, isError: isBpErr } = useSupaGet<IResSnakesList[]>(bpList(userId), sigCurCat.value === ECategories.BP);
-  const { data: bcs, isPending: isBcPend, isRefetching: isBcRef, isError: isBcErr } = useSupaGet<IResSnakesList[]>(bcList(userId), sigCurCat.value === ECategories.BC);
-  const { data: css, isPending: isCsPend, isRefetching: isCsRef, isError: isCsErr } = useSupaGet<IResSnakesList[]>(csList(userId), sigCurCat.value === ECategories.CS);
-  const { data: mvs, isPending: isMvPend, isRefetching: isMvRef, isError: isMvErr } = useSupaGet<IResSnakesList[]>(mvList(userId), sigCurCat.value === ECategories.MV);
+  const { data: bps, isPending: isBpPend, isRefetching: isBpRef, isError: isBpErr } = useSupaGet<IResSnakesList[]>(bpRemList(userId), sigCurCat.value === ECategories.BP);
+  const { data: bcs, isPending: isBcPend, isRefetching: isBcRef, isError: isBcErr } = useSupaGet<IResSnakesList[]>(bcRemList(userId), sigCurCat.value === ECategories.BC);
+  const { data: css, isPending: isCsPend, isRefetching: isCsRef, isError: isCsErr } = useSupaGet<IResSnakesList[]>(csRemList(userId), sigCurCat.value === ECategories.CS);
+  const { data: mvs, isPending: isMvPend, isRefetching: isMvRef, isError: isMvErr } = useSupaGet<IResSnakesList[]>(mvRemList(userId), sigCurCat.value === ECategories.MV);
   const { data: allRems, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
   const { data: remsThisDate, isFetching } = useSupaGet<IRemResExt[]>(remsByDate(sigCurDate.value), sigCurDate.value != null);
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[sigCurCat.value]);

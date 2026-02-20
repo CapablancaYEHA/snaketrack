@@ -16,7 +16,7 @@ import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } fro
 import { useSupaUpd } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
 import { FamilyTree } from "../FamilyTree";
-import { snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
+import { disStats, snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
 import { EditStats } from "../forms/editStats/formEditStats";
 import { SnakeTags } from "../forms/snakeTags/formSnakeTags";
 import { snakeFeedColumns } from "./utils";
@@ -42,6 +42,8 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
 
   const feedTable = useMemo(() => data?.feeding?.filter((a) => Object.values(a)?.some((b) => b != null)), [toString(data?.feeding)]) as IFeed[];
 
+  const isDisabled = disStats.includes(data.status ?? "");
+
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Flex wrap="nowrap" align="flex-start" maw="100%" w="100%" gap="md">
@@ -49,7 +51,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
           <Title component="span" order={4} c="yellow.6">
             Подробная информация
           </Title>
-          <Flex justify="flex-start" gap="xs" align="center">
+          <Flex justify="flex-start" gap="4px" align="center">
             <Text>{title}</Text>
             <SexName sex={data.sex} name={data.snake_name} />
           </Flex>
@@ -68,18 +70,18 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
         <Flex gap="sm" maw="100%" w="100%" wrap="wrap">
           <Stack gap="sm">
             <Flex gap="sm">
-              <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`}>
+              <Button size="compact-xs" variant="default" component="a" href={`/snakes/edit/${category}?id=${location.query.id}`} disabled={isDisabled}>
                 Редактировать
               </Button>
-              <Button size="compact-xs" onClick={() => (isFeedOpen.value = true)}>
+              <Button size="compact-xs" onClick={() => (isFeedOpen.value = true)} disabled={isDisabled}>
                 Добавить событие
               </Button>
             </Flex>
             <Flex gap="sm">
-              <Button size="compact-xs" onClick={() => (isTagOpen.value = true)}>
+              <Button size="compact-xs" onClick={() => (isTagOpen.value = true)} color="pink">
                 Тэги
               </Button>
-              {!["on_sale", "reserved", "sold"].includes(data.status) ? (
+              {!["on_sale", "reserved", "sold"].concat(disStats).includes(data.status) ? (
                 <Button size="compact-xs" variant="default" component="a" href={`/market/add/${category}?id=${location.query.id}`}>
                   Выставить на продажу
                 </Button>
@@ -174,7 +176,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
               <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} dateSlice={slice} />
             </>
           )}
-          <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} disabled={isEmpty(data?.feeding) && isEmpty(data?.weight)} size="compact-xs" ml="auto">
+          <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} disabled={(isEmpty(data?.feeding) && isEmpty(data?.weight)) || isDisabled} size="compact-xs" ml="auto">
             Корректировать данные
           </Button>
           <StackTable

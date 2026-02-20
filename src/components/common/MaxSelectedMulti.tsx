@@ -6,7 +6,7 @@ type IDt = {
   label: string;
   value: string;
 };
-const MAX_DISPLAYED_VALUES = 1;
+const MAX_DISPLAYED_VALUES = 2;
 interface IProp {
   label: string;
   data: (IDt | string)[];

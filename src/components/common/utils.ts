@@ -5,6 +5,7 @@ import { EBreedStat } from "@/api/breeding/models";
 import { ECategories, IGenesComp } from "@/api/common";
 import { csList, csSingle } from "@/api/corn-snakes/configs";
 import { mvList, mvSingle } from "@/api/morelia_viridis/configs";
+import { adStatsHardcode, snakeStatsHardcode } from "./Market/utils";
 
 export const detailsDict = [
   { label: "Год", value: "years" },
@@ -79,6 +80,8 @@ export const maturityDict = [
     value: "older_36",
   },
 ];
+
+export const statusDictionary = snakeStatsHardcode.filter((d) => d.value !== "on_hold").concat(adStatsHardcode);
 
 export const categToConfig = {
   [ECategories.BP]: bpSingle,

@@ -6,6 +6,7 @@ import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IBreedStat, IReqCreateBreed, IUpdBreedReq } from "@/api/breeding/models";
 import { ECategories, IResSnakesList, TSnakeQueue } from "@/api/common";
 import { useSnakeQueue, useSupaGet } from "@/api/hooks";
+import { disStats } from "../../Market/utils";
 import { categToConfig, categToConfigList } from "../../utils";
 
 interface IInit {
@@ -18,8 +19,8 @@ export function useUtilsBreed({ fem, fetchFields, category }: IInit) {
   const userId = localStorage.getItem("USER");
   // TODO переписать эту функцию сразу на запрос к тем колонкам которые мне нужны
   const { data: regi, isPending: isListPen } = useSupaGet<IResSnakesList[]>(categToConfigList[category](userId), userId != null);
-  const regFems = regi?.filter((a) => a.sex === "female")?.map((b) => ({ label: b.snake_name, value: b.id }));
-  const regMales = regi?.filter((a) => a.sex === "male")?.map((b) => ({ label: b.snake_name, value: b.id }));
+  const regFems = regi?.filter((a) => a.sex === "female" && !disStats.includes(a.status))?.map((b) => ({ label: b.snake_name, value: b.id }));
+  const regMales = regi?.filter((a) => a.sex === "male" && !disStats.includes(a.status))?.map((b) => ({ label: b.snake_name, value: b.id }));
   const { data: femData } = useSupaGet<IResSnakesList>(categToConfig[category](fem ?? ""), fem != null);
 
   const { data: malesData, isPending } = useSnakeQueue(
@@ -139,12 +140,3 @@ export const sexHardcode = [
   { label: "Самец", value: "male" },
   { label: "Самка", value: "female" },
 ];
-
-export const adStatsHardcode = [
-  { label: "В продаже", value: "on_sale" },
-  { label: "Продан", value: "sold" },
-  { label: "Бронь", value: "reserved" },
-];
-
-// TODO дополнить статусами
-export const adStatsProfile = [...adStatsHardcode];

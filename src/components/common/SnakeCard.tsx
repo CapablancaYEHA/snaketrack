@@ -2,6 +2,7 @@ import { Flex, Menu, Stack, Text } from "@mantine/core";
 import { IFeed } from "@/api/common";
 import { getDate, getDateObj } from "../../utils/time";
 import { codeToFeeder } from "../common/Feeder/const";
+import { disStats, mrktActiveStats } from "./Market/utils";
 import { sortSnakeGenes } from "./genetics/const";
 import { GenePill } from "./genetics/geneSelect";
 
@@ -71,7 +72,9 @@ export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isS
   );
 };
 
-export const Controls = ({ id, openFeed, openTrans, openDelete, category, openTag, children }) => {
+export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTag, status, children }) => {
+  const isDisabled = disStats.includes(status ?? "");
+  const isStatusDis = disStats.concat(mrktActiveStats).includes(status ?? "");
   return (
     <Menu
       openDelay={200}
@@ -97,6 +100,7 @@ export const Controls = ({ id, openFeed, openTrans, openDelete, category, openTa
           На страницу змеи
         </Menu.Item>
         <Menu.Item
+          disabled={isDisabled}
           onClick={(e) => {
             e.stopPropagation();
             openFeed(id);
@@ -105,7 +109,7 @@ export const Controls = ({ id, openFeed, openTrans, openDelete, category, openTa
         >
           Добавить событие
         </Menu.Item>
-        <Menu.Item component="a" href={`/snakes/edit/${category}?id=${id}`}>
+        <Menu.Item component="a" href={`/snakes/edit/${category}?id=${id}`} disabled={isDisabled}>
           Редактировать
         </Menu.Item>
         <Menu.Item
@@ -113,10 +117,12 @@ export const Controls = ({ id, openFeed, openTrans, openDelete, category, openTa
             e.stopPropagation();
             openTrans(id);
           }}
+          disabled={isDisabled}
         >
           Передать
         </Menu.Item>
         <Menu.Item
+          c="pink"
           onClick={(e) => {
             e.stopPropagation();
             openTag(id);
@@ -126,13 +132,14 @@ export const Controls = ({ id, openFeed, openTrans, openDelete, category, openTa
           Тэги
         </Menu.Item>
         <Menu.Item
-          c="var(--mantine-color-error)"
+          c="var(--mantine-color-yellow-8)"
           onClick={(e) => {
             e.stopPropagation();
-            openDelete(id);
+            openStatus(id);
           }}
+          disabled={isStatusDis}
         >
-          Удалить
+          Статус
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

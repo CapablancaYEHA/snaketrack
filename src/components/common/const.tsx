@@ -11,12 +11,12 @@ import { hatchFiltFn } from "./StackTable/filters";
 
 const colHelper = createColumnHelper<IResSnakesList>();
 
-export const makeListColumns = ({ openTrans, openFeed, openDelete, openTag }) => {
+export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) => {
   return [
     colHelper.accessor("picture", {
       header: () => " ",
       cell: ({ cell, row }) => (
-        <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openTag={openTag} openDelete={openDelete} category={catVisited.value}>
+        <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openTag={openTag} openStatus={openStatus} category={catVisited.value} status={row.original.status}>
           <Stack gap="xs" maw="100%" w="100%">
             <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
             {row.original.tags ? (
@@ -75,14 +75,14 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, openTag }) =>
       header: undefined,
       cell: undefined,
       enableSorting: false,
-      filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => (row.original.tags ?? []).includes(a)),
+      filterFn: "arrIncludesSome",
     }),
     colHelper.accessor((row: any) => row.genes, {
       id: "genes",
       header: undefined,
       cell: undefined,
       enableSorting: false,
-      filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => row.original.genes.map((b) => b.label).includes(a)),
+      filterFn: (row: any, columnId, filterValue) => filterValue.some((a) => row.original.genes.map((b) => b.label).includes(a)),
     }),
     colHelper.accessor("status", {
       header: () => "Статус",
@@ -99,6 +99,7 @@ export const makeListColumns = ({ openTrans, openFeed, openDelete, openTag }) =>
       maxSize: 1,
       minSize: 98,
       enableSorting: false,
+      filterFn: "arrIncludesSome",
     }),
   ];
 };

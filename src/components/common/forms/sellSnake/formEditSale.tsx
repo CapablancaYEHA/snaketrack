@@ -15,11 +15,11 @@ import { httpUldSnPic } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressMulti } from "@/utils/supabaseImg";
 import { dateToSupabaseTime, getAge, getDate } from "@/utils/time";
+import { adStatsHardcode } from "../../Market/utils";
 import { sortSnakeGenes } from "../../genetics/const";
 import { SexName } from "../../sexName";
 import { categToTitle } from "../../utils";
 import { filterSubmitByDirty, uplErr } from "../const";
-import { adStatsHardcode } from "../snakeBreed/common";
 import styles from "../styles.module.scss";
 import { ISellScheme, schemaBase } from "./const";
 

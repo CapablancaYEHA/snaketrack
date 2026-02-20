@@ -74,7 +74,7 @@ export const makeBreedColumns = ({ setBreedId, category }) => {
           ))}
         </Flex>
       ),
-      filterFn: (row: any, columnId, filterValue) => filterValue.every((a) => row.original.traits.map((b) => b.label).includes(a)),
+      filterFn: (row: any, columnId, filterValue) => filterValue.some((a) => row.original.traits.map((b) => b.label).includes(a)),
       size: 5,
       maxSize: 6,
       minSize: 220,

@@ -52,7 +52,7 @@ export function ClutchList() {
         </Btn>
       </Flex>
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
-        <Text size="sm">Если уже имеется отложенная кладка или живородящая змея беременна, заведите запись без предварительного создания breeding-проекта</Text>
+        <Text size="sm">Если уже имеется отложенная кладка или живородящая змея беременна, заведите запись</Text>
       </Flex>
       <SegmentedControl
         style={{ alignSelf: "center" }}

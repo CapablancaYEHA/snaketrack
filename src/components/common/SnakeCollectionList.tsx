@@ -6,27 +6,27 @@ import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
-import { DeleteSnake } from "@/components/common/forms/deleteSnake/formDeleteSnake";
 import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { TransferSnake } from "@/components/common/forms/transferSnake/formTransferSnake";
 import { SkelTable } from "@/components/common/skeletons";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
-import { useSnakeGenes, useSupaDel, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
+import { IFeedReq, IResSnakesList, IUpdReq, categoryToBaseTable } from "@/api/common";
+import { useSnakeGenes, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 import { catVisited } from "@/pages/SnakeCategories";
 import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
+import { ChangeStatus } from "./forms/changeStatus/formChangeStatus";
 import { sexHardcode } from "./forms/snakeBreed/common";
 import { SnakeTags } from "./forms/snakeTags/formSnakeTags";
-import { categToConfigList, categToTitle, maturityDict } from "./utils";
+import { categToConfigList, categToTitle, maturityDict, statusDictionary } from "./utils";
 
 const curId = signal<string | undefined>(undefined);
 const isTransOpen = signal<boolean>(false);
 const isFeedOpen = signal<boolean>(false);
 const isTagOpen = signal<boolean>(false);
-const isDeleteOpen = signal<boolean>(false);
+const isStatusOpen = signal<boolean>(false);
 
 const base = {
   openFeed: (uuid) => {
@@ -41,8 +41,8 @@ const base = {
     isTagOpen.value = true;
     curId.value = uuid;
   },
-  openDelete: (uuid) => {
-    isDeleteOpen.value = true;
+  openStatus: (uuid) => {
+    isStatusOpen.value = true;
     curId.value = uuid;
   },
 };
@@ -55,7 +55,7 @@ export function SnakeCollectionList() {
   const { data: genes } = useSnakeGenes(catVisited.value);
   const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(categToConfigList[catVisited.value]?.(userId), userId != null);
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[catVisited.value]);
-  const { mutate: del, isPending: isDelPend } = useSupaDel(categoryToBaseTable[catVisited.value]);
+  const { mutate: upd, isPending: isUpdPend } = useSupaUpd<IUpdReq>(categoryToBaseTable[catVisited.value]);
   const { mutate: trans, isPending: isTransPend } = useTransferSnake(catVisited.value);
   const [filt, setFilt] = useState<any[]>([]);
   const [globalFilter, setGlobalFilter] = useState<any>([]);
@@ -150,15 +150,15 @@ export function SnakeCollectionList() {
         snake={target}
         snakeTable={categoryToBaseTable[catVisited.value]}
       />
-      <DeleteSnake
-        opened={isDeleteOpen.value}
+      <ChangeStatus
+        opened={isStatusOpen.value}
         close={() => {
           curId.value = undefined;
-          isDeleteOpen.value = false;
+          isStatusOpen.value = false;
         }}
         target={target}
-        handleAction={del}
-        isPend={isDelPend}
+        handleAction={upd}
+        isPend={isUpdPend}
       />
       <Drawer
         opened={opened}
@@ -188,6 +188,9 @@ export function SnakeCollectionList() {
         </Flex>
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
           <MaxSelectedMulti miw={0} flex="1 1 50%" label="Тэги" onChange={(a) => tableFiltMulti(setFilt, a, "tags")} data={profile?.snake_tags ?? []} />
+        </Flex>
+        <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Статус" onChange={(a) => tableFiltMulti(setFilt, a, "status")} data={statusDictionary} dataHasLabel />
         </Flex>
       </Drawer>
       {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}

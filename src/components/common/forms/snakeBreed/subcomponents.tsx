@@ -205,7 +205,7 @@ const TimeLeft = ({ shedDate, ovulDate, category }) => {
         </Flex>
         <Box w="100%" maw="100%">
           <Progress.Root size="lg">
-            <Progress.Section value={shedDate ? getPercentage(daysAfterShed[category], left) : getPercentage(daysAfterOvul[category], left)} color="green" animated={left > 0} striped={left > 0} />
+            <Progress.Section value={shedDate ? getPercentage(daysAfterShed[category], left) : getPercentage(daysAfterOvul[category], left)} color={left > 0 ? "yellow" : "green"} animated={left > 0} striped={left > 0} />
           </Progress.Root>
         </Box>
       </Group>

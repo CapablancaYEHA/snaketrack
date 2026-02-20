@@ -103,7 +103,7 @@ export interface ISupabaseErr {
   hint?: string | null;
 }
 
-export type ISnakeStatuses = "collection" | "isolation" | "on_sale" | "sold" | "reserved" | "deceased" | "archived";
+export type ISnakeStatuses = "collection" | "isolation" | "on_sale" | "sold" | "on_hold" | "reserved" | "deceased" | "archived";
 
 export interface IReqCreateSnake {
   snake_name: string;
@@ -220,7 +220,7 @@ export interface ICreateSaleReq {
   city_name?: string | null;
   snake_id: string;
   category: ECategories;
-  status: Extract<ISnakeStatuses, "on_sale" | "sold" | "reserved">;
+  status: Extract<ISnakeStatuses, "on_sale" | "sold" | "reserved" | "on_hold">;
   contacts_group?: string | null;
   contacts_telegram?: string | null;
   // TODO расширить до других стран, соответственно потом в city_code будет падать их вариация кладр

@@ -25,7 +25,6 @@ interface IProps {
   category: ECategories;
 }
 
-// TODO в будущем - нужна выпадашка Статус - жива, умерла, карантин, продана ну и чето еще
 export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) => {
   const { mutate, isPending } = useSupaCreate<IReqCreateSnake>(table);
   const location = useLocation();

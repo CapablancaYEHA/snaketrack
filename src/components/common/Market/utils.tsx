@@ -31,9 +31,9 @@ export const marketColumns = [
                 </Indicator>
               </Box>
             ) : null}
-            <Flex align="center" gap="xs">
+            <Flex align="center" gap="4px">
               <IconSwitch icon={row.original.sex as any} width="20" height="20" style={{ minWidth: 0 }} />
-              <Text size="xs">'{getAge(row.original.date_hatch)}</Text>
+              <Text size="xs">{getAge(row.original.date_hatch)}</Text>
             </Flex>
             <Flex ml="auto" gap="xs" align="baseline">
               {isShowDiscount ? (
@@ -100,6 +100,7 @@ export const snakeStatusToColor = {
   collection: "#9382ff",
   isolation: "#ff95ed",
   on_sale: "#2ebc7b",
+  on_hold: "#808080",
   sold: "#af2e2e",
   reserved: "#ffd74a",
   deceased: "#c4c4c4",
@@ -110,8 +111,28 @@ export const snakeStatusToLabel = {
   collection: "Коллекция",
   isolation: "Карантин",
   on_sale: "В продаже",
+  on_hold: "Зажаблена",
   sold: "Продан",
   reserved: "Бронь",
-  deceased: "Умер",
+  deceased: "Умерла",
   archived: "Архив",
 };
+
+export const adStatsHardcode = [
+  { label: "В продаже", value: "on_sale" },
+  { label: "Бронь", value: "reserved" },
+  { label: "Зажаблена", value: "on_hold" },
+  { label: "Продан", value: "sold" },
+];
+
+export const disStats = ["deceased", "archived"];
+export const mrktActiveStats = ["on_sale", "reserved", "sold"];
+export const availMarketStats = ["collection", "isolation", "on_hold"];
+
+export const snakeStatsHardcode = [
+  { label: "Коллекция", value: "collection" },
+  { label: "Зажаблена", value: "on_hold" },
+  { label: "Карантин", value: "isolation" },
+  { label: "Архив", value: "archived" },
+  { label: "Умерла", value: "deceased" },
+];
