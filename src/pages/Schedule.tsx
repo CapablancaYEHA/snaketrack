@@ -53,7 +53,7 @@ export const Schedule = () => {
   };
 
   const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : sigCurCat.value === ECategories.BC ? (bcs ?? []) : sigCurCat.value === ECategories.CS ? (css ?? []) : (mvs ?? []);
-
+  const isSmthErr = (isBpErr && sigCurCat.value === ECategories.BP) || (isBcErr && sigCurCat.value === ECategories.BC) || (isCsErr && sigCurCat.value === ECategories.CS) || (isMvErr && sigCurCat.value === ECategories.MV) || isRemError;
   const isSmthPending = (isBpPend && sigCurCat.value === ECategories.BP) || (isBcPend && sigCurCat.value === ECategories.BC) || (isCsPend && sigCurCat.value === ECategories.CS) || (isMvPend && sigCurCat.value === ECategories.MV) || isRemPending;
 
   useEffect(() => {
@@ -95,11 +95,11 @@ export const Schedule = () => {
           ]}
         />
         {isSmthPending ? <SkelShedule /> : null}
-        {isBpErr || isBcErr || isCsErr || isMvErr || isRemError ? (
+        {isSmthErr ? (
           <Text fw={500} c="var(--mantine-color-error)">
             Произошла ошибка запроса
           </Text>
-        ) : isEmpty(bps) && isEmpty(bcs) && isEmpty(css) ? (
+        ) : !isSmthPending && isEmpty(dataToUse) ? (
           <Text fw={500}>Нет змей в этой категории, для которых можно составить расписание</Text>
         ) : (
           <>
