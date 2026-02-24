@@ -24,7 +24,7 @@ export function MarketSnake({ category, data }: IProp) {
   };
   const [tab, setTab] = useState("common");
 
-  const isCan = navigator.canShare(dt);
+  const isCan = navigator?.canShare?.(dt);
   const isShowDiscount = data.discount_price && data.discount_until ? dateTimeDiff(data.discount_until, "date") > 0 : data.discount_price && !data.discount_until ? data.discount_price : false;
 
   const share = async (func) => {

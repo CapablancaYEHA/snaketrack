@@ -1,0 +1,6 @@
+.wrapping {
+  flex-wrap: wrap;
+  @media (min-width: 36em) {
+    flex-wrap: nowrap;
+  }
+}

@@ -20,6 +20,7 @@ import { notif } from "@/utils/notif";
 import { dateToSupabaseTime, getAge, getDateObj } from "@/utils/time";
 import { calcEstimatedDate, calcTimeleft, daysAfterOvul, daysAfterShed, daysCriticalThr, getPercentage } from "./breedUtils";
 import { IBreedScheme, eventsOpts, prepForMm, renderSelectOption, useUtilsBreed } from "./common";
+import css from "./styles.module.scss";
 
 export const MaleEvent = ({ id, disabled }) => {
   const { control } = useFormContext();
@@ -106,7 +107,7 @@ export const FemaleEvent = ({ isClutchMade, shed, ovul, category }) => {
 
   return (
     <Stack w="100%" maw="100%" gap="sm">
-      <Flex w="100%" maw="100%" gap="sm" wrap="nowrap" align="center">
+      <Flex w="100%" maw="100%" gap="sm" align="center" className={css.wrapping}>
         <Text fw={500} flex="1 1 50%" size="xs">
           Предродовая линька
         </Text>
@@ -143,7 +144,7 @@ export const FemaleEvent = ({ isClutchMade, shed, ovul, category }) => {
         />
       </Flex>
 
-      <Flex w="100%" maw="100%" gap="sm" wrap="nowrap" align="center">
+      <Flex w="100%" maw="100%" gap="sm" align="center" className={css.wrapping}>
         <Text fw={500} flex="1 1 50%" size="xs">
           Овуляция
         </Text>

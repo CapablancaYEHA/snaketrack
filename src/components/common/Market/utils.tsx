@@ -112,7 +112,7 @@ export const snakeStatusToLabel = {
   isolation: "Карантин",
   on_sale: "В продаже",
   on_hold: "Зажаблена",
-  sold: "Продан",
+  sold: "Продана",
   reserved: "Бронь",
   deceased: "Умерла",
   archived: "Архив",
@@ -122,7 +122,7 @@ export const adStatsHardcode = [
   { label: "В продаже", value: "on_sale" },
   { label: "Бронь", value: "reserved" },
   { label: "Зажаблена", value: "on_hold" },
-  { label: "Продан", value: "sold" },
+  { label: "Продана", value: "sold" },
 ];
 
 export const disStats = ["deceased", "archived"];
@@ -131,7 +131,6 @@ export const availMarketStats = ["collection", "isolation", "on_hold"];
 
 export const snakeStatsHardcode = [
   { label: "Коллекция", value: "collection" },
-  { label: "Зажаблена", value: "on_hold" },
   { label: "Карантин", value: "isolation" },
   { label: "Архив", value: "archived" },
   { label: "Умерла", value: "deceased" },

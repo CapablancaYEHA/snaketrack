@@ -81,7 +81,7 @@ export const maturityDict = [
   },
 ];
 
-export const statusDictionary = snakeStatsHardcode.filter((d) => d.value !== "on_hold").concat(adStatsHardcode);
+export const statusDictionary = snakeStatsHardcode.concat(adStatsHardcode);
 
 export const categToConfig = {
   [ECategories.BP]: bpSingle,
