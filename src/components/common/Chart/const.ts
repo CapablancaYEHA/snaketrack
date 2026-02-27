@@ -1,4 +1,5 @@
-import { adapterLocale, getDate, getDateObj, isYoungerThan } from "@/utils/time";
+import { isEmpty } from "lodash-es";
+import { adapterLocale, dateAddYears, getDate, getDateObj, isFirstLaterThan, isYoungerThan } from "@/utils/time";
 
 adapterLocale();
 
@@ -88,10 +89,70 @@ const defaultOptions = {
   },
 };
 
-export const makeLineOptions = (val) => {
+export const makeLineOptions = (val, dateHatch?: string) => {
+  const addOneY = dateAddYears(dateHatch ?? "", 1);
+  const addTwoY = dateAddYears(dateHatch ?? "", 2);
   return {
     ...defaultOptions,
     plugins: {
+      annotation: {
+        annotations: {
+          yearOne: {
+            type: "line",
+            drawTime: "afterDatasetsDraw",
+            borderColor: "rgba(255, 99, 132,0.3)",
+            borderWidth: 2,
+            label: {
+              content: ["1 год"],
+              display: true,
+              rotation: -90,
+              drawTime: "afterDatasetsDraw",
+              font: { weight: "normal" },
+              backgroundColor: "rgba(0,0,0,0)",
+              color: "rgba(255, 99, 132,0.3)",
+              padding: {
+                bottom: 20,
+              },
+            },
+            xMin: new Date(addOneY.toDate()),
+            xMax: new Date(addOneY.toDate()),
+            display: (ctx) => {
+              if (!dateHatch) return false;
+              const trg = ctx.chart.data.datasets?.filter((a) => a.data && a.data.length > 1);
+              if (isEmpty(trg)) return false;
+              const dt = trg[0].data.map((a) => a.x);
+              return dt.some((d) => isFirstLaterThan(d, addOneY)) && dt.some((d) => isFirstLaterThan(addOneY, d));
+            },
+          },
+          yearTwo: {
+            type: "line",
+            drawTime: "afterDatasetsDraw",
+            borderColor: "rgba(255, 99, 132,0.3)",
+            borderWidth: 2,
+            label: {
+              content: ["2 годa"],
+              display: true,
+              rotation: -90,
+              drawTime: "afterDatasetsDraw",
+              font: { weight: "normal" },
+              backgroundColor: "rgba(0,0,0,0)",
+              color: "rgba(255, 99, 132,0.3)",
+              padding: {
+                bottom: 20,
+              },
+            },
+            xMin: new Date(addTwoY.toDate()),
+            xMax: new Date(addTwoY.toDate()),
+            display: (ctx) => {
+              if (!dateHatch) return false;
+              const trg = ctx.chart.data.datasets?.filter((a) => a.data && a.data.length > 1);
+              if (isEmpty(trg)) return false;
+              const dt = trg[0].data.map((a) => a.x);
+              return dt.some((d) => isFirstLaterThan(d, addTwoY)) && dt.some((d) => isFirstLaterThan(addTwoY, d));
+            },
+          },
+        },
+      },
       legend: {
         display: true,
       },
@@ -119,7 +180,6 @@ export const makeLineOptions = (val) => {
           stepSize: ticksByString[val],
           autoSkip: true,
           autoSkipPadding: 20,
-          //   maxTicksLimit: 10,
           source: "auto",
           color: "rgba(178,178,178,0.9)",
         },

@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.3",
-    "@mantine/core": "^8.3.10",
     "@mantine/carousel": "^8.3.10",
+    "@mantine/core": "^8.3.10",
     "@mantine/dates": "^8.3.10",
     "@mantine/notifications": "^8.3.10",
     "@preact/signals": "^2.0.1",
@@ -23,6 +23,7 @@
     "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.8",
     "chartjs-adapter-dayjs-4": "^1.0.4",
+    "chartjs-plugin-annotation": "^3.1.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
     "lodash-es": "^4.17.21",

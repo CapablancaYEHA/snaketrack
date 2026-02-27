@@ -45,6 +45,7 @@ export const dateTimeDiff = (trg: string | Dayjs, unit: UnitType) => {
 };
 
 export const dateAddDays = (a: string | Dayjs, days: number) => dayjs(a).add(days, "day");
+export const dateAddYears = (a: string | Dayjs, years: number) => dayjs(a).add(years, "year");
 
 export const isOlderThan = (birthDate: string | Dayjs | Date, targetAge: number, unit: UnitType = "month") => {
   return dayjs().diff(dayjs(birthDate), unit) > targetAge;
@@ -52,3 +53,5 @@ export const isOlderThan = (birthDate: string | Dayjs | Date, targetAge: number,
 export const isYoungerThan = (birthDate: string | Dayjs, targetAge: number, unit: UnitType = "month") => {
   return dayjs().diff(dayjs(birthDate), unit) < targetAge;
 };
+
+export const isFirstLaterThan = (first: Date | string | Dayjs, second: Date | string | Dayjs, unit: UnitType = "days") => dayjs(first).isAfter(dayjs(second), unit);

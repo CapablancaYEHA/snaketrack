@@ -179,7 +179,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
                 <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" flex="0 1 auto" />
                 <Select label="Отображать данные" data={sliceDict} value={slice} onChange={setSlice as any} size="xs" flex="0 1 auto" />
               </Flex>
-              <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} dateSlice={slice} />
+              <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} dateSlice={slice} dateHatch={data.date_hatch} />
             </>
           )}
           <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} disabled={(isEmpty(data?.feeding) && isEmpty(data?.weight)) || isDisabled} size="compact-xs" ml="auto">

@@ -2,11 +2,12 @@ import { FC } from "preact/compat";
 import { Text } from "@mantine/core";
 import { CategoryScale, Chart as ChartJS, Legend, LineElement, LinearScale, PointElement, TimeScale, Title, Tooltip } from "chart.js";
 import "chartjs-adapter-dayjs-4";
+import annotationPlugin from "chartjs-plugin-annotation";
 import { Bubble, Line } from "react-chartjs-2";
 import { IFeed } from "@/api/common";
 import { bubbleOptions, makeBubbleData, makeLineData, makeLineOptions } from "./const";
 
-ChartJS.register(CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, LinearScale, TimeScale);
+ChartJS.register(CategoryScale, PointElement, LineElement, Title, Tooltip, Legend, LinearScale, TimeScale, annotationPlugin);
 
 interface ILine {
   weightData:
@@ -19,14 +20,15 @@ interface ILine {
   view: "ko" | "snake" | "both";
   dateSlice?: string;
   scaleX?: any;
+  dateHatch?: string;
 }
 
-export const ChartLine: FC<ILine> = ({ weightData, feedData, scaleX = "weeks", view = "both", dateSlice }) => {
+export const ChartLine: FC<ILine> = ({ weightData, feedData, scaleX = "weeks", view = "both", dateSlice, dateHatch }) => {
   const chartData = makeLineData(weightData ?? [], feedData ?? [], view, dateSlice);
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
-      <Line options={makeLineOptions(scaleX) as any} data={chartData as any} height={420} />
+      <Line options={makeLineOptions(scaleX, dateHatch) as any} data={chartData as any} height={420} />
     </div>
   );
 };
