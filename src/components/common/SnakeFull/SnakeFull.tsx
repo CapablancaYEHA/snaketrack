@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
-import { ActionIcon, AspectRatio, Box, Button, CloseButton, CopyButton, Flex, Image, Indicator, NumberFormatter, Overlay, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { ActionIcon, AspectRatio, Box, Button, CopyButton, Flex, Image, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -20,6 +20,7 @@ import { disStats, snakeStatusToColor, snakeStatusToLabel } from "../Market/util
 import { EditStats } from "../forms/editStats/formEditStats";
 import { SnakeTags } from "../forms/snakeTags/formSnakeTags";
 import { ZoomImage } from "./ZoomImage";
+import css from "./styles.module.scss";
 import { snakeFeedColumns } from "./utils";
 
 const isFeedOpen = signal<boolean>(false);
@@ -174,11 +175,11 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             </Text>
           ) : (
             <>
-              <Flex w="100%" gap="xs" wrap="wrap">
-                <Select label="Масштаб графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" flex="0 1 auto" />
-                <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" flex="0 1 auto" />
-                <Select label="Отображать данные" data={sliceDict} value={slice} onChange={setSlice as any} size="xs" flex="0 1 auto" />
-              </Flex>
+              <Box w="100%" maw="100%" className={css.selectables}>
+                <Select label="Масштаб графика" data={detailsDict} value={scale} onChange={setScale as any} size="xs" />
+                <Select label="На графике" data={subjectDict} value={view} onChange={setView as any} size="xs" />
+                <Select label="Отображать данные" data={sliceDict} value={slice} onChange={setSlice as any} size="xs" />
+              </Box>
               <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} dateSlice={slice} dateHatch={data.date_hatch} />
             </>
           )}

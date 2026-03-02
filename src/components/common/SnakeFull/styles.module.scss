@@ -1,9 +1,21 @@
 .selectables {
-  & > div {
-    min-width: 140px;
-    flex: 0 1 32%;
+  display: grid;
+  grid-template-columns: repeat(12, auto);
+  grid-gap: var(--mantine-spacing-xs);
+  grid-auto-flow: row;
 
-    @media (min-width: 48em) {
+  & > div {
+    grid-column: span 6;
+    &:nth-of-type(3) {
+      grid-row-start: 2;
+    }
+  }
+
+  @media (min-width: 48em) {
+    display: flex;
+    flex-flow: row nowrap;
+
+    & > div {
       flex: 0 1 auto;
     }
   }

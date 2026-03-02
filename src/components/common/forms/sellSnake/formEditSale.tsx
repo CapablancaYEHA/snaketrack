@@ -256,7 +256,7 @@ export const FormEditSale = ({ init, info, category }) => {
         />
       </Box>
       <Flex align="flex-start" maw="100%" gap="xl" className={styles.w70}>
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isAdPend || isUpdPend} disabled={!isDirty || isAdPend || isUpdPend}>
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isAdPend || isUpdPend} disabled={info.status === "sold" || !isDirty || isAdPend || isUpdPend}>
           Сохранить
         </Btn>
       </Flex>

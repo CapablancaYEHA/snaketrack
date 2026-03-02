@@ -1,6 +1,6 @@
 import { Menu } from "@mantine/core";
 
-export const MarketControls = ({ children, id, owner, cat }) => {
+export const MarketControls = ({ children, id, owner, cat, status }) => {
   const userId: string = localStorage.getItem("USER")!;
   return (
     <Menu
@@ -26,7 +26,7 @@ export const MarketControls = ({ children, id, owner, cat }) => {
           Просмотр
         </Menu.Item>
         {userId === owner ? (
-          <Menu.Item component="a" href={`/market/edit/${cat}?id=${id}`}>
+          <Menu.Item component="a" href={`/market/edit/${cat}?id=${id}`} disabled={status === "sold"}>
             Редактировать
           </Menu.Item>
         ) : null}

@@ -15,7 +15,7 @@ export const marketColumns = [
     cell: ({ cell, row }) => {
       const isShowDiscount = row.original.discount_price && row.original.discount_until ? dateTimeDiff(row.original.discount_until, "date") > 0 : row.original.discount_price && !row.original.discount_until ? row.original.discount_price : false;
       return (
-        <MarketControls id={row.original.id} owner={row.original.owner_id} cat={row.original.category}>
+        <MarketControls id={row.original.id} owner={row.original.owner_id} cat={row.original.category} status={row.original.status}>
           <Stack gap="xs" maw="100%" w="100%" pos="relative">
             <AspectRatio ratio={16 / 9}>
               <Image src={cell.getValue()[0]} fit="cover" radius="md" h="auto" fallbackSrc={fallback} loading="lazy" />
