@@ -1,5 +1,6 @@
 import { CSSProperties, FC } from "preact/compat";
 import { AdjustIcon } from "./Adjust";
+import { AnalIcon } from "./Anal";
 import { ArrBidirectIcon } from "./ArrBidirect";
 import { ArrUpIcon } from "./ArrUp";
 import { BinIcon } from "./Bin";
@@ -13,6 +14,7 @@ import { EditIcon } from "./Edit";
 import { EggIcon } from "./Egg";
 import { FemaleIcon } from "./Female";
 import { ImgIcon } from "./Img";
+import { InfoIcon } from "./Info";
 import { KebabIcon } from "./Kebab";
 import { MaleIcon } from "./Male";
 import { MarketIcon } from "./Market";
@@ -20,6 +22,7 @@ import { NoDataIcon } from "./NoData";
 import { NoFilterIcon } from "./NoFilter";
 import { PackIcon } from "./Pack";
 import { PlusIcon } from "./Plus";
+import { QuestionIcon } from "./Question";
 import { RefreshIcon } from "./Refresh";
 import { RelatedIcon } from "./Related";
 import { SearchIcon } from "./Search";
@@ -39,6 +42,8 @@ interface IProp {
 
 export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style, className }) => {
   switch (icon) {
+    case "analytics":
+      return <AnalIcon width={width} height={height} style={style} />;
     case "calculator":
       return <CalculatorIcon width={width} height={height} style={style} />;
     case "edit":
@@ -55,6 +60,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <PackIcon width={width} height={height} />;
     case "img":
       return <ImgIcon width={width} height={height} />;
+    case "info":
+      return <InfoIcon width={width} height={height} style={style} />;
     case "male":
       return <MaleIcon width={width} height={height} style={style} />;
     case "market":
@@ -85,6 +92,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <NoFilterIcon width={width} height={height} />;
     case "plus":
       return <PlusIcon width={width} height={height} />;
+    case "question":
+      return <QuestionIcon width={width} height={height} style={style} />;
     case "search":
       return <SearchIcon width={width} height={height} />;
     case "schedule":

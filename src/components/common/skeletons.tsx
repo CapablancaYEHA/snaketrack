@@ -143,3 +143,44 @@ export const SkelShedule = () => (
       ))}
   </>
 );
+
+export const SkelChart = () => (
+  <>
+    <Stack w="100%" gap="sm" align="center">
+      <Skeleton h={20} radius="sm" w={200} />
+      <Skeleton h={20} radius="sm" w={140} />
+    </Stack>
+    <Stack w="100%" gap={0}>
+      <Flex wrap="nowrap" gap="md">
+        <Stack gap="sm">
+          {new Array(15).fill(" ").map((a, i) => (
+            <Skeleton h={8} radius="sm" w={50} key={i} />
+          ))}
+        </Stack>
+        <Skeleton h={300} radius="sm" w={3} miw={3} />
+        <Flex gap="sm" align="end" m="0 auto" style={{ overflow: "hidden" }}>
+          <Skeleton height={10} radius="0" w={15} miw={15} />
+          <Skeleton height={30} radius="0" w={15} miw={15} />
+          <Skeleton height={100} radius="0" w={15} miw={15} />
+          <Skeleton height={140} radius="0" w={15} miw={15} />
+          <Skeleton height={180} radius="0" w={15} miw={15} />
+          <Skeleton height={200} radius="0" w={15} miw={15} />
+          <Skeleton height={210} radius="0" w={15} miw={15} />
+          <Skeleton height={220} radius="0" w={15} miw={15} />
+          <Skeleton height={210} radius="0" w={15} miw={15} />
+          <Skeleton height={200} radius="0" w={15} miw={15} />
+          <Skeleton height={180} radius="0" w={15} miw={15} />
+          <Skeleton height={140} radius="0" w={15} miw={15} />
+          <Skeleton height={100} radius="0" w={15} miw={15} />
+          <Skeleton height={30} radius="0" w={15} miw={15} />
+          <Skeleton height={20} radius="0" w={15} miw={15} />
+        </Flex>
+      </Flex>
+      <Flex wrap="nowrap" gap={0}>
+        <Skeleton height={3} radius="sm" w={50} animate={false} style={{ visibility: "none !important", opacity: "0" }} />
+        <Skeleton height={3} radius="sm" w={3} animate={false} style={{ visibility: "none !important", opacity: "0" }} mr="md" />
+        <Skeleton height={3} radius="sm" w="100%" />
+      </Flex>
+    </Stack>
+  </>
+);

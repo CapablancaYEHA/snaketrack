@@ -60,9 +60,10 @@ interface IProp {
   category: ECategories;
   view: EGenesView;
   size?: MantineSize;
+  required?: boolean;
 }
 
-export const GenesSelect: FC<IProp> = ({ onChange, view, init, label, category, placeholder = "Normal, no Het", description = "Нажмите и удерживайте выбраный ген, чтобы пометить его как Possible", size = "sm" }) => {
+export const GenesSelect: FC<IProp> = ({ onChange, view, init, label, category, placeholder = "Normal, no Het", description = "Нажмите и удерживайте выбраный ген, чтобы пометить его как Possible", size = "sm", required }) => {
   const combobox = useCombobox({
     onDropdownClose: () => {
       combobox.resetSelectedOption();
@@ -116,7 +117,7 @@ export const GenesSelect: FC<IProp> = ({ onChange, view, init, label, category, 
   return (
     <Combobox store={combobox} onOptionSubmit={handleValueSelect as any} withinPortal={false} disabled={traits?.length === 0}>
       <Combobox.DropdownTarget>
-        <PillsInput w="100%" miw={size === "xs" ? "auto" : 160} onClick={() => combobox.openDropdown()} label={label} description={description} size={size}>
+        <PillsInput w="100%" miw={size === "xs" ? "auto" : 160} onClick={() => combobox.openDropdown()} label={label} description={description} size={size} required={required}>
           <Pill.Group>
             {values}
             <Combobox.EventsTarget>

@@ -27,6 +27,11 @@ export const enum ESupabase {
   BC_G = "boagenes",
   CS_G = "corngenes",
   MV_G = "viridisgenes",
+  // analytics
+  BP_ANAL = "analytics_bp",
+  BC_ANAL = "analytics_bc",
+  CS_ANAL = "analytics_cs",
+  MV_ANAL = "analytics_mv",
   // storage
   BP_PICS = "bp-pics",
   BC_PICS = "bc-pics",
@@ -66,6 +71,13 @@ export const categoryToBaseTable = {
   [ECategories.BC]: ESupabase.BC,
   [ECategories.CS]: ESupabase.CS,
   [ECategories.MV]: ESupabase.MV,
+};
+
+export const categoryToAnalytics = {
+  [ECategories.BP]: ESupabase.BP_ANAL,
+  [ECategories.BC]: ESupabase.BC_ANAL,
+  [ECategories.CS]: ESupabase.CS_ANAL,
+  [ECategories.MV]: ESupabase.MV_ANAL,
 };
 
 // FIXME чтото это как-то убого или оставим?
@@ -321,4 +333,18 @@ export const enum IVivFeeder {
 export interface IReqUpdViv {
   upd: IReqCreateViv;
   id: string;
+}
+
+export interface IResAnalytics {
+  id: number;
+  adv_id: string;
+  sale_price: number;
+  discount_price: number | null;
+  changed_at: string | null;
+  hash: string;
+  completed_at: string | null;
+  sex: string;
+  date_hatch: string;
+  city_code: string;
+  snake_id: string;
 }

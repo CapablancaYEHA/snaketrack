@@ -1,4 +1,4 @@
-import dayjs, { Dayjs, OpUnitType, UnitType } from "dayjs";
+import dayjs, { Dayjs, ManipulateType, OpUnitType, UnitType } from "dayjs";
 import "dayjs/locale/ru";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
@@ -46,6 +46,7 @@ export const dateTimeDiff = (trg: string | Dayjs, unit: UnitType) => {
 
 export const dateAddDays = (a: string | Dayjs, days: number) => dayjs(a).add(days, "day");
 export const dateAddYears = (a: string | Dayjs, years: number) => dayjs(a).add(years, "year");
+export const dateSubtructTime = (a: string | Dayjs, quant: number, unit: ManipulateType = "months") => dayjs(a).subtract(quant, unit);
 
 export const isOlderThan = (birthDate: string | Dayjs | Date, targetAge: number, unit: UnitType = "month") => {
   return dayjs().diff(dayjs(birthDate), unit) > targetAge;

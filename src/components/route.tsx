@@ -4,6 +4,7 @@ import { isEmpty } from "lodash-es";
 import { AddBreed } from "@/pages/AddBreed";
 import { AddClutch } from "@/pages/AddClutch";
 import { AddSnake } from "@/pages/AddSnake";
+import { Analytics } from "@/pages/Analytics";
 import { BreedList } from "@/pages/BreedList";
 import { Calculator } from "@/pages/Calculator";
 import { ClutchList } from "@/pages/ClutchList";
@@ -68,6 +69,7 @@ export const protectedRoutes = {
   "/calculator": Calculator,
   "/vivarium": Vivarium,
   "/vivarium/edit": EditVivarium,
+  "/analytics": Analytics,
 };
 
 export const sidebarLinks = [
@@ -78,4 +80,5 @@ export const sidebarLinks = [
   { id: 4, link: "/clutches", label: "Кладки" },
   { id: 5, link: "/schedule", label: "Расписание" },
   { id: 7, link: "/market", label: "Маркет" },
+  { id: 9, link: "/analytics", label: "Аналитика" },
 ];
