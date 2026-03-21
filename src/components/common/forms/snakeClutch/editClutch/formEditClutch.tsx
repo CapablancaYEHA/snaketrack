@@ -132,7 +132,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
 
   return (
     <>
-      <Flex gap="sm" align="center">
+      <Flex gap="sm" align="center" maw="100%" w="100%">
         <Text size="md" fw={500} c="yellow.6">
           Просмотр и редактирование кладки {location.query.id}
         </Text>
@@ -143,6 +143,9 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             </ActionIcon>
           )}
         </CopyButton>
+        <Button leftSection="< " size="compact-xs" flex="0 0 81px" variant="default" ml="auto" component="a" href="/clutches">
+          К списку
+        </Button>
       </Flex>
 
       <Flex maw="100%" w="100%" gap="lg" wrap="wrap">

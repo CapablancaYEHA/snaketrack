@@ -76,7 +76,7 @@ export const httpVkMarket = async (url: string): Promise<any> => {
         "content-type": "application/json",
       },
     });
-    return k.body;
+    return k.json();
   } catch (e) {
     throw e;
   }

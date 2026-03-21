@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Title } from "@mantine/core";
+import { Button, Flex, Title } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
 import { IUpdBreedReq } from "@/api/breeding/models";
 import { ESupaBreed, categoryToShort } from "@/api/common";
@@ -61,9 +61,15 @@ export const FormEditSnakeBreed = ({ initData, category }) => {
 
   return (
     <>
-      <Title component="span" c="yellow.6" order={3}>
-        Детализация бридинг плана
-      </Title>
+      <Flex wrap="nowrap" align="center" maw="100%" w="100%" gap="md">
+        <Title component="span" c="yellow.6" order={3}>
+          Детализация бридинг плана
+        </Title>
+        <Button leftSection="< " size="compact-xs" flex="0 0 81px" variant="default" ml="auto" component="a" href="/breeding">
+          К списку
+        </Button>
+      </Flex>
+
       <FormProvider {...formInstance}>
         <FormComposedBody onSub={onSub} onFinalize={onFinalize} btnText="Сохранить изменения" category={category} existingClutchId={initData.clutch_id} />
       </FormProvider>

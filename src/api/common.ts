@@ -283,8 +283,9 @@ export interface IVkMarketItem {
   availability: number;
   description: string;
   title: string;
+  id: string;
   price: {
-    amount: string; // '2000' это типа добавили 2 нуля к изначальному
+    amount: string; // здесь лежит значение, умноженное на 100
     text: string; // "20 ₽"
     old_amount?: string; // "6000"
     old_amount_text?: string; //"60 ₽"

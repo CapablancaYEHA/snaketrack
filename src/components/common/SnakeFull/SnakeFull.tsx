@@ -65,7 +65,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             </Text>
           ) : null}
         </Stack>
-        <Button leftSection="< " size="compact-xs" variant="default" ml="auto" component="a" href="/snakes">
+        <Button leftSection="< " size="compact-xs" flex="0 0 81px" variant="default" ml="auto" component="a" href="/snakes">
           К списку
         </Button>
       </Flex>
