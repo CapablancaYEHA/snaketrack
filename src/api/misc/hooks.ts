@@ -87,3 +87,29 @@ export function useVkMarket() {
     mutationFn: (a) => httpVkMarket(a),
   });
 }
+
+export const httpPayment = async (id: string, returnUri = window.location.href): Promise<any> => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const k = await fetch("http://localhost:80/api/payment", {
+      method: "POST",
+      body: JSON.stringify({ id, returnUri }),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    return k.json();
+
+    // return k;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export function useInitPayment() {
+  return useMutation<any, { message?: string }, string>({
+    mutationFn: (id) => httpPayment(id),
+    mutationKey: ["yoomoney"],
+    retry: 1,
+  });
+}

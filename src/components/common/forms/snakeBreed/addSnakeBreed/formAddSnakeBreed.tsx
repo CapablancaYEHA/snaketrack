@@ -48,7 +48,7 @@ export const FormAddBreed = ({ category }) => {
         notif({
           c: "red",
           t: "Ошибка",
-          m: JSON.stringify(err),
+          m: err.code === "22P02" ? "Сначала сохраните бридинг проект. Либо просто создайте кладку отдельно" : JSON.stringify(err),
           code: err.code || err.statusCode,
         });
       },

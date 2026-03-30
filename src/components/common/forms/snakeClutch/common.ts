@@ -27,8 +27,8 @@ export const initClutchAddValues = {
   males_ids: [],
   date_laid: undefined,
   date_hatch: undefined,
-  eggs: undefined,
-  slugs: undefined,
+  eggs: 1,
+  slugs: 0,
   infertile_eggs: null,
   notes: null,
 };
@@ -36,7 +36,7 @@ export const initClutchAddValues = {
 const baseClutchSchema = yup.object<Schema>().shape({
   date_laid: yup.string().required("Дата кладки обязательна"),
   date_hatch: yup.string().optional().nullable(),
-  eggs: yup.number().required("Требуется число"),
+  eggs: yup.number().required("Требуется число").min(1, "Кладка без яиц?"),
   slugs: yup.number().required("Требуется число"),
   infertile_eggs: yup.number().optional().notRequired(),
   id: yup.string().notRequired(),

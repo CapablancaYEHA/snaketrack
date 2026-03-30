@@ -3,6 +3,7 @@ import { Anchor, Box, Button, Flex, Loader, Space, Stack, Text } from "@mantine/
 import { signal } from "@preact/signals";
 import { ReleasesHistory } from "@/components/profile/releasesHistory";
 import { ModalChangePass } from "@/components/profile/updatePass";
+import { useInitPayment } from "@/api/misc/hooks";
 import { useProfile, useUpdName } from "@/api/profile/hooks";
 import { ModalChangeName } from "../../components/profile/updateName";
 import { notif } from "../../utils/notif";
@@ -17,6 +18,7 @@ export function Profile() {
   const userId = localStorage.getItem("USER");
 
   const { data, error, isError, isPending } = useProfile(userId, userId != null);
+  const { mutate: makePay } = useInitPayment();
 
   const { mutate, isPending: isPend } = useUpdName();
 
@@ -78,6 +80,24 @@ export function Profile() {
           история релизов
         </Anchor>
       </Stack>
+      {/* FIXME убрать */}
+      {/* <Button
+        fullWidth={false}
+        onClick={() =>
+          makePay(userId!, {
+            onSuccess: (res) => {
+              window.open(res.path, "_blank");
+              //   window.location.href = res;
+            },
+          })
+        }
+        size="compact-sm"
+        variant="outline"
+        loading={isPend}
+        disabled={isPend}
+      >
+        Заплатить 2р
+      </Button> */}
 
       {isPending ? (
         <Loader color="dark.1" size="xs" />

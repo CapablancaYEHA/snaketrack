@@ -241,7 +241,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
             name="eggs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput label="Яиц всего" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return <NumberInput label="Яиц всего" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={1} max={99} clampBehavior="strict" error={error?.message} />;
             }}
           />
           <Controller
