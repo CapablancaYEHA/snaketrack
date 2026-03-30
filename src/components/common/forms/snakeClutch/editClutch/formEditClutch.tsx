@@ -67,7 +67,9 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
   const ids = [clutch.female_id].concat(clutch.males_ids);
   const { female_genes, male_genes } = clutch;
 
-  const { mutate: update } = useSupaUpd<IReqUpdClutch>(ESupaBreed[`${cat.toUpperCase()}_CL`], { qk: [ESupaBreed[`${cat.toUpperCase()}_CL_V`], location.query.id], e: true });
+  console.log("inval", ESupaBreed[`${cat.toUpperCase()}_CL_V`]);
+
+  const { mutate: update } = useSupaUpd<IReqUpdClutch>(ESupaBreed[`${cat.toUpperCase()}_CL`], { qk: [ESupaBreed[`${cat.toUpperCase()}_CL_V`]], e: false });
   const { mutate: finalise } = useFinaliseClutch(category, clutch.id);
 
   const dateLaid = watch("date_laid");
