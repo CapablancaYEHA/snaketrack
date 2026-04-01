@@ -58,7 +58,7 @@ const baseClutchSchema = yup.object<Schema>().shape({
 });
 
 export const clutchEditSchema = baseClutchSchema.shape({
-  father_id: yup.string().required("Самец обязателен в кладке"),
+  father_id: yup.string().nullable(),
   mother_id: yup.string(),
 });
 

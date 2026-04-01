@@ -48,9 +48,9 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
     register,
   } = form;
 
-  const [wEggs, wInf] = useWatch({
+  const [wEggs, wInf, wFather] = useWatch({
     control,
-    name: ["eggs", "infertile_eggs"],
+    name: ["eggs", "infertile_eggs", "father_id"],
   });
 
   const { fields: kidsFields, replace } = useFieldArray({
@@ -67,8 +67,6 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
   const ids = [clutch.female_id].concat(clutch.males_ids);
   const { female_genes, male_genes } = clutch;
 
-  console.log("inval", ESupaBreed[`${cat.toUpperCase()}_CL_V`]);
-
   const { mutate: update } = useSupaUpd<IReqUpdClutch>(ESupaBreed[`${cat.toUpperCase()}_CL`], { qk: [ESupaBreed[`${cat.toUpperCase()}_CL_V`]], e: false });
   const { mutate: finalise } = useFinaliseClutch(category, clutch.id);
 
@@ -79,7 +77,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
   const isClosed = clutch.status === EClSt.CL;
   const isCanHatch = dateTimeDiff(dateAddDays(dateLaid, daysIncubation[category]), "days") <= daysCriticalThr;
 
-  const onSub = async (sbm) => {
+  const onSub = (sbm) => {
     update(prepForClutchUpdate(sbm, dirtyFields, location.query.id), {
       onSuccess: () => {
         notif({ c: "green", t: "Успешно", m: "Детали кладки обновлены" });
@@ -151,10 +149,10 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
       </Flex>
 
       <Flex maw="100%" w="100%" gap="lg" wrap="wrap">
-        {pics?.map((a, ind) => (
+        {ids?.map((a, ind) => (
           <Flex key={a} gap="sm" flex="0 1 160px" h={80} style={{ cursor: "pointer" }} onClick={() => (snakeId.value = ids?.[ind])} wrap="nowrap">
             <IconSwitch icon={ind === 0 ? "female" : "male"} width="16" height="16" />
-            <Image src={a} fit="cover" radius="sm" w="auto" flex="0 0 160px" loading="lazy" fallbackSrc={fallback} />
+            <Image src={pics[ind]} fit="cover" radius="sm" w="auto" flex="0 0 160px" loading="lazy" fallbackSrc={fallback} />
           </Flex>
         ))}
       </Flex>
@@ -233,9 +231,9 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
       </Stack>
       {!(isHatch || isClosed) ? (
         <Flex align="flex-start" maw="100%" w="100%">
-          <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} disabled={!isDirty}>
+          <Button ml="auto" style={{ alignSelf: "flex-end" }} size="compact-xs" onClick={handleSubmit(onSub)} disabled={!isDirty}>
             Сохранить изменения
-          </Btn>
+          </Button>
         </Flex>
       ) : null}
       {isCanHatch ? (
@@ -265,13 +263,15 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
                   );
                 }}
               />
-              <Controller
-                name="father_id"
-                control={control}
-                render={({ field: { onChange, value }, fieldState: { error } }) => {
-                  return <Select searchable label="Отработавший самец" data={fathersToPick} value={value} onChange={onChange} error={error?.message} disabled={clutch.males_ids.length === 1} />;
-                }}
-              />
+              {isHatch && !isClosed ? (
+                <Controller
+                  name="father_id"
+                  control={control}
+                  render={({ field: { onChange, value } }) => {
+                    return <Select searchable label="Отработавший самец" data={fathersToPick} value={value} onChange={onChange} error={wFather == null} disabled={clutch.males_ids.length === 1} />;
+                  }}
+                />
+              ) : null}
             </Flex>
 
             {isLaid && !isClosed ? (
@@ -304,7 +304,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
 
           {!isLaid && !isClosed ? (
             <Flex align="flex-start" maw="100%" w="100%">
-              <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onFinalise)}>
+              <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onFinalise)} disabled={wFather == null}>
                 Завершить кладку
               </Btn>
             </Flex>

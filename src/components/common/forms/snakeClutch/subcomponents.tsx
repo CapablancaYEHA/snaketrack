@@ -46,11 +46,11 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
         </CopyButton>
       </Flex>
       <Flex gap="xl" flex="1 1 auto" className={className} mih={324}>
-        <Stack gap="md" justify="space-between" maw="100%" w="100%">
-          {pics.map((a, ind) => (
+        <Stack gap="md" justify="start" maw="100%" w="100%">
+          {ids.map((a, ind) => (
             <Flex
               key={`${a}_${ind}_${clutch.id}`}
-              mt={ind === 1 ? "lg" : 0}
+              mt={ind === 1 ? "auto" : 0}
               gap="sm"
               align="center"
               style={{ cursor: "pointer" }}
@@ -60,7 +60,7 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
               }}
             >
               <IconSwitch icon={ind === 0 ? "female" : "male"} width="16" height="16" />
-              <Image src={a} fit="cover" radius="sm" w="auto" h={64} loading="lazy" flex="auto" fallbackSrc={fallback} />
+              <Image src={pics[ind]} fit="cover" radius="sm" w="auto" h={64} loading="lazy" flex="auto" fallbackSrc={fallback} />
             </Flex>
           ))}
         </Stack>
