@@ -4,6 +4,7 @@
   position: relative;
   width: 100%;
   max-width: 100%;
+  -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0) 95%, rgba(0, 0, 0, 0.2));
   @include cute-scroll-horis(0px, false);
   @include cute-scroll(41px, false);
 }

@@ -69,6 +69,7 @@ export type Node = Readonly<{
   genes: IGenesComp[];
   picture: string;
   placeholder?: boolean;
+  owner_id: string;
 }>;
 
 export type ExtNode = Node &

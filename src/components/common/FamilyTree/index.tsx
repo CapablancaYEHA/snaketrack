@@ -95,17 +95,19 @@ interface FamilyNodeProps {
   onSubClick: (id: string) => void;
   style?: CSSProperties;
   selected: boolean;
+  userId?: string | null;
 }
 
-const SFamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick, style }) => {
+const SFamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick, style, userId }) => {
   const isTraget = targetId === node.id;
+  const isOwnerView = userId && userId === node.owner_id;
 
   return (
     <div className={css.root} style={style}>
       <Stack gap="sm" className={clsx(css.inner, isTraget && css.isTarget)} onClick={() => onSelect(node.id)} style={{ transform: "translate3d(0, 0, 0)" }}>
         <Flex component="section" gap="xs" style={{ flexFlow: "row nowrap" }} align="center" maw="100%">
           <Text size="xs" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {node.id}
+            {isOwnerView ? node.snake_name : node.id}
           </Text>
           <Box style={{ flex: "0 0 20px", minWidth: 20 }}>
             <IconSwitch icon={node.gender} width="20" height="20" />
@@ -138,6 +140,7 @@ interface IFamTree {
 }
 
 export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, currentFather, isEditable = true }) => {
+  const userId = localStorage.getItem("USER");
   const { data: tree, isError, isFetching } = useFamilyTree(targetId, category);
   const [rootId, setRootId] = useState(tree?.[0].id);
   const [selectId, setSelectId] = useState<string>();
@@ -202,6 +205,7 @@ export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, cu
                   open();
                   setSelectId(a);
                 }}
+                userId={userId}
                 onSubClick={setRootId}
                 style={{
                   width: WIDTH,
