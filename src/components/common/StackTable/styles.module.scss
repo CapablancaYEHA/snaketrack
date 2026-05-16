@@ -7,6 +7,10 @@
   -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0) 95%, rgba(0, 0, 0, 0.2));
   @include cute-scroll-horis(0px, false);
   @include cute-scroll(41px, false);
+
+  @media (min-width: 48em) {
+    -webkit-mask-image: none;
+  }
 }
 
 .table {
