@@ -7,3 +7,5 @@ export const declWord = (value: number, words: string[], isWordsOnly = false) =>
   if (num === 1) return `${isWordsOnly ? "" : value} ${words[0]}`;
   return `${isWordsOnly ? "" : value} ${words[2]}`;
 };
+
+export const urlProxyReplace = (s: string | null) => (s ?? "").replace("ezryvcyxbrgcivccpydc.supabase.co", "api.hissstory.site");

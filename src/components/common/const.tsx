@@ -3,6 +3,7 @@ import { AspectRatio, Box, Image, Indicator, Stack, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import { IResSnakesList } from "@/api/common";
 import { catVisited } from "@/pages/SnakeCategories";
+import { urlProxyReplace } from "@/utils/other";
 import { getAge } from "@/utils/time";
 import { Controls, GenesList, SnakeEventsBlock } from "../common/SnakeCard";
 import { SexName } from "../common/sexName";
@@ -25,7 +26,7 @@ export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) =>
               </Text>
             ) : null}
             <AspectRatio ratio={16 / 9} maw="100%">
-              <Image src={cell.getValue()} fit="cover" radius="md" w="100%" fallbackSrc={fallback} loading="lazy" />
+              <Image src={urlProxyReplace(cell.getValue())} fit="cover" radius="md" w="100%" fallbackSrc={fallback} loading="lazy" />
             </AspectRatio>
             <GenesList genes={row.original.genes} size="xs" />
           </Stack>

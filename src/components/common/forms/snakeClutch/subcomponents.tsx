@@ -13,7 +13,7 @@ import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { EClSt, IResClutch } from "@/api/breeding/models";
 import { ECategories, EGenesView, IResSnakesList } from "@/api/common";
 import { useSupaGet } from "@/api/hooks";
-import { declWord } from "@/utils/other";
+import { declWord, urlProxyReplace } from "@/utils/other";
 import { dateAddDays, dateTimeDiff, getAge, getDate, getDateObj } from "@/utils/time";
 import { daysIncubation, getPercentage } from "../snakeBreed/breedUtils";
 import { sexHardcode } from "../snakeBreed/common";
@@ -60,7 +60,7 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
               }}
             >
               <IconSwitch icon={ind === 0 ? "female" : "male"} width="16" height="16" />
-              <Image src={pics[ind]} fit="cover" radius="sm" w="auto" h={64} loading="lazy" flex="auto" fallbackSrc={fallback} />
+              <Image src={urlProxyReplace(pics[ind])} fit="cover" radius="sm" w="auto" h={64} loading="lazy" flex="auto" fallbackSrc={fallback} />
             </Flex>
           ))}
         </Stack>
@@ -206,7 +206,7 @@ export const MiniInfo = ({ opened, close, snakeId, sex, category, withTitle = tr
           </Text>
         ) : (
           <>
-            <Image src={data?.picture ?? fallback} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" mih={110} mah={112} fallbackSrc={fallback} loading="lazy" />
+            <Image src={data?.picture ? urlProxyReplace(data?.picture) : fallback} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" mih={110} mah={112} fallbackSrc={fallback} loading="lazy" />
             <Anchor href={`/snakes/${category}?id=${data.id}`} c="inherit">
               <SexName sex={data?.sex} name={data?.snake_name} isLink />
             </Anchor>

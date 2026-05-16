@@ -1,5 +1,6 @@
 import { forwardRef } from "preact/compat";
 import { AspectRatio, Button, FileButton, Image, Space, Stack, Text } from "@mantine/core";
+import { urlProxyReplace } from "@/utils/other";
 import { IconSwitch } from "./navs/sidebar/icons/switch";
 
 interface IProp {
@@ -22,7 +23,7 @@ export const FileUpload = forwardRef<any, IProp>(({ onUpload, url, err, clearFil
                   <span style={{ maxHeight: 109, display: "block" }}>
                     {url ? (
                       <AspectRatio ratio={16 / 9} maw={196}>
-                        <Image src={url} width="100%" alt="uploaded_snake_pic" fit="cover" />
+                        <Image src={urlProxyReplace(url)} width="100%" alt="uploaded_snake_pic" fit="cover" />
                       </AspectRatio>
                     ) : (
                       <IconSwitch icon="img" width="64" height="64" />

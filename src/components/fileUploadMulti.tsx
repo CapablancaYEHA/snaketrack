@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useState } from "preact/compat";
 import { AspectRatio, Box, Button, FileButton, Flex, Image, Stack, Text } from "@mantine/core";
 import { isEmpty } from "lodash-es";
+import { urlProxyReplace } from "@/utils/other";
 import { IconSwitch } from "./navs/sidebar/icons/switch";
 import css from "./styles.module.scss";
 
@@ -48,7 +49,7 @@ export const FileUploadMulti = forwardRef<any, IProp>(({ onUpload, url, err, cle
                       {innerFiles?.map((u, ind) => (
                         <Box key={`${u?.slice(0, 4)}_${ind}`} pos="relative" style={{ maxHeight: 110 }}>
                           <AspectRatio ratio={16 / 9} maw={196}>
-                            <Image src={u} width="100%" alt="uploaded_snake_pic" fit="cover" />
+                            <Image src={urlProxyReplace(u)} width="100%" alt="uploaded_snake_pic" fit="cover" />
                           </AspectRatio>
                           <Box
                             pos="absolute"

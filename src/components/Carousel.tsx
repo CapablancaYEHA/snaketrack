@@ -1,6 +1,7 @@
 import fallback from "@assets/placeholder.webp";
 import { Carousel as Car } from "@mantine/carousel";
 import { AspectRatio, Image } from "@mantine/core";
+import { urlProxyReplace } from "@/utils/other";
 
 export const Carousel = ({ images }) => {
   return (
@@ -8,7 +9,7 @@ export const Carousel = ({ images }) => {
       {images?.map((p, ind) => (
         <Car.Slide key={ind}>
           <AspectRatio ratio={3 / 2}>
-            <Image src={p} fit="cover" radius="sm" h="auto" fallbackSrc={fallback} />
+            <Image src={urlProxyReplace(p)} fit="cover" radius="sm" h="auto" fallbackSrc={fallback} />
           </AspectRatio>
         </Car.Slide>
       ))}

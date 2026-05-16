@@ -17,6 +17,7 @@ import { ECategories, ESupaBreed, categoryToShort } from "@/api/common";
 import { useSupaDel } from "@/api/hooks";
 import { useCalcMmOdds } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
+import { urlProxyReplace } from "@/utils/other";
 import { dateToSupabaseTime, getAge, getDateObj } from "@/utils/time";
 import { calcEstimatedDate, calcTimeleft, daysAfterOvul, daysAfterShed, daysCriticalThr, getPercentage } from "./breedUtils";
 import { IBreedScheme, eventsOpts, prepForMm, renderSelectOption, useUtilsBreed } from "./common";
@@ -220,7 +221,7 @@ export const BriefInfo = ({ snake }) => {
   return (
     <Stack>
       <Flex wrap="nowrap" gap="md" direction={{ base: "column", md: "row" }}>
-        <Image src={snake?.picture} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
+        <Image src={urlProxyReplace(snake?.picture)} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
         <Stack gap="xs" flex="0 1 auto">
           <SexName sex={snake?.sex} name={snake?.snake_name} />
           <Text size="xs">⌛ {getAge(snake?.date_hatch)}</Text>

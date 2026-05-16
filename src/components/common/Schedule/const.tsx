@@ -5,6 +5,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
 import { SexName } from "@/components/common/sexName";
 import { ECategories, IRemResExt, IRemindersRes, IResSnakesList } from "@/api/common";
+import { urlProxyReplace } from "@/utils/other";
 import { SnakeEventsBlock } from "../SnakeCard";
 import { RemControls } from "./remControls";
 
@@ -28,7 +29,7 @@ export const makeScheduleColumns = ({ openFeed }) => [
         />
         <RemControls id={row.original.id} openFeed={openFeed}>
           <Stack gap="xs" flex="1 1 auto">
-            <Image src={cell.getValue()} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
+            <Image src={urlProxyReplace(cell.getValue())} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
             <SexName sex={row.original.sex} name={row.original.snake_name} size="sm" />
           </Stack>
         </RemControls>

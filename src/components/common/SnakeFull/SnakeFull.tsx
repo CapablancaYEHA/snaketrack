@@ -14,6 +14,7 @@ import { categToTitle, detailsDict, sliceDict, subjectDict } from "@/components/
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
+import { urlProxyReplace } from "@/utils/other";
 import { getAge, getDate } from "@/utils/time";
 import { FamilyTree } from "../FamilyTree";
 import { disStats, snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
@@ -127,7 +128,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
               </ActionIcon>
               <AspectRatio ratio={3 / 2} maw="100%">
                 <Image
-                  src={data.picture}
+                  src={urlProxyReplace(data.picture)}
                   fit="cover"
                   radius="md"
                   w="auto"

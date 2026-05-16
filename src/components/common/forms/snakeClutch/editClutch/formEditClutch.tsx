@@ -16,7 +16,7 @@ import { EClSt, IReqUpdClutch, IResClutch } from "@/api/breeding/models";
 import { ECategories, ESupaBreed, categoryToShort } from "@/api/common";
 import { useFinaliseClutch, useSupaUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
-import { declWord } from "@/utils/other";
+import { declWord, urlProxyReplace } from "@/utils/other";
 import { dateAddDays, dateTimeDiff } from "@/utils/time";
 import { daysCriticalThr, daysIncubation, getPercentage } from "../../snakeBreed/breedUtils";
 import { calcAnim } from "../clutchUtils";
@@ -152,7 +152,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
         {ids?.map((a, ind) => (
           <Flex key={a} gap="sm" flex="0 1 160px" h={80} style={{ cursor: "pointer" }} onClick={() => (snakeId.value = ids?.[ind])} wrap="nowrap">
             <IconSwitch icon={ind === 0 ? "female" : "male"} width="16" height="16" />
-            <Image src={pics[ind]} fit="cover" radius="sm" w="auto" flex="0 0 160px" loading="lazy" fallbackSrc={fallback} />
+            <Image src={urlProxyReplace(pics[ind])} fit="cover" radius="sm" w="auto" flex="0 0 160px" loading="lazy" fallbackSrc={fallback} />
           </Flex>
         ))}
       </Flex>

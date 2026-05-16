@@ -7,6 +7,7 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories } from "@/api/common";
 import { useFamilyTree } from "@/api/misc/hooks";
+import { urlProxyReplace } from "@/utils/other";
 import { FormAddParents } from "../forms/addParents/formAddParents";
 import { sortSnakeGenes } from "../genetics/const";
 import { GenePill } from "../genetics/geneSelect";
@@ -114,7 +115,7 @@ const SFamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick
           </Box>
         </Flex>
         <AspectRatio ratio={16 / 9} maw={196}>
-          <Image radius="sm" src={node.picture} width="100%" alt="snake_in_tree" fit="cover" fallbackSrc={fallback} loading="lazy" />
+          <Image radius="sm" src={urlProxyReplace(node.picture)} width="100%" alt="snake_in_tree" fit="cover" fallbackSrc={fallback} loading="lazy" />
         </AspectRatio>
 
         <Box mah={88} h="100%" p={2} className={css.overflowed}>
@@ -246,7 +247,7 @@ export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, cu
                 ))}
               </Flex>
               <AspectRatio ratio={16 / 9} maw="100%" w="100%" mih={170}>
-                <Image radius="sm" src={selected.picture} width="100%" maw="100%" alt="snake_in_drawer" fit="cover" fallbackSrc={fallback} loading="lazy" />
+                <Image radius="sm" src={urlProxyReplace(selected.picture)} width="100%" maw="100%" alt="snake_in_drawer" fit="cover" fallbackSrc={fallback} loading="lazy" />
               </AspectRatio>
             </Stack>
           </Drawer>

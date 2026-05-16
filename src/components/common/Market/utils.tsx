@@ -3,6 +3,7 @@ import { AspectRatio, Box, Flex, Image, Indicator, NumberFormatter, Stack, Text,
 import { createColumnHelper } from "@tanstack/react-table";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IMarketRes } from "@/api/common";
+import { urlProxyReplace } from "@/utils/other";
 import { dateTimeDiff, getAge } from "@/utils/time";
 import { GenesList } from "../SnakeCard";
 import { MarketControls } from "./marketControls";
@@ -18,7 +19,7 @@ export const marketColumns = [
         <MarketControls id={row.original.id} owner={row.original.owner_id} cat={row.original.category} status={row.original.status}>
           <Stack gap="xs" maw="100%" w="100%" pos="relative">
             <AspectRatio ratio={16 / 9}>
-              <Image src={cell.getValue()[0]} fit="cover" radius="md" h="auto" fallbackSrc={fallback} loading="lazy" />
+              <Image src={urlProxyReplace(cell.getValue()[0])} fit="cover" radius="md" h="auto" fallbackSrc={fallback} loading="lazy" />
             </AspectRatio>
             {row.original.status !== "on_sale" ? (
               <Box pos="absolute" bg={darken("var(--mantine-color-dark-4)", 0.5)} right={8} top={8} pr="xs" pl="sm" style={{ borderRadius: 4 }}>
