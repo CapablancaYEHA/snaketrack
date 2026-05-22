@@ -1,5 +1,5 @@
 import { Route, useLocation } from "preact-iso";
-import { useLayoutEffect } from "preact/hooks";
+import { useEffect, useLayoutEffect } from "preact/hooks";
 import { isEmpty } from "lodash-es";
 import { AddBreed } from "@/pages/AddBreed";
 import { AddClutch } from "@/pages/AddClutch";
@@ -26,11 +26,25 @@ import { usePwaInformer } from "@/utils/usePwaInformer";
 export const ProtectedRoute = (props) => {
   const location = useLocation();
 
-  if (!props.session) {
-    location.route("/login");
-  }
+  useLayoutEffect(() => {
+    if (!props.session) {
+      const userWantedUrl = window.location?.pathname;
+      if (userWantedUrl === "/market") {
+        const searchParams = window.location?.search;
+        localStorage.setItem("REQUESTED_URI", `${userWantedUrl}${searchParams}`);
+      }
+
+      location.route("/login");
+    }
+  }, [props.session, location]);
 
   usePwaInformer();
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("REQUESTED_URI");
+    };
+  }, []);
 
   return <Route {...props} />;
 };

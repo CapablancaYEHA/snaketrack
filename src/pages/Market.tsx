@@ -1,6 +1,6 @@
 import { useEffect } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Box, Button, Checkbox, Drawer, Flex, Loader, LoadingOverlay, Mark, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Checkbox, Chip, CopyButton, Drawer, Flex, Loader, LoadingOverlay, Mark, Pill, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure, useInViewport, useMediaQuery } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
 import { useQueryState } from "nuqs";
@@ -17,6 +17,12 @@ import { useProfile } from "@/api/profile/hooks";
 
 export function Market() {
   const { ref, inViewport } = useInViewport();
+  const dt = {
+    title: "snaketrack.ru",
+    text: "Подборка змей",
+    url: window.location.href,
+  };
+  const isCan = navigator?.canShare?.(dt);
   const isMinSm = useMediaQuery(startSm);
   const userId = localStorage.getItem("USER");
   const [cat, setCat] = useQueryState("cat");
@@ -31,6 +37,18 @@ export function Market() {
   const market = data?.pages.flatMap((p) => p.data);
   const { data: genes } = useSnakeGenes(cat as any, Boolean(cat));
   const { data: profile } = useProfile(userId, userId != null);
+
+  const share = async (func) => {
+    try {
+      if (!isCan) {
+        func();
+      } else {
+        await navigator.share(dt);
+      }
+    } catch {
+      func();
+    }
+  };
 
   useEffect(() => {
     if (!cat) setCat(localStorage.getItem("MARKET_VISITED") ?? ECategories.BP);
@@ -78,6 +96,17 @@ export function Market() {
         onChange={() => handleSingleSel(sqlFilt?.["owner_id"]?.split("eq-")[1] === localStorage.getItem("USER") ? null : localStorage.getItem("USER"), "owner_id", setSqlFilt)}
         style={{ whiteSpace: "pre-wrap" }}
       />
+      {!isFilterNull ? (
+        <Box maw="100%" w="100%">
+          <CopyButton value="window.location.href" timeout={3000}>
+            {({ copied, copy }) => (
+              <Button variant="default" size="compact-xs" onClick={() => share(copy)} ml="auto">
+                {(copied && isCan) || isCan ? "Поделиться подборкой" : copied ? "Скопировано" : "Копировать"}
+              </Button>
+            )}
+          </CopyButton>
+        </Box>
+      ) : null}
       <SegmentedControl
         style={{ alignSelf: "center" }}
         size="xs"
@@ -144,6 +173,16 @@ export function Market() {
         }}
         keepMounted
       >
+        {!isFilterNull && sqlFilt?.["owner_id"] ? (
+          <>
+            <Box maw="100%" w="100%" flex="1 1 50%">
+              <Chip defaultChecked onChange={() => handleSingleSel(null, "owner_id", setSqlFilt)} size="xs" color="red" icon={<IconSwitch icon="cross" width="12" height="12" />}>
+                {sqlFilt?.["owner_id"]?.split("eq-")[1] === localStorage.getItem("USER") ? "Только мои объявления" : "Фильтр по продавцу"}
+              </Chip>
+            </Box>
+            <Space h="xs" />
+          </>
+        ) : null}
         <Flex gap="md" wrap="nowrap" align="end">
           <MaxSelectedMulti
             miw={0}

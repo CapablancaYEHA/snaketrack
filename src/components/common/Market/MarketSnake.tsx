@@ -48,7 +48,7 @@ export function MarketSnake({ category, data }: IProp) {
           </Text>
         </Indicator>
 
-        <CopyButton value="window.location.href" timeout={300000}>
+        <CopyButton value="window.location.href" timeout={3000}>
           {({ copied, copy }) => (
             <Button variant="default" size="compact-xs" onClick={() => share(copy)} ml="auto">
               {(copied && isCan) || isCan ? "Поделиться" : copied ? "Скопировано" : "Копировать"}
@@ -130,7 +130,7 @@ export function MarketSnake({ category, data }: IProp) {
               ) : null}
             </Stack>
           </Flex>
-          {data.contacts_group || data.contacts_telegram ? (
+          {data.contacts_group || data.contacts_telegram || data.contacts_website ? (
             <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
               {data.contacts_group ? (
                 <Anchor href={data.contacts_group} target="_blank" rel="nofollow noopener noreferrer" underline="never">
@@ -140,6 +140,11 @@ export function MarketSnake({ category, data }: IProp) {
               {data.contacts_telegram ? (
                 <Anchor href={`https://t.me/${data.contacts_telegram.startsWith("@") ? data.contacts_telegram.slice(1) : data.contacts_telegram}`} target="_blank" rel="nofollow noopener noreferrer" underline="never">
                   <IconSwitch icon="telegram" width="32" height="32" />
+                </Anchor>
+              ) : null}
+              {data.contacts_website ? (
+                <Anchor href={data.contacts_website} target="_blank" rel="nofollow noopener noreferrer" underline="never">
+                  <IconSwitch icon="global" width="32" height="32" />
                 </Anchor>
               ) : null}
             </Flex>

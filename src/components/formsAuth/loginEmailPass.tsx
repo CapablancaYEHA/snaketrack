@@ -33,7 +33,12 @@ export const FormLoginEmailPass = () => {
         code: error?.code,
       });
     } else if (!isEmpty(data?.session)) {
-      route("/snakes");
+      const desiredUri: string | null = localStorage.getItem("REQUESTED_URI");
+      if (desiredUri) {
+        route(desiredUri);
+      } else {
+        route("/snakes");
+      }
     }
   };
 
@@ -51,7 +56,7 @@ export const FormLoginEmailPass = () => {
     } else {
       notif({
         c: "green",
-        t: "Письмо отправлено",
+        t: "Письмо выслано",
         m: "Для сброса пароля перейдите по ссылке в письме.\nОно может быть в спаме 🤣",
       });
     }

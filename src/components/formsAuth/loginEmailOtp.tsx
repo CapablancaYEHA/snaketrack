@@ -35,7 +35,12 @@ export const FormLoginEmailOtp = () => {
       });
       setErr(true);
     } else if (!isEmpty(data?.session)) {
-      route("/snakes");
+      const desiredUri: string | null = localStorage.getItem("REQUESTED_URI");
+      if (desiredUri) {
+        route(desiredUri);
+      } else {
+        route("/snakes");
+      }
     }
   };
 
@@ -52,6 +57,12 @@ export const FormLoginEmailOtp = () => {
         c: "red",
         m: error?.message,
         code: error?.code,
+      });
+    } else {
+      notif({
+        c: "green",
+        t: "OTP выслан",
+        m: "Письмо может быть в спаме 🤣",
       });
     }
   };

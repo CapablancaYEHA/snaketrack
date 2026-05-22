@@ -229,6 +229,13 @@ export const FormEditSale = ({ init, info, category }) => {
             return <TextInput label="Ник в Телеге" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} placeholder="юзернейм с или без @" />;
           }}
         />
+        <Controller
+          name="contacts_website"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <TextInput label="Web-site" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} />;
+          }}
+        />
       </Flex>
       <Box className={styles.w70} maw="100%">
         <Controller

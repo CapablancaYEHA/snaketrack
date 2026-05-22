@@ -8,10 +8,12 @@ import { CalendarIcon } from "./Calendar";
 import { CheckIcon } from "./Check";
 import { CleanIcon } from "./Clean";
 import { CopyIcon } from "./Copy";
+import { CrossIcon } from "./Cross";
 import { DashIcon } from "./Dash";
 import { EditIcon } from "./Edit";
 import { EggIcon } from "./Egg";
 import { FemaleIcon } from "./Female";
+import { GlobalIcon } from "./Global";
 import { ImgIcon } from "./Img";
 import { KebabIcon } from "./Kebab";
 import { MaleIcon } from "./Male";
@@ -47,6 +49,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <RefreshIcon width={width} height={height} style={style} />;
     case "clean":
       return <CleanIcon width={width} height={height} style={style} />;
+    case "cross":
+      return <CrossIcon width={width} height={height} style={style} />;
     case "adjust":
       return <AdjustIcon width={width} height={height} />;
     case "dashboard":
@@ -59,6 +63,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <MaleIcon width={width} height={height} style={style} />;
     case "market":
       return <MarketIcon width={width} height={height} style={style} />;
+    case "global":
+      return <GlobalIcon width={width} height={height} style={style} />;
     case "female":
       return <FemaleIcon width={width} height={height} style={style} />;
     case "unisex":

@@ -10,6 +10,7 @@ export const emptyDefault = {
   city_name: undefined,
   contacts_group: undefined,
   contacts_messager: undefined,
+  contacts_website: undefined,
   sex: null,
   snake_name: "",
   date_hatch: undefined,
@@ -26,6 +27,7 @@ export const makeInit = (raw) => {
     city_name: undefined,
     contacts_group: undefined,
     contacts_messager: undefined,
+    contacts_website: undefined,
   };
 };
 
@@ -38,6 +40,7 @@ export const makeInitEdit = (raw) => {
     city_name: raw.city_name,
     contacts_group: raw.contacts_group,
     contacts_telegram: raw.contacts_messager,
+    contacts_website: raw.contacts_website,
   };
 };
 
@@ -61,11 +64,15 @@ export const schemaBase = yup.object<Schema>().shape({
   contacts_group: yup
     .string()
     .nullable()
-    .test("test_group", "Нужна полная ссылка", (v) => (!v ? true : v.startsWith("http"))),
+    .test("test_group", "Должно быть https://...", (v) => (!v ? true : v.startsWith("http"))),
   contacts_telegram: yup
     .string()
     .nullable()
     .test("test_telegram", "Некорректный формат", (v) => (!v ? true : /^@?[a-z\d_]+$/i.test(v))),
+  contacts_website: yup
+    .string()
+    .nullable()
+    .test("test_group", "Должно быть https://...", (v) => (!v ? true : v.startsWith("http"))),
   discount_until: yup.string().optional().nullable(),
   discount_price: yup
     .number()

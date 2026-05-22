@@ -29,7 +29,7 @@ export const StockVivarium: FC<IEnt> = ({ entity, feeder, id }) => {
       },
       {
         onSuccess: () => {
-          notif({ c: "green", t: "Успешно", m: "Виварий актуализирован" });
+          notif({ c: "cyan", t: "Успешно", m: "Виварий актуализирован" });
           setEdit(false);
         },
         onError: (e) => {
