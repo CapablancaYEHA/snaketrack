@@ -224,7 +224,7 @@ export const MiniInfo = ({ opened, close, snakeId, sex, category, withTitle = tr
   );
 };
 
-export const FormApprovedBabies = ({ futureSnakes, isShow }) => {
+export const FormApprovedBabies = ({ futureSnakes, isShow, category }) => {
   const isMinSm = useMediaQuery(startSm);
   const isMinMd = useMediaQuery(startMd);
   const innerInstance = useFormContext<IClutchEditScheme>();
@@ -260,7 +260,7 @@ export const FormApprovedBabies = ({ futureSnakes, isShow }) => {
           name={`future_animals.${ind}.genes`}
           control={innerInstance.control}
           render={({ field: { onChange, value } }) => {
-            return <GenesSelect view={EGenesView.STD} description={null} onChange={(a) => onChange(a)} label={isLabel ? "Морфы" : undefined} init={value as any} placeholder="Необязательно" category={ECategories.BP} size={size as any} />;
+            return <GenesSelect view={EGenesView.STD} description={null} onChange={(a) => onChange(a)} label={isLabel ? "Морфы" : undefined} init={value as any} placeholder="Необязательно" category={category} size={size as any} />;
           }}
         />
       </Box>

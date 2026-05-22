@@ -293,7 +293,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             ) : null}
 
             <FormProvider {...form}>
-              <FormApprovedBabies futureSnakes={futureSnakes} isShow={isHatch && !isClosed} />
+              <FormApprovedBabies futureSnakes={futureSnakes} isShow={isHatch && !isClosed} category={category} />
             </FormProvider>
           </Stack>
           {clutch.males_ids.length > 1 && !isClosed ? (
