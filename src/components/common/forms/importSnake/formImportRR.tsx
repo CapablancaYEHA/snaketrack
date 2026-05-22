@@ -39,7 +39,7 @@ export const FormImportRR: FC<IProps> = ({ table, title, category }) => {
       <Text size="sm">Для импорта из ReptileRocket нужно:</Text>
       <List type="ordered" size="sm">
         <List.Item>
-          Изменить названия ваших категорий животных на следующие (в латинской раскладке):
+          Целевые животные должны быть причислены к Виду (не к группе) животных с наименованиями (в латинской раскладке):
           <Highlight highlight={["bps", "bcs", "corns", "mvs"]} highlightStyles={{ padding: "0 4px 0 4px" }} inline size="sm">
             для Региусов — указать bps, для Удавов — bcs, для Маисов — corns, для Хондров — mvs
           </Highlight>

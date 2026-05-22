@@ -8,9 +8,10 @@ export const createSnakes = (raw: IParsedRocket | null, category: ECategories): 
   const res: IReqCreateSnake[] | any[] = [];
 
   for (const s of raw.animalProfiles) {
-    if (s.animalSpecies.title.toLowerCase() !== categoryToMmCat[category]) {
+    if (s.animalSpecies == null || s.animalSpecies?.title?.toLowerCase() !== categoryToMmCat[category]) {
       continue;
     }
+
     const feed = raw.events?.reduce((tot, cur) => {
       if (cur.animalId === s.id && cur.noteType === "eat") {
         return [
