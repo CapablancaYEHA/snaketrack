@@ -168,7 +168,17 @@ export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, cu
 
   return rootId && tree && tree.length > 0 ? (
     <Box maw="100%" w="100%">
-      <Modal centered opened={sigIsModalOpen.value} onClose={closeMod} size="xs" title={<Title order={4}>Указать родителей</Title>} keepMounted={false}>
+      <Modal
+        centered
+        opened={sigIsModalOpen.value}
+        onClose={closeMod}
+        size="xs"
+        title={<Title order={4}>Указать родителей</Title>}
+        keepMounted={false}
+        styles={{
+          content: { overflow: "visible" },
+        }}
+      >
         <FormAddParents snakeId={targetId} category={category} onClose={closeMod} currentMother={currentMother} currentFather={currentFather} />
       </Modal>
       {/* FIXME shadow_date_hatch для таких вот кейсов заполнять или как */}

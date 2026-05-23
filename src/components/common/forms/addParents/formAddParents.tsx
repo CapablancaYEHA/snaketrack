@@ -105,7 +105,21 @@ export const FormAddParents = ({ category, snakeId, onClose, currentFather, curr
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return wSource === "collection" ? (
-              <Select data={regFems?.map((b) => ({ label: b.snake_name, value: b.id }))} value={value} onChange={onChange} label="Выбор в своей коллекции" error={error?.message} />
+              <Select
+                data={regFems?.map((b) => ({ label: b.snake_name, value: b.id }))}
+                value={value}
+                onChange={onChange}
+                label="Выбор в своей коллекции"
+                error={error?.message}
+                comboboxProps={{
+                  withinPortal: false,
+                  position: "bottom",
+                  middlewares: {
+                    flip: false,
+                    shift: true,
+                  },
+                }}
+              />
             ) : (
               <AutocompAsync
                 data={femTrg ? [femTrg] : undefined}
@@ -128,7 +142,21 @@ export const FormAddParents = ({ category, snakeId, onClose, currentFather, curr
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return wSource === "collection" ? (
-              <Select data={regMales?.map((b) => ({ label: b.snake_name, value: b.id }))} value={value} onChange={onChange} label="Выбор в своей коллекции" error={error?.message} />
+              <Select
+                data={regMales?.map((b) => ({ label: b.snake_name, value: b.id }))}
+                value={value}
+                onChange={onChange}
+                label="Выбор в своей коллекции"
+                error={error?.message}
+                comboboxProps={{
+                  withinPortal: false,
+                  position: "bottom",
+                  middlewares: {
+                    flip: false,
+                    shift: true,
+                  },
+                }}
+              />
             ) : (
               <AutocompAsync
                 data={maleTrg ? [maleTrg] : undefined}
