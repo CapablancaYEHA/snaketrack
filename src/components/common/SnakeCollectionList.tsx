@@ -1,6 +1,6 @@
-import { useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Box, Button, CloseButton, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
+import { Box, Button, Chip, CloseButton, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
@@ -48,6 +48,7 @@ const base = {
 };
 
 export function SnakeCollectionList() {
+  const storageFilter: any[] = (localStorage.getItem("SNAKES_FILTER") && JSON.parse(localStorage.getItem("SNAKES_FILTER") ?? "[]")) || [];
   const isMinSm = useMediaQuery(startSm);
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
@@ -57,7 +58,7 @@ export function SnakeCollectionList() {
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[catVisited.value]);
   const { mutate: upd, isPending: isUpdPend } = useSupaUpd<IUpdReq>(categoryToBaseTable[catVisited.value]);
   const { mutate: trans, isPending: isTransPend } = useTransferSnake(catVisited.value);
-  const [filt, setFilt] = useState<any[]>([]);
+  const [filt, setFilt] = useState<any[]>(() => storageFilter);
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
   const target = snakes?.find((b) => b.id === curId.value);
@@ -65,6 +66,12 @@ export function SnakeCollectionList() {
   const debSearch = debounce(setGlobalFilter, 400);
 
   const isFilterNull = isEmpty(filt) && globalFilter.length === 0;
+
+  useEffect(() => {
+    if (isEmpty(storageFilter)) {
+      setFilt([]);
+    }
+  }, [JSON.stringify(storageFilter)]);
 
   return (
     <>
@@ -178,19 +185,35 @@ export function SnakeCollectionList() {
         }}
         keepMounted
       >
+        {!isFilterNull ? (
+          <>
+            <Chip
+              defaultChecked
+              onChange={() => {
+                localStorage.setItem("SNAKES_FILTER", JSON.stringify([]));
+              }}
+              size="xs"
+              color="red"
+              icon={<IconSwitch icon="cross" width="12" height="12" />}
+            >
+              Сбросить всё
+            </Chip>
+            <Space h="xs" />
+          </>
+        ) : null}
         <Flex gap="md" wrap="nowrap" align="end" flex="1 1 auto">
-          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "genes")} data={(genes ?? [])?.map((g) => g.label)} />
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "genes")} initVal={filt?.find((a) => a.id === "genes")?.value} data={(genes ?? [])?.map((g) => g.label)} />
         </Flex>
         <Space h="md" />
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
-          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Возраст" onChange={(a) => tableFiltMulti(setFilt, a, "date_hatch")} data={maturityDict} dataHasLabel />
-          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltSingle(setFilt, a, "sex")} label="Пол" placeholder="Не выбран" />
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Возраст" onChange={(a) => tableFiltMulti(setFilt, a, "date_hatch")} initVal={filt?.find((a) => a.id === "date_hatch")?.value} data={maturityDict} dataHasLabel />
+          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltSingle(setFilt, a, "sex")} value={filt?.find((a) => a.id === "sex")?.value} label="Пол" placeholder="Не выбран" />
         </Flex>
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
-          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Тэги" onChange={(a) => tableFiltMulti(setFilt, a, "tags")} data={profile?.snake_tags ?? []} />
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Тэги" onChange={(a) => tableFiltMulti(setFilt, a, "tags")} initVal={filt?.find((a) => a.id === "tags")?.value} data={profile?.snake_tags ?? []} />
         </Flex>
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
-          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Статус" onChange={(a) => tableFiltMulti(setFilt, a, "status")} data={statusDictionary} dataHasLabel />
+          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Статус" onChange={(a) => tableFiltMulti(setFilt, a, "status")} initVal={filt?.find((a) => a.id === "status")?.value} data={statusDictionary} dataHasLabel />
         </Flex>
       </Drawer>
       {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}

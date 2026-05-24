@@ -1,4 +1,6 @@
+import { tabletThreshold } from "@/styles/theme";
 import { Flex, Menu, Stack, Text } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IFeed } from "@/api/common";
 import { getDate, getDateObj } from "../../utils/time";
 import { codeToFeeder } from "../common/Feeder/const";
@@ -50,13 +52,16 @@ export const calcFeedEvent = (feed?: IFeed, size = "sm") => {
   );
 };
 
-export const GenesList = ({ genes, size = "sm" }) => (
-  <Flex wrap="wrap" gap={size}>
-    {sortSnakeGenes(genes).map((a) => (
-      <GenePill key={`${a.label}_${a.id}`} item={a} size={size as any} />
-    ))}
-  </Flex>
-);
+export const GenesList = ({ genes }) => {
+  const isMwTablet = useMediaQuery(tabletThreshold);
+  return (
+    <Flex wrap="wrap" gap={!isMwTablet ? "sm" : "xs"}>
+      {sortSnakeGenes(genes).map((a) => (
+        <GenePill key={`${a.label}_${a.id}`} item={a} size={!isMwTablet ? "sm" : "xs"} />
+      ))}
+    </Flex>
+  );
+};
 
 export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isShowShed = true, isShowWeight = true }) => {
   const lastWeight = weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[weight?.length - 1];

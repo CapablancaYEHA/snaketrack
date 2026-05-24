@@ -28,7 +28,7 @@ export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) =>
             <AspectRatio ratio={16 / 9} maw="100%">
               <Image src={urlProxyReplace(cell.getValue())} fit="cover" radius="md" w="100%" fallbackSrc={fallback} loading="lazy" />
             </AspectRatio>
-            <GenesList genes={row.original.genes} size="xs" />
+            <GenesList genes={row.original.genes} />
           </Stack>
         </Controls>
       ),

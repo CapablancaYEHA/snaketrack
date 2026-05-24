@@ -8,9 +8,11 @@ export const tableFiltMulti = (handler: (value: StateUpdater<any[]>) => void, a:
   handler((s) => {
     let copy = [...s.filter((c) => c.id !== accessor)];
     if (isEmpty(a)) {
+      localStorage.setItem("SNAKES_FILTER", JSON.stringify(copy));
       return copy;
     }
     copy.push({ id: accessor, value: a });
+    localStorage.setItem("SNAKES_FILTER", JSON.stringify(copy));
     return copy;
   });
 };
@@ -19,9 +21,11 @@ export const tableFiltSingle = (handler: (value: StateUpdater<any[]>) => void, a
   handler((s) => {
     let copy = [...s.filter((c) => c.id !== accessor)];
     if (isEmpty(a)) {
+      localStorage.setItem("SNAKES_FILTER", JSON.stringify(copy));
       return copy;
     }
     copy.push({ id: accessor, value: a });
+    localStorage.setItem("SNAKES_FILTER", JSON.stringify(copy));
     return copy;
   });
 };

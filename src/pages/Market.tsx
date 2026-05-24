@@ -64,7 +64,7 @@ export function Market() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inViewport, hasNextPage, isFetchingNextPage]);
 
-  const isFilterNull = isEmpty(sqlFilt) && isEmpty(Object.keys(sqlMultFilt ?? {})?.filter((k) => k !== "status"));
+  const isFilterNull = isEmpty(sqlFilt) && sqlMultFilt?.status === "in-on_sale" && isEmpty(Object.keys(sqlMultFilt ?? {})?.filter((k) => k !== "status"));
 
   const isNoname = profile?.username == null;
 
@@ -136,25 +136,28 @@ export function Market() {
           },
         ]}
       />
-      <Box>
-        <Button variant={isFilterNull ? "default" : "filled"} color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} onClick={open} size="compact-xs">
-          Фильтры {isFilterNull ? "" : "применены"}
-        </Button>
-      </Box>
-      <Select
-        data={[
-          { label: "Новые", value: "created_at:desc" },
-          { label: "Давние", value: "created_at:asc" },
-          { label: "Сначала дороже", value: "sale_price:desc" },
-          { label: "Сначала дешевле", value: "sale_price:asc" },
-          { label: "Сначала старше", value: "date_hatch:asc" },
-          { label: "Сначала моложе", value: "date_hatch:desc" },
-        ]}
-        onChange={(a) => setSort(a)}
-        value={sort}
-        size="xs"
-        label="Сортировка"
-      />
+      <Flex wrap="nowrap" w="100%" maw="100% " gap="lg" align="end">
+        <Select
+          data={[
+            { label: "Новые", value: "created_at:desc" },
+            { label: "Давние", value: "created_at:asc" },
+            { label: "Сначала дороже", value: "sale_price:desc" },
+            { label: "Сначала дешевле", value: "sale_price:asc" },
+            { label: "Сначала старше", value: "date_hatch:asc" },
+            { label: "Сначала моложе", value: "date_hatch:desc" },
+          ]}
+          onChange={(a) => setSort(a)}
+          value={sort}
+          size="xs"
+          label="Сортировка"
+        />
+        <Box>
+          <Button variant={isFilterNull ? "default" : "filled"} color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} onClick={open} size="xs">
+            Фильтры {isFilterNull ? "" : "применены"}
+          </Button>
+        </Box>
+      </Flex>
+
       <Drawer
         opened={opened}
         onClose={close}

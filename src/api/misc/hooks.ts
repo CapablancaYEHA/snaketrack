@@ -9,14 +9,12 @@ export const httpUldSnPic = (file: File, source: ESupabase) => {
   return supabase.storage.from(source).upload(`${userId}/${nanoid(8)}`, file);
 };
 
-// TODO FIXME нужно написать триггер в supabase для Update / Delete (и View?) действий чтобы была ошибка при RLS
+// TODO FIXME нужно написать триггер в supabase для Update / Delete (и View?) действий чтобы была ошибка при RLS ?
 export const httpReplacePic = async (url: string, file: File, source: ESupabase) => {
   const userId: string = localStorage.getItem("USER")!;
-  const { error } = await supabase.storage.from(source).remove([`${userId}/${url.split("/").slice(-1)}`]);
-  if (error) {
-    throw { message: "Не удалось обновить картинку" };
-  }
-  return supabase.storage.from(source).upload(`${userId}/${nanoid(8)}`, file);
+  return supabase.storage.from(source).upload(`${userId}/${url}`, file, {
+    upsert: true,
+  });
 };
 
 // Calc Odds

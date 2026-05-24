@@ -24,7 +24,10 @@ export function SnakeCategories() {
       <SegmentedControl
         size="xs"
         value={catVisited.value}
-        onChange={handle}
+        onChange={(a) => {
+          localStorage.setItem("SNAKES_FILTER", JSON.stringify([]));
+          handle(a);
+        }}
         w="100%"
         maw="252px"
         data={[

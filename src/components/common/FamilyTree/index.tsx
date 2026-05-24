@@ -97,9 +97,10 @@ interface FamilyNodeProps {
   style?: CSSProperties;
   selected: boolean;
   userId?: string | null;
+  category: ECategories;
 }
 
-const SFamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick, style, userId }) => {
+const SFamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick, style, userId, category }) => {
   const isTraget = targetId === node.id;
   const isOwnerView = userId && userId === node.owner_id;
 
@@ -107,7 +108,7 @@ const SFamilyNode: FC<FamilyNodeProps> = ({ node, targetId, onSelect, onSubClick
     <div className={css.root} style={style}>
       <Stack gap="sm" className={clsx(css.inner, isTraget && css.isTarget)} onClick={() => onSelect(node.id)} style={{ transform: "translate3d(0, 0, 0)" }}>
         <Flex component="section" gap="xs" style={{ flexFlow: "row nowrap" }} align="center" maw="100%">
-          <Text size="xs" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <Text size="xs" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: category === ECategories.BP ? 52 : "auto" }}>
             {isOwnerView ? node.snake_name : node.id}
           </Text>
           <Box style={{ flex: "0 0 20px", minWidth: 20 }}>
@@ -216,6 +217,7 @@ export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, cu
                   open();
                   setSelectId(a);
                 }}
+                category={category}
                 userId={userId}
                 onSubClick={setRootId}
                 style={{
@@ -269,9 +271,10 @@ export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, cu
 
 const SnakeAnchor = ({ selected, category }) => {
   const userId: string = localStorage.getItem("USER")!;
+  const isOwnerView = selected.owner_id === userId;
   return (
     <Flex>
-      {selected.owner_id === userId ? (
+      {isOwnerView ? (
         <Anchor href={`/snakes/${category}?id=${selected.id}`} display="flex" c="inherit" underline="always" style={{ flexFlow: "row wrap" }}>
           <Text td="underline" style={{ whiteSpace: "nowrap", marginRight: "auto" }}>
             {selected.id}
@@ -287,7 +290,7 @@ const SnakeAnchor = ({ selected, category }) => {
         </Anchor>
       ) : (
         <Box display="flex">
-          <Text>{selected.id}</Text>
+          <Text style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: category === ECategories.BP ? 52 : 200 }}>{selected.id}</Text>
           {`\u00a0`}
           <IconSwitch icon={selected.gender} width="20" height="20" />
         </Box>
