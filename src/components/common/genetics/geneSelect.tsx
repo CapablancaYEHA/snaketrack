@@ -1,7 +1,7 @@
 import { FC } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 import { CheckIcon, Combobox, Group, MantineSize, Pill, PillsInput, Text, useCombobox } from "@mantine/core";
-import { debounce } from "lodash-es";
+import { debounce, isEmpty } from "lodash-es";
 import { ECategories, EGenesView, IGenesComp } from "@/api/common";
 import { useSnakeGenes } from "@/api/hooks";
 import { checkGeneConflict, geneToColor, redef, upgradeOptions } from "./const";
@@ -14,8 +14,9 @@ type IPill = {
   size?: MantineSize;
   onLeftClick?: (a: IGenesComp) => void;
   withWrap?: boolean;
+  disabled?: boolean;
 };
-export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick, withWrap }) => {
+export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick, withWrap, disabled }) => {
   const isHet = (item.gene === "rec" || (item.gene === "inc-dom" && item.hasHet)) && item.label.toLowerCase().includes("het");
   const isPercent = item.label.startsWith("50%") || item.label.startsWith("66%");
 
@@ -27,6 +28,7 @@ export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick, 
         root: {
           ...redef,
           backgroundColor: isHet ? "var(--mantine-color-dark-9)" : geneToColor[item.gene],
+          opacity: disabled ? 0.6 : 1.0,
           boxShadow: `0 0 0 1px ${geneToColor[item.gene]}`,
           cursor: "default",
           ...(item.isPos ? { paddingLeft: "24px" } : {}),
@@ -91,7 +93,7 @@ export const GenesSelect: FC<IProp> = ({ onChange, view, init, label, category, 
       return temp;
     });
 
-  const values = value.map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} onLeftClick={handleAssignPos} />);
+  const values = (value ?? []).map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} onLeftClick={handleAssignPos} />);
 
   const options = upgradeOptions(traits ?? [], search, view).map((item) => (
     <Combobox.Option value={item as any} key={item.label} active={value.includes(item)}>
@@ -103,15 +105,15 @@ export const GenesSelect: FC<IProp> = ({ onChange, view, init, label, category, 
   ));
 
   useEffect(() => {
-    if (init) setValue(init);
+    if (!isEmpty(init)) setValue(init as any);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [JSON.stringify(init)]);
 
   useEffect(() => {
     onChange(value);
     setSearch("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [JSON.stringify(value)]);
 
   return (
     <Combobox store={combobox} onOptionSubmit={handleValueSelect as any} withinPortal={false} disabled={traits?.length === 0}>

@@ -158,7 +158,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
       </Flex>
       <Stack gap="xs">
         <Title order={6}>Гены в проекте</Title>
-        <Flex gap="4px" wrap="wrap">
+        <Flex gap="6px" wrap="wrap">
           {calcProjGenes(female_genes.concat(male_genes.flat())).map((a, ind) => (
             <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="sm" />
           ))}
@@ -293,12 +293,13 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             ) : null}
 
             <FormProvider {...form}>
-              <FormApprovedBabies futureSnakes={futureSnakes} isShow={isHatch && !isClosed} category={category} />
+              <FormApprovedBabies futureSnakes={futureSnakes} isShow={isHatch && !isClosed} category={category} selectedFatherId={wFather} femaleGenes={female_genes} />
             </FormProvider>
           </Stack>
           {clutch.males_ids.length > 1 && !isClosed ? (
-            <Title component="span" c="yellow.6" order={5} fw={400}>
-              Мы рекомендуем завершить кладку и сохранить всех ювенилов, когда вы определились с их морфингом, а, значит, и с тем, какой самец отработал. На данный момент записать отцом можно только одного самца.
+            <Title component="span" c="yellow.6" order={6} fw={400}>
+              Мы рекомендуем завершить кладку и сохранить всех ювенилов, когда вы определились с их морфингом, а, значит, и с тем, какой самец отработал. В данном разделе записать отцом можно только одного самца, даже если по факту в кладке мальки от разных.
+              Актуализировать родителей конкретной змеи можно через её страницу, раздел «Семейное древо»
             </Title>
           ) : null}
 

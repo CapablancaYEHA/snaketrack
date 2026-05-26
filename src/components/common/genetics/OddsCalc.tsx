@@ -1,6 +1,6 @@
 import { FC } from "preact/compat";
 import { useEffect } from "preact/hooks";
-import { Box, Flex, Loader, Space, Stack, Text } from "@mantine/core";
+import { Box, Flex, Loader, Radio, Space, Stack, Text } from "@mantine/core";
 import { isEmpty } from "lodash-es";
 import { Controller, useFormContext, useWatch } from "react-hook-form";
 import { ECategories, EGenesView } from "@/api/common";
@@ -102,5 +102,28 @@ export const OddsElement: FC<IPropOdds> = ({ o }) => {
         </Flex>
       )}
     </Flex>
+  );
+};
+
+type IPropOddsShort = IPropOdds & {
+  onChange: (a: any) => void;
+  radioVal?: any;
+  size: any;
+  disabled?: boolean;
+};
+
+export const OddsGenesOnly: FC<IPropOddsShort> = ({ o, onChange, radioVal, size, disabled = false }) => {
+  const isPureNormal = o.traits_count === 0 || isEmpty(o.traits);
+  const converted = isPureNormal ? [emptyMMTrait] : o.traits.map((oi) => fromMMtoPill(oi));
+
+  return (
+    <Radio.Group value={radioVal} onChange={onChange}>
+      <Flex direction="row" wrap="nowrap" gap="md" w="100%" maw="100%">
+        <Radio value={JSON.stringify(converted)} label={null} />
+        <Flex direction="row" wrap="wrap" gap="sm">
+          {isPureNormal ? <GenePill disabled={disabled} size={size} item={emptyMMTrait as any} /> : o.traits.map((t) => <GenePill disabled={disabled} key={`${t.id}_${t.name}`} item={fromMMtoPill(t)} size={size} />)}
+        </Flex>
+      </Flex>
+    </Radio.Group>
   );
 };

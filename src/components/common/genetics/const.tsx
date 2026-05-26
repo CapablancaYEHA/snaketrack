@@ -154,7 +154,7 @@ export const sortSnakeGenes = (arr: IGenesComp[] | null): IGenesComp[] => {
   return sortBy(kek, [(o) => (o.isPos ? 5 : (priority[o.label.substring(0, 3).toLowerCase()] ?? 0))]);
 };
 
-export const emptyMMTrait = { id: 0, label: "Normal", gene: "other", hasSuper: false, hasHet: false, isPos: false };
+export const emptyMMTrait = { id: -1, label: "Normal", gene: "other", hasSuper: false, hasHet: false, isPos: false };
 
 export const fromMMtoPill = (m: IMMTrait): IGenesComp => {
   const gene = m.class_label.includes("rec") ? "rec" : m.class_label.includes("other") ? "other" : "inc-dom";

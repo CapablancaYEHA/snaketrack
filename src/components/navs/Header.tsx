@@ -33,7 +33,7 @@ export function Header({ session }) {
         ) : null}
         <a href="/snakes" className={styles.logo}>
           <Title component="span" c="dark.1" order={isMinSm ? 4 : 6}>
-            HsssStats
+            Hissstory
           </Title>
           <Image src={logoUri} fit="cover" w="24" h="24" />
         </a>

@@ -1,10 +1,12 @@
-import { startMd, startSm } from "@/styles/theme";
+import { useEffect, useState } from "preact/hooks";
+import { startMd, startSm, tabletThreshold } from "@/styles/theme";
 import fallback from "@assets/placeholder.webp";
-import { ActionIcon, Anchor, Box, CopyButton, Flex, Grid, Image, Loader, Modal, Progress, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
+import { ActionIcon, Anchor, Box, Button, CopyButton, Fieldset, Flex, Grid, Image, Loader, Modal, Progress, SegmentedControl, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
+import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, FormProvider, useFormContext, useWatch } from "react-hook-form";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill, GenesSelect } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
@@ -13,12 +15,17 @@ import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { EClSt, IResClutch } from "@/api/breeding/models";
 import { ECategories, EGenesView, IResSnakesList } from "@/api/common";
 import { useSupaGet } from "@/api/hooks";
+import { useCalcMmOdds } from "@/api/misc/hooks";
+import { notif } from "@/utils/notif";
 import { declWord, urlProxyReplace } from "@/utils/other";
 import { dateAddDays, dateTimeDiff, getAge, getDate, getDateObj } from "@/utils/time";
+import { OddsGenesOnly } from "../../genetics/OddsCalc";
 import { daysIncubation, getPercentage } from "../snakeBreed/breedUtils";
-import { sexHardcode } from "../snakeBreed/common";
+import { prepForMm, sexHardcode } from "../snakeBreed/common";
 import { calcAnim } from "./clutchUtils";
 import { IClutchEditScheme, statusHardcode } from "./common";
+
+const sigBabyGenesId = signal<number | undefined>(undefined);
 
 export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; onPicClick: Function; className?: string }) => {
   const pics = [clutch.female_picture].concat(clutch.male_pictures);
@@ -224,12 +231,32 @@ export const MiniInfo = ({ opened, close, snakeId, sex, category, withTitle = tr
   );
 };
 
-export const FormApprovedBabies = ({ futureSnakes, isShow, category }) => {
+export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes, selectedFatherId }) => {
   const isMinSm = useMediaQuery(startSm);
   const isMinMd = useMediaQuery(startMd);
+  const isMwTablet = useMediaQuery(tabletThreshold);
   const innerInstance = useFormContext<IClutchEditScheme>();
-
   const { errors } = innerInstance.formState;
+  const { data: fatherData } = useSupaGet<IResSnakesList>(categToConfig[category](selectedFatherId), Boolean(selectedFatherId));
+  const { mutate, data: oddsData, isError, isPending: isOddPending } = useCalcMmOdds(category);
+
+  useEffect(() => {
+    if (!isEmpty(fatherData?.genes)) {
+      mutate(
+        { p1: prepForMm({ genes: femaleGenes } as any), p2: prepForMm({ genes: fatherData?.genes } as any) },
+        {
+          onError: async (err) => {
+            notif({
+              c: "red",
+              t: "Ошибка",
+              m: JSON.stringify(err),
+              code: err.code || err.statusCode,
+            });
+          },
+        },
+      );
+    }
+  }, [selectedFatherId, mutate, JSON.stringify(fatherData?.genes)]);
 
   const renderItems = (ind, isLabel, size = "sm") => (
     <>
@@ -255,20 +282,22 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category }) => {
           return <Select data={statusHardcode} value={value} onChange={onChange} label={isLabel ? "Состояние" : undefined} error={error?.message} size={size} />;
         }}
       />
-      <Box>
-        <Controller
-          name={`future_animals.${ind}.genes`}
-          control={innerInstance.control}
-          render={({ field: { onChange, value } }) => {
-            return <GenesSelect view={EGenesView.STD} description={null} onChange={(a) => onChange(a)} label={isLabel ? "Морфы" : undefined} init={value as any} placeholder="Необязательно" category={category} size={size as any} />;
-          }}
-        />
+      <Box maw="100%" style={{ alignSelf: "end" }}>
+        <Space h="xs" />
+        <Button variant="default" onClick={() => (sigBabyGenesId.value = ind)} size="sm" w="100%" disabled={selectedFatherId == null || isError}>
+          Генетика
+        </Button>
       </Box>
       <Box>
         <Text size="xs" c="var(--mantine-color-error)">
           {errors?.future_animals?.[ind]?.genes?.message || ""}
         </Text>
       </Box>
+      <Modal keepMounted={false} centered opened={sigBabyGenesId.value === ind} onClose={() => (sigBabyGenesId.value = undefined)} size="xs" title={<Title order={5}>Выбор и корректировка генов</Title>}>
+        <FormProvider {...innerInstance}>
+          <BabyMorphSelect oddsData={oddsData} isOddPending={isOddPending} size={!isMwTablet ? "sm" : "xs"} category={category} ind={ind} />
+        </FormProvider>
+      </Modal>
     </>
   );
 
@@ -289,4 +318,77 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category }) => {
       </Grid>
     )
   ) : null;
+};
+
+const sigMethod = signal<"pre" | "manual">("manual");
+const defGene = [{ label: "Normal", gene: "other", hasSuper: false, hasHet: false, id: -1 }];
+
+const BabyMorphSelect = ({ oddsData, isOddPending, size, category, ind }) => {
+  const innerInstance = useFormContext<any>();
+  const [wSaved] = useWatch({ control: innerInstance.control, name: [`future_animals.${ind}.genes`] });
+  const [radio, setRadio] = useState<string | null>(null);
+
+  const handleRadio = (a) => {
+    setRadio(a);
+    const dt = JSON.parse(a);
+    const res = Array.isArray(dt) ? dt : [dt];
+    innerInstance.setValue(`future_animals.${ind}.genes`, res);
+  };
+
+  const handleSwitch = (a) => {
+    sigMethod.value = a;
+    setRadio(null);
+    innerInstance.setValue(`future_animals.${ind}.genes`, defGene);
+  };
+
+  useEffect(() => {
+    if (wSaved != null && sigMethod.value === "pre") {
+      setRadio(JSON.stringify(wSaved));
+    }
+  }, [sigMethod.value, wSaved]);
+
+  return (
+    <>
+      <Stack gap="md">
+        <SegmentedControl
+          w="100%"
+          maw="252px"
+          size="xs"
+          value={sigMethod.value}
+          onChange={handleSwitch}
+          data={[
+            { label: "Из калькулятора", value: "pre" },
+            { label: "Вручную", value: "manual" },
+          ]}
+          style={{ alignSelf: "center" }}
+        />
+        <Fieldset disabled={sigMethod.value === "pre"} legend={null} variant="unstyled">
+          <Controller
+            name={`future_animals.${ind}.genes`}
+            control={innerInstance.control}
+            render={({ field: { onChange, value } }) => {
+              return <GenesSelect view={EGenesView.STD} description={null} onChange={onChange} init={value as any} category={category} size="sm" />;
+            }}
+          />
+        </Fieldset>
+        <Space h="sm" />
+        <Fieldset disabled={sigMethod.value === "manual"} legend={null} variant="unstyled">
+          <Stack>
+            {isOddPending ? (
+              <>
+                <Text size="sm" style={{ alignSelf: "center" }}>
+                  Загрузка калькулятора
+                </Text>
+                <Loader size="sm" style={{ alignSelf: "center" }} />
+              </>
+            ) : (
+              oddsData?.offspring?.map((o) => {
+                return <OddsGenesOnly o={o} key={o.morph_name} onChange={handleRadio} radioVal={radio} size={size} disabled={sigMethod.value === "manual"} />;
+              })
+            )}
+          </Stack>
+        </Fieldset>
+      </Stack>
+    </>
+  );
 };
