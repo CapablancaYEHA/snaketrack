@@ -9,7 +9,7 @@ import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { Controller, FormProvider, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { GenePill } from "@/components/common/genetics/geneSelect";
-import { calcProjGenes } from "@/components/common/utils";
+import { calcProjGenes, categToTitle } from "@/components/common/utils";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { EClSt, IReqUpdClutch, IResClutch } from "@/api/breeding/models";
@@ -37,7 +37,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
   const location = useLocation();
   const form = useForm<IClutchEditScheme>({
     defaultValues: initData,
-    resolver: yupResolver(clutchEditSchema as any),
+    resolver: yupResolver(clutchEditSchema(category) as any),
   });
 
   const {
@@ -48,9 +48,9 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
     register,
   } = form;
 
-  const [wEggs, wInf, wFather] = useWatch({
+  const [wEggs, wInf, wSlugs, wFather] = useWatch({
     control,
-    name: ["eggs", "infertile_eggs", "father_id"],
+    name: ["eggs", "infertile_eggs", "slugs", "father_id"],
   });
 
   const { fields: kidsFields, replace } = useFieldArray({
@@ -80,7 +80,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
   const onSub = (sbm) => {
     update(prepForClutchUpdate(sbm, dirtyFields, location.query.id), {
       onSuccess: () => {
-        notif({ c: "green", t: "Успешно", m: "Детали кладки обновлены" });
+        notif({ c: "green", t: "Успешно", m: "Детали обновлены" });
         location.route("/clutches");
       },
       onError: async (err) => {
@@ -114,9 +114,9 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
 
   useEffect(() => {
     if (isLaid) {
-      replace(new Array(wEggs - (wInf ?? 0)).fill(" "));
+      replace(new Array((wEggs ?? 0) - (wSlugs ?? 0) - (wInf ?? 0)).fill(" "));
     }
-  }, [wEggs, wInf, isLaid, replace]);
+  }, [wEggs, wInf, isLaid, wSlugs, replace]);
 
   useEffect(() => {
     if (initData.future_animals != null && isHatch) {
@@ -130,11 +130,19 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
     };
   }, []);
 
+  const isBc = category === ECategories["BC"];
+  const startLabel = isBc ? "Дата отсчета беременности" : "Дата кладки";
+  const endLabel = isBc ? "Дата родов" : "Дата завершения инкубации";
+  const finalName = isBc ? "Произошли роды" : "Кладка инкубирована";
+  const incubName = isBc ? "беременности" : "инкубации";
+  const closeClutch = isBc ? "Завершить помёт" : "Завершить кладку";
+  const closeIncub = isBc ? "Записать помёт" : "Завершить инкубацию";
+
   return (
     <>
       <Flex gap="sm" align="center" maw="100%" w="100%">
         <Text size="md" fw={500} c="yellow.6">
-          Просмотр и редактирование кладки {location.query.id}
+          {categToTitle[category]}ы. {isBc ? "Помёт" : "Кладка"} {location.query.id}
         </Text>
         <CopyButton value={clutch.id} timeout={3000}>
           {({ copied, copy }) => (
@@ -173,7 +181,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
               return (
                 <DatePickerInput
                   disabled={isHatch || isClosed}
-                  label="Дата кладки"
+                  label={startLabel}
                   w={{ base: "100%", xs: "50%" }}
                   flex="1 1 50%"
                   value={value as any}
@@ -196,7 +204,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
               </Box>
             </Flex>
             <Flex justify="center">
-              <Title order={6}>{isHatch || isClosed ? "Кладка инкубирована" : `До конца инкубации ~${declWord(left, ["день", "дня", "дней"])}`}</Title>
+              <Title order={6}>{isHatch || isClosed ? finalName : `До конца ${incubName} ~${declWord(left, ["день", "дня", "дней"])}`}</Title>
             </Flex>
           </Stack>
         </Flex>
@@ -206,7 +214,20 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
               return (
-                <NumberInput disabled={isHatch || isClosed} label="Яиц всего" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />
+                <NumberInput
+                  disabled={isHatch || isClosed}
+                  label={isBc ? "Помёт всего" : "Яиц всего"}
+                  onChange={onChange}
+                  value={value}
+                  allowDecimal={false}
+                  allowNegative={false}
+                  required
+                  allowLeadingZeros={false}
+                  min={0}
+                  max={99}
+                  clampBehavior="strict"
+                  error={error?.message}
+                />
               );
             }}
           />
@@ -214,14 +235,43 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             name="slugs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput disabled={isHatch || isClosed} label="Жировики" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return (
+                <NumberInput
+                  disabled={isHatch || isClosed}
+                  label="Жировики"
+                  onChange={onChange}
+                  value={value}
+                  allowDecimal={false}
+                  allowNegative={false}
+                  required={!isBc}
+                  allowLeadingZeros={false}
+                  min={0}
+                  max={99}
+                  clampBehavior="strict"
+                  error={error?.message}
+                />
+              );
             }}
           />
           <Controller
             name="infertile_eggs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput disabled={isHatch || isClosed} label="Неоплоды" onChange={onChange} value={value as any} allowDecimal={false} allowNegative={false} allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return (
+                <NumberInput
+                  disabled={isHatch || isClosed}
+                  label={isBc ? "Мертворожденные" : "Неоплоды"}
+                  onChange={onChange}
+                  value={value as any}
+                  allowDecimal={false}
+                  allowNegative={false}
+                  allowLeadingZeros={false}
+                  min={0}
+                  max={99}
+                  clampBehavior="strict"
+                  error={error?.message}
+                />
+              );
             }}
           />
         </Flex>
@@ -248,7 +298,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
                   return (
                     <DatePickerInput
                       disabled={isHatch || isClosed}
-                      label="Дата завершения инкубации"
+                      label={endLabel}
                       w="auto"
                       maw="max-content"
                       value={value as any}
@@ -257,8 +307,8 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
                       highlightToday
                       locale="ru"
                       error={error?.message}
-                      maxDate={dateAddDays(value as any, 5).toDate()}
-                      minDate={dateAddDays(value as any, -5).toDate()}
+                      maxDate={dateAddDays(value as any, 10).toDate()}
+                      minDate={dateAddDays(value as any, -10).toDate()}
                     />
                   );
                 }}
@@ -285,8 +335,8 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
                   ))}
                 </Flex>
                 <Flex align="flex-start" maw="100%" w="100%">
-                  <Button type="submit" onClick={handleSubmit(onHatch)} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="sm">
-                    Завершить инкубацию
+                  <Button type="submit" disabled={(wEggs ?? 0) < 1} onClick={handleSubmit(onHatch)} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="sm">
+                    {closeIncub}
                   </Button>
                 </Flex>
               </>
@@ -298,15 +348,15 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
           </Stack>
           {clutch.males_ids.length > 1 && !isClosed ? (
             <Title component="span" c="yellow.6" order={6} fw={400}>
-              Мы рекомендуем завершить кладку и сохранить всех ювенилов, когда вы определились с их морфингом, а, значит, и с тем, какой самец отработал. В данном разделе записать отцом можно только одного самца, даже если по факту в кладке мальки от разных.
-              Актуализировать родителей конкретной змеи можно через её страницу, раздел «Семейное древо»
+              Мы рекомендуем завершить кладку/помёт и сохранить всех ювенилов, когда вы определились с их морфингом, а, значит, и с тем, какой самец отработал. В данном разделе записать отцом можно только одного самца, даже если по факту в кладке мальки от
+              разных. Актуализировать родителей конкретной змеи можно через её страницу, раздел «Семейное древо»
             </Title>
           ) : null}
 
           {!isLaid && !isClosed ? (
             <Flex align="flex-start" maw="100%" w="100%">
               <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onFinalise)} disabled={wFather == null}>
-                Завершить кладку
+                {closeClutch}
               </Btn>
             </Flex>
           ) : null}
@@ -315,12 +365,12 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
 
       {isClosed ? (
         !isEmpty(clutch.finalised_ids) ? (
-          <Juveniles ids={clutch.finalised_ids} onPicClick={(i) => (snakeId.value = i)} title="Итоговые змееныши в кладке" />
+          <Juveniles ids={clutch.finalised_ids} onPicClick={(i) => (snakeId.value = i)} title="Итоговые змееныши" />
         ) : (
           <Text fw={400} c="var(--mantine-color-error)">
-            Кладка завершена, но невозможно отобразить змеенышей.
+            Кладка/Помёт завершены, но невозможно отобразить змеенышей.
             <br />
-            Вероятно, данные по ним были удалены, либо же — из кладки никто не вышел 😭
+            Вероятно, данные по ним были удалены, либо же — никто не вышел 😭
           </Text>
         )
       ) : null}

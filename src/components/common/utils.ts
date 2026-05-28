@@ -37,6 +37,15 @@ export const bStToLabel = {
   [EBreedStat.CLUTCH]: "Кладка",
 };
 
+export const boaBStToLabel = {
+  [EBreedStat.PLAN]: "Планирование",
+  [EBreedStat.WOO]: "Ухаживания",
+  [EBreedStat.LOCK]: "Лок",
+  [EBreedStat.OVUL]: "Овуляция",
+  [EBreedStat.SHED]: "Пост-овуляционная линька",
+  [EBreedStat.CLUTCH]: "Беременность",
+};
+
 export const breedToColor = {
   [EBreedStat.PLAN]: "#2E5A88",
   [EBreedStat.WOO]: "#FFB6C1",
@@ -104,7 +113,7 @@ export const categToTitle = {
   [ECategories.MV]: "Хондр",
 };
 
-export const calcStatusOptions = () => Object.entries(bStToLabel).map(([key, val]) => ({ label: val, value: key }));
+export const calcStatusOptions = (category: ECategories) => (category === ECategories.BC ? Object.entries(boaBStToLabel).map(([key, val]) => ({ label: val, value: key })) : Object.entries(bStToLabel).map(([key, val]) => ({ label: val, value: key })));
 
 export const calcProjGenes = (arr?: IGenesComp[]) => {
   if (!arr) return [];

@@ -2,6 +2,7 @@ import { useLocation } from "preact-iso";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Flex, Title } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
+import { categToTitle } from "@/components/common/utils";
 import { IUpdBreedReq } from "@/api/breeding/models";
 import { ESupaBreed, categoryToShort } from "@/api/common";
 import { useMakeClutchFromBreed, useSupaUpd } from "@/api/hooks";
@@ -63,7 +64,7 @@ export const FormEditSnakeBreed = ({ initData, category }) => {
     <>
       <Flex wrap="nowrap" align="center" maw="100%" w="100%" gap="md">
         <Title component="span" c="yellow.6" order={3}>
-          Детализация бридинг плана
+          {categToTitle[category]}ы. Детализация бридинга
         </Title>
         <Button leftSection="< " size="compact-xs" flex="0 0 81px" variant="default" ml="auto" component="a" href="/breeding">
           К списку

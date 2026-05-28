@@ -1,6 +1,7 @@
 import { isEmpty } from "lodash-es";
 import * as yup from "yup";
 import { EClSt, ICreateClutchReq, IReqUpdClutch, IResClutch } from "@/api/breeding/models";
+import { ECategories } from "@/api/common";
 import { notif } from "@/utils/notif";
 import { dateToSupabaseTime } from "@/utils/time";
 import { makeHatchlingPlaceholder } from "./clutchUtils";
@@ -22,62 +23,70 @@ export const statusHardcode = [
   { label: "Не выжил", value: "deceased" },
 ];
 
-export const initClutchAddValues = {
+export const calcInitClutchValues = (category: ECategories) => ({
   female_id: undefined,
   males_ids: [],
   date_laid: undefined,
   date_hatch: undefined,
-  eggs: 1,
-  slugs: 0,
+  eggs: category === ECategories["BC"] ? undefined : 1,
+  slugs: category === ECategories["BC"] ? undefined : 0,
   infertile_eggs: null,
   notes: null,
-};
+});
 
-const baseClutchSchema = yup.object<Schema>().shape({
-  date_laid: yup.string().required("Дата кладки обязательна"),
-  date_hatch: yup.string().optional().nullable(),
-  eggs: yup.number().required("Требуется число").min(1, "Кладка без яиц?"),
-  slugs: yup.number().required("Требуется число"),
-  infertile_eggs: yup.number().optional().notRequired(),
-  id: yup.string().notRequired(),
-  placeholders: yup.array().of(yup.mixed()).optional().nullable(),
-  notes: yup.string().nullable(),
-  future_animals: yup.array().of(
-    yup.object({
-      snake_name: yup
-        .string()
-        .trim()
-        .matches(/^[a-zA-Zа-яА-Я0-9_\-,.\s]{3,60}$/, "От 3 до 60 символов и -|_|,|.|пробел")
-        .required(),
-      sex: yup.string().optional().nullable(),
-      date_hatch: yup.string().required("Дата обязательна"),
-      status: yup.string(),
-      genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
+const calcClutchScheme = (category: ECategories) => {
+  const isBc = category === ECategories["BC"];
+  return yup.object<Schema>().shape({
+    date_laid: yup.string().required("Дата кладки обязательна"),
+    date_hatch: yup.string().optional().nullable(),
+    eggs: yup.number().when([" "], ([], self) => {
+      return isBc ? self.nullable() : self.required("Требуется число").min(1, "Кладка без яиц?");
     }),
-  ),
-});
-
-export const clutchEditSchema = baseClutchSchema.shape({
-  father_id: yup.string().nullable(),
-  mother_id: yup.string(),
-});
-
-export const clutchAddSchema = baseClutchSchema.shape({
-  female_id: yup.string().required("Самка обязательна в кладке"),
-  males_ids: yup
-    .array()
-    .of(
-      yup.object().shape({
-        id: yup.string(),
-        snake: yup.string().required("Самец обязателен в кладке"),
+    slugs: yup.number().when([" "], ([], self) => {
+      return isBc ? self.nullable() : self.required("Требуется число");
+    }),
+    infertile_eggs: yup.number().optional().notRequired(),
+    id: yup.string().notRequired(),
+    placeholders: yup.array().of(yup.mixed()).optional().nullable(),
+    notes: yup.string().nullable(),
+    future_animals: yup.array().of(
+      yup.object({
+        snake_name: yup
+          .string()
+          .trim()
+          .matches(/^[a-zA-Zа-яА-Я0-9_\-,.\s]{3,60}$/, "От 3 до 60 символов и -|_|,|.|пробел")
+          .required(),
+        sex: yup.string().optional().nullable(),
+        date_hatch: yup.string().required("Дата обязательна"),
+        status: yup.string(),
+        genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
       }),
-    )
-    .required("Поле обязательно")
-    .min(1, "Количество самцов не может быть 0"),
-});
+    ),
+  });
+};
+export const clutchEditSchema = (category: ECategories) =>
+  calcClutchScheme(category).shape({
+    father_id: yup.string().nullable(),
+    mother_id: yup.string(),
+  });
 
-export type IClutchEditScheme = yup.InferType<typeof clutchEditSchema>;
-export type IClutchAddScheme = yup.InferType<typeof clutchAddSchema>;
+export const clutchAddSchema = (category: ECategories) =>
+  calcClutchScheme(category).shape({
+    female_id: yup.string().required("Самка обязательна"),
+    males_ids: yup
+      .array()
+      .of(
+        yup.object().shape({
+          id: yup.string(),
+          snake: yup.string().required("Самец обязателен"),
+        }),
+      )
+      .required("Поле обязательно")
+      .min(1, "Количество самцов не может быть 0"),
+  });
+
+export type IClutchEditScheme = yup.InferType<ReturnType<typeof clutchEditSchema>>;
+export type IClutchAddScheme = yup.InferType<ReturnType<typeof clutchAddSchema>>;
 
 export const makeInitClutch = (data?: IResClutch | null) => {
   if (!data) return undefined as any;

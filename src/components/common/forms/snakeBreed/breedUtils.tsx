@@ -1,6 +1,6 @@
 import { Flex, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
-import { bStToLabel, breedToColor } from "@/components/common/utils";
+import { bStToLabel, boaBStToLabel, breedToColor } from "@/components/common/utils";
 import { IResBreedingList } from "@/api/breeding/models";
 import { ECategories } from "@/api/common";
 import { declWord } from "@/utils/other";
@@ -10,29 +10,27 @@ import { BreedControl } from "./subcomponents";
 
 export const daysAfterOvul = {
   [ECategories.BP]: 44,
+  [ECategories.BC]: 1,
   [ECategories.CS]: 30,
   [ECategories.MV]: 89,
 };
 export const daysAfterShed = {
   [ECategories.BP]: 29,
+  [ECategories.BC]: 1,
   [ECategories.CS]: 14,
   [ECategories.MV]: 38,
 };
 export const daysIncubation = {
   [ECategories.BP]: 60,
+  [ECategories.BC]: 123,
   [ECategories.CS]: 65,
   [ECategories.MV]: 54,
 };
 export const daysCriticalThr = 10;
 
-//   Boa constrictor gestation period is around 120 days. If no babies after 105 days, check for a post-ovulation shed. If it's not, wait longer.
-//   Boa constrictors give birth approximately 105 days after postovulatory shedding and approximately 123 days after ovulation
-//   In comparing the mean gestation length of primiparous and pluriparous, there were no significant differences.
-//   Females considered in our study showed a post-ovulatory shed about three weeks after ovulation.
-//   This confirms what is reported in the literature. Indeed, pregnant Boa constrictor females generally exhibit post-ovulatory shed approximately 16–20 days after ovulation
-
 const columnHelper = createColumnHelper<IResBreedingList>();
 
+// FIXME нужно computed из сигнала для динамического содержания колонки статус при переключении вкладок
 export const makeBreedColumns = ({ setBreedId, category }) => {
   return [
     columnHelper.accessor("female_name", {
@@ -83,7 +81,7 @@ export const makeBreedColumns = ({ setBreedId, category }) => {
       header: () => "Последний статус",
       cell: ({ cell }) => (
         <Text c={breedToColor[cell.getValue()]} fw={500}>
-          {bStToLabel[cell.getValue()]}
+          {category === ECategories["BC"] ? boaBStToLabel[cell.getValue()] : bStToLabel[cell.getValue()]}
         </Text>
       ),
       filterFn: "arrIncludesSome",
@@ -97,16 +95,18 @@ export const makeBreedColumns = ({ setBreedId, category }) => {
 export const calcTimeleft = (category: ECategories, ovul?: string | null, shed?: string | null) => {
   const left = shed ? dateTimeDiff(dateAddDays(shed, daysAfterShed[category]), "days") : dateTimeDiff(dateAddDays(ovul!, daysAfterOvul[category]), "days");
   const words = declWord(left, ["день", "дня", "дней"]);
+  const noun = category === ECategories.BC ? "отсчета беременности" : "кладки";
 
   return {
     left,
-    words: `До кладки ~${words}`,
+    words: `До ${noun} ~${words}`,
   };
 };
 
 export const calcEstimatedDate = (category: ECategories, ovul: string | null, shed: string | null) => {
   const res = shed ? getDate(dateAddDays(shed, daysAfterShed[category])) : getDate(dateAddDays(ovul!, daysAfterOvul[category]));
-  return `Ожидаемая дата кладки ${res}`;
+  const noun = category === ECategories.BC ? "Примерное начало беременности" : "Ожидаемая дата кладки";
+  return `${noun} ${res}`;
 };
 
 export const getPercentage = (trg, cur) => Number.parseInt((((trg - cur) * 100) / trg).toFixed(0), 10);

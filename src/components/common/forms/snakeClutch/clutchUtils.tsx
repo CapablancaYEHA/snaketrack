@@ -7,7 +7,7 @@ const columnHelper = createColumnHelper<IResClutch>();
 
 export const makeClutchColumns = ({ setSnake, category }) => [
   columnHelper.accessor("date_laid" as any, {
-    header: () => "Дата кладки",
+    header: () => "Дата начала",
     cell: ({ row }) => <SPics clutch={row.original} onPicClick={setSnake} />,
     size: 1,
     maxSize: 2,

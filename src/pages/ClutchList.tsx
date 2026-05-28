@@ -69,7 +69,6 @@ export function ClutchList() {
           {
             label: "Удавы",
             value: ECategories.BC,
-            disabled: true,
           },
           {
             label: "Маисы",

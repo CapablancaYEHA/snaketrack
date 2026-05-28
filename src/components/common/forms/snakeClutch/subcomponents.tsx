@@ -79,6 +79,8 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
 export const SInfo = ({ clutch, onPicClick, category }: { clutch: IResClutch; onPicClick: Function; category: ECategories }) => {
   const ids = clutch.finalised_ids;
 
+  const isBc = category === ECategories["BC"];
+
   return (
     <Flex gap="xl" flex="0 1 520px">
       <Stack gap="md" flex={ids ? "1 0 290px" : "1 1 auto"}>
@@ -87,7 +89,7 @@ export const SInfo = ({ clutch, onPicClick, category }: { clutch: IResClutch; on
         <Flex gap="xl" wrap="nowrap">
           <Stack gap="xs">
             <Title order={6}>
-              Яиц всего
+              {isBc ? "Помёт всего" : "Яиц всего"}
               <Text size="sm" fw={500}>
                 {clutch.eggs ?? "Не указано"}
               </Text>
@@ -103,7 +105,7 @@ export const SInfo = ({ clutch, onPicClick, category }: { clutch: IResClutch; on
           </Stack>
           <Stack gap="xs">
             <Title order={6}>
-              Неоплоды
+              {isBc ? "Мертворожденные" : "Неоплоды"}
               <Text size="sm" fw={500}>
                 {clutch.infertile_eggs ?? "Не указано"}
               </Text>
@@ -157,19 +159,23 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOn
   const isHatch = curStatus === EClSt.HA;
   const isClosed = curStatus === EClSt.CL;
 
+  const dateLabel = category === ECategories["BC"] ? "Дата" : "Дата кладки";
+  const clutchEnd = category === ECategories["BC"] ? "Роды произошли" : "Кладка инкубирована";
+  const tillEnd = category === ECategories["BC"] ? "До родов" : "До конца инкубации";
+
   return (
     <>
       {barOnly ? null : (
         <Flex gap="sm" justify="space-between">
           <Title order={6}>
-            Дата кладки
+            {dateLabel}
             <Text size="sm" fw={500}>
               {getDate(laidDate)}
             </Text>
           </Title>
           {(isHatch || isClosed) && hatchDate ? (
             <Title order={6} ta="right">
-              Кладка инкубирована
+              {clutchEnd}
               <Text size="sm" fw={500}>
                 {getDate(hatchDate)}
               </Text>
@@ -192,7 +198,9 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOn
         </Box>
       </Flex>
       <Flex justify="center">
-        <Title order={6}>До конца инкубации ~{declWord(left, ["день", "дня", "дней"])}</Title>
+        <Title order={6}>
+          {tillEnd} ~{declWord(left, ["день", "дня", "дней"])}
+        </Title>
       </Flex>
     </>
   );

@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Title } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
 import { IReqCreateBreed } from "@/api/breeding/models";
-import { ESupaBreed, categoryToShort } from "@/api/common";
+import { ECategories, ESupaBreed, categoryToShort } from "@/api/common";
 import { useMakeClutchFromBreed, useSupaCreate } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { IBreedScheme, breedSchema, defaultVals, prepForCreate } from "../common";
@@ -41,14 +41,16 @@ export const FormAddBreed = ({ category }) => {
   const onFinalize = (sub) => {
     mutate(prepForCreate(sub, "clutch"), {
       onSuccess: (resp) => {
-        notif({ c: "green", t: "Успешно", m: "План проекта сохранен.\nКладка зарегистрирована" });
+        const em = category === ECategories.BC ? "Беременность" : "Кладка";
+        notif({ c: "green", t: "Успешно", m: `План проекта сохранен. ${em} зарегистрирована` });
         location.route(`/clutches/edit/${category}?id=${resp.id}`);
       },
       onError: async (err) => {
+        const emerr = category === ECategories.BC ? "Помёт" : "Кладку";
         notif({
           c: "red",
           t: "Ошибка",
-          m: err.code === "22P02" ? "Сначала сохраните бридинг проект. Либо просто создайте кладку отдельно" : JSON.stringify(err),
+          m: err.code === "22P02" ? `Сначала сохраните бридинг проект. Либо просто заведите ${emerr} отдельно` : JSON.stringify(err),
           code: err.code || err.statusCode,
         });
       },

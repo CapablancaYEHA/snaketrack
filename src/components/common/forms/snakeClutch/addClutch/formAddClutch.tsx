@@ -20,7 +20,7 @@ import { daysIncubation, getPercentage } from "../../snakeBreed/breedUtils";
 import { renderSelectOption, useUtilsBreed } from "../../snakeBreed/common";
 import { BriefInfo } from "../../snakeBreed/subcomponents";
 import { calcAnim } from "../clutchUtils";
-import { IClutchAddScheme, clutchAddSchema, initClutchAddValues, prepForClutchCreate } from "../common";
+import { IClutchAddScheme, calcInitClutchValues, clutchAddSchema, prepForClutchCreate } from "../common";
 import { MiniInfo } from "../subcomponents";
 
 const snakeId = signal<string | undefined>(undefined);
@@ -37,8 +37,8 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
     control,
     register,
   } = useForm<IClutchAddScheme>({
-    defaultValues: initClutchAddValues,
-    resolver: yupResolver(clutchAddSchema as any),
+    defaultValues: calcInitClutchValues(category),
+    resolver: yupResolver(clutchAddSchema(category) as any),
   });
 
   const [selectedFem, wDate] = useWatch({
@@ -60,11 +60,16 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
   const { mutate, isPending } = useSupaCreate<ICreateClutchReq>(ESupaBreed[`${cat.toUpperCase()}_CL`], { qk: [ESupaBreed[`${cat.toUpperCase()}_CL_V`]], e: false });
 
   const left = dateTimeDiff(dateAddDays(wDate, daysIncubation[category]), "days");
+  const isBc = category === ECategories["BC"];
+  const header = isBc ? "беременности" : "кладки";
+  const startLabel = isBc ? "Дата" : "Дата кладки";
+  const tillDate = isBc ? "До родов" : "До конца инкубации";
 
   const onCreate = async (sbm: IClutchAddScheme) => {
     mutate(prepForClutchCreate(sbm), {
       onSuccess: () => {
-        notif({ c: "green", t: "Успешно", m: "Кладка зарегистрирована" });
+        const msg = isBc ? "Беременность зарегистрирована" : "Кладка зарегистрирована";
+        notif({ c: "green", t: "Успешно", m: msg });
         location.route("/clutches");
       },
       onError: async (err) => {
@@ -88,7 +93,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
     <>
       {isListPen || isQuePen ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
       <Text size="md" fw={500} c="yellow.6">
-        Создание кладки
+        Создание {header}
       </Text>
       <Group maw="100%" w="100%" align="start" gap="xl" grow>
         <Flex gap="md" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
@@ -216,7 +221,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
             name="date_laid"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <DatePickerInput label="Дата кладки" w={{ base: "100%", xs: "50%" }} flex="1 1 50%" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} />;
+              return <DatePickerInput label={startLabel} w={{ base: "100%", xs: "50%" }} flex="1 1 50%" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} />;
             }}
           />
           <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%">
@@ -230,7 +235,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
                   </Box>
                 </Flex>
                 <Flex justify="center">
-                  <Title order={6}>{`До конца инкубации ~${declWord(left, ["день", "дня", "дней"])}`}</Title>
+                  <Title order={6}>{`${tillDate} ~${declWord(left, ["день", "дня", "дней"])}`}</Title>
                 </Flex>
               </>
             ) : null}
@@ -241,21 +246,23 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
             name="eggs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput label="Яиц всего" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={1} max={99} clampBehavior="strict" error={error?.message} />;
+              return (
+                <NumberInput label={isBc ? "Помёт всего" : "Яиц всего"} onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required={!isBc} allowLeadingZeros={false} min={1} max={99} clampBehavior="strict" error={error?.message} />
+              );
             }}
           />
           <Controller
             name="slugs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput label="Жировики" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return <NumberInput label="Жировики" onChange={onChange} value={value} allowDecimal={false} allowNegative={false} required={!isBc} allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
             }}
           />
           <Controller
             name="infertile_eggs"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <NumberInput label="Неоплоды" onChange={onChange} value={value as any} allowDecimal={false} allowNegative={false} allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
+              return <NumberInput label={isBc ? "Мертворожденные" : "Неоплоды"} onChange={onChange} value={value as any} allowDecimal={false} allowNegative={false} allowLeadingZeros={false} min={0} max={99} clampBehavior="strict" error={error?.message} />;
             }}
           />
         </Flex>

@@ -33,6 +33,8 @@ interface IBreedExt extends IResBreedingList {
   traits: { label: string; gene: string }[];
 }
 
+const title = `${categToTitle[sigVisBreed.value]}ов`;
+
 export function BreedList() {
   const userId = localStorage.getItem("USER");
   const [opened, { open, close }] = useDisclosure();
@@ -44,8 +46,6 @@ export function BreedList() {
   const tableData: IBreedExt[] = (breed ?? [])?.map((m) => ({ ...m, traits: calcProjGenes(m.female_genes.concat(m.male_genes.flat())) }));
 
   const isFilterNull = isEmpty(filt);
-
-  const title = `${categToTitle[sigVisBreed.value]}ов`;
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
@@ -72,7 +72,6 @@ export function BreedList() {
           {
             label: "Удавы",
             value: ECategories.BC,
-            disabled: true,
           },
           {
             label: "Маисы",
@@ -119,7 +118,7 @@ export function BreedList() {
             <Space h="md" />
             <Flex gap="md" wrap="nowrap" flex="1 1 auto">
               <MaxSelectedMulti flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "traits")} data={calcTraitsForFilter(breed)} />
-              <MaxSelectedMulti flex="1 1 50%" label="Статус" onChange={(a: any) => tableFiltMulti(setFilt, a, "breed_status")} data={calcStatusOptions()} />
+              <MaxSelectedMulti flex="1 1 50%" label="Статус" onChange={(a: any) => tableFiltMulti(setFilt, a, "breed_status")} data={calcStatusOptions(sigVisBreed.value)} />
             </Flex>
           </Drawer>
           <Button color={isFilterNull ? undefined : "blue"} leftSection={<IconSwitch icon="adjust" width="16" height="16" />} variant={isFilterNull ? "default" : "filled"} onClick={open} size="compact-xs">

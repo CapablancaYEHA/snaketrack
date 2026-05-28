@@ -1,6 +1,6 @@
 import { useEffect } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Box, Button, Checkbox, Chip, CopyButton, Drawer, Flex, Loader, LoadingOverlay, Mark, Pill, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Checkbox, Chip, CopyButton, Drawer, Flex, Loader, LoadingOverlay, Mark, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure, useInViewport, useMediaQuery } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
 import { useQueryState } from "nuqs";
@@ -52,7 +52,7 @@ export function Market() {
 
   useEffect(() => {
     if (!cat) setCat(localStorage.getItem("MARKET_VISITED") ?? ECategories.BP);
-    if (isEmpty(sqlMultFilt)) setSqlMultFilt({ status: "in-on_sale" });
+    // if (isEmpty(sqlMultFilt)) setSqlMultFilt({ status: "in-on_sale" });
     setSort("created_at:desc");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -64,7 +64,8 @@ export function Market() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inViewport, hasNextPage, isFetchingNextPage]);
 
-  const isFilterNull = isEmpty(sqlFilt) && sqlMultFilt?.status === "in-on_sale" && isEmpty(Object.keys(sqlMultFilt ?? {})?.filter((k) => k !== "status"));
+  const isFilterNull = isEmpty(sqlFilt) && isEmpty(Object.keys(sqlMultFilt ?? {}));
+  //   const isFilterNull = isEmpty(sqlFilt) && sqlMultFilt?.status === "in-on_sale" && isEmpty(Object.keys(sqlMultFilt ?? {})?.filter((k) => k !== "status"));
 
   const isNoname = profile?.username == null;
 

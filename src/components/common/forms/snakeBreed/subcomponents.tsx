@@ -110,7 +110,7 @@ export const FemaleEvent = ({ isClutchMade, shed, ovul, category }) => {
     <Stack w="100%" maw="100%" gap="sm">
       <Flex w="100%" maw="100%" gap="sm" align="center" className={css.wrapping}>
         <Text fw={500} flex="1 1 50%" size="xs">
-          Предродовая линька
+          {category === ECategories.BC ? "Пост-овуль линька" : "Предродовая линька"}
         </Text>
         <Controller
           name="female_prelay_shed_date"
@@ -469,11 +469,11 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
         </Button>
         {left <= daysCriticalThr && !isClutchMade ? (
           <Button type="submit" onClick={innerInstance.handleSubmit(onFinalize)} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="xs">
-            Зарегистрировать кладку
+            {category === ECategories.BC ? "Перейти к беременности" : "Зарегистрировать кладку"}
           </Button>
         ) : isClutchMade ? (
           <div>
-            Уже есть кладка{" "}
+            Уже есть {category === ECategories.BC ? "помёт" : "кладка"}{" "}
             <Anchor href={`/clutches/edit/${category}?id=${innerInstance.getValues("clutch_id" as any)}`} style={{ textDecoration: "underline" }}>
               Перейти
             </Anchor>
@@ -510,7 +510,7 @@ export const BreedControl = ({ children, id, onDelete, clutchId, category }) => 
         </Menu.Item>
         {clutchId ? (
           <Menu.Item component="a" href={`/clutches/edit/${category}?id=${clutchId}`}>
-            Посмотреть кладку
+            {category === ECategories["BC"] ? "Посмотреть помёт" : "Посмотреть кладку"}
           </Menu.Item>
         ) : null}
         <Menu.Item c="var(--mantine-color-error)" onClick={() => onDelete(id)}>
