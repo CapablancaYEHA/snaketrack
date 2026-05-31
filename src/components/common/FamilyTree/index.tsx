@@ -3,6 +3,7 @@ import fallback from "@assets/placeholder.webp";
 import { Anchor, AspectRatio, Box, Button, CSSProperties, Drawer, Flex, Image, LoadingOverlay, Modal, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { clsx } from "clsx";
+import { orderBy, uniqBy } from "lodash-es";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories } from "@/api/common";
@@ -67,6 +68,9 @@ function RenderElems(props: ITree) {
   const width = props.width / 2;
   const height = props.height / 2;
 
+  const ord = orderBy(data.nodes, [(obj) => !obj.hasSubTree], ["desc"]);
+  const filteredNodes = uniqBy(ord, "id");
+
   return (
     <div
       className={props.className}
@@ -80,7 +84,8 @@ function RenderElems(props: ITree) {
       {data.connectors.map((connector, idx) => (
         <Linker key={idx} connector={connector} width={width} height={height} />
       ))}
-      {data.nodes.map(props.renderNode)}
+      {/* {data.nodes.map(props.renderNode)} */}
+      {filteredNodes.map(props.renderNode)}
     </div>
   );
 }

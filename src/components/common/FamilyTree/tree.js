@@ -1,121 +1,249 @@
-export const tree = [
+export const tree_parentsonly = [
   {
-    id: "a97da629b0",
-    snake_name: "Флора",
-    gender: "female",
-    genes: [],
-    parents: [],
-    siblings: [],
-    children: [
-      {
-        id: "65ded5353c",
-      },
-    ],
-    spouses: [
-      {
-        id: "f0935e4cd5",
-      },
-    ],
-  },
-  {
-    id: "6974ce5ac6",
-    snake_name: "Самец2",
-    gender: "male",
-    genes: [],
-    parents: [],
-    siblings: [],
-    children: [
-      {
-        id: "1afa34a7f9",
-      },
-    ],
-    spouses: [
-      {
-        id: "ac627ab1cc",
-      },
-    ],
-  },
-  {
-    id: "f0935e4cd5",
-    snake_name: "Офионей",
-    gender: "male",
-    genes: [],
-    parents: [],
-    siblings: [],
-    children: [
-      {
-        id: "65ded5353c",
-      },
-    ],
-    spouses: [
-      {
-        id: "a97da629b0",
-      },
-    ],
-  },
-  {
-    id: "1afa34a7f9",
-    snake_name: "45c48cce2e_1",
-    gender: "female",
+    id: "2aa84672-bb5a-466e-becf-c92d988f4204",
     genes: [
       {
-        gene: "other",
-        label: "Normal",
+        id: 2,
+        gene: "rec",
+        alias: "Anerythristic",
+        label: "Anery",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+      {
+        id: 1,
+        gene: "rec",
+        alias: null,
+        label: "Het Amel",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+      {
+        id: 18,
+        gene: "rec",
+        alias: null,
+        label: "Stripe",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
       },
     ],
-    parents: [
-      {
-        id: "ac627ab1cc",
-      },
-      {
-        id: "6974ce5ac6",
-      },
-    ],
-    siblings: [],
-    children: [],
-    spouses: [
-      {
-        id: "65ded5353c",
-      },
-    ],
-  },
-  {
-    id: "ac627ab1cc",
-    snake_name: "test",
     gender: "female",
-    genes: [],
     parents: [],
-    siblings: [],
-    children: [
-      {
-        id: "1afa34a7f9",
-      },
-    ],
+    picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/NThU_Yg_",
     spouses: [
       {
-        id: "6974ce5ac6",
+        id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
       },
     ],
+    children: [],
+    owner_id: "bddd37cf-94b1-4a5d-b763-5cd008c7d604",
+    siblings: [],
+    snake_name: "Самка А",
   },
   {
-    id: "65ded5353c",
-    snake_name: "45c48cce2e_1",
-    gender: "male",
-    genes: [],
-    parents: [
+    id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
+    genes: [
       {
-        id: "a97da629b0",
-      },
-      {
-        id: "f0935e4cd5",
+        id: 1,
+        gene: "rec",
+        alias: null,
+        label: "Amel",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
       },
     ],
-    siblings: [],
-    children: [],
+    gender: "male",
+    parents: [],
+    picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/Yc8TI8NX",
     spouses: [
       {
-        id: "1afa34a7f9",
+        id: "2aa84672-bb5a-466e-becf-c92d988f4204",
+      },
+      {
+        id: "b6aff8ce-567f-4821-b939-a1f1e37656e9",
       },
     ],
+    children: [],
+    owner_id: "bddd37cf-94b1-4a5d-b763-5cd008c7d604",
+    siblings: [],
+    snake_name: "Дибил",
+  },
+  {
+    id: "7dd7cbe3-816e-4f44-bd0d-dfede4ead9f6",
+    genes: [
+      {
+        id: 1,
+        gene: "rec",
+        alias: null,
+        label: "Amel",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+      {
+        id: 2,
+        gene: "rec",
+        alias: "Anerythristic",
+        label: "50% Het Anery",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+      {
+        id: 18,
+        gene: "rec",
+        alias: null,
+        label: "50% Het Stripe",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+      {
+        id: 14,
+        gene: "rec",
+        alias: null,
+        label: "50% Het Motley",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+    ],
+    gender: "female",
+    parents: [
+      {
+        id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
+      },
+      {
+        id: "b6aff8ce-567f-4821-b939-a1f1e37656e9",
+      },
+    ],
+    picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/5RBK244j",
+    spouses: [],
+    children: [],
+    owner_id: "bddd37cf-94b1-4a5d-b763-5cd008c7d604",
+    siblings: [
+      {
+        id: "0b04d5e2-f0c0-4bb3-ba1e-edcca7719c5c",
+        sex: "male",
+        picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/AOPOgz7w",
+        snake_name: "Добрыня A2-2022",
+        shadow_date_hatch: null,
+      },
+      {
+        id: "24a67ee7-fccd-4bbb-80c2-18ae23514cc3",
+        sex: "female",
+        picture: null,
+        snake_name: "самка Ф3",
+        shadow_date_hatch: null,
+      },
+      {
+        id: "6b92ba37-3f9c-41d5-9089-237013d1d936",
+        sex: "female",
+        picture: null,
+        snake_name: "Хурма",
+        shadow_date_hatch: null,
+      },
+      {
+        id: "b6aff8ce-567f-4821-b939-a1f1e37656e9",
+        sex: "female",
+        picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/wT7elkux",
+        snake_name: "Самка Е",
+        shadow_date_hatch: null,
+      },
+    ],
+    snake_name: "Амель 2025",
+  },
+  {
+    id: "b6aff8ce-567f-4821-b939-a1f1e37656e9",
+    genes: [
+      {
+        id: 34,
+        gene: "other",
+        alias: null,
+        label: "Normal",
+        hasHet: false,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+      {
+        id: 2,
+        gene: "rec",
+        alias: "Anerythristic",
+        label: "Het Anery",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+      {
+        id: 1,
+        gene: "rec",
+        alias: null,
+        label: "Het Amel",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+      {
+        id: 18,
+        gene: "rec",
+        alias: null,
+        label: "Het Stripe",
+        hasHet: true,
+        hasSuper: false,
+        is_beauty_only: null,
+      },
+    ],
+    gender: "female",
+    parents: [
+      {
+        id: "2aa84672-bb5a-466e-becf-c92d988f4204",
+      },
+      {
+        id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
+      },
+    ],
+    picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/wT7elkux",
+    spouses: [
+      {
+        id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
+      },
+    ],
+    children: [],
+    owner_id: "bddd37cf-94b1-4a5d-b763-5cd008c7d604",
+    siblings: [
+      {
+        id: "0b04d5e2-f0c0-4bb3-ba1e-edcca7719c5c",
+        sex: "male",
+        picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/AOPOgz7w",
+        snake_name: "Добрыня A2-2022",
+        shadow_date_hatch: null,
+      },
+      {
+        id: "24a67ee7-fccd-4bbb-80c2-18ae23514cc3",
+        sex: "female",
+        picture: null,
+        snake_name: "самка Ф3",
+        shadow_date_hatch: null,
+      },
+      {
+        id: "6b92ba37-3f9c-41d5-9089-237013d1d936",
+        sex: "female",
+        picture: null,
+        snake_name: "Хурма",
+        shadow_date_hatch: null,
+      },
+      {
+        id: "7dd7cbe3-816e-4f44-bd0d-dfede4ead9f6",
+        sex: "female",
+        picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/5RBK244j",
+        snake_name: "Амель 2025",
+        shadow_date_hatch: null,
+      },
+    ],
+    snake_name: "Самка Е",
   },
 ];
