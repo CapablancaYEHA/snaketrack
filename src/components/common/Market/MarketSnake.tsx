@@ -47,10 +47,14 @@ export function MarketSnake({ category, data }: IProp) {
             {snakeStatusToLabel[data.status]}
           </Text>
         </Indicator>
-
+        <Button leftSection="< " size="compact-xs" variant="default" ml="auto" onClick={() => window.history.back()}>
+          К маркету
+        </Button>
+      </Flex>
+      <Flex maw="100%" w="100%" align="center" gap="sm">
         <CopyButton value="window.location.href" timeout={3000}>
           {({ copied, copy }) => (
-            <Button variant="default" size="compact-xs" onClick={() => share(copy)} ml="auto">
+            <Button variant="default" c="yellow" size="compact-xs" onClick={() => share(copy)} ml="auto">
               {(copied && isCan) || isCan ? "Поделиться" : copied ? "Скопировано" : "Копировать"}
             </Button>
           )}

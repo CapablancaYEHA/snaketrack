@@ -14,7 +14,7 @@ import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { EClSt, IReqUpdClutch, IResClutch } from "@/api/breeding/models";
 import { ECategories, ESupaBreed, categoryToShort } from "@/api/common";
-import { useFinaliseClutch, useSupaUpd } from "@/api/hooks";
+import { useFinaliseClutch, useSupaDel, useSupaUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
 import { declWord, urlProxyReplace } from "@/utils/other";
 import { dateAddDays, dateTimeDiff } from "@/utils/time";
@@ -69,6 +69,10 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
 
   const { mutate: update } = useSupaUpd<IReqUpdClutch>(ESupaBreed[`${cat.toUpperCase()}_CL`], { qk: [ESupaBreed[`${cat.toUpperCase()}_CL_V`]], e: false });
   const { mutate: finalise } = useFinaliseClutch(category, clutch.id);
+  const { mutate: del, isPending: isDelPend } = useSupaDel(ESupaBreed[`${cat?.toUpperCase()}_CL`], {
+    qk: [ESupaBreed[`${cat.toUpperCase()}_CL_V`]],
+    e: false,
+  });
 
   const dateLaid = watch("date_laid");
   const left = dateTimeDiff(dateAddDays(dateLaid, daysIncubation[category]), "days");
@@ -111,6 +115,21 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
       },
     });
   };
+
+  const onDel = () =>
+    del(
+      { id: location.query.id },
+      {
+        onSuccess: () => {
+          location.route("/clutches");
+          const ntfMsg = isBc ? "Помёт удалён" : "Кладка удалёна";
+          notif({ c: "green", t: "Успешно", m: ntfMsg });
+        },
+        onError: async (err) => {
+          stdErr(err);
+        },
+      },
+    );
 
   useEffect(() => {
     if (isLaid) {
@@ -155,6 +174,13 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
           К списку
         </Button>
       </Flex>
+      {!(isHatch || isClosed) ? (
+        <Flex gap="sm" align="center" maw="100%" w="100%">
+          <Button variant="filled" size="compact-xs" color="var(--mantine-color-error)" loading={isDelPend} onClick={onDel}>
+            Удалить
+          </Button>
+        </Flex>
+      ) : null}
 
       <Flex maw="100%" w="100%" gap="lg" wrap="wrap">
         {ids?.map((a, ind) => (

@@ -1,7 +1,6 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
-import fallback from "@assets/placeholder.webp";
-import { ActionIcon, AspectRatio, Box, Button, CopyButton, Flex, Image, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, CopyButton, Flex, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -14,7 +13,6 @@ import { categToTitle, detailsDict, sliceDict, subjectDict } from "@/components/
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
-import { urlProxyReplace } from "@/utils/other";
 import { getAge, getDate } from "@/utils/time";
 import { FamilyTree } from "../FamilyTree";
 import { disStats, snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
@@ -37,7 +35,6 @@ interface IProp {
 
 export function SnakeFull({ title, category, data, snakeId }: IProp) {
   const location = useLocation();
-  const [isOvlay, setOvlay] = useState(false);
   const [tab, setTab] = useState("common");
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
@@ -50,7 +47,6 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
 
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
-      {isOvlay ? <ZoomImage pic={data.picture} onClose={() => setOvlay(false)} /> : null}
       <Flex wrap="nowrap" align="flex-start" maw="100%" w="100%" gap="md">
         <Stack gap="0px">
           <Title component="span" order={4} c="yellow.6">
@@ -123,21 +119,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
         <>
           <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
             <Stack flex={{ base: "1", sm: "0 1 50%" }} pos="relative">
-              <ActionIcon variant="default" size="md" onClick={() => setOvlay(true)} pos="absolute" bottom="8px" right="8px">
-                <IconSwitch icon="zoom" width="18" height="18" />
-              </ActionIcon>
-              <AspectRatio ratio={3 / 2} maw="100%">
-                <Image
-                  src={urlProxyReplace(data.picture)}
-                  fit="cover"
-                  radius="md"
-                  w="auto"
-                  maw="100%"
-                  fallbackSrc={fallback}
-                  loading="lazy"
-                  // mah={{ base: "180px", sm: "260px" }}
-                />
-              </AspectRatio>
+              <ZoomImage pic={data.picture} />
             </Stack>
             <Stack gap="sm">
               <Box>
