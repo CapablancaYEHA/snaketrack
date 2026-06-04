@@ -1,5 +1,5 @@
 import fallback from "@assets/placeholder.webp";
-import { Checkbox, Flex, Image, Stack } from "@mantine/core";
+import { Checkbox, Flex, Image, Stack, Text } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { createColumnHelper } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
@@ -31,6 +31,13 @@ export const makeScheduleColumns = ({ openFeed }) => [
           <Stack gap="xs" flex="1 1 auto">
             <Image src={urlProxyReplace(cell.getValue())} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
             <SexName sex={row.original.sex} name={row.original.snake_name} size="sm" />
+            {row.original.tags ? (
+              <Flex maw="100%">
+                <Text fw={500} size="xs" c="pink">
+                  {row.original.tags.map((t) => `#${t}`).join(" ")}
+                </Text>
+              </Flex>
+            ) : null}
           </Stack>
         </RemControls>
       </Flex>

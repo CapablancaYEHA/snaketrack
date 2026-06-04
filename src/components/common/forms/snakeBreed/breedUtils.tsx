@@ -4,7 +4,7 @@ import { bStToLabel, boaBStToLabel, breedToColor } from "@/components/common/uti
 import { IResBreedingList } from "@/api/breeding/models";
 import { ECategories } from "@/api/common";
 import { declWord } from "@/utils/other";
-import { dateAddDays, dateTimeDiff, getDate } from "@/utils/time";
+import { dateAddDays, dateTimeDiff, getDate, getDateShort } from "@/utils/time";
 import { GenePill } from "../../../common/genetics/geneSelect";
 import { BreedControl } from "./subcomponents";
 
@@ -63,6 +63,13 @@ export const makeBreedColumns = ({ setBreedId, category }) => {
       maxSize: 2,
       minSize: 160,
     }),
+    columnHelper.accessor("breed_created_at", {
+      header: () => "Создан",
+      cell: ({ cell }) => getDateShort(cell.getValue()!),
+      size: 5,
+      maxSize: 1,
+      minSize: 88,
+    }),
     columnHelper.accessor("traits" as any, {
       header: () => "Гены в проекте",
       cell: ({ cell }) => (
@@ -73,8 +80,8 @@ export const makeBreedColumns = ({ setBreedId, category }) => {
         </Flex>
       ),
       filterFn: (row: any, columnId, filterValue) => filterValue.some((a) => row.original.traits.map((b) => b.label).includes(a)),
-      size: 5,
-      maxSize: 6,
+      size: 6,
+      maxSize: 5,
       minSize: 220,
     }),
     columnHelper.accessor("breed_status", {

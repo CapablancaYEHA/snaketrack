@@ -118,7 +118,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
       ) : (
         <>
           <Flex align="stretch" columnGap="xl" rowGap="sm" w="100%" direction={{ base: "column", sm: "row" }}>
-            <Stack flex={{ base: "1", sm: "0 1 50%" }} pos="relative">
+            <Stack flex={{ base: "1", sm: "0 1 50%" }}>
               <ZoomImage pic={data.picture} />
             </Stack>
             <Stack gap="sm">

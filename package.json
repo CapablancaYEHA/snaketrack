@@ -3,7 +3,7 @@
   "type": "module",
   "name": "snaketrack",
   "description": "Snaketrack PWA",
-  "version": "1.10.4",
+  "version": "1.10.5",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -26,8 +26,8 @@
     "chartjs-plugin-annotation": "^3.1.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
+    "glightbox": "^3.3.1",
     "lodash-es": "^4.17.21",
-    "medium-zoom": "^1.1.0",
     "nanoid": "^5.1.2",
     "nuqs": "^2.7.2",
     "preact": "^10.13.1",
