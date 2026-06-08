@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Flex, NumberInput, Stack, Text, TextInput, Textarea } from "@mantine/core";
+import { Box, Flex, Mark, NumberInput, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm } from "react-hook-form";
@@ -202,6 +202,11 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
           }}
         />
       </Flex>
+      {!init.contacts_group && !init.contacts_telegram ? (
+        <Text size="sm" fs="italic">
+          Заполните <Mark color="orange">контакты</Mark> в Аккаунте (Профиле), они будут автоматически подтягиваться в каждую форму объявления
+        </Text>
+      ) : null}
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
         <Controller
           name="contacts_group"
@@ -214,7 +219,7 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
           name="contacts_telegram"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <TextInput label="Ник в Телеге" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} placeholder="юзернейм с или без @" />;
+            return <TextInput label="Ник в Телеге" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} placeholder="юзернейм" />;
           }}
         />
         <Controller

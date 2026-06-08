@@ -92,7 +92,7 @@ export const SnakeTags: FC<IProp> = ({ opened, close, snake, snakeTable }) => {
             </Flex>
           )}
         </Box>
-        <TagsInput description="Можно выбрать или сразу создать и присвоить новый" label="Присвоить тэг" value={tags} onChange={setTags} onOptionSubmit={(v) => v.trim().replace(/s+/g, " ")} data={noAssigned} acceptValueOnBlur />
+        <TagsInput description="Можно выбрать или сразу создать и присвоить новый" label="Присвоить тэг" placeholder="Выбор или ввод" value={tags} onChange={setTags} onOptionSubmit={(v) => v.trim().replace(/s+/g, " ")} data={noAssigned} acceptValueOnBlur />
         <Box>
           <Text size="sm">Все созданные тэги</Text>
           <Space h="4px" />

@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Flex, NumberInput, Select, Text, TextInput, Textarea } from "@mantine/core";
+import { Box, Flex, Mark, NumberInput, Select, Text, TextInput, Textarea } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -18,9 +18,9 @@ import { dateToSupabaseTime } from "@/utils/time";
 import { uplErr } from "../const";
 import { sexHardcode } from "../snakeBreed/common";
 import styles from "../styles.module.scss";
-import { IReqCreateSnakeForAdv, ISellEmptyScheme, createSnakeFromEmpty, emptyDefault, schemaEmpty } from "./const";
+import { IReqCreateSnakeForAdv, ISellEmptyScheme, createSnakeFromEmpty, schemaEmpty } from "./const";
 
-export const FormCreateSaleFromEmpty = ({ category }) => {
+export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
   const location = useLocation();
   const {
     handleSubmit,
@@ -29,8 +29,9 @@ export const FormCreateSaleFromEmpty = ({ category }) => {
     control,
     getValues,
     trigger,
+    reset,
   } = useForm<ISellEmptyScheme>({
-    defaultValues: emptyDefault,
+    defaultValues: emptyInit,
     resolver: yupResolver(schemaEmpty),
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -96,6 +97,10 @@ export const FormCreateSaleFromEmpty = ({ category }) => {
       },
     );
   };
+
+  useEffect(() => {
+    reset(emptyInit);
+  }, [reset, emptyInit]);
 
   useEffect(() => {
     if (val.length > 1) {
@@ -227,6 +232,11 @@ export const FormCreateSaleFromEmpty = ({ category }) => {
           }}
         />
       </Flex>
+      {!emptyInit.contacts_group && !emptyInit.contacts_telegram ? (
+        <Text size="sm" fs="italic">
+          Заполните <Mark color="orange">контакты</Mark> в Аккаунте (Профиле), они будут автоматически подтягиваться в каждую форму объявления
+        </Text>
+      ) : null}
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
         <Controller
           name="contacts_group"
@@ -239,7 +249,7 @@ export const FormCreateSaleFromEmpty = ({ category }) => {
           name="contacts_telegram"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <TextInput label="Ник в Телеге" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} placeholder="юзернейм с или без @" />;
+            return <TextInput label="Ник в Телеге" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} placeholder="юзернейм" />;
           }}
         />
         <Controller

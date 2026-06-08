@@ -226,7 +226,7 @@ export const FormEditSale = ({ init, info, category }) => {
           name="contacts_telegram"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <TextInput label="Ник в Телеге" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} placeholder="юзернейм с или без @" />;
+            return <TextInput label="Ник в Телеге" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} placeholder="юзернейм" />;
           }}
         />
         <Controller

@@ -28,6 +28,7 @@ export const ZoomImage = ({ pic, radius = "md", w = "auto" }) => {
     return () => {
       lightRef.current.destroy();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -50,7 +51,6 @@ export const ZoomImage = ({ pic, radius = "md", w = "auto" }) => {
           maw="100%"
           fallbackSrc={fallback}
           loading="lazy"
-          style={{ zIndex: 31 }}
           // mah={{ base: "180px", sm: "260px" }}
         />
       </AspectRatio>

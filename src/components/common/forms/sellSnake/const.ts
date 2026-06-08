@@ -3,31 +3,33 @@ import * as yup from "yup";
 import { IGenesComp, IReqCreateSnake } from "@/api/common";
 import { dateToSupabaseTime } from "@/utils/time";
 
-export const emptyDefault = {
+export const makeEmptyInit = (profile) => ({
   sale_price: undefined,
   pictures: undefined,
   city_code: undefined,
   city_name: undefined,
-  contacts_group: undefined,
-  contacts_messager: undefined,
-  contacts_website: undefined,
+  contacts_group: profile?.contacts_group,
+  contacts_telegram: profile?.contacts_telegram,
+  contacts_website: profile?.contacts_website,
+  description: "Самовывоз и доставка обсуждаемы",
   sex: null,
   snake_name: "",
   date_hatch: undefined,
   discount_price: undefined,
   discount_until: undefined,
   genes: [],
-};
+});
 
-export const makeInit = (raw) => {
+export const makeInit = (raw, profile) => {
   return {
     sale_price: undefined,
     pictures: raw.pictures,
     city_code: undefined,
     city_name: undefined,
-    contacts_group: undefined,
-    contacts_messager: undefined,
-    contacts_website: undefined,
+    contacts_group: profile?.contacts_group,
+    contacts_telegram: profile?.contacts_telegram,
+    contacts_website: profile?.contacts_website,
+    description: "Самовывоз и доставка обсуждаемы",
   };
 };
 
@@ -39,7 +41,7 @@ export const makeInitEdit = (raw) => {
     city_code: raw.city_code,
     city_name: raw.city_name,
     contacts_group: raw.contacts_group,
-    contacts_telegram: raw.contacts_messager,
+    contacts_telegram: raw.contacts_telegram,
     contacts_website: raw.contacts_website,
   };
 };

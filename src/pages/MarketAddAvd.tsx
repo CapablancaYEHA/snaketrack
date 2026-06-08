@@ -3,13 +3,14 @@ import { useEffect } from "preact/hooks";
 import { LoadingOverlay, SegmentedControl, Select, Stack, Text } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { useQueryState } from "nuqs";
-import { makeInit } from "@/components/common/forms/sellSnake/const";
+import { makeEmptyInit, makeInit } from "@/components/common/forms/sellSnake/const";
 import { FormCreateSaleFromColection } from "@/components/common/forms/sellSnake/formCreateSaleFromCollection";
 import { FormCreateSaleFromEmpty } from "@/components/common/forms/sellSnake/formCreateSaleFromEmpty";
 import { categToConfig, categToTitle } from "@/components/common/utils";
 import { IResSnakesList } from "@/api/common";
 import { marketAvailSnakes } from "@/api/common_configs";
 import { useBase64, useSupaGet } from "@/api/hooks";
+import { useProfile } from "@/api/profile/hooks";
 import { notif } from "@/utils/notif";
 
 const sigPath = signal<string>("from_collection");
@@ -21,6 +22,7 @@ export function MarketAdd() {
   const p = location.path.split("/").slice(-1)[0];
 
   const { data: limited } = useSupaGet<IResSnakesList[]>(marketAvailSnakes(userId, p), userId != null);
+  const { data: profile } = useProfile(userId, userId != null);
   const { data: snake, isRefetching, isLoading, isError, error } = useSupaGet<IResSnakesList>(categToConfig[p](selected), Boolean(selected));
   const { data: base64 } = useBase64(snake?.picture, snake?.picture != null && !isLoading);
 
@@ -58,9 +60,9 @@ export function MarketAdd() {
         <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />
       ) : (
         <>
-          {sigPath.value === "from_empty" ? <FormCreateSaleFromEmpty category={p} /> : null}
+          {sigPath.value === "from_empty" ? <FormCreateSaleFromEmpty category={p} emptyInit={makeEmptyInit(profile)} /> : null}
           {snake != null && sigPath.value === "from_collection" ? (
-            <FormCreateSaleFromColection init={makeInit({ pictures: base64 ? [base64] : null })} info={{ ...snake, snake_id: snake.id, date_hatch: new Date(snake.date_hatch), blob: snake?.picture ? [snake?.picture] : [] }} category={p} />
+            <FormCreateSaleFromColection init={makeInit({ pictures: base64 ? [base64] : null }, profile)} info={{ ...snake, snake_id: snake.id, date_hatch: new Date(snake.date_hatch), blob: snake?.picture ? [snake?.picture] : [] }} category={p} />
           ) : null}
         </>
       )}

@@ -6,6 +6,9 @@ export interface IResProfile {
   is_vivarium_on?: boolean;
   snake_tags?: string[];
   role: "free" | "premium";
+  contacts_group?: string;
+  contacts_telegram?: string;
+  contacts_website?: string;
 }
 
 export interface IUpdProfileReq {
@@ -13,6 +16,9 @@ export interface IUpdProfileReq {
     usermail?: string;
     is_vivarium_on?: boolean;
     snake_tags?: string[] | null;
+    contacts_group?: string;
+    contacts_telegram?: string;
+    contacts_website?: string;
   };
   id: string;
 }

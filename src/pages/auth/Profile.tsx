@@ -2,6 +2,7 @@ import { useEffect } from "preact/hooks";
 import { Anchor, Box, Button, Flex, Loader, Space, Stack, Text } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { ReleasesHistory } from "@/components/profile/releasesHistory";
+import { UpdateContacts, makeContacts } from "@/components/profile/updateContacts";
 import { ModalChangePass } from "@/components/profile/updatePass";
 import { useInitPayment } from "@/api/misc/hooks";
 import { useProfile, useUpdName } from "@/api/profile/hooks";
@@ -60,8 +61,16 @@ export function Profile() {
           Изменить пароль
         </Button>
       </div>
+      {isPending ? (
+        <Loader color="dark.1" size="xs" />
+      ) : (
+        <>
+          <Space h="sm" />
+          <UpdateContacts init={makeContacts(data)} id={data?.id!} />
+        </>
+      )}
       <Space h="sm" />
-      <Stack w="100%" gap="xs">
+      <Stack w="100%" gap="xs" align="start">
         <Text c="dark.3" size="sm" component="div">
           Версия приложения v{ver}
         </Text>
