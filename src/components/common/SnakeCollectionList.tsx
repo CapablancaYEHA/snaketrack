@@ -15,6 +15,7 @@ import { IFeedReq, IResSnakesList, IUpdReq, categoryToBaseTable } from "@/api/co
 import { useSnakeGenes, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 import { catVisited } from "@/pages/SnakeCategories";
+import { RollNumber } from "./RollNumber";
 import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
 import { ChangeStatus } from "./forms/changeStatus/formChangeStatus";
@@ -107,6 +108,13 @@ export function SnakeCollectionList() {
               leftSection={<IconSwitch icon="search" />}
             />
           </Box>
+          <Flex w="100%" maw="100%" gap="xs">
+            <Text size="xs" ta="left" w="auto">
+              Стоимость коллекции в категории —
+            </Text>
+            <RollNumber val={snakes.map((n) => n.price ?? 0).reduce((t, c) => t + c)} />
+          </Flex>
+
           <Text size="xs" ta="left" w="100%">
             Закрепленная колонка отображает дополнительное меню на ховер
           </Text>
@@ -207,7 +215,7 @@ export function SnakeCollectionList() {
         <Space h="md" />
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
           <MaxSelectedMulti miw={0} flex="1 1 50%" label="Возраст" onChange={(a) => tableFiltMulti(setFilt, a, "date_hatch")} initVal={filt?.find((a) => a.id === "date_hatch")?.value} data={maturityDict} dataHasLabel />
-          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltSingle(setFilt, a, "sex")} value={filt?.find((a) => a.id === "sex")?.value} label="Пол" placeholder="Не выбран" />
+          <Select flex="1 1 50%" miw={0} data={sexHardcode} onChange={(a: any) => tableFiltSingle(setFilt, a, "sex")} value={filt?.find((a) => a.id === "sex")?.value} label="Пол" placeholder="Неопред" />
         </Flex>
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
           <MaxSelectedMulti miw={0} flex="1 1 50%" label="Тэги" onChange={(a) => tableFiltMulti(setFilt, a, "tags")} initVal={filt?.find((a) => a.id === "tags")?.value} data={profile?.snake_tags ?? []} />

@@ -54,7 +54,7 @@ export function MarketAdd() {
           },
         ]}
       />
-      {sigPath.value === "from_collection" ? <Select data={(limited ?? []).map((l) => ({ label: l.snake_name, value: l.id }))} value={selected} onChange={setSelected as any} required label="Выберите змею" /> : null}
+      {sigPath.value === "from_collection" ? <Select data={(limited ?? []).map((l) => ({ label: l.snake_name, value: l.id }))} value={selected} onChange={setSelected as any} required label="Выберите змею" searchable /> : null}
       {isLoading || isRefetching ? (
         // FIXME скелетон надо
         <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />

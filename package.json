@@ -3,7 +3,7 @@
   "type": "module",
   "name": "snaketrack",
   "description": "Snaketrack PWA",
-  "version": "1.10.6",
+  "version": "1.10.61",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -25,6 +25,7 @@
     "chartjs-adapter-dayjs-4": "^1.0.4",
     "chartjs-plugin-annotation": "^3.1.0",
     "clsx": "^2.1.1",
+    "countup.js": "^2.10.0",
     "dayjs": "^1.11.13",
     "glightbox": "^3.3.1",
     "lodash-es": "^4.17.21",

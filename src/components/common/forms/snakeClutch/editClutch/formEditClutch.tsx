@@ -4,7 +4,7 @@ import { useEffect } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ActionIcon, Box, Button, CopyButton, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Textarea, Title } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { Controller, FormProvider, useFieldArray, useForm, useWatch } from "react-hook-form";
@@ -205,7 +205,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
               return (
-                <DatePickerInput
+                <DateInput
                   disabled={isHatch || isClosed}
                   label={startLabel}
                   w={{ base: "100%", xs: "50%" }}
@@ -322,7 +322,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
                 control={control}
                 render={({ field: { onChange, value }, fieldState: { error } }) => {
                   return (
-                    <DatePickerInput
+                    <DateInput
                       disabled={isHatch || isClosed}
                       label={endLabel}
                       w="auto"
@@ -334,7 +334,6 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
                       locale="ru"
                       error={error?.message}
                       maxDate={dateAddDays(value as any, 10).toDate()}
-                      minDate={dateAddDays(value as any, -10).toDate()}
                     />
                   );
                 }}

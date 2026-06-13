@@ -82,7 +82,7 @@ export function App() {
               ) : (
                 ["/profile", "/snakes", "/snakes/:type?id=:id", "/snakes/add/:type", "/snakes/edit/:type?id=:id","/snakes/import/:type", "/breeding", "/breeding/add/:type",
 					"/breeding/:type?id=:id", "/clutches", "/clutches/add/:type", "/clutches/edit/:type?id=:id", "/schedule", "/vivarium", "/vivarium/edit",
-					"/market", "/market/add/:type?id=:id", "/market/edit/:type?id=:id", "/market/view/:type?id=:id", "/calculator"].map((a) => (
+					"/market", "/market/add/:type?id=:id", "/market/edit/:type?id=:id", "/market/view/:type?id=:id", "/calculator", '/debag'].map((a) => (
                   <ProtectedRoute key={a} path={a} session={session} component={protectedRoutes[a]} />
                 ))
               )}

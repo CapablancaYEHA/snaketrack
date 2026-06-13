@@ -109,6 +109,8 @@ export const FormAddParents = ({ category, snakeId, onClose, currentFather, curr
                 data={regFems?.map((b) => ({ label: b.snake_name, value: b.id }))}
                 value={value}
                 onChange={onChange}
+                searchable
+                placeholder="Поиск"
                 label="Выбор в своей коллекции"
                 error={error?.message}
                 comboboxProps={{
@@ -146,7 +148,9 @@ export const FormAddParents = ({ category, snakeId, onClose, currentFather, curr
                 data={regMales?.map((b) => ({ label: b.snake_name, value: b.id }))}
                 value={value}
                 onChange={onChange}
+                searchable
                 label="Выбор в своей коллекции"
+                placeholder="Поиск"
                 error={error?.message}
                 comboboxProps={{
                   withinPortal: false,

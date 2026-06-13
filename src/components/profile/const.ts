@@ -1,5 +1,11 @@
 export const versionHistory = [
   {
+    id: 35,
+    ver: "1.10.61",
+    date: "06-14-2026",
+    list: ["datePick ручной ввод, geneSelect улучшение контента, стоимость коллекции"],
+  },
+  {
     id: 34,
     ver: "1.10.6",
     date: "06-08-2026",

@@ -3,7 +3,7 @@ import { FC, Fragment } from "preact/compat";
 import { useEffect } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Divider, Flex, Group, LoadingOverlay, NumberInput, Progress, Select, Space, Stack, Text, Textarea, Title } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
@@ -102,7 +102,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
             name="female_id"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <Select data={regFems} value={value} onChange={onChange} error={error?.message} required />;
+              return <Select data={regFems} value={value} onChange={onChange} error={error?.message} required searchable />;
             }}
           />
           <Box w="100%" maw="100%">
@@ -221,7 +221,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
             name="date_laid"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <DatePickerInput label={startLabel} w={{ base: "100%", xs: "50%" }} flex="1 1 50%" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} />;
+              return <DateInput label={startLabel} w={{ base: "100%", xs: "50%" }} flex="1 1 50%" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} />;
             }}
           />
           <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%">

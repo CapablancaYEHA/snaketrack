@@ -227,7 +227,7 @@ export function Market() {
         </Flex>
         <Space h="md" />
         <Flex gap="md" wrap="nowrap" align="end">
-          <Select flex="1 1 50%" miw={0} data={sexHardcode} value={sqlFilt?.["sex"] ? sqlFilt["sex"].split("-")[1] : null} onChange={(a: any) => handleSingleSel(a, "sex", setSqlFilt)} label="Пол" placeholder="Не выбран" />
+          <Select flex="1 1 50%" miw={0} data={sexHardcode} value={sqlFilt?.["sex"] ? sqlFilt["sex"].split("-")[1] : null} onChange={(a: any) => handleSingleSel(a, "sex", setSqlFilt)} label="Пол" placeholder="Любой" />
           <MaxSelectedMulti
             flex="1 1 50%"
             label="Гены"

@@ -19,7 +19,7 @@ interface IProp {
 export function MarketSnake({ category, data }: IProp) {
   const dt = {
     title: snakeStatusToLabel[data.status],
-    text: `${data.sex === "female" ? 0.1 : 1.0} ${categToTitle[category]} ${data.genes?.map((g) => g.label).join(" ")}`,
+    text: `${data.sex === "female" ? "0.1" : "1.0"} ${categToTitle[category]} ${data.genes?.map((g) => g.label).join(" ")}`,
     url: window.location.href,
   };
   const [tab, setTab] = useState("common");

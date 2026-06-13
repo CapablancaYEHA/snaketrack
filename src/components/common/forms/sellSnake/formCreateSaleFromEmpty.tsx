@@ -2,7 +2,7 @@ import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Flex, Mark, NumberInput, Select, Text, TextInput, Textarea } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Autocomp } from "@/components/common/forms/sellSnake/Autocomp";
@@ -120,7 +120,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DatePickerInput label="Дата рождения" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" required highlightToday locale="ru" error={error?.message} maxDate={new Date()} flex="1 1 auto" />
+                <DateInput label="Дата рождения" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" required highlightToday locale="ru" error={error?.message} maxDate={new Date()} flex="1 1 auto" />
               </>
             );
           }}
@@ -147,7 +147,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
           name="sex"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <Select data={sexHardcode} value={value} onChange={onChange} label="Пол" error={error?.message} flex="1 1 50%" />;
+            return <Select data={sexHardcode} value={value} onChange={onChange} label="Пол" placeholder="Неопред" error={error?.message} flex="1 1 50%" />;
           }}
         />
       </Flex>
@@ -226,7 +226,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DatePickerInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
+                <DateInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
               </>
             );
           }}

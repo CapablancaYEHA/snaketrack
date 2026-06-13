@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { startMd, startSm, tabletThreshold } from "@/styles/theme";
 import fallback from "@assets/placeholder.webp";
 import { ActionIcon, Anchor, Box, Button, CopyButton, Fieldset, Flex, Grid, Image, Loader, Modal, Progress, SegmentedControl, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
@@ -273,7 +273,7 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
         name={`future_animals.${ind}.date_hatch`}
         control={innerInstance.control}
         render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <DatePickerInput label={isLabel ? "Дата рождения" : undefined} value={new Date(value as any)} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} size={size as any} />;
+          return <DateInput label={isLabel ? "Дата рождения" : undefined} value={new Date(value as any)} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} size={size as any} />;
         }}
       />
       <Controller

@@ -4,7 +4,7 @@ import { Fragment } from "preact/jsx-runtime";
 import { tabletThreshold } from "@/styles/theme";
 import fallback from "@assets/placeholder.webp";
 import { Accordion, Anchor, Box, Button, Divider, Drawer, Flex, Group, Image, Loader, LoadingOverlay, Menu, Modal, Progress, Select, Space, Stack, Text, Title } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { Controller, FormProvider, useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { ButtonSelect } from "@/components/common/ButtonSelect";
@@ -66,7 +66,7 @@ export const MaleEvent = ({ id, disabled }) => {
                 render={({ field: { onChange, value }, fieldState: { error } }) => {
                   return (
                     <>
-                      <DatePickerInput
+                      <DateInput
                         disabled={disabled}
                         value={value ? new Date(value) : value}
                         onChange={(v) => {
@@ -118,7 +118,7 @@ export const FemaleEvent = ({ isClutchMade, shed, ovul, category }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DatePickerInput
+                <DateInput
                   disabled={isClutchMade}
                   rightSection={
                     value ? (
@@ -155,7 +155,7 @@ export const FemaleEvent = ({ isClutchMade, shed, ovul, category }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DatePickerInput
+                <DateInput
                   disabled={isClutchMade}
                   size="xs"
                   rightSection={
@@ -332,7 +332,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
             name="female_id"
             control={innerInstance.control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <Select data={regFems} value={value} onChange={onChange} error={error?.message} required disabled={isClutchMade} />;
+              return <Select data={regFems} value={value} onChange={onChange} error={error?.message} searchable required disabled={isClutchMade} />;
             }}
           />
           <Box w="100%" maw="100%">

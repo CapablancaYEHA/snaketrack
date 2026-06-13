@@ -7,6 +7,7 @@ import { AddSnake } from "@/pages/AddSnake";
 import { BreedList } from "@/pages/BreedList";
 import { Calculator } from "@/pages/Calculator";
 import { ClutchList } from "@/pages/ClutchList";
+import { Debug } from "@/pages/Debug";
 import { EditBreed } from "@/pages/EditBreed";
 import { EditClutch } from "@/pages/EditClutch";
 import { EditSnake } from "@/pages/EditSnake";
@@ -82,6 +83,7 @@ export const protectedRoutes = {
   "/calculator": Calculator,
   "/vivarium": Vivarium,
   "/vivarium/edit": EditVivarium,
+  "/debag": Debug,
 };
 
 export const sidebarLinks = [

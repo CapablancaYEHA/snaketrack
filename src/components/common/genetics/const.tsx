@@ -40,17 +40,8 @@ export const upgradeOptions = (arr: IGenesComp[], search: string, view: EGenesVi
         return tot;
       }
       if (cur.hasHet) {
-        if (inp.toLowerCase().includes("he")) {
-          let res = !isCalc ? fullHet.map((a) => ({ ...cur, label: `${a} ${cur.label}` })) : ["Het"].map((a) => ({ ...cur, label: `${a} ${cur.label}` }));
-          return tot.concat(cur).concat(res);
-        }
-        if (!isCalc && inp.indexOf("6") === 0) {
-          return tot.concat(cur).concat({ ...cur, label: `66% Het ${cur.label}` });
-        }
-        if (!isCalc && inp.indexOf("5") === 0) {
-          return tot.concat(cur).concat({ ...cur, label: `50% Het ${cur.label}` });
-        }
-        return tot.concat(cur);
+        let res = !isCalc ? fullHet.map((a) => ({ ...cur, label: `${a} ${cur.label}` })) : ["Het"].map((a) => ({ ...cur, label: `${a} ${cur.label}` }));
+        return tot.concat(cur).concat(res);
       }
       if (cur.hasSuper) {
         let a: any = [{ ...cur, label: `Super ${cur.label}` }];
@@ -63,7 +54,7 @@ export const upgradeOptions = (arr: IGenesComp[], search: string, view: EGenesVi
     });
 };
 
-const fullHet = ["50% Het", "66% Het", "Het"];
+const fullHet = ["Het", "66% Het", "50% Het"];
 const reHet = /(?<=het\s)[\w\s]+/i;
 
 export const checkGeneConflict = (current: IGenesComp[], val: IGenesComp) => {

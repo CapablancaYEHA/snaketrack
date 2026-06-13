@@ -2,7 +2,7 @@ import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Flex, NumberInput, Select, Stack, Text, TextInput, Textarea } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm } from "react-hook-form";
 import { Autocomp } from "@/components/common/forms/sellSnake/Autocomp";
@@ -208,7 +208,7 @@ export const FormEditSale = ({ init, info, category }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DatePickerInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
+                <DateInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
               </>
             );
           }}

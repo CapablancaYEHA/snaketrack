@@ -24,7 +24,7 @@ export function MaxSelectedMulti({ data, label, onChange, dataHasLabel, flex, in
   });
 
   const [search, setSearch] = useState("");
-  const debSearch = debounce(setSearch, 400);
+  const debSearch = debounce(setSearch, 300);
   const [value, setValue] = useState<any[]>([]);
 
   const handleValueSelect = (val: string) => {
@@ -107,12 +107,12 @@ export function MaxSelectedMulti({ data, label, onChange, dataHasLabel, flex, in
                   combobox.updateSelectedOptionIndex();
                   debSearch(event.currentTarget.value);
                 }}
-                onKeyDown={(event) => {
-                  if (event.key === "Backspace" && search.length === 0) {
-                    event.preventDefault();
-                    handleValueRemove(value[value.length - 1]);
-                  }
-                }}
+                // onKeyDown={(event) => {
+                //   if (event.key === "Backspace" && search.length === 0) {
+                //     event.preventDefault();
+                //     debRemove(value[value.length - 1]);
+                //   }
+                // }}
               />
             </Combobox.EventsTarget>
           </Pill.Group>

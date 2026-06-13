@@ -1,7 +1,7 @@
 import { FC } from "preact/compat";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Accordion, Box, Checkbox, Flex, Modal, NumberInput, Popover, Space, Stack, Text, TextInput, Title } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
+import { DateInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { UseMutateFunction } from "@tanstack/react-query";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -116,7 +116,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
           name="feed_last_at"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <DatePickerInput label="Дата" required value={value} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} flex="1 1 50%" />;
+            return <DateInput label="Дата" required value={value} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} flex="1 1 50%" />;
           }}
         />
         <Controller

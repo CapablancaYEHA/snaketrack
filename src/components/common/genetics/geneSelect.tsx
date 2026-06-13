@@ -1,7 +1,7 @@
 import { FC } from "preact/compat";
 import { useEffect, useState } from "preact/hooks";
 import { CheckIcon, Combobox, Group, MantineSize, Pill, PillsInput, Text, useCombobox } from "@mantine/core";
-import { debounce, isEmpty } from "lodash-es";
+import { debounce, isEmpty, sortBy } from "lodash-es";
 import { ECategories, EGenesView, IGenesComp } from "@/api/common";
 import { useSnakeGenes } from "@/api/hooks";
 import { checkGeneConflict, geneToColor, redef, upgradeOptions } from "./const";
@@ -95,7 +95,13 @@ export const GenesSelect: FC<IProp> = ({ onChange, view, init, label, category, 
 
   const values = (value ?? []).map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} onLeftClick={handleAssignPos} />);
 
-  const options = upgradeOptions(traits ?? [], search, view).map((item) => (
+  const upg = upgradeOptions(traits ?? [], search, view);
+
+  const options = sortBy(upg, [
+    function (o) {
+      return o.label.length;
+    },
+  ]).map((item) => (
     <Combobox.Option value={item as any} key={item.label} active={value.includes(item)}>
       <Group gap="sm">
         {value.some((a) => a.label === item.label) ? <CheckIcon size={12} /> : null}
@@ -130,12 +136,6 @@ export const GenesSelect: FC<IProp> = ({ onChange, view, init, label, category, 
                 onChange={(event) => {
                   combobox.updateSelectedOptionIndex();
                   debSearch(event.currentTarget.value);
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Backspace" && search.length === 0) {
-                    event.preventDefault();
-                    handleValueRemove(value[value.length - 1]);
-                  }
                 }}
                 pointer
               />
