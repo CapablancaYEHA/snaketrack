@@ -207,7 +207,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
       </Group>
       {!isEmpty(femData) && !isEmpty(malesData?.filter((a) => a)) ? (
         <Stack gap="xs">
-          <Title order={6}>Гены в проекте</Title>
+          <Title order={6}>Набор генов</Title>
           <Flex gap="4px" wrap="wrap">
             {calcProjGenes(femData?.genes.concat((malesData ?? [])?.map((m) => m?.genes)?.flat())).map((a, ind) => (
               <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="sm" />

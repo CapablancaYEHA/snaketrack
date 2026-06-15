@@ -36,6 +36,15 @@
   &::-webkit-scrollbar-thumb {
     border-radius: 4px;
   }
+
+  @supports (-moz-appearance: none) {
+    scrollbar-width: thin;
+    @if $colored {
+      scrollbar-color: var(--mantine-color-yellow-8) transparent;
+    } @else {
+      scrollbar-color: var(--mantine-color-dark-4) transparent;
+    }
+  }
 }
 
 @mixin cute-scroll-horis($trackStart, $colored: false) {
@@ -69,6 +78,15 @@
   } @else {
     &::-webkit-scrollbar-thumb {
       background-color: var(--mantine-color-dark-4);
+    }
+  }
+
+  @supports (-moz-appearance: none) {
+    scrollbar-width: thin;
+    @if $colored {
+      scrollbar-color: var(--mantine-color-yellow-8) transparent;
+    } @else {
+      scrollbar-color: var(--mantine-color-dark-4) transparent;
     }
   }
 }

@@ -13,7 +13,7 @@ import { SexName } from "@/components/common/sexName";
 import { calcProjGenes, categToConfig } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { EClSt, IResClutch } from "@/api/breeding/models";
-import { ECategories, EGenesView, IResSnakesList } from "@/api/common";
+import { ECategories, EGenesView, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSupaGet } from "@/api/hooks";
 import { useCalcMmOdds } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
@@ -27,8 +27,8 @@ import { IClutchEditScheme, statusHardcode } from "./common";
 
 const sigBabyGenesId = signal<number | undefined>(undefined);
 
-export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; onPicClick: Function; className?: string }) => {
-  const pics = [clutch.female_picture].concat(clutch.male_pictures);
+export const SParents = ({ clutch, onPicClick, className }: { clutch: IResClutch; onPicClick: Function; className?: string }) => {
+  const names = [clutch.female_name].concat(clutch.males_names);
   const ids = [clutch.female_id].concat(clutch.males_ids);
 
   return (
@@ -52,7 +52,7 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
           )}
         </CopyButton>
       </Flex>
-      <Flex gap="xl" flex="1 1 auto" className={className} mih={324}>
+      <Flex gap="xl" flex="1 1 auto" className={className} mih={176}>
         <Stack gap="md" justify="start" maw="100%" w="100%">
           {ids.map((a, ind) => (
             <Flex
@@ -60,14 +60,13 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
               mt={ind === 1 ? "auto" : 0}
               gap="sm"
               align="center"
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", textDecoration: "underline" }}
               onClick={(e) => {
                 e.stopPropagation();
                 onPicClick(ids[ind], ind === 0 ? "Самка" : "Самец");
               }}
             >
-              <IconSwitch icon={ind === 0 ? "female" : "male"} width="16" height="16" />
-              <Image src={urlProxyReplace(pics[ind])} fit="cover" radius="sm" w="auto" h={64} loading="lazy" flex="auto" fallbackSrc={fallback} />
+              <SexName sex={ind === 0 ? "female" : "male"} name={names[ind]} size="md" />
             </Flex>
           ))}
         </Stack>
@@ -76,7 +75,7 @@ export const SPics = ({ clutch, onPicClick, className }: { clutch: IResClutch; o
   );
 };
 
-export const SInfo = ({ clutch, onPicClick, category }: { clutch: IResClutch; onPicClick: Function; category: ECategories }) => {
+export const SInfo = ({ clutch, category }: { clutch: IResClutch; category: ECategories }) => {
   const ids = clutch.finalised_ids;
 
   const isBc = category === ECategories["BC"];
@@ -85,7 +84,6 @@ export const SInfo = ({ clutch, onPicClick, category }: { clutch: IResClutch; on
     <Flex gap="xl" flex="0 1 520px">
       <Stack gap="md" flex={ids ? "1 0 290px" : "1 1 auto"}>
         <ClutchProgress laidDate={clutch.date_laid} hatchDate={clutch.date_hatch} curStatus={clutch.status} category={category} />
-        <Space h="lg" />
         <Flex gap="xl" wrap="nowrap">
           <Stack gap="xs">
             <Title order={6}>
@@ -113,7 +111,7 @@ export const SInfo = ({ clutch, onPicClick, category }: { clutch: IResClutch; on
           </Stack>
         </Flex>
         <Stack gap="xs">
-          <Title order={6}>Гены в проекте</Title>
+          <Title order={6}>Набор генов</Title>
           <Flex gap="4px" wrap="wrap">
             {calcProjGenes(clutch.female_genes.concat(clutch.male_genes.flat())).map((a, ind) => (
               <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="xs" />
@@ -121,34 +119,46 @@ export const SInfo = ({ clutch, onPicClick, category }: { clutch: IResClutch; on
           </Flex>
         </Stack>
       </Stack>
-      {ids ? <Juveniles ids={ids} onPicClick={onPicClick} /> : null}
+      {ids ? (
+        <Flex wrap="nowrap" direction="column" align="flex-start">
+          <div>
+            <Title order={6}>Змееныши</Title>
+            <Space h="xs" />
+          </div>
+        </Flex>
+      ) : null}
     </Flex>
   );
 };
 
-export const Juveniles = ({ ids, onPicClick, title = "Змееныши" }) => {
+export const FinalJuveniles = ({ category, list, onPicClick }) => {
+  const { data: juvs, isPending } = useSupaGet<IResSnakesList[]>({ t: categoryToBaseTable[category], f: (b) => b.filter("id", "in", `(${list})`), id: list }, true);
   return (
     <Flex wrap="nowrap" direction="column" align="flex-start">
       <div>
-        <Title order={6}>{title}</Title>
+        <Title order={6}>Итоговые змееныши</Title>
         <Space h="xs" />
       </div>
-      <Flex gap="md" wrap="wrap" direction="column" mah={344}>
-        {ids?.map((a, ind) => (
-          <Flex
-            key={a}
-            gap="sm"
-            align="center"
-            style={{ cursor: "pointer" }}
-            onClick={(e) => {
-              e.stopPropagation();
-              onPicClick(ids[ind], null);
-            }}
-          >
-            <IconSwitch icon={""} width="16" height="16" />
-            <Image src={fallback} fit="cover" radius="sm" w="auto" h={32} loading="lazy" flex="1 1 32px" fallbackSrc={fallback} />
-          </Flex>
-        ))}
+      <Flex gap="md" wrap="wrap">
+        {isPending ? (
+          <Loader color="dark.1" size="sm" d="block" w="100%" />
+        ) : (
+          juvs?.map((juv) => (
+            <Stack
+              gap="xs"
+              flex="1 1 auto"
+              key={juv.id}
+              style={{ cursor: "pointer" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onPicClick(juv.id, null);
+              }}
+            >
+              <Image src={urlProxyReplace(juv.picture)} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
+              <SexName sex={juv.sex} name={juv.snake_name} size="sm" />
+            </Stack>
+          ))
+        )}
       </Flex>
     </Flex>
   );
@@ -197,11 +207,13 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOn
           </Progress.Root>
         </Box>
       </Flex>
-      <Flex justify="center">
-        <Title order={6}>
-          {tillEnd} ~{declWord(left, ["день", "дня", "дней"])}
-        </Title>
-      </Flex>
+      {(isHatch || isClosed) && hatchDate ? null : (
+        <Flex justify="center">
+          <Title order={6} fw={500}>
+            {tillEnd} ~{declWord(left, ["день", "дня", "дней"])}
+          </Title>
+        </Flex>
+      )}
     </>
   );
 };
@@ -246,7 +258,7 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
   const innerInstance = useFormContext<IClutchEditScheme>();
   const { errors } = innerInstance.formState;
   const { data: fatherData } = useSupaGet<IResSnakesList>(categToConfig[category](selectedFatherId), Boolean(selectedFatherId));
-  const { mutate, data: oddsData, isError, isPending: isOddPending } = useCalcMmOdds(category);
+  const { mutate, data: oddsData, isError: isOddsErr, isPending: isOddPending } = useCalcMmOdds(category);
 
   useEffect(() => {
     if (!isEmpty(fatherData?.genes)) {
@@ -266,61 +278,65 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
     }
   }, [selectedFatherId, mutate, JSON.stringify(fatherData?.genes)]);
 
-  const renderItems = (ind, isLabel, size = "sm") => (
-    <>
-      <TextInput {...innerInstance.register(`future_animals.${ind}.snake_name`)} required={ind === 0} label={isLabel ? "Кличка змеи" : undefined} error={errors?.future_animals?.[ind]?.snake_name?.message} size={size} />
-      <Controller
-        name={`future_animals.${ind}.date_hatch`}
-        control={innerInstance.control}
-        render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <DateInput label={isLabel ? "Дата рождения" : undefined} value={new Date(value as any)} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} size={size as any} />;
-        }}
-      />
-      <Controller
-        name={`future_animals.${ind}.sex`}
-        control={innerInstance.control}
-        render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <Select data={sexHardcode} value={value} onChange={onChange} label={isLabel ? "Пол" : undefined} error={error?.message} size={size} placeholder="Необязательно" />;
-        }}
-      />
-      <Controller
-        name={`future_animals.${ind}.status`}
-        control={innerInstance.control}
-        render={({ field: { onChange, value }, fieldState: { error } }) => {
-          return <Select data={statusHardcode} value={value} onChange={onChange} label={isLabel ? "Состояние" : undefined} error={error?.message} size={size} />;
-        }}
-      />
-      <Box maw="100%" style={{ alignSelf: "end" }}>
-        <Space h="xs" />
-        <Button variant="default" onClick={() => (sigBabyGenesId.value = ind)} size="sm" w="100%" disabled={selectedFatherId == null || isError}>
-          Генетика
-        </Button>
-      </Box>
-      <Box>
-        <Text size="xs" c="var(--mantine-color-error)">
-          {errors?.future_animals?.[ind]?.genes?.message || ""}
-        </Text>
-      </Box>
-      <Modal keepMounted={false} centered opened={sigBabyGenesId.value === ind} onClose={() => (sigBabyGenesId.value = undefined)} size="xs" title={<Title order={5}>Выбор и корректировка генов</Title>}>
-        <FormProvider {...innerInstance}>
-          <BabyMorphSelect oddsData={oddsData} isOddPending={isOddPending} size={!isMwTablet ? "sm" : "xs"} category={category} ind={ind} />
-        </FormProvider>
-      </Modal>
-    </>
-  );
+  const renderItems = (ind, isLabel, size = "sm", withMargin = false) => {
+    const isDefaultGenetics = isEmpty(innerInstance.getValues(`future_animals.${ind}.genes`)?.filter((d) => d.label !== "Normal"));
+    return (
+      <>
+        <TextInput {...innerInstance.register(`future_animals.${ind}.snake_name`)} required={ind === 0} label={isLabel ? "Кличка змеи" : undefined} error={errors?.future_animals?.[ind]?.snake_name?.message} size={size} />
+        <Controller
+          name={`future_animals.${ind}.date_hatch`}
+          control={innerInstance.control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <DateInput label={isLabel ? "Дата рождения" : undefined} value={new Date(value as any)} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} maxDate={new Date()} size={size as any} />;
+          }}
+        />
+        <Controller
+          name={`future_animals.${ind}.sex`}
+          control={innerInstance.control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <Select data={sexHardcode} value={value} onChange={onChange} label={isLabel ? "Пол" : undefined} error={error?.message} size={size} placeholder="Неопред" />;
+          }}
+        />
+        <Controller
+          name={`future_animals.${ind}.status`}
+          control={innerInstance.control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <Select data={statusHardcode} value={value} onChange={onChange} label={isLabel ? "Состояние" : undefined} error={error?.message} size={size} />;
+          }}
+        />
+        <Box maw="100%" style={{ alignSelf: "end" }}>
+          {withMargin ? <Space h="xs" /> : null}
+
+          <Button variant="default" onClick={() => (sigBabyGenesId.value = ind)} size="sm" w="100%" disabled={selectedFatherId == null} rightSection={isDefaultGenetics ? undefined : <IconSwitch icon="check" style={{ stroke: "lime", opacity: 0.6 }} />}>
+            Генетика
+          </Button>
+        </Box>
+        <Box>
+          <Text size="xs" c="var(--mantine-color-error)">
+            {errors?.future_animals?.[ind]?.genes?.message || ""}
+          </Text>
+        </Box>
+        <Modal keepMounted={false} centered opened={sigBabyGenesId.value === ind} onClose={() => (sigBabyGenesId.value = undefined)} size="xs" title={<Title order={5}>Выбор и корректировка генов</Title>}>
+          <FormProvider {...innerInstance}>
+            <BabyMorphSelect oddsData={oddsData} isOddPending={isOddPending} isError={isOddsErr} size={!isMwTablet ? "sm" : "xs"} category={category} ind={ind} />
+          </FormProvider>
+        </Modal>
+      </>
+    );
+  };
 
   return !isEmpty(futureSnakes) && isShow ? (
     isMinMd ? (
       futureSnakes.map((f, ind) => (
         <SimpleGrid cols={5} spacing="xs" verticalSpacing="xs" key={f.id}>
-          {renderItems(ind, ind === 0)}
+          {renderItems(ind, ind === 0, "sm")}
         </SimpleGrid>
       ))
     ) : (
       <Grid gutter="sm" align="baseline">
         {futureSnakes.map((f, ind) => (
           <Grid.Col key={f.id} span={isMinSm ? 3 : 4}>
-            <Box>{renderItems(ind, true, "xs")}</Box>
+            <Box>{renderItems(ind, true, "xs", true)}</Box>
           </Grid.Col>
         ))}
       </Grid>
@@ -331,7 +347,7 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
 const sigMethod = signal<"pre" | "manual">("manual");
 const defGene = [{ label: "Normal", gene: "other", hasSuper: false, hasHet: false, id: -1 }];
 
-const BabyMorphSelect = ({ oddsData, isOddPending, size, category, ind }) => {
+const BabyMorphSelect = ({ oddsData, isOddPending, size, category, ind, isError }) => {
   const innerInstance = useFormContext<any>();
   const [wSaved] = useWatch({ control: innerInstance.control, name: [`future_animals.${ind}.genes`] });
   const [radio, setRadio] = useState<string | null>(null);
@@ -365,7 +381,7 @@ const BabyMorphSelect = ({ oddsData, isOddPending, size, category, ind }) => {
           value={sigMethod.value}
           onChange={handleSwitch}
           data={[
-            { label: "Из калькулятора", value: "pre" },
+            { label: "Из калькулятора", value: "pre", disabled: isError },
             { label: "Вручную", value: "manual" },
           ]}
           style={{ alignSelf: "center" }}

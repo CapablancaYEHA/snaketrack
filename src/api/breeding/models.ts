@@ -94,6 +94,8 @@ export interface IResClutch {
   owner_id: string;
   males_ids: string[];
   female_id: string;
+  female_name: string;
+  males_names: string[];
   date_laid: string;
   date_hatch: string | null;
   eggs: number | null;

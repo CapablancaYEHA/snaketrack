@@ -35,7 +35,8 @@ const httpCalcMmOdds = async (p1: string[], p2: string[], categ): Promise<IMorph
       },
     })) as any;
     if (!d.ok) {
-      throw new Error(`Response status: ${d.status}`);
+      const err = await d.json();
+      throw err;
     }
     res = await d.json();
   } catch (e) {

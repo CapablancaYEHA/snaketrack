@@ -21,7 +21,7 @@ import { dateAddDays, dateTimeDiff } from "@/utils/time";
 import { daysCriticalThr, daysIncubation, getPercentage } from "../../snakeBreed/breedUtils";
 import { calcAnim } from "../clutchUtils";
 import { IClutchEditScheme, clutchEditSchema, prepForClutchUpdate, prepForFinal, prepForHatch, stdErr } from "../common";
-import { FormApprovedBabies, Juveniles, MiniInfo } from "../subcomponents";
+import { FinalJuveniles, FormApprovedBabies, MiniInfo } from "../subcomponents";
 import style from "./styles.module.scss";
 
 const snakeId = signal<string | undefined>(undefined);
@@ -162,14 +162,17 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
       <Flex gap="sm" align="center" maw="100%" w="100%">
         <Text size="md" fw={500} c="yellow.6">
           {categToTitle[category]}ы. {isBc ? "Помёт" : "Кладка"} {location.query.id}
+          <span> </span>
+          <span> </span>
+          <CopyButton value={clutch.id} timeout={3000}>
+            {({ copied, copy }) => (
+              <ActionIcon variant="default" onClick={copy} size="sm">
+                <IconSwitch icon={copied ? "check" : "copy"} width="14" height="14" style={{ stroke: "lime" }} />
+              </ActionIcon>
+            )}
+          </CopyButton>
         </Text>
-        <CopyButton value={clutch.id} timeout={3000}>
-          {({ copied, copy }) => (
-            <ActionIcon variant="default" onClick={copy} size="sm">
-              <IconSwitch icon={copied ? "check" : "copy"} width="14" height="14" style={{ stroke: "lime" }} />
-            </ActionIcon>
-          )}
-        </CopyButton>
+
         <Button leftSection="< " size="compact-xs" flex="0 0 81px" variant="default" ml="auto" component="a" href="/clutches">
           К списку
         </Button>
@@ -191,7 +194,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
         ))}
       </Flex>
       <Stack gap="xs">
-        <Title order={6}>Гены в проекте</Title>
+        <Title order={6}>Набор генов</Title>
         <Flex gap="6px" wrap="wrap">
           {calcProjGenes(female_genes.concat(male_genes.flat())).map((a, ind) => (
             <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="sm" />
@@ -390,7 +393,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
 
       {isClosed ? (
         !isEmpty(clutch.finalised_ids) ? (
-          <Juveniles ids={clutch.finalised_ids} onPicClick={(i) => (snakeId.value = i)} title="Итоговые змееныши" />
+          <FinalJuveniles list={clutch.finalised_ids} category={category} onPicClick={(i) => (snakeId.value = i)} />
         ) : (
           <Text fw={400} c="var(--mantine-color-error)">
             Кладка/Помёт завершены, но невозможно отобразить змеенышей.

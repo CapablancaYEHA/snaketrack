@@ -1,5 +1,11 @@
 export const versionHistory = [
   {
+    id: 36,
+    ver: "1.10.62",
+    date: "06-15-2026",
+    list: ["ui tweak кладки"],
+  },
+  {
     id: 35,
     ver: "1.10.61",
     date: "06-14-2026",

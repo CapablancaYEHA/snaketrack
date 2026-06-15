@@ -8,7 +8,7 @@ export const RollNumber = ({ val, size = "xs" }) => {
 
   useEffect(() => {
     if (mountRef.current) {
-      countRef.current = new CountUp(mountRef.current, val, { autoAnimate: true, autoAnimateOnce: true, duration: 2, separator: " ", prefix: "₽ ", onCompleteCallback: countRef?.current?.onDestroy?.() });
+      countRef.current = new CountUp(mountRef.current, val, { useEasing: false, autoAnimate: true, autoAnimateOnce: true, duration: 2, separator: " ", prefix: "₽ ", onCompleteCallback: countRef?.current?.onDestroy?.() });
     }
   }, [val]);
 

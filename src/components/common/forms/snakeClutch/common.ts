@@ -152,7 +152,7 @@ export const prepForHatch = (sub, dirtyObject, clutch_id): IReqUpdClutch => {
 export const prepForFinal = (sub, clutchId) => {
   const newSnakes = sub.future_animals
     .filter((a) => a.status !== "deceased")
-    .map((b) => ({ ...b, date_hatch: dateToSupabaseTime(b.date_hatch), mother_id: sub.mother_id, father_id: sub.father_id, from_clutch: clutchId, shadow_date_hatch: dateToSupabaseTime(sub.date_hatch) }));
+    .map((b) => ({ ...b, date_hatch: dateToSupabaseTime(b.date_hatch), mother_id: sub.mother_id, father_id: sub.father_id, from_clutch: clutchId, shadow_date_hatch: dateToSupabaseTime(sub.date_hatch), origin: "breed" }));
 
   return {
     snakes: newSnakes,

@@ -4,10 +4,10 @@ import { isEmpty } from "lodash-es";
 import * as yup from "yup";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IBreedStat, IReqCreateBreed, IUpdBreedReq } from "@/api/breeding/models";
-import { ECategories, IResSnakesList, TSnakeQueue } from "@/api/common";
+import { ECategories, IResSnakesList, TSnakeQueue, categoryToBaseTable } from "@/api/common";
 import { useSnakeQueue, useSupaGet } from "@/api/hooks";
 import { disStats } from "../../Market/utils";
-import { categToConfig, categToConfigList } from "../../utils";
+import { categToConfig } from "../../utils";
 
 interface IInit {
   fem?: string | null;
@@ -17,8 +17,7 @@ interface IInit {
 
 export function useUtilsBreed({ fem, fetchFields, category }: IInit) {
   const userId = localStorage.getItem("USER");
-  // TODO переписать эту функцию сразу на запрос к тем колонкам которые мне нужны
-  const { data: regi, isPending: isListPen } = useSupaGet<IResSnakesList[]>(categToConfigList[category](userId), userId != null);
+  const { data: regi, isPending: isListPen } = useSupaGet<IResSnakesList[]>({ t: categoryToBaseTable[category], f: (b) => b.eq("owner_id", userId).select("snake_name, id, sex, status"), id: [userId, "short"] }, userId != null);
   const regFems = regi?.filter((a) => a.sex === "female" && !disStats.includes(a.status))?.map((b) => ({ label: b.snake_name, value: b.id }));
   const regMales = regi?.filter((a) => a.sex === "male" && !disStats.includes(a.status))?.map((b) => ({ label: b.snake_name, value: b.id }));
   const { data: femData } = useSupaGet<IResSnakesList>(categToConfig[category](fem ?? ""), fem != null);
@@ -28,7 +27,7 @@ export function useUtilsBreed({ fem, fetchFields, category }: IInit) {
     category,
   ) as TSnakeQueue;
 
-  const isAddAllowed = regMales?.length >= 1 && malesData?.filter((a) => a)?.length === fetchFields?.length && (fetchFields?.length || 0) < 3;
+  const isAddAllowed = regMales?.length >= 1 && malesData?.length === fetchFields?.length && (fetchFields?.length || 0) < 3;
 
   return { isListPen, isQuePen: isPending, isAddAllowed, femData, malesData, regFems, regMales };
 }
@@ -85,7 +84,7 @@ export const eventsOpts = [
 
 export const prepForMm = (parent: IResSnakesList) => {
   return parent.genes
-    .filter((f) => !f.isPos && !f.is_beauty_only)
+    .filter((f) => !f.isPos && !f.is_beauty_only && !(f.label.startsWith("5") || f.label.startsWith("6")))
     .map((a) => {
       return a.label;
     });
