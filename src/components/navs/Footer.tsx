@@ -5,6 +5,8 @@ import styles from "./styles.module.scss";
 
 const req = import.meta.env.VITE_REACT_APP_YOO_REQ;
 
+export const footer_height = 26;
+
 export function Footer() {
   return (
     <Box

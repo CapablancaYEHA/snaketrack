@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/compat";
 import { Stack } from "@mantine/core";
 import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, RowSelectionState, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import { footer_height } from "@/components/navs/Footer";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { useLongPress } from "../genetics/useLongPress";
 import styles from "./styles.module.scss";
@@ -19,10 +21,13 @@ interface IProp<T> {
   rowSelection?: RowSelectionState;
   onRowSelect?: OnChangeFn<RowSelectionState>;
   onLongPress?: (event: MouseEvent | TouchEvent) => void;
+  estimateSize?: number;
 }
 
-export const StackTable = <T extends object>({ maxHeight, columns, data, setColumnFilters, columnFilters, onRowClick, onLongPress, globalFilter, setGlobalFilter, initSort, rowSelection, onRowSelect }: IProp<T>) => {
+export const StackTable = <T extends object>({ estimateSize, maxHeight, columns, data, setColumnFilters, columnFilters, onRowClick, onLongPress, globalFilter, setGlobalFilter, initSort, rowSelection, onRowSelect }: IProp<T>) => {
   const isMount = useRef(false);
+  const parentRef = useRef<HTMLDivElement>(null);
+  const [tableHeight, setHeight] = useState(maxHeight);
   const [sorting, setSorting] = useState<SortingState>(initSort ?? []);
   const cols: ColumnDef<T>[] = useMemo<ColumnDef<T, unknown>[]>(() => columns, []);
 
@@ -52,6 +57,14 @@ export const StackTable = <T extends object>({ maxHeight, columns, data, setColu
     },
   });
 
+  useLayoutEffect(() => {
+    if (window && parentRef && !maxHeight) {
+      const topOffset = parentRef?.current?.getBoundingClientRect().top ?? 0;
+      // FIXME можно еще делать вычитание нижнего паддинга от класса .box-main, но он динамический
+      setHeight(+(window.innerHeight - topOffset - footer_height).toFixed());
+    }
+  }, [maxHeight]);
+
   useEffect(() => {
     isMount.current = true;
   }, []);
@@ -61,15 +74,14 @@ export const StackTable = <T extends object>({ maxHeight, columns, data, setColu
     table.getColumn(trg)?.pin("left");
   }, []);
 
+  const { rows } = table.getRowModel();
   const isEmpty = isMount.current && table.options.data.length === 0;
-  const isFilteredOut = table.options.data.length > 0 && table.getRowModel().rows.length === 0;
+  const isFilteredOut = table.options.data.length > 0 && rows.length === 0;
 
   const headGroups = table.getHeaderGroups();
 
-  const handleLong = useLongPress((e) => onLongPress?.(e));
-
   return (
-    <div className={styles.cont} style={maxHeight && !isEmpty ? { maxHeight: `${maxHeight}px` } : {}}>
+    <div className={styles.cont} style={!isEmpty ? { height: `${tableHeight}px` } : {}} ref={parentRef}>
       <table className={styles.table}>
         {headGroups[0]?.headers.length <= 1 ? null : (
           <thead style={{ background: "#1c1c1c" }}>
@@ -97,34 +109,69 @@ export const StackTable = <T extends object>({ maxHeight, columns, data, setColu
             })}
           </thead>
         )}
-        <tbody>
-          {isEmpty ? (
-            <Stack align="center" justify="center" w="100%" maw="100%" gap="sm" pb="md" pt="md">
-              <IconSwitch icon="no-data" width="40" height="40" />
-              Данные для таблицы отсутствуют
-            </Stack>
-          ) : isFilteredOut ? (
-            <Stack align="center" justify="center" w="100%" maw="100%" gap="sm" pb="md" pt="md">
-              <IconSwitch icon="no-filter" width="40" height="40" />
-              Не найдено элементов для заданной фильтрации
-            </Stack>
-          ) : (
-            table.getRowModel().rows.map((row) => {
-              return (
-                <tr key={row.id} onClick={() => onRowClick?.((row.original as any).id)} {...(onLongPress ? handleLong : {})} className={onRowClick != null ? styles.pointer : ""}>
-                  {row.getVisibleCells().map((cell) => {
-                    return cell.column.columnDef.cell ? (
-                      <td key={cell.id} style={{ ...calcColumn(cell), ...getCommonPinningStyles(cell.column), minWidth: cell.column.columnDef.minSize, background: cell.column.getIsPinned() ? bgDark : "transparent" }}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ) : null;
-                  })}
-                </tr>
-              );
-            })
-          )}
-        </tbody>
+        <TableVirtual rows={rows} estimateSize={estimateSize} contRef={parentRef} isEmpty={isEmpty} isFilteredOut={isFilteredOut} onLongPress={onLongPress} onRowClick={onRowClick} />
       </table>
     </div>
+  );
+};
+
+export const TableVirtual = ({ isEmpty, isFilteredOut, onLongPress, rows, contRef, estimateSize, onRowClick }) => {
+  const handleLong = useLongPress((e) => onLongPress?.(e));
+
+  const virtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => contRef.current,
+    estimateSize: () => estimateSize,
+    measureElement: typeof window !== "undefined" && navigator.userAgent.indexOf("Firefox") === -1 ? (element) => element?.getBoundingClientRect().height : undefined,
+    overscan: 6,
+    horizontal: false,
+  });
+  return (
+    <tbody
+      style={{
+        height: `${virtualizer.getTotalSize()}px`,
+        position: "relative",
+      }}
+    >
+      {isEmpty ? (
+        <Stack align="center" justify="center" w="100%" maw="100%" gap="sm" pb="md" pt="md">
+          <IconSwitch icon="no-data" width="40" height="40" />
+          Данные для таблицы отсутствуют
+        </Stack>
+      ) : isFilteredOut ? (
+        <Stack align="center" justify="center" w="100%" maw="100%" gap="sm" pb="md" pt="md">
+          <IconSwitch icon="no-filter" width="40" height="40" />
+          Не найдено элементов для заданной фильтрации
+        </Stack>
+      ) : (
+        virtualizer.getVirtualItems().map((virtualRow) => {
+          const row = rows[virtualRow.index];
+          return (
+            <tr
+              data-index={virtualRow.index}
+              key={row.id}
+              ref={(node) => virtualizer.measureElement(node)}
+              onClick={() => onRowClick?.((row.original as any).id)}
+              {...(onLongPress ? handleLong : {})}
+              style={{
+                // height: `${virtualRow.size}px`, // плохо работает с динамич высотой
+                position: "absolute",
+                // transform: `translateY(${virtualRow.start - index * virtualRow.size}px)`, // плохо работает с динамич высотой
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+              className={onRowClick != null ? styles.pointer : ""}
+            >
+              {row.getVisibleCells().map((cell) => {
+                return cell.column.columnDef.cell ? (
+                  <td key={cell.id} style={{ ...calcColumn(cell), ...getCommonPinningStyles(cell.column), minWidth: cell.column.columnDef.minSize, background: cell.column.getIsPinned() ? bgDark : "transparent" }}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ) : null;
+              })}
+            </tr>
+          );
+        })
+      )}
+    </tbody>
   );
 };

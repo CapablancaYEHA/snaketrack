@@ -279,7 +279,7 @@ export function Market() {
           <Text fw={500}>{isFilterNull ? "Нет предложений в категории" : "Не найдено предложений для заданной фильтрации"}</Text>
         </Box>
       ) : (
-        <StackTable data={market ?? []} columns={marketColumns} />
+        <StackTable data={market ?? []} columns={marketColumns} estimateSize={184} />
       )}
       {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
       <Box ref={ref} w="100%" h={2} />

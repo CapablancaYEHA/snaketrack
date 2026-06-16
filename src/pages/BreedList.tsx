@@ -137,6 +137,7 @@ export function BreedList() {
             })}
             columnFilters={filt}
             setColumnFilters={setFilt}
+            estimateSize={56}
           />
         </>
       )}

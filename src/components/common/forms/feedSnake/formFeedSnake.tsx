@@ -116,7 +116,25 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
           name="feed_last_at"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <DateInput label="Дата" required value={value} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" placeholder="Не выбрана" maxDate={new Date()} error={error?.message} flex="1 1 50%" />;
+            return (
+              <DateInput
+                label="Дата"
+                required
+                value={value}
+                onChange={onChange}
+                valueFormat="DD MMMM YYYY"
+                highlightToday
+                locale="ru"
+                placeholder="Не выбрана"
+                maxDate={new Date()}
+                error={error?.message}
+                flex="1 1 50%"
+                popoverProps={{
+                  position: "bottom",
+                  middlewares: { flip: false, shift: true },
+                }}
+              />
+            );
           }}
         />
         <Controller

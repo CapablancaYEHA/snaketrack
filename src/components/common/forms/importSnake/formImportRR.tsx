@@ -67,16 +67,18 @@ export const FormImportRR: FC<IProps> = ({ table, title, category }) => {
       ) : sneks && !isEmpty(sneks) && file != null ? (
         <>
           <Text>{title}ы, которых можно добавить в коллекцию</Text>
-          <Flex gap="md" wrap="wrap" maw="100%" w="100%">
-            {sneks.map((s, ind, self) => (
-              <Stack gap="xs" key={`${s.date_hatch}_${s.snake_name}`} flex="0 1 110px" pos="relative">
-                <SexName sex={s?.sex} name={s?.snake_name} size="xs" />
-                <Text size="xs">⌛ {getAge(s?.date_hatch)}</Text>
-                <Text size="xs">{s.notes}</Text>
-                <Box pos="absolute" bottom={4} right={4} onClick={() => setSneks((n: any) => n?.filter((_, i) => i !== ind))} className={css.circle}>
+          <Flex gap="md" wrap="wrap" maw="100%" w="100%" className={css.wrap}>
+            {sneks.map((s, ind) => (
+              <Flex key={`${s.date_hatch}_${s.snake_name}`} maw={130} w="100%" wrap="nowrap">
+                <Stack gap="xs" pos="relative">
+                  <SexName sex={s?.sex} name={s?.snake_name} size="xs" />
+                  <Text size="xs">⌛ {getAge(s?.date_hatch)}</Text>
+                  <Text size="xs">{s.notes}</Text>
+                </Stack>
+                <Box bottom={4} right={4} onClick={() => setSneks((n: any) => n?.filter((_, i) => i !== ind))} className={css.circle}>
                   <IconSwitch icon="bin" width="18" height="18" className={css.bin} />
                 </Box>
-              </Stack>
+              </Flex>
             ))}
           </Flex>
           <Space h="sm" />

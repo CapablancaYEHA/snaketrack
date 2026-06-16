@@ -1,9 +1,21 @@
+.wrap {
+  & > div {
+    &:nth-child(2n) {
+      background-color: var(--mantine-color-dark-filled);
+    }
+  }
+}
+
 .circle {
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
+  margin-left: auto;
   width: 24px;
   height: 24px;
+  min-width: 24px;
+  min-height: 24px;
   border-radius: 50%;
   background-color: black;
   cursor: pointer;

@@ -99,6 +99,7 @@ export function ClutchList() {
               category: sigVisClutch.value,
             })}
             onRowClick={handleRowClick}
+            estimateSize={230}
           />
         </>
       )}

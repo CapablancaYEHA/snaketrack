@@ -4,7 +4,6 @@ import { Box, Button, CopyButton, Flex, Indicator, NumberFormatter, Paper, Remov
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
-import { StackTable } from "@/components/common/StackTable/StackTable";
 import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
@@ -16,6 +15,7 @@ import { useSupaUpd } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
 import { FamilyTree } from "../FamilyTree";
 import { disStats, snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
+import { StackSimpleTable } from "../StackTable/StackSimpleTable";
 import { EditStats } from "../forms/editStats/formEditStats";
 import { SnakeTags } from "../forms/snakeTags/formSnakeTags";
 import { ZoomImage } from "./ZoomImage";
@@ -169,7 +169,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
           <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} disabled={(isEmpty(data?.feeding) && isEmpty(data?.weight)) || isDisabled} size="compact-xs" ml="auto">
             Корректировать данные
           </Button>
-          <StackTable
+          <StackSimpleTable
             data={feedTable ?? []}
             columns={snakeFeedColumns}
             maxHeight={302}

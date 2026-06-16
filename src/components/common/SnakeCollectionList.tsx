@@ -104,7 +104,7 @@ export function SnakeCollectionList() {
               placeholder="Поиск по примечаниям, именам"
               onChange={(e: any) => setGlobalFilter(e.target.value!)}
               value={globalFilter}
-              rightSection={<CloseButton aria-label="Clear input" onClick={() => setGlobalFilter("")} style={{ display: globalFilter ? undefined : "none" }} />}
+              rightSection={<CloseButton aria-label="Clear input" onClick={() => setGlobalFilter("")} style={{ display: !isEmpty(globalFilter) ? undefined : "none" }} />}
               leftSection={<IconSwitch icon="search" />}
             />
           </Box>
@@ -125,6 +125,7 @@ export function SnakeCollectionList() {
             setColumnFilters={setFilt}
             globalFilter={globalFilter}
             setGlobalFilter={debSearch}
+            estimateSize={276}
             initSort={[
               {
                 id: "names",

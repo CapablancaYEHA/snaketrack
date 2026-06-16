@@ -60,13 +60,13 @@ export const SParents = ({ clutch, onPicClick, className }: { clutch: IResClutch
               mt={ind === 1 ? "auto" : 0}
               gap="sm"
               align="center"
-              style={{ cursor: "pointer", textDecoration: "underline" }}
+              style={{ cursor: "pointer" }}
               onClick={(e) => {
                 e.stopPropagation();
                 onPicClick(ids[ind], ind === 0 ? "Самка" : "Самец");
               }}
             >
-              <SexName sex={ind === 0 ? "female" : "male"} name={names[ind]} size="md" />
+              <SexName sex={ind === 0 ? "female" : "male"} name={names[ind]} size="md" isLink />
             </Flex>
           ))}
         </Stack>

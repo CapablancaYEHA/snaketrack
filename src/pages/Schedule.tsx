@@ -1,8 +1,8 @@
 import { useEffect, useState } from "preact/hooks";
-import { Indicator, LoadingOverlay, SegmentedControl, Stack, Text, Title } from "@mantine/core";
+import { Box, CloseButton, Indicator, LoadingOverlay, SegmentedControl, Stack, Text, TextInput, Title } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
 import { signal } from "@preact/signals";
-import { isEmpty } from "lodash-es";
+import { debounce, isEmpty } from "lodash-es";
 import { Reminder } from "@/components/common/Schedule/Reminder";
 import { makeScheduleColumns, snakesWithRems } from "@/components/common/Schedule/const";
 import { sigCurCat, sigCurDate, sigIsModOpen } from "@/components/common/Schedule/signals";
@@ -10,6 +10,7 @@ import { StackTable } from "@/components/common/StackTable/StackTable";
 import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { SkelShedule } from "@/components/common/skeletons";
 import { categToTitle } from "@/components/common/utils";
+import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { bpRemList } from "@/api/ballpythons/configs";
 import { bcRemList } from "@/api/boa-constrictors/configs";
 import { ECategories, IFeedReq, IRemResExt, IRemindersRes, IResSnakesList, categoryToBaseTable } from "@/api/common";
@@ -32,6 +33,9 @@ const columns = makeScheduleColumns({
 export const Schedule = () => {
   const userId = localStorage.getItem("USER");
   const [rowSelection, setRowSelection] = useState<any>({});
+  const [globalFilter, setGlobalFilter] = useState<any>([]);
+
+  const debSearch = debounce(setGlobalFilter, 400);
 
   const handle = (a) => {
     sigCurCat.value = a;
@@ -124,7 +128,17 @@ export const Schedule = () => {
                 ) : null;
               }}
             />
-
+            <Box style={{ alignSelf: "start" }} maw="100%" w="100%">
+              <TextInput
+                size="xs"
+                flex="1 1 auto"
+                placeholder="Поиск по примечаниям, именам"
+                onChange={(e: any) => setGlobalFilter(e.target.value!)}
+                value={globalFilter}
+                rightSection={<CloseButton aria-label="Clear input" onClick={() => setGlobalFilter("")} style={{ display: !isEmpty(globalFilter) ? undefined : "none" }} />}
+                leftSection={<IconSwitch icon="search" />}
+              />
+            </Box>
             <Text size="xs">Закрепленная колонка отображает дополнительное меню на ховер</Text>
             {sigCurCat.value ? (
               <StackTable
@@ -132,6 +146,9 @@ export const Schedule = () => {
                 columns={columns}
                 onRowSelect={setRowSelection}
                 rowSelection={rowSelection}
+                estimateSize={114}
+                globalFilter={globalFilter}
+                setGlobalFilter={debSearch}
                 initSort={[
                   {
                     id: "names",
