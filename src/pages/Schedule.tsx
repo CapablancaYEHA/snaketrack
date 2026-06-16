@@ -146,9 +146,10 @@ export const Schedule = () => {
                 columns={columns}
                 onRowSelect={setRowSelection}
                 rowSelection={rowSelection}
-                estimateSize={114}
+                estimateSize={140}
                 globalFilter={globalFilter}
                 setGlobalFilter={debSearch}
+                additionalHeight={684}
                 initSort={[
                   {
                     id: "names",

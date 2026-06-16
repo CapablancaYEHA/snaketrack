@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/compat";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Stack } from "@mantine/core";
 import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, RowSelectionState, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -9,7 +9,6 @@ import styles from "./styles.module.scss";
 import { bgDark, calcColumn, getCommonPinningStyles } from "./utils";
 
 interface IProp<T> {
-  maxHeight?: number;
   columns: ColumnDef<T, any>[];
   data: T[];
   setColumnFilters?: OnChangeFn<ColumnFiltersState>;
@@ -22,12 +21,13 @@ interface IProp<T> {
   onRowSelect?: OnChangeFn<RowSelectionState>;
   onLongPress?: (event: MouseEvent | TouchEvent) => void;
   estimateSize?: number;
+  additionalHeight?: number;
 }
 
-export const StackTable = <T extends object>({ estimateSize, maxHeight, columns, data, setColumnFilters, columnFilters, onRowClick, onLongPress, globalFilter, setGlobalFilter, initSort, rowSelection, onRowSelect }: IProp<T>) => {
+export const StackTable = <T extends object>({ estimateSize, columns, data, setColumnFilters, columnFilters, onRowClick, onLongPress, globalFilter, setGlobalFilter, initSort, rowSelection, onRowSelect, additionalHeight }: IProp<T>) => {
   const isMount = useRef(false);
   const parentRef = useRef<HTMLDivElement>(null);
-  const [tableHeight, setHeight] = useState(maxHeight);
+  const [tableHeight, setHeight] = useState(684);
   const [sorting, setSorting] = useState<SortingState>(initSort ?? []);
   const cols: ColumnDef<T>[] = useMemo<ColumnDef<T, unknown>[]>(() => columns, []);
 
@@ -58,12 +58,12 @@ export const StackTable = <T extends object>({ estimateSize, maxHeight, columns,
   });
 
   useLayoutEffect(() => {
-    if (window && parentRef && !maxHeight) {
+    if (window && parentRef) {
       const topOffset = parentRef?.current?.getBoundingClientRect().top ?? 0;
       // FIXME можно еще делать вычитание нижнего паддинга от класса .box-main, но он динамический
-      setHeight(+(window.innerHeight - topOffset - footer_height).toFixed());
+      setHeight(+(window.innerHeight - topOffset - footer_height - (additionalHeight ?? 0)).toFixed());
     }
-  }, [maxHeight]);
+  }, [additionalHeight]);
 
   useEffect(() => {
     isMount.current = true;
@@ -81,7 +81,7 @@ export const StackTable = <T extends object>({ estimateSize, maxHeight, columns,
   const headGroups = table.getHeaderGroups();
 
   return (
-    <div className={styles.cont} style={!isEmpty ? { height: `${tableHeight}px` } : {}} ref={parentRef}>
+    <div className={styles.cont} style={{ height: `${tableHeight}px` }} ref={parentRef}>
       <table className={styles.table}>
         {headGroups[0]?.headers.length <= 1 ? null : (
           <thead style={{ background: "#1c1c1c" }}>

@@ -1,7 +1,7 @@
 export const versionHistory = [
   {
     id: 37,
-    ver: "1.10.63",
+    ver: "1.10.64",
     date: "06-16-2026",
     list: ["подъехала виртуализация таблиц"],
   },
