@@ -1,10 +1,12 @@
 import { useLocation } from "preact-iso";
+import { useState } from "preact/hooks";
 import { supabase } from "@/lib/client_supabase";
 import { Button, Space, Stack, TextInput } from "@mantine/core";
 import { useForm } from "react-hook-form";
 import { notif } from "@/utils/notif";
 
 export const FormRegisterEmailOtp = () => {
+  const [isLoader, setLoader] = useState(false);
   const location = useLocation();
   const {
     register,
@@ -41,7 +43,12 @@ export const FormRegisterEmailOtp = () => {
   }
 
   const onSubmit = async (sbmtData) => {
-    signOtpWithCheck({ email: sbmtData.userMail });
+    try {
+      setLoader(true);
+      await signOtpWithCheck({ email: sbmtData.userMail });
+    } finally {
+      setLoader(false);
+    }
   };
 
   return (
@@ -65,7 +72,7 @@ export const FormRegisterEmailOtp = () => {
         </a>
       </p>
       <Space h="xl" />
-      <Button variant="light" type="submit" fullWidth={false} style={{ alignSelf: "center", width: "min-content" }}>
+      <Button variant="light" type="submit" fullWidth={false} style={{ alignSelf: "center", width: "min-content" }} loading={isLoader} disabled={isLoader}>
         Создать аккаунт
       </Button>
     </Stack>

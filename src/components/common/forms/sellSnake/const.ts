@@ -99,7 +99,7 @@ export type ISellEmptyScheme = yup.InferType<typeof schemaEmpty>;
 
 export interface IReqCreateSnakeForAdv extends Omit<IReqCreateSnake, "weight" | "origin" | "price" | "notes"> {}
 
-export const createSnakeFromEmpty = (a): IReqCreateSnakeForAdv => {
+export const prepareEmpty = (a): IReqCreateSnakeForAdv => {
   let genes = isEmpty(a.genes) ? [{ label: "Normal", gene: "other" }] : a.genes;
 
   return {

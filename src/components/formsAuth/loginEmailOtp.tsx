@@ -5,7 +5,6 @@ import { Button, Flex, PinInput, Space, Stack, Text, TextInput } from "@mantine/
 import { isEmpty } from "lodash-es";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { notif } from "@/utils/notif";
-import { Btn } from "../navs/btn/Btn";
 
 export const FormLoginEmailOtp = () => {
   const { query, route } = useLocation();
@@ -97,9 +96,9 @@ export const FormLoginEmailOtp = () => {
           }}
         />
         <Space h="xl" />
-        <Btn fullWidth={false} style={{ alignSelf: "center", width: "min-content" }} type="submit" disabled={wToken?.length !== 6} ref={btnRef}>
+        <Button size="xs" fullWidth={false} style={{ alignSelf: "center", width: "min-content" }} type="submit" disabled={wToken?.length !== 6} ref={btnRef}>
           Войти
-        </Btn>
+        </Button>
       </Stack>
       <Space h="xl" />
       <Text size="md" onClick={() => setShow(true)} style={{ cursor: "pointer", textDecoration: "underline" }}>

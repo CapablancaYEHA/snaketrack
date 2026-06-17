@@ -124,15 +124,21 @@ export const calcProjGenes = (arr?: IGenesComp[]) => {
   const pre = excludeNormalAndInvalid.map((a) => {
     if (a.gene === "inc-dom") {
       if (a.label.startsWith("Super")) {
-        const [r, ..._] = a.label.match(/(Super)?\w+$/)!;
-        return { gene: "inc-dom", label: r, isPos: a.isPos };
+        const cond = a.label.trim().match(/(?<=^Super\s+)([\w\s]+)$/);
+        if (cond) {
+          const [r, ..._] = cond;
+          return { gene: "inc-dom", label: r, isPos: a.isPos };
+        }
       }
       return { gene: "inc-dom", label: a.label, isPos: a.isPos };
     }
     if (a.gene === "rec") {
-      const [, , , r, ..._] = a.label.match(/^((\d+)% Het |Het )?([\w\s()]+)$/)!;
-
-      return { gene: "rec", label: r, isPos: a.isPos };
+      const cond = a.label.match(/^((\d+)% Het |Het )?([\w\s()/]+)$/);
+      if (cond) {
+        const [, , , r, ..._] = cond;
+        return { gene: "rec", label: r, isPos: a.isPos };
+      }
+      return a;
     }
     return a;
   });

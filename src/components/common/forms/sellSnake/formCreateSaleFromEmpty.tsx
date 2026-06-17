@@ -18,7 +18,7 @@ import { dateToSupabaseTime } from "@/utils/time";
 import { uplErr } from "../const";
 import { sexHardcode } from "../snakeBreed/common";
 import styles from "../styles.module.scss";
-import { IReqCreateSnakeForAdv, ISellEmptyScheme, createSnakeFromEmpty, schemaEmpty } from "./const";
+import { IReqCreateSnakeForAdv, ISellEmptyScheme, prepareEmpty, schemaEmpty } from "./const";
 
 export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
   const location = useLocation();
@@ -42,6 +42,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
   const [imgs, setImgs] = useState<string[] | undefined>(undefined);
   const resetRef = useRef<() => void>(null);
   const [val, setVal] = useState("");
+  const [isDis, seIsDis] = useState(false);
   const { mutate: search, data, isPending } = useDadata();
   const { mutate: createSnake, isPending: isMutSnakePend } = useSupaCreate<IReqCreateSnakeForAdv>(categoryToBaseTable[category]);
   const { mutate: createAdv, isPending: isMutAdvPend } = useSupaCreate<ICreateSaleReq>(ESupabase.MRKT, { qk: [ESupabase.MRKT_V], e: false });
@@ -49,6 +50,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
   const debSearch = debounce(setVal, 400);
 
   const onSub = async (sbm: ISellEmptyScheme) => {
+    seIsDis(true);
     let pics: string[] | null = null;
 
     try {
@@ -60,7 +62,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
     }
 
     createSnake(
-      { ...createSnakeFromEmpty(sbm), picture: pics?.flat()?.[0] },
+      { ...prepareEmpty(sbm), picture: pics?.flat()?.[0] },
       {
         onSuccess: (res) => {
           createAdv(
@@ -88,11 +90,17 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
               onError: (err) => {
                 notif({ c: "red", m: err.message });
               },
+              onSettled: () => {
+                seIsDis(false);
+              },
             },
           );
         },
         onError: (err) => {
           notif({ c: "red", m: err.message });
+        },
+        onSettled: () => {
+          seIsDis(false);
         },
       },
     );
@@ -286,7 +294,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
         />
       </Box>
       <Flex align="flex-start" maw="100%" gap="xl" className={styles.w70}>
-        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isMutSnakePend || isMutAdvPend} disabled={isMutSnakePend || isMutAdvPend}>
+        <Btn ml="auto" style={{ alignSelf: "flex-end" }} onClick={handleSubmit(onSub)} loading={isDis || isMutSnakePend || isMutAdvPend} disabled={isDis || isMutSnakePend || isMutAdvPend}>
           Создать
         </Btn>
       </Flex>

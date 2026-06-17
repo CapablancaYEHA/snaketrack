@@ -146,7 +146,6 @@ export const FinalJuveniles = ({ category, list, onPicClick }) => {
           juvs?.map((juv) => (
             <Stack
               gap="xs"
-              flex="1 1 auto"
               key={juv.id}
               style={{ cursor: "pointer" }}
               onClick={(e) => {
@@ -223,7 +222,7 @@ export const MiniInfo = ({ opened, close, snakeId, sex, category, withTitle = tr
   const lastWeight = data?.weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[data?.weight.length - 1];
 
   return (
-    <Modal centered opened={opened} onClose={close} size="xs" title={withTitle && sex ? <Title order={4}>{sex} в кладке</Title> : undefined}>
+    <Modal keepMounted={false} centered opened={opened} onClose={close} size="xs" title={withTitle && sex ? <Title order={4}>{sex} в кладке</Title> : undefined}>
       <Stack gap="md" mih={260}>
         {isPending ? (
           <Loader color="dark.1" size="lg" style={{ alignSelf: "center" }} />
@@ -306,7 +305,6 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
         />
         <Box maw="100%" style={{ alignSelf: "end" }}>
           {withMargin ? <Space h="xs" /> : null}
-
           <Button variant="default" onClick={() => (sigBabyGenesId.value = ind)} size="sm" w="100%" disabled={selectedFatherId == null} rightSection={isDefaultGenetics ? undefined : <IconSwitch icon="check" style={{ stroke: "lime", opacity: 0.6 }} />}>
             Генетика
           </Button>
@@ -316,31 +314,42 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
             {errors?.future_animals?.[ind]?.genes?.message || ""}
           </Text>
         </Box>
-        <Modal keepMounted={false} centered opened={sigBabyGenesId.value === ind} onClose={() => (sigBabyGenesId.value = undefined)} size="xs" title={<Title order={5}>Выбор и корректировка генов</Title>}>
-          <FormProvider {...innerInstance}>
-            <BabyMorphSelect oddsData={oddsData} isOddPending={isOddPending} isError={isOddsErr} size={!isMwTablet ? "sm" : "xs"} category={category} ind={ind} />
-          </FormProvider>
-        </Modal>
       </>
     );
   };
 
   return !isEmpty(futureSnakes) && isShow ? (
-    isMinMd ? (
-      futureSnakes.map((f, ind) => (
-        <SimpleGrid cols={5} spacing="xs" verticalSpacing="xs" key={f.id}>
-          {renderItems(ind, ind === 0, "sm")}
-        </SimpleGrid>
-      ))
-    ) : (
-      <Grid gutter="sm" align="baseline">
-        {futureSnakes.map((f, ind) => (
-          <Grid.Col key={f.id} span={isMinSm ? 3 : 4}>
-            <Box>{renderItems(ind, true, "xs", true)}</Box>
-          </Grid.Col>
-        ))}
-      </Grid>
-    )
+    <>
+      {isMinMd ? (
+        futureSnakes.map((f, ind) => (
+          <SimpleGrid cols={5} spacing="xs" verticalSpacing="xs" key={f.id}>
+            {renderItems(ind, ind === 0, "sm")}
+          </SimpleGrid>
+        ))
+      ) : (
+        <Grid gutter="sm" align="baseline">
+          {futureSnakes.map((f, ind) => (
+            <Grid.Col key={f.id} span={isMinSm ? 3 : 4}>
+              <Box>{renderItems(ind, true, "xs", true)}</Box>
+            </Grid.Col>
+          ))}
+        </Grid>
+      )}
+      <Modal
+        styles={{
+          content: { overflow: "visible" },
+        }}
+        centered
+        opened={sigBabyGenesId.value != null}
+        onClose={() => (sigBabyGenesId.value = undefined)}
+        size="xs"
+        title={<Title order={5}>Выбор и корректировка генов</Title>}
+      >
+        <FormProvider {...innerInstance}>
+          <BabyMorphSelect oddsData={oddsData} isOddPending={isOddPending} isError={isOddsErr} size={!isMwTablet ? "sm" : "xs"} category={category} ind={sigBabyGenesId.value} />
+        </FormProvider>
+      </Modal>
+    </>
   ) : null;
 };
 
@@ -391,7 +400,7 @@ const BabyMorphSelect = ({ oddsData, isOddPending, size, category, ind, isError 
             name={`future_animals.${ind}.genes`}
             control={innerInstance.control}
             render={({ field: { onChange, value } }) => {
-              return <GenesSelect view={EGenesView.STD} description={null} onChange={onChange} init={value as any} category={category} size="sm" />;
+              return <GenesSelect view={EGenesView.STD} description={null} onChange={onChange} init={value as any} category={category} size="sm" keepMounted={false} />;
             }}
           />
         </Fieldset>

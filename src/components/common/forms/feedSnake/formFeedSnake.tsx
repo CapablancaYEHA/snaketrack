@@ -1,7 +1,7 @@
 import { FC } from "preact/compat";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Accordion, Box, Checkbox, Flex, Modal, NumberInput, Popover, Space, Stack, Text, TextInput, Title } from "@mantine/core";
-import { DateInput } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
 import { UseMutateFunction } from "@tanstack/react-query";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -117,7 +117,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
-              <DateInput
+              <DatePickerInput
                 label="Дата"
                 required
                 value={value}
