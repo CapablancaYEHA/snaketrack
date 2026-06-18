@@ -58,6 +58,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
       pics = res.map((dt: any) => calcImgUrl(dt.data?.fullPath!));
     } catch (e) {
       uplErr(e);
+      seIsDis(false);
       return;
     }
 

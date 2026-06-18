@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Loader, LoadingOverlay, Space, Stack, Switch, Text, Title } from "@mantine/core";
+import { Box, Button, Flex, Loader, LoadingOverlay, Popover, Stack, Switch, Text, Title } from "@mantine/core";
 import { debounce, isEmpty } from "lodash-es";
 import { FormAddVivarium } from "@/components/common/forms/Vivarium/addVivarium";
 import { StockVivarium } from "@/components/common/forms/Vivarium/stockVivarium";
@@ -51,44 +51,47 @@ export function Vivarium() {
           <Switch color="teal" label="Авто-апдейт" ml="auto" onChange={(e) => toggle(e.currentTarget.checked)} checked={profile?.is_vivarium_on} disabled={isEmpty(viv) || isProfPend || isRefetching} />
         )}
       </Flex>
-      {!isEmpty(viv) ? (
-        <Flex maw="100%" w="100%" gap="sm">
-          <Text size="sm">Можно изменить диапазоны вивария</Text>
-          <Button component="a" href="/vivarium/edit" size="compact-xs" variant="default">
-            Изменить
-          </Button>
-        </Flex>
-      ) : null}
-
-      <Text size="sm">
-        Позволяет задавать диапазоны граммовки КО (🐀Крысы и 🐁Мыши) и отслеживать количество запасов для них.
-        <br />
-        Если тоггл включен — указание типа и массы КО при кормлении становится обязательным, после каждого кормления данные автоматически корректируются.
-        <br />В ином случае — контроль уменьшения запасов исключительно на вас.
-      </Text>
-      {isEmpty(viv) || isError ? (
+      {isFetching ? (
+        <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />
+      ) : (
         <>
-          <Title component="span" order={5} c="yellow.6">
-            Первоначальная настройка вивария
-          </Title>
-          <FormAddVivarium />
-        </>
-      ) : null}
-      {!isEmpty(viv?.rat) ? (
-        <>
-          <Space h="lg" />
-          <StockVivarium entity={viv.rat} feeder="rat" id={viv.id} />
-        </>
-      ) : null}
+          <Popover width={360} position="bottom" withArrow shadow="md">
+            <Popover.Target>
+              <Button size="compact-xs" variant="default">
+                Подробнее
+              </Button>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Text size="sm">
+                Позволяет задавать диапазоны граммовки КО (🐀Крысы и 🐁Мыши) и отслеживать количество запасов для них.
+                <br />
+                Если тоггл включен — указание типа и массы КО при кормлении становится обязательным, после каждого кормления данные автоматически корректируются.
+                <br />В ином случае — контроль уменьшения запасов исключительно на вас.
+              </Text>
+            </Popover.Dropdown>
+          </Popover>
+          {!isEmpty(viv) ? (
+            <Flex maw="100%" w="100%" gap="sm">
+              <Text size="sm">Можно изменить диапазоны вивария</Text>
+              <Button component="a" href="/vivarium/edit" size="compact-xs" variant="filled">
+                Изменить
+              </Button>
+            </Flex>
+          ) : null}
 
-      {!isEmpty(viv?.mouse) ? (
-        <>
-          <Space h="lg" />
-          <StockVivarium entity={viv.mouse} feeder="mouse" id={viv.id} />
-        </>
-      ) : null}
+          {isEmpty(viv) || isError ? (
+            <>
+              <Title component="span" order={5} c="yellow.6">
+                Первоначальная настройка вивария
+              </Title>
+              <FormAddVivarium />
+            </>
+          ) : null}
+          {!isEmpty(viv?.rat) ? <StockVivarium entity={viv.rat} feeder="rat" id={viv.id} /> : null}
 
-      {isFetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+          {!isEmpty(viv?.mouse) ? <StockVivarium entity={viv.mouse} feeder="mouse" id={viv.id} /> : null}
+        </>
+      )}
     </Stack>
   );
 }

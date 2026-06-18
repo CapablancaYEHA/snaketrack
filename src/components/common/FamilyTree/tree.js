@@ -1,249 +1,104 @@
+// теперь добавим чтобы простой_сын был супругом своей же матери
+// и напишем им какого-то ребенка - и поехало - дело не только в неверном распложении нод относительно других, но и в неверных линиях связи между ними
+// ну то есть мне надо рисовать какую-то базу базовую с самых азов, с инцестом, ноды в дереве не должны повторяться,
+// в рамках одной ноды должны быть указаны все супруги, все дети, все родители
+// после написания базового функционала с инцестом, нужно будет подробно разбирать rpc функцию на предмет достаточного количества данных
 export const tree_parentsonly = [
   {
-    id: "2aa84672-bb5a-466e-becf-c92d988f4204",
-    genes: [
+    id: "бывшая_жена",
+    gender: "female",
+    spouses: [
       {
-        id: 2,
-        gene: "rec",
-        alias: "Anerythristic",
-        label: "Anery",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-      {
-        id: 1,
-        gene: "rec",
-        alias: null,
-        label: "Het Amel",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-      {
-        id: 18,
-        gene: "rec",
-        alias: null,
-        label: "Stripe",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
+        id: "глава_семьи_мужик",
       },
     ],
+    siblings: [],
+    parents: [],
+    children: [],
+  },
+  {
+    id: "глава_семьи_мужик",
+    gender: "male",
+    spouses: [
+      {
+        id: "бывшая_жена",
+      },
+      {
+        id: "текущая_жена",
+      },
+    ],
+    siblings: [],
+    parents: [],
+    children: [
+      {
+        id: "простой_сын",
+      },
+    ],
+  },
+  {
+    id: "простой_сын",
+    gender: "male",
+    spouses: [
+      {
+        id: "текущая_жена",
+      },
+    ],
+    siblings: [],
+    parents: [
+      {
+        id: "глава_семьи_мужик",
+      },
+      {
+        id: "текущая_жена",
+      },
+    ],
+    children: [{ id: "инцестный" }],
+  },
+  {
+    id: "текущая_жена",
     gender: "female",
     parents: [],
-    picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/NThU_Yg_",
+    siblings: [],
     spouses: [
       {
-        id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
+        id: "глава_семьи_мужик",
       },
     ],
-    children: [],
-    owner_id: "bddd37cf-94b1-4a5d-b763-5cd008c7d604",
-    siblings: [],
-    snake_name: "Самка А",
+    children: [
+      {
+        id: "простой_сын",
+      },
+    ],
   },
   {
-    id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
-    genes: [
-      {
-        id: 1,
-        gene: "rec",
-        alias: null,
-        label: "Amel",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-    ],
-    gender: "male",
+    id: "текущая_жена",
+    gender: "female",
     parents: [],
-    picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/Yc8TI8NX",
+    siblings: [],
     spouses: [
       {
-        id: "2aa84672-bb5a-466e-becf-c92d988f4204",
-      },
-      {
-        id: "b6aff8ce-567f-4821-b939-a1f1e37656e9",
+        id: "простой_сын",
       },
     ],
-    children: [],
-    owner_id: "bddd37cf-94b1-4a5d-b763-5cd008c7d604",
-    siblings: [],
-    snake_name: "Дибил",
+    children: [
+      {
+        id: "инцестный",
+      },
+    ],
   },
   {
-    id: "7dd7cbe3-816e-4f44-bd0d-dfede4ead9f6",
-    genes: [
-      {
-        id: 1,
-        gene: "rec",
-        alias: null,
-        label: "Amel",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-      {
-        id: 2,
-        gene: "rec",
-        alias: "Anerythristic",
-        label: "50% Het Anery",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-      {
-        id: 18,
-        gene: "rec",
-        alias: null,
-        label: "50% Het Stripe",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-      {
-        id: 14,
-        gene: "rec",
-        alias: null,
-        label: "50% Het Motley",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-    ],
+    id: "инцестный",
     gender: "female",
     parents: [
       {
-        id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
+        id: "текущая_жена",
       },
       {
-        id: "b6aff8ce-567f-4821-b939-a1f1e37656e9",
+        id: "простой_сын",
       },
     ],
-    picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/5RBK244j",
+    siblings: [],
     spouses: [],
     children: [],
-    owner_id: "bddd37cf-94b1-4a5d-b763-5cd008c7d604",
-    siblings: [
-      {
-        id: "0b04d5e2-f0c0-4bb3-ba1e-edcca7719c5c",
-        sex: "male",
-        picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/AOPOgz7w",
-        snake_name: "Добрыня A2-2022",
-        shadow_date_hatch: null,
-      },
-      {
-        id: "24a67ee7-fccd-4bbb-80c2-18ae23514cc3",
-        sex: "female",
-        picture: null,
-        snake_name: "самка Ф3",
-        shadow_date_hatch: null,
-      },
-      {
-        id: "6b92ba37-3f9c-41d5-9089-237013d1d936",
-        sex: "female",
-        picture: null,
-        snake_name: "Хурма",
-        shadow_date_hatch: null,
-      },
-      {
-        id: "b6aff8ce-567f-4821-b939-a1f1e37656e9",
-        sex: "female",
-        picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/wT7elkux",
-        snake_name: "Самка Е",
-        shadow_date_hatch: null,
-      },
-    ],
-    snake_name: "Амель 2025",
-  },
-  {
-    id: "b6aff8ce-567f-4821-b939-a1f1e37656e9",
-    genes: [
-      {
-        id: 34,
-        gene: "other",
-        alias: null,
-        label: "Normal",
-        hasHet: false,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-      {
-        id: 2,
-        gene: "rec",
-        alias: "Anerythristic",
-        label: "Het Anery",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-      {
-        id: 1,
-        gene: "rec",
-        alias: null,
-        label: "Het Amel",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-      {
-        id: 18,
-        gene: "rec",
-        alias: null,
-        label: "Het Stripe",
-        hasHet: true,
-        hasSuper: false,
-        is_beauty_only: null,
-      },
-    ],
-    gender: "female",
-    parents: [
-      {
-        id: "2aa84672-bb5a-466e-becf-c92d988f4204",
-      },
-      {
-        id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
-      },
-    ],
-    picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/wT7elkux",
-    spouses: [
-      {
-        id: "3104e289-0536-4f6b-829c-fd91a8b9f19a",
-      },
-    ],
-    children: [],
-    owner_id: "bddd37cf-94b1-4a5d-b763-5cd008c7d604",
-    siblings: [
-      {
-        id: "0b04d5e2-f0c0-4bb3-ba1e-edcca7719c5c",
-        sex: "male",
-        picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/AOPOgz7w",
-        snake_name: "Добрыня A2-2022",
-        shadow_date_hatch: null,
-      },
-      {
-        id: "24a67ee7-fccd-4bbb-80c2-18ae23514cc3",
-        sex: "female",
-        picture: null,
-        snake_name: "самка Ф3",
-        shadow_date_hatch: null,
-      },
-      {
-        id: "6b92ba37-3f9c-41d5-9089-237013d1d936",
-        sex: "female",
-        picture: null,
-        snake_name: "Хурма",
-        shadow_date_hatch: null,
-      },
-      {
-        id: "7dd7cbe3-816e-4f44-bd0d-dfede4ead9f6",
-        sex: "female",
-        picture: "https://api.hissstory.site/storage/v1/object/public/cs-pics/bddd37cf-94b1-4a5d-b763-5cd008c7d604/5RBK244j",
-        snake_name: "Амель 2025",
-        shadow_date_hatch: null,
-      },
-    ],
-    snake_name: "Самка Е",
   },
 ];
