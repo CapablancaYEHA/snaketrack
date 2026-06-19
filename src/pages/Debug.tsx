@@ -1,5 +1,20 @@
 import { LoadingOverlay, Stack, Text } from "@mantine/core";
+import md5 from "crypto-js/md5";
+import { IGenesComp } from "@/api/common";
 import { useSupaGet } from "@/api/hooks";
+
+const prep = (g: IGenesComp[]) => {
+  return g
+    ?.map((a) => {
+      if (a.isPos) return `Pos ${a.label}`;
+      return a.label;
+    })
+    .sort()
+    .join(" ")
+    .trim();
+};
+
+export const calculateHash = (v) => md5(prep(v)).toString();
 
 export function Debug() {
   const { data, isFetching, isError } = useSupaGet<any>({ t: "corn_snakes" as any, f: (b) => b.contains("genes", '[{"label":"Amel"}]'), id: "Hypo" }, true);

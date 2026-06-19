@@ -1,7 +1,7 @@
 import { render } from "preact";
 import { signal } from "@preact/signals";
 import { LocationProvider, Route, Router } from "preact-iso";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { NuqsAdapter } from 'nuqs/adapters/react';
 import { Box, LoadingOverlay, MantineProvider } from "@mantine/core";
@@ -33,22 +33,34 @@ const isPending = signal(true);
 
 export function App() {
   const [session, setSession] = useState<any>(null);
+  const isSignedRef = useRef<any>(false);
 
   useNotifCookies();
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session: a } }) => {
-      setSession(a);
-      if (a?.user?.id) localStorage.setItem("USER", a.user.id);
-      isPending.value = false;
+		setSession(a);
+		if (a?.user?.id) localStorage.setItem("USER", a.user.id);
+		isPending.value = false;
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((ev, b) => {
-      setSession(b);
-      if (b?.user?.id) {
-        localStorage.setItem("USER", b.user.id);
-      }
+
+	if (ev === 'SIGNED_IN') {
+		if (!isSignedRef.current) {
+			setSession(b);
+			if (b?.user?.id) localStorage.setItem("USER", b.user.id);
+			isPending.value = false;
+			isSignedRef.current = true;
+		}
+    }
+	if (ev === 'USER_UPDATED') {
+		setSession(b);
+	}
+	if (ev === 'SIGNED_OUT') {
+		setSession(null);
+	}
     });
 
     return () => {
@@ -56,6 +68,7 @@ export function App() {
       localStorage.removeItem("USER");
     };
   }, []);
+
 
   UseOneSignal(session?.user?.id);
 
