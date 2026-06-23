@@ -51,8 +51,9 @@ export function useCalcMmOdds(categ: ECategories) {
   });
 }
 
+// FIXME удалить старую версию "rpc_snake_family_tree"
 const httpGetTree = async (id, category) => {
-  const { data, error } = await supabase.rpc("rpc_snake_family_tree", {
+  const { data, error } = await supabase.rpc("rpc_snake_family_tree_v2", {
     target_id: id,
     category,
   });
@@ -63,7 +64,7 @@ const httpGetTree = async (id, category) => {
 };
 
 export function useFamilyTree(id: string, category, isEnabled = true) {
-  return useQuery<any, ISupabaseErr, IFamilyTreeRes[]>({
+  return useQuery<any, ISupabaseErr, IFamilyTreeRes>({
     queryKey: [EQuKeys.FAM_TREE, id, category],
     queryFn: () => httpGetTree(id, category),
     enabled: isEnabled,

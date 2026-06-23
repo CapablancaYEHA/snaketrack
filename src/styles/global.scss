@@ -137,3 +137,32 @@ a {
     background-color: white;
   }
 }
+
+.react-flow__attribution {
+  display: none;
+}
+
+.react-flow__node-pseudo {
+  &:before,
+  &:after {
+    margin: 0;
+    padding: 0;
+    border: 0 solid !important;
+    border-color: transparent;
+  }
+
+  & > * {
+    &:before,
+    &:after {
+      margin: 0;
+      padding: 0;
+      border: 0 solid !important;
+      border-color: transparent;
+    }
+  }
+
+  & .react-flow__handle {
+    min-width: 0px !important;
+    min-height: 0px !important;
+  }
+}

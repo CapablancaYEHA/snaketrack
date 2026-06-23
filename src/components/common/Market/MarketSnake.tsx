@@ -7,7 +7,7 @@ import { categToTitle } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IMarketRes } from "@/api/common";
 import { dateTimeDiff, getAge, getDateCustom, getDateShort } from "@/utils/time";
-import { FamilyTree } from "../FamilyTree";
+import { FamilyTree } from "../MyFlowTree/FamilyTree";
 import styles from "../forms/styles.module.scss";
 import { snakeStatusToColor, snakeStatusToLabel } from "./utils";
 

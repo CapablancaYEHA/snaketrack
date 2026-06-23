@@ -3,7 +3,7 @@
   "type": "module",
   "name": "snaketrack",
   "description": "Snaketrack PWA",
-  "version": "1.10.67",
+  "version": "1.10.7",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
@@ -21,6 +21,7 @@
     "@tanstack/react-query": "^5.67.3",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.14.3",
+    "@xyflow/react": "^12.11.0",
     "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.8",
     "chartjs-adapter-dayjs-4": "^1.0.4",
@@ -29,6 +30,7 @@
     "countup.js": "^2.10.0",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.13",
+    "elkjs": "^0.11.1",
     "glightbox": "^3.3.1",
     "lodash-es": "^4.17.21",
     "nanoid": "^5.1.2",
@@ -39,7 +41,6 @@
     "react-chartjs-2": "^5.3.0",
     "react-hook-form": "^7.54.2",
     "react-onesignal": "^3.0.1",
-    "react-zoom-pan-pinch": "^3.7.0",
     "uuid": "^11.1.0",
     "yup": "^1.6.1"
   },

@@ -268,17 +268,23 @@ export type IDadataSearch = {
   value: string;
 };
 
-export interface IFamilyTreeRes {
-  children: { id: string }[];
-  gender: "female" | "male";
-  genes: IGenesComp[];
+interface ITreeSnake {
   id: string;
+  genes: IGenesComp[];
   owner_id: string;
-  parents: { id: string }[];
   picture: string;
-  siblings: { id: string }[];
+  sex: string;
   snake_name: string;
-  spouses: { id: string }[];
+  from_clutch?: string | null;
+}
+interface ITreeCouple {
+  id: string;
+  partners: string[];
+  children: string[];
+}
+export interface IFamilyTreeRes {
+  persons: ITreeSnake[];
+  couples: ITreeCouple[];
 }
 
 export interface IVkMarketItem {

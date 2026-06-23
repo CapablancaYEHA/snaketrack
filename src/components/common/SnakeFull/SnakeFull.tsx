@@ -13,8 +13,8 @@ import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { useSupaUpd } from "@/api/hooks";
 import { getAge, getDate } from "@/utils/time";
-import { FamilyTree } from "../FamilyTree";
 import { disStats, snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
+import { FamilyTree } from "../MyFlowTree/FamilyTree";
 import { StackSimpleTable } from "../StackTable/StackSimpleTable";
 import { EditStats } from "../forms/editStats/formEditStats";
 import { SnakeTags } from "../forms/snakeTags/formSnakeTags";
@@ -46,7 +46,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
   const isDisabled = disStats.includes(data.status ?? "");
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="md" component="section">
+    <Stack align="flex-start" justify="flex-start" gap="md" component="section" style={{ overflow: "hidden" }}>
       <Flex wrap="nowrap" align="flex-start" maw="100%" w="100%" gap="md">
         <Stack gap="0px">
           <Title component="span" order={4} c="yellow.6">

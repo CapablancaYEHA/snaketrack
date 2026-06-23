@@ -15,6 +15,7 @@ import { EggIcon } from "./Egg";
 import { FemaleIcon } from "./Female";
 import { GlobalIcon } from "./Global";
 import { ImgIcon } from "./Img";
+import { InfoIcon } from "./Info";
 import { KebabIcon } from "./Kebab";
 import { MaleIcon } from "./Male";
 import { MarketIcon } from "./Market";
@@ -55,6 +56,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <AdjustIcon width={width} height={height} />;
     case "dashboard":
       return <DashIcon width={width} height={height} />;
+    case "info":
+      return <InfoIcon width={width} height={height} />;
     case "snakes":
       return <PackIcon width={width} height={height} />;
     case "img":

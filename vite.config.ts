@@ -34,7 +34,7 @@ export default defineConfig({
     //   filename: "stats.html", // Output file name
     //   gzipSize: true, // Show sizes after gzip compression
     //   brotliSize: true, // Show sizes after brotli compression
-    //   template: "treemap", // Can be 'treemap', 'list', 'sunburst', 'network', or 'raw-data' (JSON)
+    //   template: "sunburst", // Can be 'treemap', 'list', 'sunburst', 'network', or 'raw-data' (JSON)
     // }),
   ],
   server: {
@@ -52,6 +52,7 @@ export default defineConfig({
           }
         },
       },
+      external: ["web-worker"],
     },
   },
 });

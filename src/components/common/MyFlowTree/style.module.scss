@@ -1,7 +1,8 @@
 .root {
-  position: absolute;
+  //   position: absolute;
   display: flex;
-  padding: 10px;
+  height: 100%;
+  //   padding: 10px;
 }
 
 .inner {
@@ -17,41 +18,12 @@
   backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
 }
-
-// .male {
-//   background: #74deff;
-// }
-
-// .female {
-//   background: #ff7979;
-// }
-
 .isTarget {
-  //   border: 3px solid rgba(0, 0, 0, 0.4);
   box-shadow: #9382ff 0px 0px 4px 4px !important;
 }
 
 .isHover {
   border-color: rgba(0, 0, 0, 0.8);
-}
-
-.sub {
-  position: absolute;
-  top: 6px;
-  right: 14px;
-  width: 14px;
-  height: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 4px 0;
-  background: #fff;
-}
-
-.sub.male {
-  background: #ff7979;
-}
-
-.sub.female {
-  background: #74deff;
 }
 
 .overflowed {

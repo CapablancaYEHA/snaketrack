@@ -8,7 +8,7 @@ import { ECategories, IResSnakesList, IUpdReq, categoryToBaseTable } from "@/api
 import { snakeListByGender } from "@/api/common_configs";
 import { invalidateSnakeTree, useSupaGet, useSupaUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
-import { AutocompAsync } from "../../FamilyTree/AutocompAsync";
+import { AutocompAsync } from "./AutocompAsync";
 import { IParentsSchema, defVals, parentsSchema } from "./const";
 
 export const FormAddParents = ({ category, snakeId, onClose, currentFather, currentMother }) => {
