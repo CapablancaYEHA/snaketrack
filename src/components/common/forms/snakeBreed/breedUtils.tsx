@@ -22,11 +22,17 @@ export const daysAfterShed = {
 };
 export const daysIncubation = {
   [ECategories.BP]: 60,
-  [ECategories.BC]: 123,
+  [ECategories.BC]: 115,
   [ECategories.CS]: 65,
   [ECategories.MV]: 54,
 };
-export const daysCriticalThr = 10;
+
+export const daysCriticalThr = {
+  [ECategories.BP]: 10,
+  [ECategories.BC]: 20,
+  [ECategories.CS]: 10,
+  [ECategories.MV]: 10,
+};
 
 const columnHelper = createColumnHelper<IResBreedingList>();
 

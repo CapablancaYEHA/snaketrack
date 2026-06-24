@@ -79,7 +79,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
   const isLaid = clutch.status === EClSt.LA;
   const isHatch = clutch.status === EClSt.HA;
   const isClosed = clutch.status === EClSt.CL;
-  const isCanHatch = dateTimeDiff(dateAddDays(dateLaid, daysIncubation[category]), "days") <= daysCriticalThr;
+  const isCanHatch = dateTimeDiff(dateAddDays(dateLaid, daysIncubation[category]), "days") <= daysCriticalThr[category];
 
   const onSub = (sbm) => {
     update(prepForClutchUpdate(sbm, dirtyFields, location.query.id), {

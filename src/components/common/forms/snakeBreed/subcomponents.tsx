@@ -467,7 +467,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
         <Button type="submit" onClick={innerInstance.handleSubmit(onSub)} disabled={!innerInstance.formState.isDirty || isClutchMade} size="xs" ml="auto">
           {btnText}
         </Button>
-        {left <= daysCriticalThr && !isClutchMade ? (
+        {left <= daysCriticalThr[category] && !isClutchMade ? (
           <Button type="submit" onClick={innerInstance.handleSubmit(onFinalize)} variant="gradient" gradient={{ from: "violet", to: "orange", deg: 90 }} size="xs">
             {category === ECategories.BC ? "Перейти к беременности" : "Зарегистрировать кладку"}
           </Button>
