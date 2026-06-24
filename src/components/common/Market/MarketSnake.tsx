@@ -55,7 +55,7 @@ export function MarketSnake({ category, data }: IProp) {
         <CopyButton value="window.location.href" timeout={3000}>
           {({ copied, copy }) => (
             <Button variant="default" c="yellow" size="compact-xs" onClick={() => share(copy)} ml="auto">
-              {(copied && isCan) || isCan ? "Поделиться" : copied ? "Скопировано" : "Копировать"}
+              {(copied && isCan) || isCan ? "Поделиться" : copied ? "Скопировано" : "Копировать ссылку"}
             </Button>
           )}
         </CopyButton>

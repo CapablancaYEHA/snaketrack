@@ -86,7 +86,7 @@ export function MaxSelectedMulti({ data, label, onChange, dataHasLabel, flex, in
   }, [initVal]);
 
   return (
-    <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false} position="bottom">
+    <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false} position="bottom" keepMounted>
       <Combobox.DropdownTarget>
         <PillsInput pointer onClick={() => combobox.openDropdown()} label={label} miw={150} flex={flex}>
           <Pill.Group>

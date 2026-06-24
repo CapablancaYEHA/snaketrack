@@ -49,9 +49,10 @@ export const Flow: FC<IFlow> = ({ targetId, selected, onSelect, category, userId
       nodesDraggable={false}
       fitView
       style={{ opacity: !isVis ? 0 : 1 }}
+      minZoom={0.3}
     >
       <Background />
-      <Panel position="top-left" className="flex flex-col gap-2">
+      <Panel position="top-left" style={{ left: 0, top: 0, margin: 0 }}>
         <Popover width={360} position="bottom" withArrow shadow="md" opened={opened}>
           <Popover.Target>
             <Box onMouseEnter={open} onMouseLeave={close}>

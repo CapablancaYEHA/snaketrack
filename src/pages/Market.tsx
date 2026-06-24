@@ -102,7 +102,7 @@ export function Market() {
           <CopyButton value="window.location.href" timeout={3000}>
             {({ copied, copy }) => (
               <Button variant="default" c="yellow" size="compact-xs" onClick={() => share(copy)} ml="auto">
-                {(copied && isCan) || isCan ? "Поделиться подборкой" : copied ? "Скопировано" : "Копировать"}
+                {(copied && isCan) || isCan ? "Поделиться подборкой" : copied ? "Скопировано" : "Копировать ссылку"}
               </Button>
             )}
           </CopyButton>
