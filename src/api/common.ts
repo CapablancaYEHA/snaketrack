@@ -4,6 +4,7 @@ export enum ECategories {
   BP = "ball-pythons",
   BC = "boa-constrictors",
   CS = "corn-snakes",
+  RS = "rat-snakes",
   MV = "morelia-viridis",
 }
 
@@ -13,6 +14,7 @@ export const enum ESupabase {
   BP = "ballpythons",
   BC = "boa_constrictors",
   CS = "corn_snakes",
+  RS = "rat_snakes",
   MV = "morelia_viridis",
   REM = "feed_reminders",
   PROF = "profiles",
@@ -26,11 +28,13 @@ export const enum ESupabase {
   BP_G = "bpgenes",
   BC_G = "boagenes",
   CS_G = "corngenes",
+  RS_G = "ratgenes",
   MV_G = "viridisgenes",
   // storage
   BP_PICS = "bp-pics",
   BC_PICS = "bc-pics",
   CS_PICS = "cs-pics",
+  RS_PICS = "rs-pics",
   MV_PICS = "mv-pics",
 }
 
@@ -41,6 +45,8 @@ export enum ESupaBreed {
   BC_CL = "bc_clutch",
   CS_BREED = "cs_breeding",
   CS_CL = "cs_clutch",
+  RS_BREED = "rs_breeding",
+  RS_CL = "rs_clutch",
   MV_BREED = "mv_breeding",
   MV_CL = "mv_clutch",
   // view
@@ -50,6 +56,8 @@ export enum ESupaBreed {
   BC_CL_V = "bc_clutch_view",
   CS_BREED_V = "cs_breeding_view",
   CS_CL_V = "cs_clutch_view",
+  RS_BREED_V = "rs_breeding_view",
+  RS_CL_V = "rs_clutch_view",
   MV_BREED_V = "mv_breeding_view",
   MV_CL_V = "mv_clutch_view",
 }
@@ -58,6 +66,7 @@ export const categoryToGenesTable = {
   [ECategories.BP]: ESupabase.BP_G,
   [ECategories.BC]: ESupabase.BC_G,
   [ECategories.CS]: ESupabase.CS_G,
+  [ECategories.RS]: ESupabase.RS_G,
   [ECategories.MV]: ESupabase.MV_G,
 };
 
@@ -65,6 +74,7 @@ export const categoryToBaseTable = {
   [ECategories.BP]: ESupabase.BP,
   [ECategories.BC]: ESupabase.BC,
   [ECategories.CS]: ESupabase.CS,
+  [ECategories.RS]: ESupabase.RS,
   [ECategories.MV]: ESupabase.MV,
 };
 
@@ -73,6 +83,7 @@ export const categoryToShort = {
   [ECategories.BP]: "bp",
   [ECategories.BC]: "bc",
   [ECategories.CS]: "cs",
+  [ECategories.RS]: "rs",
   [ECategories.MV]: "mv",
 };
 
@@ -80,6 +91,7 @@ export const categoryToBucket = {
   [ECategories.BP]: ESupabase.BP_PICS,
   [ECategories.BC]: ESupabase.BC_PICS,
   [ECategories.CS]: ESupabase.CS_PICS,
+  [ECategories.RS]: ESupabase.RS_PICS,
   [ECategories.MV]: ESupabase.MV_PICS,
 };
 
@@ -87,6 +99,7 @@ export const categoryToMmCat = {
   [ECategories.BP]: "bps",
   [ECategories.BC]: "bcs",
   [ECategories.CS]: "corns",
+  [ECategories.RS]: "rats",
   [ECategories.MV]: "mvs",
 };
 

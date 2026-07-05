@@ -7,6 +7,7 @@ import { Reminder } from "@/components/common/Schedule/Reminder";
 import { makeScheduleColumns, snakesWithRems } from "@/components/common/Schedule/const";
 import { sigCurCat, sigCurDate, sigIsModOpen } from "@/components/common/Schedule/signals";
 import { StackTable } from "@/components/common/StackTable/StackTable";
+import { segmentedSnakes } from "@/components/common/const";
 import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { SkelShedule } from "@/components/common/skeletons";
 import { categToTitle } from "@/components/common/utils";
@@ -18,6 +19,7 @@ import { remList, remsByDate } from "@/api/common_configs";
 import { csRemList } from "@/api/corn-snakes/configs";
 import { useSupaGet, useSupaUpd } from "@/api/hooks";
 import { mvRemList } from "@/api/morelia_viridis/configs";
+import { rsRemList } from "@/api/rat-snakes/configs";
 import { getDateObj, getDateOfMonth, getIsSame } from "@/utils/time";
 
 const isFeedOpen = signal<boolean>(false);
@@ -46,6 +48,7 @@ export const Schedule = () => {
   const { data: bps, isPending: isBpPend, isRefetching: isBpRef, isError: isBpErr } = useSupaGet<IResSnakesList[]>(bpRemList(userId), sigCurCat.value === ECategories.BP);
   const { data: bcs, isPending: isBcPend, isRefetching: isBcRef, isError: isBcErr } = useSupaGet<IResSnakesList[]>(bcRemList(userId), sigCurCat.value === ECategories.BC);
   const { data: css, isPending: isCsPend, isRefetching: isCsRef, isError: isCsErr } = useSupaGet<IResSnakesList[]>(csRemList(userId), sigCurCat.value === ECategories.CS);
+  const { data: rss, isPending: isRsPend, isRefetching: isRsRef, isError: isRsErr } = useSupaGet<IResSnakesList[]>(rsRemList(userId), sigCurCat.value === ECategories.RS);
   const { data: mvs, isPending: isMvPend, isRefetching: isMvRef, isError: isMvErr } = useSupaGet<IResSnakesList[]>(mvRemList(userId), sigCurCat.value === ECategories.MV);
   const { data: allRems, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
   const { data: remsThisDate, isFetching } = useSupaGet<IRemResExt[]>(remsByDate(sigCurDate.value), sigCurDate.value != null);
@@ -56,9 +59,21 @@ export const Schedule = () => {
     return eventDates.some((eventDate) => getIsSame(eventDate, date));
   };
 
-  const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : sigCurCat.value === ECategories.BC ? (bcs ?? []) : sigCurCat.value === ECategories.CS ? (css ?? []) : (mvs ?? []);
-  const isSmthErr = (isBpErr && sigCurCat.value === ECategories.BP) || (isBcErr && sigCurCat.value === ECategories.BC) || (isCsErr && sigCurCat.value === ECategories.CS) || (isMvErr && sigCurCat.value === ECategories.MV) || isRemError;
-  const isSmthPending = (isBpPend && sigCurCat.value === ECategories.BP) || (isBcPend && sigCurCat.value === ECategories.BC) || (isCsPend && sigCurCat.value === ECategories.CS) || (isMvPend && sigCurCat.value === ECategories.MV) || isRemPending;
+  const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : sigCurCat.value === ECategories.BC ? (bcs ?? []) : sigCurCat.value === ECategories.CS ? (css ?? []) : sigCurCat.value === ECategories.RS ? (rss ?? []) : (mvs ?? []);
+  const isSmthErr =
+    (isBpErr && sigCurCat.value === ECategories.BP) ||
+    (isBcErr && sigCurCat.value === ECategories.BC) ||
+    (isCsErr && sigCurCat.value === ECategories.CS) ||
+    (isRsErr && sigCurCat.value === ECategories.RS) ||
+    (isMvErr && sigCurCat.value === ECategories.MV) ||
+    isRemError;
+  const isSmthPending =
+    (isBpPend && sigCurCat.value === ECategories.BP) ||
+    (isBcPend && sigCurCat.value === ECategories.BC) ||
+    (isCsPend && sigCurCat.value === ECategories.CS) ||
+    (isRsPend && sigCurCat.value === ECategories.RS) ||
+    (isMvPend && sigCurCat.value === ECategories.MV) ||
+    isRemPending;
 
   useEffect(() => {
     snakesWithRems.value = allRems?.map((c) => c.snake);
@@ -71,33 +86,7 @@ export const Schedule = () => {
         <Title component="span" order={4} c="yellow.6">
           Напоминания о кормлениях
         </Title>
-        <SegmentedControl
-          style={{ alignSelf: "center" }}
-          opacity={isSmthPending ? 0 : 1}
-          value={sigCurCat.value as any}
-          onChange={handle}
-          w="100%"
-          maw="252px"
-          size="xs"
-          data={[
-            {
-              label: "Региусы",
-              value: ECategories.BP,
-            },
-            {
-              label: "Удавы",
-              value: ECategories.BC,
-            },
-            {
-              label: "Маисы",
-              value: ECategories.CS,
-            },
-            {
-              label: "Хондры",
-              value: ECategories.MV,
-            },
-          ]}
-        />
+        <SegmentedControl style={{ alignSelf: "center" }} opacity={isSmthPending ? 0 : 1} value={sigCurCat.value as any} onChange={handle} w="100%" maw={352} size="xs" data={segmentedSnakes} />
         {isSmthPending ? <SkelShedule /> : null}
         {isSmthErr ? (
           <Text fw={500} c="var(--mantine-color-error)">
@@ -185,7 +174,7 @@ export const Schedule = () => {
         isPend={isFeedPend}
       />
 
-      {isBpRef || isBcRef || isCsRef || isMvRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+      {isBpRef || isBcRef || isCsRef || isRsRef || isMvRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </>
   );
 };

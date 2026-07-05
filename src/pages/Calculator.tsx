@@ -2,6 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SegmentedControl, Stack, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { FormProvider, useForm } from "react-hook-form";
+import { segmentedCalc } from "@/components/common/const";
 import { OddsCalc } from "@/components/common/genetics/OddsCalc";
 import { ECategories } from "@/api/common";
 
@@ -27,28 +28,7 @@ export function Calculator() {
       <Title component="span" order={4} c="yellow.6">
         Калькулятор
       </Title>
-      <SegmentedControl
-        style={{ alignSelf: "center" }}
-        value={sigCurCat.value as any}
-        onChange={handle}
-        w="100%"
-        maw="252px"
-        size="xs"
-        data={[
-          {
-            label: "Региусы",
-            value: ECategories.BP,
-          },
-          {
-            label: "Удавы",
-            value: ECategories.BC,
-          },
-          {
-            label: "Маисы",
-            value: ECategories.CS,
-          },
-        ]}
-      />
+      <SegmentedControl style={{ alignSelf: "center" }} value={sigCurCat.value as any} onChange={handle} w="100%" maw={352} size="xs" data={segmentedCalc} />
       <FormProvider {...formInstance}>
         <OddsCalc category={sigCurCat.value} />
       </FormProvider>

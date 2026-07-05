@@ -1,6 +1,7 @@
 import { Flex, SegmentedControl, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { SnakeCollectionList } from "@/components/common/SnakeCollectionList";
+import { segmentedSnakes } from "@/components/common/const";
 import { ECategories } from "@/api/common";
 
 export const catVisited = signal<ECategories>("" as any);
@@ -29,25 +30,8 @@ export function SnakeCategories() {
           handle(a);
         }}
         w="100%"
-        maw="252px"
-        data={[
-          {
-            label: "Региусы",
-            value: ECategories.BP,
-          },
-          {
-            label: "Удавы",
-            value: ECategories.BC,
-          },
-          {
-            label: "Маисы",
-            value: ECategories.CS,
-          },
-          {
-            label: "Хондры",
-            value: ECategories.MV,
-          },
-        ]}
+        maw={352}
+        data={segmentedSnakes}
       />
       {catVisited.value ? (
         <SnakeCollectionList />

@@ -8,6 +8,7 @@ import { chaining, handleMultiContainsJson, handleMultiIn, handleMultiNotIn, han
 import { adStatsHardcode, marketColumns } from "@/components/common/Market/utils";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
+import { segmentedSnakes } from "@/components/common/const";
 import { sexHardcode } from "@/components/common/forms/snakeBreed/common";
 import { SkelTable } from "@/components/common/skeletons";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
@@ -117,25 +118,8 @@ export function Market() {
           localStorage.setItem("MARKET_VISITED", a);
         }}
         w="100%"
-        maw="252px"
-        data={[
-          {
-            label: "Региусы",
-            value: ECategories.BP,
-          },
-          {
-            label: "Удавы",
-            value: ECategories.BC,
-          },
-          {
-            label: "Маисы",
-            value: ECategories.CS,
-          },
-          {
-            label: "Хондры",
-            value: ECategories.MV,
-          },
-        ]}
+        maw={352}
+        data={segmentedSnakes}
       />
       <Flex wrap="nowrap" w="100%" maw="100% " gap="lg" align="end">
         <Select

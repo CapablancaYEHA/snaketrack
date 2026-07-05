@@ -1,7 +1,7 @@
 import fallback from "@assets/placeholder.webp";
 import { AspectRatio, Box, Image, Indicator, Stack, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
-import { IResSnakesList } from "@/api/common";
+import { ECategories, IResSnakesList } from "@/api/common";
 import { catVisited } from "@/pages/SnakeCategories";
 import { urlProxyReplace } from "@/utils/other";
 import { getAge } from "@/utils/time";
@@ -104,3 +104,28 @@ export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) =>
     }),
   ];
 };
+
+export const segmentedSnakes = [
+  {
+    label: "Региусы",
+    value: ECategories.BP,
+  },
+  {
+    label: "Удавы",
+    value: ECategories.BC,
+  },
+  {
+    label: "Маисы",
+    value: ECategories.CS,
+  },
+  {
+    label: "Обсолеты",
+    value: "rat-snakes",
+  },
+  {
+    label: "Хондры",
+    value: ECategories.MV,
+  },
+];
+
+export const segmentedCalc = segmentedSnakes.filter((a) => a.value !== ECategories.MV);

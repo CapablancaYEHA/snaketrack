@@ -1,5 +1,11 @@
 export const versionHistory = [
   {
+    id: 39,
+    ver: "1.10.8",
+    date: "07-05-2026",
+    list: ["Добавлен раздел обсолет"],
+  },
+  {
     id: 38,
     ver: "1.10.7",
     date: "06-23-2026",

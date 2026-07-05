@@ -12,18 +12,21 @@ export const daysAfterOvul = {
   [ECategories.BP]: 44,
   [ECategories.BC]: 1,
   [ECategories.CS]: 30,
+  [ECategories.RS]: 30,
   [ECategories.MV]: 89,
 };
 export const daysAfterShed = {
   [ECategories.BP]: 29,
   [ECategories.BC]: 1,
   [ECategories.CS]: 14,
+  [ECategories.RS]: 14,
   [ECategories.MV]: 38,
 };
 export const daysIncubation = {
   [ECategories.BP]: 60,
   [ECategories.BC]: 115,
   [ECategories.CS]: 65,
+  [ECategories.RS]: 65,
   [ECategories.MV]: 54,
 };
 
@@ -31,6 +34,7 @@ export const daysCriticalThr = {
   [ECategories.BP]: 10,
   [ECategories.BC]: 20,
   [ECategories.CS]: 10,
+  [ECategories.RS]: 10,
   [ECategories.MV]: 10,
 };
 

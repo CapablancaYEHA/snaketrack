@@ -7,6 +7,7 @@ import { isEmpty } from "lodash-es";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { tableFiltMulti } from "@/components/common/StackTable/filters";
+import { segmentedSnakes } from "@/components/common/const";
 import { calcTraitsForFilter } from "@/components/common/forms/const";
 import { makeBreedColumns } from "@/components/common/forms/snakeBreed/breedUtils";
 import { BreedDelete } from "@/components/common/forms/snakeBreed/subcomponents";
@@ -57,32 +58,7 @@ export function BreedList() {
           Добавить
         </Btn>
       </Flex>
-      <SegmentedControl
-        style={{ alignSelf: "center" }}
-        value={sigVisBreed.value as any}
-        onChange={handle}
-        w="100%"
-        maw="252px"
-        size="xs"
-        data={[
-          {
-            label: "Региусы",
-            value: ECategories.BP,
-          },
-          {
-            label: "Удавы",
-            value: ECategories.BC,
-          },
-          {
-            label: "Маисы",
-            value: ECategories.CS,
-          },
-          {
-            label: "Хондры",
-            value: ECategories.MV,
-          },
-        ]}
-      />
+      <SegmentedControl style={{ alignSelf: "center" }} value={sigVisBreed.value as any} onChange={handle} w="100%" maw={352} size="xs" data={segmentedSnakes} />
       {isPending ? <SkelTable /> : null}
       {isError || isBreedErr ? (
         <Text fw={500} c="var(--mantine-color-error)">

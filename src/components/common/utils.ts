@@ -5,6 +5,7 @@ import { EBreedStat } from "@/api/breeding/models";
 import { ECategories, IGenesComp } from "@/api/common";
 import { csList, csSingle } from "@/api/corn-snakes/configs";
 import { mvList, mvSingle } from "@/api/morelia_viridis/configs";
+import { rsList, rsSingle } from "@/api/rat-snakes/configs";
 import { adStatsHardcode, snakeStatsHardcode } from "./Market/utils";
 
 export const detailsDict = [
@@ -96,6 +97,7 @@ export const categToConfig = {
   [ECategories.BP]: bpSingle,
   [ECategories.BC]: bcSingle,
   [ECategories.CS]: csSingle,
+  [ECategories.RS]: rsSingle,
   [ECategories.MV]: mvSingle,
 };
 
@@ -103,6 +105,7 @@ export const categToConfigList = {
   [ECategories.BP]: bpList,
   [ECategories.BC]: bcList,
   [ECategories.CS]: csList,
+  [ECategories.RS]: rsList,
   [ECategories.MV]: mvList,
 };
 
@@ -110,6 +113,7 @@ export const categToTitle = {
   [ECategories.BP]: "Региус",
   [ECategories.BC]: "Удав",
   [ECategories.CS]: "Маис",
+  [ECategories.RS]: "Обсолет",
   [ECategories.MV]: "Хондр",
 };
 

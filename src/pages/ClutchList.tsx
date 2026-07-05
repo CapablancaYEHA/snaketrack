@@ -4,6 +4,7 @@ import { Flex, LoadingOverlay, SegmentedControl, Stack, Text, Title } from "@man
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { StackTable } from "@/components/common/StackTable/StackTable";
+import { segmentedSnakes } from "@/components/common/const";
 import { makeClutchColumns } from "@/components/common/forms/snakeClutch/clutchUtils";
 import { MiniInfo } from "@/components/common/forms/snakeClutch/subcomponents";
 import { SkelTable } from "@/components/common/skeletons";
@@ -54,32 +55,7 @@ export function ClutchList() {
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
         <Text size="sm">Если уже имеется отложенная кладка или живородящая змея беременна, заведите запись</Text>
       </Flex>
-      <SegmentedControl
-        style={{ alignSelf: "center" }}
-        value={sigVisClutch.value as any}
-        onChange={handle}
-        w="100%"
-        maw="252px"
-        size="xs"
-        data={[
-          {
-            label: "Региусы",
-            value: ECategories.BP,
-          },
-          {
-            label: "Удавы",
-            value: ECategories.BC,
-          },
-          {
-            label: "Маисы",
-            value: ECategories.CS,
-          },
-          {
-            label: "Хондры",
-            value: ECategories.MV,
-          },
-        ]}
-      />
+      <SegmentedControl style={{ alignSelf: "center" }} value={sigVisClutch.value as any} onChange={handle} w="100%" maw={352} size="xs" data={segmentedSnakes} />
       {isPending ? <SkelTable /> : null}
       {isError ? (
         <Text fw={500} c="var(--mantine-color-error)">
