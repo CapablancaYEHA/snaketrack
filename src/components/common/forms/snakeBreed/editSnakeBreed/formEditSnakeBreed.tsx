@@ -2,11 +2,12 @@ import { useLocation } from "preact-iso";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Flex, Title } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
-import { categToTitle } from "@/components/common/utils";
+import { categToDeclTitle } from "@/components/common/utils";
 import { IUpdBreedReq } from "@/api/breeding/models";
 import { ESupaBreed, categoryToShort } from "@/api/common";
 import { useMakeClutchFromBreed, useSupaUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
+import { declWord } from "@/utils/other";
 import { breedSchema, prepForUpdate } from "../common";
 import { FormComposedBody } from "../subcomponents";
 
@@ -64,7 +65,7 @@ export const FormEditSnakeBreed = ({ initData, category }) => {
     <>
       <Flex wrap="nowrap" align="center" maw="100%" w="100%" gap="md">
         <Title component="span" c="yellow.6" order={3}>
-          {categToTitle[category]}ы. Детализация бридинга
+          {declWord(1, categToDeclTitle[category], true, true)}. Детализация бридинга
         </Title>
         <Button leftSection="< " size="compact-xs" flex="0 0 81px" variant="default" ml="auto" component="a" href="/breeding">
           К списку

@@ -8,12 +8,13 @@ import { segmentedSnakes } from "@/components/common/const";
 import { makeClutchColumns } from "@/components/common/forms/snakeClutch/clutchUtils";
 import { MiniInfo } from "@/components/common/forms/snakeClutch/subcomponents";
 import { SkelTable } from "@/components/common/skeletons";
-import { categToTitle } from "@/components/common/utils";
+import { categToDeclTitle } from "@/components/common/utils";
 import { Btn } from "@/components/navs/btn/Btn";
 import { clutchList } from "@/api/breeding/configs";
 import { IResClutch } from "@/api/breeding/models";
 import { ECategories } from "@/api/common";
 import { useSupaGet } from "@/api/hooks";
+import { declWord } from "@/utils/other";
 
 const snakeId = signal<string | undefined>(undefined);
 const snakeSex = signal<string | undefined>(undefined);
@@ -34,7 +35,7 @@ export function ClutchList() {
     location.route(`/clutches/edit/${sigVisClutch.value}?id=${id}`);
   };
 
-  const title = `${categToTitle[sigVisClutch.value]}ов`;
+  const title = () => declWord(5, categToDeclTitle[sigVisClutch.value], true);
 
   useEffect(() => {
     return () => {
@@ -46,7 +47,7 @@ export function ClutchList() {
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
         <Title component="span" order={4} c="yellow.6">
-          {sigVisClutch.value === ECategories.BC ? "Беременности" : "Кладки"} {title}
+          {sigVisClutch.value === ECategories.BC ? "Беременности" : "Кладки"} {title()}
         </Title>
         <Btn fullWidth={false} size="compact-xs" component="a" href={`/clutches/add/${sigVisClutch.value}`} ml="auto">
           Добавить

@@ -99,7 +99,6 @@ export const marketColumns = [
 
 export const snakeStatusToColor = {
   collection: "#9382ff",
-  isolation: "#ff95ed",
   on_sale: "#2ebc7b",
   on_hold: "#808080",
   sold: "#af2e2e",
@@ -110,7 +109,6 @@ export const snakeStatusToColor = {
 
 export const snakeStatusToLabel = {
   collection: "Коллекция",
-  isolation: "Карантин",
   on_sale: "В продаже",
   on_hold: "Зажаблена",
   sold: "Продана",
@@ -128,11 +126,10 @@ export const adStatsHardcode = [
 
 export const disStats = ["deceased", "archived"];
 export const mrktActiveStats = ["on_sale", "reserved", "sold"];
-export const availMarketStats = ["collection", "isolation", "on_hold"];
+export const availMarketStats = ["collection", "on_hold"];
 
 export const snakeStatsHardcode = [
   { label: "Коллекция", value: "collection" },
-  { label: "Карантин", value: "isolation" },
   { label: "Архив", value: "archived" },
   { label: "Умерла", value: "deceased" },
 ];

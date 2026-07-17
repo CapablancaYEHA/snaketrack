@@ -17,6 +17,7 @@ import { bcRemList } from "@/api/boa-constrictors/configs";
 import { ECategories, IFeedReq, IRemResExt, IRemindersRes, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { remList, remsByDate } from "@/api/common_configs";
 import { csRemList } from "@/api/corn-snakes/configs";
+import { hnRemList } from "@/api/hognose-snakes/config";
 import { useSupaGet, useSupaUpd } from "@/api/hooks";
 import { mvRemList } from "@/api/morelia_viridis/configs";
 import { rsRemList } from "@/api/rat-snakes/configs";
@@ -49,6 +50,7 @@ export const Schedule = () => {
   const { data: bcs, isPending: isBcPend, isRefetching: isBcRef, isError: isBcErr } = useSupaGet<IResSnakesList[]>(bcRemList(userId), sigCurCat.value === ECategories.BC);
   const { data: css, isPending: isCsPend, isRefetching: isCsRef, isError: isCsErr } = useSupaGet<IResSnakesList[]>(csRemList(userId), sigCurCat.value === ECategories.CS);
   const { data: rss, isPending: isRsPend, isRefetching: isRsRef, isError: isRsErr } = useSupaGet<IResSnakesList[]>(rsRemList(userId), sigCurCat.value === ECategories.RS);
+  const { data: hns, isPending: isHnPend, isRefetching: isHnRef, isError: isHnErr } = useSupaGet<IResSnakesList[]>(hnRemList(userId), sigCurCat.value === ECategories.HN);
   const { data: mvs, isPending: isMvPend, isRefetching: isMvRef, isError: isMvErr } = useSupaGet<IResSnakesList[]>(mvRemList(userId), sigCurCat.value === ECategories.MV);
   const { data: allRems, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
   const { data: remsThisDate, isFetching } = useSupaGet<IRemResExt[]>(remsByDate(sigCurDate.value), sigCurDate.value != null);
@@ -59,12 +61,24 @@ export const Schedule = () => {
     return eventDates.some((eventDate) => getIsSame(eventDate, date));
   };
 
-  const dataToUse = sigCurCat.value === ECategories.BP ? (bps ?? []) : sigCurCat.value === ECategories.BC ? (bcs ?? []) : sigCurCat.value === ECategories.CS ? (css ?? []) : sigCurCat.value === ECategories.RS ? (rss ?? []) : (mvs ?? []);
+  const dataToUse =
+    sigCurCat.value === ECategories.BP
+      ? (bps ?? [])
+      : sigCurCat.value === ECategories.BC
+        ? (bcs ?? [])
+        : sigCurCat.value === ECategories.CS
+          ? (css ?? [])
+          : sigCurCat.value === ECategories.RS
+            ? (rss ?? [])
+            : sigCurCat.value === ECategories.HN
+              ? (hns ?? [])
+              : (mvs ?? []);
   const isSmthErr =
     (isBpErr && sigCurCat.value === ECategories.BP) ||
     (isBcErr && sigCurCat.value === ECategories.BC) ||
     (isCsErr && sigCurCat.value === ECategories.CS) ||
     (isRsErr && sigCurCat.value === ECategories.RS) ||
+    (isHnErr && sigCurCat.value === ECategories.HN) ||
     (isMvErr && sigCurCat.value === ECategories.MV) ||
     isRemError;
   const isSmthPending =
@@ -72,6 +86,7 @@ export const Schedule = () => {
     (isBcPend && sigCurCat.value === ECategories.BC) ||
     (isCsPend && sigCurCat.value === ECategories.CS) ||
     (isRsPend && sigCurCat.value === ECategories.RS) ||
+    (isHnPend && sigCurCat.value === ECategories.HN) ||
     (isMvPend && sigCurCat.value === ECategories.MV) ||
     isRemPending;
 
@@ -174,7 +189,7 @@ export const Schedule = () => {
         isPend={isFeedPend}
       />
 
-      {isBpRef || isBcRef || isCsRef || isRsRef || isMvRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+      {isBpRef || isBcRef || isCsRef || isRsRef || isHnRef || isMvRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </>
   );
 };

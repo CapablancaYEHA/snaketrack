@@ -9,7 +9,7 @@ import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { Controller, FormProvider, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { GenePill } from "@/components/common/genetics/geneSelect";
-import { calcProjGenes, categToTitle } from "@/components/common/utils";
+import { calcProjGenes, categToDeclTitle } from "@/components/common/utils";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { EClSt, IReqUpdClutch, IResClutch } from "@/api/breeding/models";
@@ -161,7 +161,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
     <>
       <Flex gap="sm" align="center" maw="100%" w="100%">
         <Text size="md" fw={500} c="yellow.6">
-          {categToTitle[category]}ы. {isBc ? "Помёт" : "Кладка"} {location.query.id}
+          {declWord(1, categToDeclTitle[category], true, true)}. {isBc ? "Помёт" : "Кладка"} {location.query.id}
           <span> </span>
           <span> </span>
           <CopyButton value={clutch.id} timeout={3000}>

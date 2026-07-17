@@ -15,13 +15,14 @@ import { IFeedReq, IResSnakesList, IUpdReq, categoryToBaseTable } from "@/api/co
 import { useSnakeGenes, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 import { catVisited } from "@/pages/SnakeCategories";
+import { declWord } from "@/utils/other";
 import { RollNumber } from "./RollNumber";
 import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
 import { ChangeStatus } from "./forms/changeStatus/formChangeStatus";
 import { sexHardcode } from "./forms/snakeBreed/common";
 import { SnakeTags } from "./forms/snakeTags/formSnakeTags";
-import { categToConfigList, categToTitle, maturityDict, statusDictionary } from "./utils";
+import { categToConfigList, categToDeclTitle, categToTitle, maturityDict, statusDictionary } from "./utils";
 
 const curId = signal<string | undefined>(undefined);
 const isTransOpen = signal<boolean>(false);
@@ -94,7 +95,7 @@ export function SnakeCollectionList() {
           Произошла ошибка запроса
         </Text>
       ) : isEmpty(snakes) ? (
-        <Text fw={500}>{categToTitle[catVisited.value]}ов у вас нет</Text>
+        <Text fw={500}>{declWord(5, categToDeclTitle[catVisited.value], true)} у вас нет</Text>
       ) : (
         <>
           <Box style={{ alignSelf: "start" }} maw="100%" w="100%">

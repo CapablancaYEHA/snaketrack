@@ -1,5 +1,8 @@
 // [слово для одной единицы, слово для двух единиц, слово для пяти единиц]
-export const declWord = (value: number, words: string[], isWordsOnly = false) => {
+export const declWord = (value: number, words: string[], isWordsOnly = false, isMany = false) => {
+  if (isMany) {
+    return words[3];
+  }
   const val = Math.abs(value) % 100;
   let num = val % 10;
   if (val > 10 && val < 20) return `${isWordsOnly ? "" : value} ${words[2]}`;

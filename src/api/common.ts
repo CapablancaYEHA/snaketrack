@@ -5,6 +5,7 @@ export enum ECategories {
   BC = "boa-constrictors",
   CS = "corn-snakes",
   RS = "rat-snakes",
+  HN = "hognose-snakes",
   MV = "morelia-viridis",
 }
 
@@ -15,6 +16,7 @@ export const enum ESupabase {
   BC = "boa_constrictors",
   CS = "corn_snakes",
   RS = "rat_snakes",
+  HN = "hognose_snakes",
   MV = "morelia_viridis",
   REM = "feed_reminders",
   PROF = "profiles",
@@ -29,12 +31,14 @@ export const enum ESupabase {
   BC_G = "boagenes",
   CS_G = "corngenes",
   RS_G = "ratgenes",
+  HN_G = "hognosegenes",
   MV_G = "viridisgenes",
   // storage
   BP_PICS = "bp-pics",
   BC_PICS = "bc-pics",
   CS_PICS = "cs-pics",
   RS_PICS = "rs-pics",
+  HN_PICS = "hn-pics",
   MV_PICS = "mv-pics",
 }
 
@@ -47,6 +51,8 @@ export enum ESupaBreed {
   CS_CL = "cs_clutch",
   RS_BREED = "rs_breeding",
   RS_CL = "rs_clutch",
+  HN_BREED = "hn_breeding",
+  HN_CL = "hn_clutch",
   MV_BREED = "mv_breeding",
   MV_CL = "mv_clutch",
   // view
@@ -58,6 +64,8 @@ export enum ESupaBreed {
   CS_CL_V = "cs_clutch_view",
   RS_BREED_V = "rs_breeding_view",
   RS_CL_V = "rs_clutch_view",
+  HN_BREED_V = "hn_breeding_view",
+  HN_CL_V = "hn_clutch_view",
   MV_BREED_V = "mv_breeding_view",
   MV_CL_V = "mv_clutch_view",
 }
@@ -67,6 +75,7 @@ export const categoryToGenesTable = {
   [ECategories.BC]: ESupabase.BC_G,
   [ECategories.CS]: ESupabase.CS_G,
   [ECategories.RS]: ESupabase.RS_G,
+  [ECategories.HN]: ESupabase.HN_G,
   [ECategories.MV]: ESupabase.MV_G,
 };
 
@@ -75,6 +84,7 @@ export const categoryToBaseTable = {
   [ECategories.BC]: ESupabase.BC,
   [ECategories.CS]: ESupabase.CS,
   [ECategories.RS]: ESupabase.RS,
+  [ECategories.HN]: ESupabase.HN,
   [ECategories.MV]: ESupabase.MV,
 };
 
@@ -84,6 +94,7 @@ export const categoryToShort = {
   [ECategories.BC]: "bc",
   [ECategories.CS]: "cs",
   [ECategories.RS]: "rs",
+  [ECategories.HN]: "hn",
   [ECategories.MV]: "mv",
 };
 
@@ -92,6 +103,7 @@ export const categoryToBucket = {
   [ECategories.BC]: ESupabase.BC_PICS,
   [ECategories.CS]: ESupabase.CS_PICS,
   [ECategories.RS]: ESupabase.RS_PICS,
+  [ECategories.HN]: ESupabase.HN_PICS,
   [ECategories.MV]: ESupabase.MV_PICS,
 };
 
@@ -100,6 +112,7 @@ export const categoryToMmCat = {
   [ECategories.BC]: "bcs",
   [ECategories.CS]: "corns",
   [ECategories.RS]: "rats",
+  [ECategories.HN]: "hogs",
   [ECategories.MV]: "mvs",
 };
 
@@ -116,7 +129,7 @@ export interface ISupabaseErr {
   hint?: string | null;
 }
 
-export type ISnakeStatuses = "collection" | "isolation" | "on_sale" | "sold" | "on_hold" | "reserved" | "deceased" | "archived";
+export type ISnakeStatuses = "collection" | "on_sale" | "sold" | "on_hold" | "reserved" | "deceased" | "archived";
 
 export interface IReqCreateSnake {
   snake_name: string;

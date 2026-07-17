@@ -4,6 +4,7 @@ import { bcList, bcSingle } from "@/api/boa-constrictors/configs";
 import { EBreedStat } from "@/api/breeding/models";
 import { ECategories, IGenesComp } from "@/api/common";
 import { csList, csSingle } from "@/api/corn-snakes/configs";
+import { hnList, hnSingle } from "@/api/hognose-snakes/config";
 import { mvList, mvSingle } from "@/api/morelia_viridis/configs";
 import { rsList, rsSingle } from "@/api/rat-snakes/configs";
 import { adStatsHardcode, snakeStatsHardcode } from "./Market/utils";
@@ -98,6 +99,7 @@ export const categToConfig = {
   [ECategories.BC]: bcSingle,
   [ECategories.CS]: csSingle,
   [ECategories.RS]: rsSingle,
+  [ECategories.HN]: hnSingle,
   [ECategories.MV]: mvSingle,
 };
 
@@ -106,6 +108,7 @@ export const categToConfigList = {
   [ECategories.BC]: bcList,
   [ECategories.CS]: csList,
   [ECategories.RS]: rsList,
+  [ECategories.HN]: hnList,
   [ECategories.MV]: mvList,
 };
 
@@ -114,7 +117,17 @@ export const categToTitle = {
   [ECategories.BC]: "Удав",
   [ECategories.CS]: "Маис",
   [ECategories.RS]: "Обсолет",
+  [ECategories.HN]: "Свинк",
   [ECategories.MV]: "Хондр",
+};
+
+export const categToDeclTitle = {
+  [ECategories.BP]: ["Региус", "Региуса", "Региусов", "Региусы"],
+  [ECategories.BC]: ["Удав", "Удава", "Удавов", "Удавы"],
+  [ECategories.CS]: ["Маис", "Маиса", "Маисов", "Маисы"],
+  [ECategories.RS]: ["Обсолета", "Обсолету", "Обсолет", "Обсолеты"],
+  [ECategories.HN]: ["Свиноносый уж", "Свиноносого ужа", "Свиноносых ужей", "Свиноносые ужи"],
+  [ECategories.MV]: ["Хондр", "Хондра", "Хондров", "Хондры"],
 };
 
 export const calcStatusOptions = (category: ECategories) => (category === ECategories.BC ? Object.entries(boaBStToLabel).map(([key, val]) => ({ label: val, value: key })) : Object.entries(bStToLabel).map(([key, val]) => ({ label: val, value: key })));

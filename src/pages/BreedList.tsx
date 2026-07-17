@@ -12,7 +12,7 @@ import { calcTraitsForFilter } from "@/components/common/forms/const";
 import { makeBreedColumns } from "@/components/common/forms/snakeBreed/breedUtils";
 import { BreedDelete } from "@/components/common/forms/snakeBreed/subcomponents";
 import { SkelTable } from "@/components/common/skeletons";
-import { calcProjGenes, calcStatusOptions, categToTitle } from "@/components/common/utils";
+import { calcProjGenes, calcStatusOptions, categToDeclTitle } from "@/components/common/utils";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { breedList } from "@/api/breeding/configs";
@@ -20,6 +20,7 @@ import { IResBreedingList } from "@/api/breeding/models";
 import { ECategories } from "@/api/common";
 import { useSupaGet } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
+import { declWord } from "@/utils/other";
 
 const breedId = signal<string | undefined>(undefined);
 const vis = localStorage.getItem("BREED_VISITED") as ECategories;
@@ -34,7 +35,7 @@ interface IBreedExt extends IResBreedingList {
   traits: { label: string; gene: string }[];
 }
 
-const title = `${categToTitle[sigVisBreed.value]}ов`;
+const title = () => declWord(5, categToDeclTitle[sigVisBreed.value], true);
 
 export function BreedList() {
   const userId = localStorage.getItem("USER");
@@ -52,7 +53,7 @@ export function BreedList() {
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Flex gap="lg" wrap="wrap" align="flex-start" maw="100%" w="100%">
         <Title component="span" order={4} c="yellow.6">
-          Проекты / планы спариваний {title}
+          Проекты / планы спариваний {title()}
         </Title>
         <Btn fullWidth={false} size="compact-xs" component="a" href={`/breeding/add/${sigVisBreed.value}`} ml="auto">
           Добавить

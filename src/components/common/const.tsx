@@ -120,7 +120,11 @@ export const segmentedSnakes = [
   },
   {
     label: "Обсолеты",
-    value: "rat-snakes",
+    value: ECategories.RS,
+  },
+  {
+    label: "Свинки",
+    value: ECategories.HN,
   },
   {
     label: "Хондры",

@@ -6,12 +6,13 @@ import { useQueryState } from "nuqs";
 import { makeEmptyInit, makeInit } from "@/components/common/forms/sellSnake/const";
 import { FormCreateSaleFromColection } from "@/components/common/forms/sellSnake/formCreateSaleFromCollection";
 import { FormCreateSaleFromEmpty } from "@/components/common/forms/sellSnake/formCreateSaleFromEmpty";
-import { categToConfig, categToTitle } from "@/components/common/utils";
+import { categToConfig, categToDeclTitle } from "@/components/common/utils";
 import { IResSnakesList } from "@/api/common";
 import { marketAvailSnakes } from "@/api/common_configs";
 import { useBase64, useSupaGet } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 import { notif } from "@/utils/notif";
+import { declWord } from "@/utils/other";
 
 const sigPath = signal<string>("from_collection");
 
@@ -35,7 +36,7 @@ export function MarketAdd() {
   return (
     <Stack align="flex-start" justify="flex-start" gap="md" component="section">
       <Text size="md" fw={500} c="yellow.6">
-        Создание продажи {categToTitle[p]}a
+        Создание продажи {declWord(2, categToDeclTitle[p], true)}
       </Text>
       <SegmentedControl
         size="xs"
