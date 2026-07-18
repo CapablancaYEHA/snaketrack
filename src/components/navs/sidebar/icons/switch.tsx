@@ -57,7 +57,7 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
     case "dashboard":
       return <DashIcon width={width} height={height} />;
     case "info":
-      return <InfoIcon width={width} height={height} />;
+      return <InfoIcon width={width} height={height} style={style} />;
     case "snakes":
       return <PackIcon width={width} height={height} />;
     case "img":

@@ -16,7 +16,6 @@ import { useSnakeGenes, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/h
 import { useProfile } from "@/api/profile/hooks";
 import { catVisited } from "@/pages/SnakeCategories";
 import { declWord } from "@/utils/other";
-import { RollNumber } from "./RollNumber";
 import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
 import { ChangeStatus } from "./forms/changeStatus/formChangeStatus";
@@ -109,16 +108,6 @@ export function SnakeCollectionList() {
               leftSection={<IconSwitch icon="search" />}
             />
           </Box>
-          <Flex w="100%" maw="100%" gap="xs">
-            <Text size="xs" ta="left" w="auto">
-              Стоимость коллекции в категории —
-            </Text>
-            <RollNumber val={snakes.map((n) => n.price ?? 0).reduce((t, c) => t + c)} />
-          </Flex>
-
-          <Text size="xs" ta="left" w="100%">
-            Закрепленная колонка отображает дополнительное меню на ховер
-          </Text>
           <StackTable
             data={snakes ?? []}
             columns={makeListColumns(base)}

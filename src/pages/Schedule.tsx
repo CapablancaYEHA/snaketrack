@@ -143,7 +143,6 @@ export const Schedule = () => {
                 leftSection={<IconSwitch icon="search" />}
               />
             </Box>
-            <Text size="xs">Закрепленная колонка отображает дополнительное меню на ховер</Text>
             {sigCurCat.value ? (
               <StackTable
                 data={dataToUse}

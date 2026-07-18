@@ -1,13 +1,17 @@
+import { useEffect, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
-import { AspectRatio, Box, Image, Indicator, Stack, Text } from "@mantine/core";
+import { AspectRatio, Box, Image, Indicator, Popover, Stack, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
+import confetti from "canvas-confetti";
 import { ECategories, IResSnakesList } from "@/api/common";
 import { catVisited } from "@/pages/SnakeCategories";
 import { urlProxyReplace } from "@/utils/other";
 import { getAge } from "@/utils/time";
 import { Controls, GenesList, SnakeEventsBlock } from "../common/SnakeCard";
 import { SexName } from "../common/sexName";
+import { IconSwitch } from "../navs/sidebar/icons/switch";
 import { snakeStatusToColor, snakeStatusToLabel } from "./Market/utils";
+import { RollNumber } from "./RollNumber";
 import { hatchFiltFn } from "./StackTable/filters";
 
 const colHelper = createColumnHelper<IResSnakesList>();
@@ -15,7 +19,13 @@ const colHelper = createColumnHelper<IResSnakesList>();
 export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) => {
   return [
     colHelper.accessor("picture", {
-      header: () => " ",
+      header: (content) => {
+        const totalCost = content.table
+          .getRowModel()
+          .rows.map((a) => a.original.price ?? 0)
+          .reduce((t, c) => t + c);
+        return totalCost > 0 ? <CategoryCost totalCost={totalCost} /> : " ";
+      },
       cell: ({ cell, row }) => (
         <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openTag={openTag} openStatus={openStatus} category={catVisited.value} status={row.original.status}>
           <Stack gap="xs" maw="100%" w="100%">
@@ -133,3 +143,73 @@ export const segmentedSnakes = [
 ];
 
 export const segmentedCalc = segmentedSnakes.filter((a) => a.value !== ECategories.MV);
+
+const count = 200;
+const defaults = {
+  origin: { y: 0.7 },
+};
+
+function fire(particleRatio, opts) {
+  confetti({
+    ...defaults,
+    ...opts,
+    particleCount: Math.floor(count * particleRatio),
+  });
+}
+
+const CategoryCost = ({ totalCost }) => {
+  const [isOpen, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      fire(0.25, {
+        spread: 26,
+        startVelocity: 55,
+      });
+      fire(0.2, {
+        spread: 60,
+      });
+      fire(0.35, {
+        spread: 100,
+        decay: 0.91,
+        scalar: 0.8,
+      });
+      fire(0.1, {
+        spread: 120,
+        startVelocity: 25,
+        decay: 0.92,
+        scalar: 1.2,
+      });
+      fire(0.1, {
+        spread: 120,
+        startVelocity: 45,
+      });
+    }
+
+    return () => {
+      confetti.reset();
+    };
+  }, [isOpen]);
+
+  return (
+    <Popover position="bottom" withArrow shadow="md" opened={isOpen} onDismiss={() => setOpen(false)} offset={{ mainAxis: 10, crossAxis: 85 }} keepMounted={false}>
+      <Popover.Target>
+        <Box onClick={() => setOpen((o) => !o)} style={{ cursor: "pointer", position: "relative" }} h={20} mah={20} miw={40}>
+          <Indicator position="top-end" inline size={6} color="teal" processing offset={8} style={{ position: "absolute", top: -4 }}>
+            <IconSwitch icon="info" width="30" height="30" />
+          </Indicator>
+        </Box>
+      </Popover.Target>
+      <Popover.Dropdown>
+        <Box w="100%" maw="100%">
+          <Text size="xs" ta="left" w="auto">
+            Стоимость коллекции в категории
+          </Text>
+        </Box>
+        <Box>
+          <RollNumber val={totalCost} size="sm" />
+        </Box>
+      </Popover.Dropdown>
+    </Popover>
+  );
+};
