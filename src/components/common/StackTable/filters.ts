@@ -1,8 +1,9 @@
 import { StateUpdater } from "preact/hooks";
+import { DatesRangeValue } from "@mantine/dates";
 import { Row } from "@tanstack/react-table";
 import { isEmpty } from "lodash-es";
 import { IResSnakesList } from "@/api/common";
-import { isOlderThan, isYoungerThan } from "@/utils/time";
+import { dateToSupabaseTime, isOlderThan, isYoungerThan } from "@/utils/time";
 
 export const tableFiltMulti = (handler: (value: StateUpdater<any[]>) => void, a: string[], accessor: string) => {
   handler((s) => {
@@ -13,6 +14,15 @@ export const tableFiltMulti = (handler: (value: StateUpdater<any[]>) => void, a:
     }
     copy.push({ id: accessor, value: a });
     localStorage.setItem("SNAKES_FILTER", JSON.stringify(copy));
+    return copy;
+  });
+};
+
+export const tableFiltRange = (handler: (value: StateUpdater<any[]>) => void, a: DatesRangeValue<string>, accessor: string) => {
+  handler((s) => {
+    let copy = [...s.filter((c) => c.id !== accessor)];
+    copy.push({ id: accessor, value: a.map((p: any) => (p ? dateToSupabaseTime(p) : p)) as any });
+
     return copy;
   });
 };

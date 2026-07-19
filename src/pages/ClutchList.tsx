@@ -1,11 +1,13 @@
 import { useLocation } from "preact-iso";
-import { useEffect } from "preact/hooks";
-import { Flex, LoadingOverlay, SegmentedControl, Stack, Text, Title } from "@mantine/core";
+import { useEffect, useState } from "preact/hooks";
+import { Box, Flex, LoadingOverlay, SegmentedControl, Stack, Text, Title } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
 import { StackTable } from "@/components/common/StackTable/StackTable";
+import { tableFiltRange } from "@/components/common/StackTable/filters";
 import { segmentedSnakes } from "@/components/common/const";
-import { makeClutchColumns } from "@/components/common/forms/snakeClutch/clutchUtils";
+import { defaultRange, makeClutchColumns } from "@/components/common/forms/snakeClutch/clutchUtils";
 import { MiniInfo } from "@/components/common/forms/snakeClutch/subcomponents";
 import { SkelTable } from "@/components/common/skeletons";
 import { categToDeclTitle } from "@/components/common/utils";
@@ -28,6 +30,7 @@ const handle = (a) => {
 export function ClutchList() {
   const userId = localStorage.getItem("USER");
   const location = useLocation();
+  const [filt, setFilt] = useState<any[]>([{ id: "date_laid", value: defaultRange }]);
 
   const { data, isPending, isRefetching, isError } = useSupaGet<IResClutch[]>(clutchList(userId, sigVisClutch.value), userId != null);
 
@@ -66,6 +69,21 @@ export function ClutchList() {
         <Text fw={500}>Записей нет</Text>
       ) : (
         <>
+          <Box maw="100%" miw={200}>
+            <DatePickerInput
+              size="xs"
+              type="range"
+              label="Фильтр по периоду"
+              valueFormat="DD MMMM YYYY"
+              highlightToday
+              locale="ru"
+              value={filt?.find((a) => a.id === "date_laid")?.value}
+              onChange={(a) => tableFiltRange(setFilt, a, "date_laid")}
+              maxDate={new Date()}
+              placeholder="Без ограничений"
+              clearable
+            />
+          </Box>
           <StackTable
             data={data ?? []}
             columns={makeClutchColumns({
@@ -77,6 +95,14 @@ export function ClutchList() {
             })}
             onRowClick={handleRowClick}
             estimateSize={230}
+            columnFilters={filt}
+            setColumnFilters={setFilt}
+            initSort={[
+              {
+                id: "date_laid",
+                desc: true,
+              },
+            ]}
           />
         </>
       )}

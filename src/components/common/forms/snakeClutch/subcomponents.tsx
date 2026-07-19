@@ -202,7 +202,7 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOn
       <Flex>
         <Box w="100%" maw="100%">
           <Progress.Root size="lg">
-            <Progress.Section value={getPercentage(daysIncubation[category], left)} color={calcAnim(curStatus, left) ? "yellow" : "green"} animated={calcAnim(curStatus, left)} striped={calcAnim(curStatus, left)} />
+            <Progress.Section value={getPercentage(daysIncubation[category], left)} color={calcAnim(curStatus, left) ? "yellow" : "green"} animated={calcAnim(curStatus, left)} striped={curStatus === EClSt.LA} />
           </Progress.Root>
         </Box>
       </Flex>

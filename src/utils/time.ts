@@ -2,6 +2,7 @@ import dayjs, { Dayjs, OpUnitType, UnitType } from "dayjs";
 import "dayjs/locale/ru";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
+import isBetween from "dayjs/plugin/isBetween";
 import relativeTime from "dayjs/plugin/relativeTime";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
@@ -12,6 +13,7 @@ dayjs.extend(timezone);
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
 dayjs.extend(advancedFormat);
+dayjs.extend(isBetween);
 
 export function adapterLocale() {
   dayjs.locale("ru");
@@ -53,5 +55,7 @@ export const isOlderThan = (birthDate: string | Dayjs | Date, targetAge: number,
 export const isYoungerThan = (birthDate: string | Dayjs, targetAge: number, unit: UnitType = "month") => {
   return dayjs().diff(dayjs(birthDate), unit) < targetAge;
 };
+
+export const isInRange = (targDate: string | Dayjs | Date, range: string[]) => dayjs(targDate).isBetween(range[0], range[1]);
 
 export const isFirstLaterThan = (first: Date | string | Dayjs, second: Date | string | Dayjs, unit: UnitType = "days") => dayjs(first).isAfter(dayjs(second), unit);

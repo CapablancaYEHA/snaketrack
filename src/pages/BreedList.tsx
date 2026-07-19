@@ -112,6 +112,12 @@ export function BreedList() {
             columnFilters={filt}
             setColumnFilters={setFilt}
             estimateSize={56}
+            initSort={[
+              {
+                id: "breed_created_at",
+                desc: true,
+              },
+            ]}
           />
         </>
       )}

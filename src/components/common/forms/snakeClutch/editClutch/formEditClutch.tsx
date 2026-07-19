@@ -228,7 +228,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
             <Flex>
               <Box w="100%" maw="100%">
                 <Progress.Root size="lg">
-                  <Progress.Section value={getPercentage(daysIncubation[category], left)} color={calcAnim(clutch.status, left) ? "yellow" : "green"} animated={calcAnim(clutch.status, left)} striped={calcAnim(clutch.status, left)} />
+                  <Progress.Section value={getPercentage(daysIncubation[category], left)} color={calcAnim(clutch.status, left) ? "yellow" : "green"} animated={calcAnim(clutch.status, left)} striped={clutch.status === EClSt.LA} />
                 </Progress.Root>
               </Box>
             </Flex>

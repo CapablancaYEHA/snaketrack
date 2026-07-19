@@ -1,9 +1,18 @@
-import { createColumnHelper } from "@tanstack/react-table";
+import { Row, createColumnHelper } from "@tanstack/react-table";
 import { EClSt, IHatchling, IResClutch } from "@/api/breeding/models";
-import { getDateObj } from "@/utils/time";
+import { dateToSupabaseTime, getDateObj, getStartOf, isInRange } from "@/utils/time";
 import { SInfo, SParents } from "./subcomponents";
 
 const columnHelper = createColumnHelper<IResClutch>();
+
+export const defaultRange: any = [dateToSupabaseTime(getStartOf(new Date(), "year")), dateToSupabaseTime(new Date())];
+
+export const rangeFunc = (row: Row<IResClutch>, columnId: string, filterValue: any[]) => {
+  if (filterValue.every((a) => a == null)) return true;
+  const trg = row.original.date_laid;
+  const [start, end] = filterValue;
+  return isInRange(trg, [start, end]);
+};
 
 export const makeClutchColumns = ({ setSnake, category }) => [
   columnHelper.accessor("date_laid" as any, {
@@ -12,6 +21,7 @@ export const makeClutchColumns = ({ setSnake, category }) => [
     size: 1,
     maxSize: 2,
     minSize: 176,
+    filterFn: rangeFunc,
     sortingFn: (rowA: any, rowB: any, columnId: any) => getDateObj(rowA.getValue("date_laid")) - getDateObj(rowB.getValue("date_laid")),
   }),
   columnHelper.display({

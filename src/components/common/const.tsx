@@ -22,7 +22,8 @@ export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) =>
       header: (content) => {
         const totalCost = content.table
           .getRowModel()
-          .rows.map((a) => a.original.price ?? 0)
+          .rows.filter((d) => !["deceased", "archived"].includes(d.original.status))
+          .map((a) => a.original.price ?? 0)
           .reduce((t, c) => t + c);
         return totalCost > 0 ? <CategoryCost totalCost={totalCost} /> : " ";
       },
