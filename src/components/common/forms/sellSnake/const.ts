@@ -6,8 +6,8 @@ import { dateToSupabaseTime } from "@/utils/time";
 export const makeEmptyInit = (profile) => ({
   sale_price: undefined,
   pictures: undefined,
-  city_code: undefined,
-  city_name: undefined,
+  city_code: profile?.contacts_city_code,
+  city_name: profile?.contacts_city_name,
   contacts_group: profile?.contacts_group,
   contacts_telegram: profile?.contacts_telegram,
   contacts_website: profile?.contacts_website,
@@ -24,8 +24,8 @@ export const makeInit = (raw, profile) => {
   return {
     sale_price: undefined,
     pictures: raw.pictures,
-    city_code: undefined,
-    city_name: undefined,
+    city_code: profile?.contacts_city_code,
+    city_name: profile?.contacts_city_name,
     contacts_group: profile?.contacts_group,
     contacts_telegram: profile?.contacts_telegram,
     contacts_website: profile?.contacts_website,
@@ -89,7 +89,7 @@ export const schemaEmpty = schemaBase.shape({
     .string()
     .trim()
     .optional()
-    .test((v) => (!v ? true : /^[a-zA-Zа-яА-Я0-9_-\s]{3,30}$/.test(v))),
+    .test((v) => (!v ? true : /^[a-zA-Zа-яА-Я0-9_-\s]{3,80}$/.test(v))),
   sex: yup.string().nullable(),
   genes: yup.array().of(yup.object().shape({ label: yup.string(), gene: yup.string() })),
   date_hatch: yup.string().nullable().required("Хотя бы примерно"),

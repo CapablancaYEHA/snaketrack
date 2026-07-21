@@ -62,7 +62,7 @@ export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, cu
         <FormAddParents snakeId={targetId} category={category} onClose={closeMod} currentMother={currentMother} currentFather={currentFather} />
       </Modal>
       {/* FIXME shadow_date_hatch для таких вот кейсов заполнять или как */}
-      {isEditable && tree.couples.length === 0 ? (
+      {isEditable && (!currentMother || !currentFather) ? (
         <Flex maw="100%" w="100%" gap="lg">
           <Text size="sm">Информация о родителях неполная или отсутствует</Text>
           <Button size="compact-xs" onClick={openMod} flex="0 0 auto">

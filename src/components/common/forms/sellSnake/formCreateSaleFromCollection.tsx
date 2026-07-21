@@ -27,7 +27,7 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
   const {
     handleSubmit,
     setValue,
-    reset,
+    resetField,
     formState: { dirtyFields, errors },
     control,
     getValues,
@@ -41,7 +41,7 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
 
   const [imgs, setImgs] = useState<string[] | undefined>(info.blob);
   const resetRef = useRef<() => void>(null);
-  const [val, setVal] = useState("");
+  const [val, setVal] = useState(init.city_name ?? "");
   const { mutate: search, data, isPending } = useDadata();
   const { mutate: create, isPending: isCrPend } = useSupaCreate<ICreateSaleReq>(ESupabase.MRKT, { qk: [ESupabase.MRKT_V], e: false });
   const { mutate, isPending: isUpdPend } = useSupaUpd<IUpdReq>(categoryToBaseTable[category]);
@@ -93,8 +93,10 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
   };
 
   useEffect(() => {
-    reset({ pictures: init.pictures });
-  }, [init, reset]);
+    resetField("pictures", {
+      defaultValue: init.pictures,
+    });
+  }, [init, resetField]);
 
   useEffect(() => {
     if (val.length > 1) {
@@ -202,9 +204,9 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
           }}
         />
       </Flex>
-      {!init.contacts_group && !init.contacts_telegram ? (
+      {(!init.contacts_group && !init.contacts_telegram) || !init.contacts_city_code ? (
         <Text size="sm" fs="italic">
-          Заполните <Mark color="orange">контакты</Mark> в Аккаунте (Профиле), они будут автоматически подтягиваться в каждую форму объявления
+          Заполните <Mark color="orange">Контакты</Mark> в Аккаунте (Профиле), они будут автоматически подтягиваться в каждую форму объявления
         </Text>
       ) : null}
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">

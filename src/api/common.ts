@@ -250,6 +250,8 @@ export interface ICreateSaleReq {
   contacts_group?: string | null;
   contacts_telegram?: string | null;
   contacts_website?: string | null;
+  contacts_city_code?: string | null;
+  contacts_city_name?: string | null;
   // TODO расширить до других стран, соответственно потом в city_code будет падать их вариация кладр
   country: string;
   // TODO поле о дате поднятии объявления (не обновление а именно поднятие, которое отдельная функция)
@@ -269,6 +271,8 @@ export interface IMarketRes extends ICreateSaleReq {
   contacts_group: string | null;
   contacts_telegram: string | null;
   contacts_website: string | null;
+  contacts_city_code: string | null;
+  contacts_city_name: string | null;
 }
 
 export interface IEditSale extends Partial<ICreateSaleReq> {

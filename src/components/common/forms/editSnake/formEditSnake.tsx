@@ -84,7 +84,7 @@ export const FormEditSnake = ({ init, table, storage, title, category }) => {
         Редактирование. {title}
       </Text>
       <Flex gap="lg" className={styles.w70} wrap="nowrap">
-        <TextInput {...register("snake_name")} required label="Кличка змеи" error={errors?.snake_name?.message} flex="1 1 50%" />
+        <TextInput {...register("snake_name")} required label="Кличка/Идентификатор" error={errors?.snake_name?.message} flex="1 1 50%" />
         <Controller
           name="date_hatch"
           control={control}

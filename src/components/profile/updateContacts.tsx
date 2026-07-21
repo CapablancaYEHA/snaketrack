@@ -1,18 +1,23 @@
 import { FC } from "preact/compat";
+import { useEffect, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Flex, Stack, TextInput } from "@mantine/core";
+import { debounce } from "lodash-es";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { ESupabase } from "@/api/common";
-import { useSupaUpd } from "@/api/hooks";
+import { useDadata, useSupaUpd } from "@/api/hooks";
 import { IResProfile, IUpdProfileReq } from "@/api/profile/models";
 import { notif } from "@/utils/notif";
+import { Autocomp } from "../common/forms/sellSnake/Autocomp";
 import styles from "./styles.module.scss";
 
 export const makeContacts = (profile?: IResProfile) => ({
   contacts_group: profile?.contacts_group,
   contacts_telegram: profile?.contacts_telegram,
   contacts_website: profile?.contacts_website,
+  contacts_city_code: profile?.contacts_city_code,
+  contacts_city_name: profile?.contacts_city_name,
 });
 const schemaContacts = yup.object().shape({
   contacts_group: yup
@@ -27,6 +32,8 @@ const schemaContacts = yup.object().shape({
     .string()
     .nullable()
     .test("test_group", "Должно быть https://...", (v) => (!v ? true : v.startsWith("http"))),
+  contacts_city_code: yup.string().nullable(),
+  contacts_city_name: yup.string().nullable(),
 });
 
 type IContactsScheme = yup.InferType<typeof schemaContacts>;
@@ -37,17 +44,22 @@ interface IProp {
 }
 
 export const UpdateContacts: FC<IProp> = ({ init, id }) => {
+  const [val, setVal] = useState(init.contacts_city_name ?? "");
   const { mutate, isPending } = useSupaUpd<IUpdProfileReq>(ESupabase.PROF);
+  const { mutate: search, data, isPending: isDadataPend } = useDadata();
   const {
     control,
     handleSubmit,
     formState: { isDirty },
+    setValue,
   } = useForm<IContactsScheme>({
     defaultValues: init,
     resolver: yupResolver(schemaContacts),
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
+
+  const debSearch = debounce(setVal, 400);
 
   const onSub = (sub) => {
     mutate(
@@ -57,6 +69,8 @@ export const UpdateContacts: FC<IProp> = ({ init, id }) => {
           contacts_group: sub.contacts_group,
           contacts_telegram: sub.contacts_telegram,
           contacts_website: sub.contacts_website,
+          contacts_city_code: sub.contacts_city_code,
+          contacts_city_name: sub.contacts_city_name,
         },
       },
       {
@@ -69,6 +83,12 @@ export const UpdateContacts: FC<IProp> = ({ init, id }) => {
       },
     );
   };
+
+  useEffect(() => {
+    if (val.length > 1) {
+      search(val);
+    }
+  }, [val, search]);
 
   return (
     <Stack gap="xs" maw="100%" w="100%">
@@ -87,6 +107,8 @@ export const UpdateContacts: FC<IProp> = ({ init, id }) => {
             return <TextInput label="Ник в Телеге" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} placeholder="юзернейм" />;
           }}
         />
+      </Flex>
+      <Flex align="flex-start" maw="100%" w="100%" className={styles.w70} gap="lg">
         <Controller
           name="contacts_website"
           control={control}
@@ -94,7 +116,20 @@ export const UpdateContacts: FC<IProp> = ({ init, id }) => {
             return <TextInput label="Web-site" flex="1 1 auto" error={error?.message} value={value as any} onChange={onChange} />;
           }}
         />
+        <Autocomp
+          label="Город"
+          data={data}
+          onChange={debSearch}
+          onOptionSubmit={(a) => {
+            setValue("contacts_city_code", a.city_code, { shouldDirty: true });
+            setValue("contacts_city_name", a.city_name);
+          }}
+          value={val}
+          isPending={isDadataPend}
+          error={undefined}
+        />
       </Flex>
+
       <Box>
         <Button fullWidth={false} size="compact-xs" variant="default" ml="auto" onClick={handleSubmit(onSub)} loading={isPending} disabled={!isDirty || isPending}>
           Сохранить контакты

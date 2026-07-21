@@ -76,7 +76,7 @@ export const FormAddSnake: FC<IProps> = ({ table, storage, title, category }) =>
         Добавить {title}
       </Text>
       <Flex gap="lg" w={{ base: "100%", sm: "70%" }} wrap="nowrap">
-        <TextInput {...register("snake_name")} required label="Кличка змеи" error={errors?.snake_name?.message} flex="1 1 50%" />
+        <TextInput {...register("snake_name")} required label="Кличка/Идентификатор" error={errors?.snake_name?.message} flex="1 1 50%" />
         <Controller
           name="date_hatch"
           control={control}

@@ -54,7 +54,7 @@ const calcClutchScheme = (category: ECategories) => {
         snake_name: yup
           .string()
           .trim()
-          .matches(/^[a-zA-Zа-яА-Я0-9_\-,.\s]{3,60}$/, "От 3 до 60 символов и -|_|,|.|пробел")
+          .matches(/^[a-zA-Zа-яА-Я0-9_\-,.\s]{3,80}$/, "От 3 до 80 символов и -|_|,|.|пробел")
           .required(),
         sex: yup.string().optional().nullable(),
         date_hatch: yup.string().required("Дата обязательна"),

@@ -1,5 +1,5 @@
 import { useEffect } from "preact/hooks";
-import { Anchor, Box, Button, Flex, Loader, Space, Stack, Text } from "@mantine/core";
+import { Anchor, Box, Button, Flex, Loader, SegmentedControl, Space, Stack, Text } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { ReleasesHistory } from "@/components/profile/releasesHistory";
 import { UpdateContacts, makeContacts } from "@/components/profile/updateContacts";
@@ -14,6 +14,7 @@ const ver = import.meta.env.VITE_APP_VERSION;
 const sigChangeName = signal(false);
 const sigChangePass = signal(false);
 const isShowHist = signal(false);
+const sigSegment = signal<"general" | "contacts">("general");
 
 export function Profile() {
   const userId = localStorage.getItem("USER");
@@ -30,67 +31,76 @@ export function Profile() {
   }, [isError, error]);
 
   return (
-    <Stack align="flex-start" justify="flex-start" gap="xs">
-      <Flex wrap="nowrap" gap="xl">
-        <div>
-          <Text size="sm" c="dark.2">
-            Имя кипера\заводчика:
-          </Text>
-          <Text size="md">{data?.username ?? "Не задано"}</Text>
-        </div>
-        <Box flex="1 0 156px" display="flex">
-          <Button fullWidth={false} style={{ width: "min-content", marginLeft: "auto" }} onClick={() => (sigChangeName.value = true)} size="compact-sm" variant="outline" loading={isPend} disabled={isPend}>
-            Сменить имя
-          </Button>
+    <>
+      <Stack align="flex-start" justify="flex-start" gap="xs">
+        <Box m="0 auto">
+          <SegmentedControl
+            w="100%"
+            maw="252px"
+            size="xs"
+            value={sigSegment.value}
+            onChange={(a: any) => (sigSegment.value = a)}
+            data={[
+              { label: "Безопасность", value: "general" },
+              { label: "Контакты", value: "contacts" },
+            ]}
+            style={{ alignSelf: "center" }}
+          />
         </Box>
-      </Flex>
-      <div>
-        <Text size="sm" c="dark.2">
-          Email:
-        </Text>
-        <Text size="md">{data?.usermail ?? ""}</Text>
-      </div>
-      <div>
-        <Text size="sm" c="dark.2">
-          Дата регистрации:
-        </Text>
-        {data?.createdat != null ? <Text size="md">{getDateHours(data.createdat)}</Text> : null}
-      </div>
-      <div>
-        <Button fullWidth={false} style={{ width: "min-content" }} onClick={() => (sigChangePass.value = true)} size="compact-sm" variant="subtle" loading={isPend} disabled={isPend}>
-          Изменить пароль
-        </Button>
-      </div>
-      {isPending ? (
-        <Loader color="dark.1" size="xs" />
-      ) : (
-        <>
-          <Space h="sm" />
-          <UpdateContacts init={makeContacts(data)} id={data?.id!} />
-        </>
-      )}
-      <Space h="sm" />
-      <Stack w="100%" gap="xs" align="start">
-        <Text c="dark.3" size="sm" component="div">
-          Версия приложения v{ver}
-        </Text>
-        <Anchor
-          href="/releases"
-          c="dark.2"
-          underline="always"
-          inline
-          size="xs"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            isShowHist.value = true;
-          }}
-        >
-          история релизов
-        </Anchor>
-      </Stack>
-      {/* FIXME убрать */}
-      {/* <Button
+        {sigSegment.value === "general" ? (
+          <>
+            <Flex wrap="nowrap" gap="xl">
+              <div>
+                <Text size="sm" c="dark.2">
+                  Имя кипера\заводчика:
+                </Text>
+                <Text size="md">{data?.username ?? "Не задано"}</Text>
+              </div>
+              <Box flex="1 0 156px" display="flex">
+                <Button fullWidth={false} style={{ width: "min-content", marginLeft: "auto" }} onClick={() => (sigChangeName.value = true)} size="compact-sm" variant="outline" loading={isPend} disabled={isPend}>
+                  Сменить имя
+                </Button>
+              </Box>
+            </Flex>
+            <div>
+              <Text size="sm" c="dark.2">
+                Email:
+              </Text>
+              <Text size="md">{data?.usermail ?? ""}</Text>
+            </div>
+            <div>
+              <Text size="sm" c="dark.2">
+                Дата регистрации:
+              </Text>
+              {data?.createdat != null ? <Text size="md">{getDateHours(data.createdat)}</Text> : null}
+            </div>
+            <div>
+              <Button fullWidth={false} style={{ width: "min-content" }} onClick={() => (sigChangePass.value = true)} size="compact-sm" variant="subtle" loading={isPend} disabled={isPend}>
+                Изменить пароль
+              </Button>
+            </div>
+            <Space h="sm" />
+            <Stack w="100%" gap="xs" align="start">
+              <Text c="dark.3" size="sm" component="div">
+                Версия приложения v{ver}
+              </Text>
+              <Anchor
+                href="/releases"
+                c="dark.2"
+                underline="always"
+                inline
+                size="xs"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  isShowHist.value = true;
+                }}
+              >
+                история релизов
+              </Anchor>
+            </Stack>
+            {/* FIXME убрать */}
+            {/* <Button
         fullWidth={false}
         onClick={() =>
           makePay(userId!, {
@@ -107,35 +117,47 @@ export function Profile() {
       >
         Заплатить 2р
       </Button> */}
-
-      {isPending ? (
-        <Loader color="dark.1" size="xs" />
-      ) : (
-        <>
-          <ModalChangeName
-            opened={sigChangeName.value}
-            close={() => (sigChangeName.value = false)}
-            initName={data?.username ?? ""}
-            sbmtCallback={(a) =>
-              mutate(
-                { name: a, id: userId! },
-                {
-                  onSuccess: () => {
-                    notif({ c: "green", t: "Успешно", m: "Имя аккаунта сохранено" });
-                    sigChangeName.value = false;
-                  },
-                  onError: (e) => {
-                    notif({ c: "red", t: "Проблема", m: "Имя занято", code: e.code });
-                  },
-                },
-              )
-            }
-          />
-          <ModalChangePass opened={sigChangePass.value} close={() => (sigChangePass.value = false)} />
-        </>
-      )}
-
-      <ReleasesHistory opened={isShowHist.value} close={() => (isShowHist.value = false)} />
-    </Stack>
+            {isPending ? (
+              <Loader color="dark.1" size="xs" />
+            ) : (
+              <>
+                <ModalChangeName
+                  opened={sigChangeName.value}
+                  close={() => (sigChangeName.value = false)}
+                  initName={data?.username ?? ""}
+                  sbmtCallback={(a) =>
+                    mutate(
+                      { name: a, id: userId! },
+                      {
+                        onSuccess: () => {
+                          notif({ c: "green", t: "Успешно", m: "Имя аккаунта сохранено" });
+                          sigChangeName.value = false;
+                        },
+                        onError: (e) => {
+                          notif({ c: "red", t: "Проблема", m: "Имя занято", code: e.code });
+                        },
+                      },
+                    )
+                  }
+                />
+                <ModalChangePass opened={sigChangePass.value} close={() => (sigChangePass.value = false)} />
+              </>
+            )}
+            <ReleasesHistory opened={isShowHist.value} close={() => (isShowHist.value = false)} />
+          </>
+        ) : (
+          <>
+            {isPending ? (
+              <Loader color="dark.1" size="xs" />
+            ) : (
+              <>
+                <Space h="sm" />
+                <UpdateContacts init={makeContacts(data)} id={data?.id!} />
+              </>
+            )}
+          </>
+        )}
+      </Stack>
+    </>
   );
 }

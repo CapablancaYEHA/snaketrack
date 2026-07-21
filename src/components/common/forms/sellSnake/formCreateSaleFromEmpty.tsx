@@ -41,7 +41,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
 
   const [imgs, setImgs] = useState<string[] | undefined>(undefined);
   const resetRef = useRef<() => void>(null);
-  const [val, setVal] = useState("");
+  const [val, setVal] = useState(emptyInit.city_name ?? "");
   const [isDis, seIsDis] = useState(false);
   const { mutate: search, data, isPending } = useDadata();
   const { mutate: createSnake, isPending: isMutSnakePend } = useSupaCreate<IReqCreateSnakeForAdv>(categoryToBaseTable[category]);
@@ -149,7 +149,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
           name="snake_name"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <TextInput required onChange={onChange} value={value || wGenes?.map((h) => h.label).join(", ")} label="Кличка змеи" error={error?.message} flex="1 1 50%" />;
+            return <TextInput required onChange={onChange} value={value || wGenes?.map((h) => h.label).join(", ")} label="Кличка/Идентификатор" error={error?.message} flex="1 1 50%" />;
           }}
         />
         <Controller
@@ -241,9 +241,9 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
           }}
         />
       </Flex>
-      {!emptyInit.contacts_group && !emptyInit.contacts_telegram ? (
+      {(!emptyInit.contacts_group && !emptyInit.contacts_telegram) || !emptyInit.contacts_city_code ? (
         <Text size="sm" fs="italic">
-          Заполните <Mark color="orange">контакты</Mark> в Аккаунте (Профиле), они будут автоматически подтягиваться в каждую форму объявления
+          Заполните <Mark color="orange">Контакты</Mark> в Аккаунте (Профиле), они будут автоматически подтягиваться в каждую форму объявления
         </Text>
       ) : null}
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">

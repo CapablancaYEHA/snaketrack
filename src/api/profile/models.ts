@@ -9,6 +9,8 @@ export interface IResProfile {
   contacts_group?: string;
   contacts_telegram?: string;
   contacts_website?: string;
+  contacts_city_code?: string;
+  contacts_city_name?: string;
 }
 
 export interface IUpdProfileReq {
@@ -19,6 +21,8 @@ export interface IUpdProfileReq {
     contacts_group?: string;
     contacts_telegram?: string;
     contacts_website?: string;
+    contacts_city_code?: string;
+    contacts_city_name?: string;
   };
   id: string;
 }
