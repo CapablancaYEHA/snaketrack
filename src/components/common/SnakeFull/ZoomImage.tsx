@@ -16,6 +16,7 @@ export const ZoomImage = ({ pic, radius = "md", w = "auto" }) => {
       zoomable: true,
       draggable: false,
       touchNavigation: true,
+      dragToleranceY: 5,
       elements: [
         {
           href: urlProxyReplace(pic),

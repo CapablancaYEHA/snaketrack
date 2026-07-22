@@ -1,7 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { startMd, startSm, tabletThreshold } from "@/styles/theme";
 import fallback from "@assets/placeholder.webp";
-import { ActionIcon, Anchor, Box, Button, CopyButton, Fieldset, Flex, Grid, Image, Loader, Modal, Progress, SegmentedControl, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
+import { ActionIcon, Anchor, AspectRatio, Box, Button, CopyButton, Fieldset, Flex, Grid, Image, Loader, Modal, Progress, SegmentedControl, Select, SimpleGrid, Space, Stack, Text, TextInput, Title } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
@@ -114,7 +114,7 @@ export const SInfo = ({ clutch, category }: { clutch: IResClutch; category: ECat
           <Title order={6}>Набор генов</Title>
           <Flex gap="4px" wrap="wrap">
             {calcProjGenes(clutch.female_genes.concat(clutch.male_genes.flat())).map((a, ind) => (
-              <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="xs" />
+              <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} />
             ))}
           </Flex>
         </Stack>
@@ -153,7 +153,9 @@ export const FinalJuveniles = ({ category, list, onPicClick }) => {
                 onPicClick(juv.id, null);
               }}
             >
-              <Image src={urlProxyReplace(juv.picture)} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
+              <AspectRatio ratio={16 / 9}>
+                <Image src={urlProxyReplace(juv.picture)} fit="cover" radius="sm" w="100%" loading="lazy" mah={72} flex="1 1 0px" fallbackSrc={fallback} />
+              </AspectRatio>
               <SexName sex={juv.sex} name={juv.snake_name} size="sm" />
             </Stack>
           ))
@@ -240,7 +242,7 @@ export const MiniInfo = ({ opened, close, snakeId, sex, category, withTitle = tr
             {lastWeight ? <Text size="xs">Вес {lastWeight.weight}г</Text> : null}
             <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
               {sortSnakeGenes(data.genes as any).map((a) => (
-                <GenePill item={a} key={`${a.label}_${a.id}`} />
+                <GenePill item={a} key={`${a.label}_${a.id}`} size="sm" />
               ))}
             </Flex>
           </>

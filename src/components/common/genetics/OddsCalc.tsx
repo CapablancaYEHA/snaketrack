@@ -93,12 +93,12 @@ export const OddsElement: FC<IPropOdds> = ({ o }) => {
     <Flex direction="row" wrap="nowrap" gap="md" w="100%" maw="100%">
       <Box fz="xs" flex="0 0 72px" component="section">{`${numerator}/${denominator} (${(numerator / denominator) * 100}%)`}</Box>
       <Flex direction="row" wrap="wrap" gap="sm">
-        {isPureNormal ? <GenePill item={emptyMMTrait as any} /> : o.traits.map((t) => <GenePill key={`${t.id}_${t.name}`} item={fromMMtoPill(t)} />)}
+        {isPureNormal ? <GenePill item={emptyMMTrait as any} size="sm" /> : o.traits.map((t) => <GenePill key={`${t.id}_${t.name}`} item={fromMMtoPill(t)} size="sm" />)}
       </Flex>
       {isPureNormal || special.includes(o.morph_name.split(" ").sort().join(" ")) || o.traits_count <= 1 ? null : (
         <Flex gap="xs">
           <Text style={{ alignSelf: "center" }}>=</Text>
-          <GenePill item={{ label: o.morph_name, gene: "combo" } as any} withWrap />
+          <GenePill item={{ label: o.morph_name, gene: "combo" } as any} withWrap size="sm" />
         </Flex>
       )}
     </Flex>

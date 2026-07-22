@@ -24,7 +24,7 @@ export const Carousel = ({ images }) => {
       touchFollowAxis: true,
       elements: kek,
       loop: true,
-      dragToleranceY: 20,
+      dragToleranceY: 5,
       startAt: active,
     });
 

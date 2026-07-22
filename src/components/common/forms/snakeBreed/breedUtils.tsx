@@ -89,7 +89,7 @@ export const makeBreedColumns = ({ setBreedId, category }) => {
       cell: ({ cell }) => (
         <Flex gap="4px" wrap="wrap">
           {cell.getValue().map((a, ind) => (
-            <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} size="xs" />
+            <GenePill key={`${a.label}_${a.gene}_${ind}`} item={a as any} />
           ))}
         </Flex>
       ),

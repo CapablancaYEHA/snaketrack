@@ -88,7 +88,7 @@ export function MarketSnake({ category, data }: IProp) {
                 </Text>
               </Flex>
               <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
-                {sortSnakeGenes(data.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} />)}
+                {sortSnakeGenes(data.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} size="sm" />)}
               </Flex>
 
               {isShowDiscount ? (

@@ -108,7 +108,7 @@ export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, cu
               <Space h="xs" />
               <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="start">
                 {sortSnakeGenes(selected.genes as any).map((a) => (
-                  <GenePill item={a} key={`${a.label}_${a.id}`} />
+                  <GenePill item={a} key={`${a.label}_${a.id}`} size="sm" />
                 ))}
               </Flex>
               <AspectRatio ratio={16 / 9} maw="100%" w="100%" mih={170}>
@@ -135,7 +135,7 @@ const SnakeAnchor = ({ selected, category }) => {
             </Text>
             <Flex style={{ flexFlow: "row nowrap" }}>
               <Box style={{ flex: "0 0 20px", minWidth: 20 }}>
-                <IconSwitch icon={selected.gender} width="20" height="20" />
+                <IconSwitch icon={selected.sex} width="20" height="20" />
               </Box>
               <Text size="md" td="underline">
                 {selected.snake_name}
@@ -154,7 +154,7 @@ const SnakeAnchor = ({ selected, category }) => {
         <Box display="flex">
           <Text style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: category === ECategories.BP ? 52 : 200 }}>{selected.id}</Text>
           {`\u00a0`}
-          <IconSwitch icon={selected.gender} width="20" height="20" />
+          <IconSwitch icon={selected.sex} width="20" height="20" />
         </Box>
       )}
     </Flex>

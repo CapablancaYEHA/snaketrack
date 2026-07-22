@@ -229,7 +229,7 @@ export const BriefInfo = ({ snake }) => {
         </Stack>
       </Flex>
       <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
-        {sortSnakeGenes(snake?.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} />)}
+        {sortSnakeGenes(snake?.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} size="sm" />)}
       </Flex>
     </Stack>
   );

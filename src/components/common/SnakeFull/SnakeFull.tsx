@@ -142,7 +142,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
           </Flex>
           <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
             {sortSnakeGenes(data.genes as any).map((a) => (
-              <GenePill item={a} key={`${a.label}_${a.id}`} />
+              <GenePill item={a} key={`${a.label}_${a.id}`} size="sm" />
             ))}
           </Flex>
           <Paper shadow="sm" radius="md" p="sm" w="100%">

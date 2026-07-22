@@ -3,7 +3,7 @@ import { FC } from "preact/compat";
 import { useEffect } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ActionIcon, Box, Button, CopyButton, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Textarea, Title } from "@mantine/core";
+import { ActionIcon, AspectRatio, Box, Button, CopyButton, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Textarea, Title } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
@@ -189,7 +189,9 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
         {ids?.map((a, ind) => (
           <Flex key={a} gap="sm" flex="0 1 160px" h={80} style={{ cursor: "pointer" }} onClick={() => (snakeId.value = ids?.[ind])} wrap="nowrap">
             <IconSwitch icon={ind === 0 ? "female" : "male"} width="16" height="16" />
-            <Image src={urlProxyReplace(pics[ind])} fit="cover" radius="sm" w="auto" flex="0 0 160px" loading="lazy" fallbackSrc={fallback} />
+            <AspectRatio ratio={16 / 9}>
+              <Image src={urlProxyReplace(pics[ind])} fit="cover" radius="sm" w="auto" flex="0 0 160px" loading="lazy" fallbackSrc={fallback} />
+            </AspectRatio>
           </Flex>
         ))}
       </Flex>

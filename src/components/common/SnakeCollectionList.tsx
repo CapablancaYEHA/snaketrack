@@ -64,7 +64,7 @@ export function SnakeCollectionList() {
 
   const target = snakes?.find((b) => b.id === curId.value);
 
-  const debSearch = debounce(setGlobalFilter, 400);
+  const debSearch = debounce(setGlobalFilter, 300);
 
   const isFilterNull = isEmpty(filt) && globalFilter.length === 0;
 
@@ -102,9 +102,9 @@ export function SnakeCollectionList() {
               size="xs"
               flex="1 1 auto"
               placeholder="Поиск по примечаниям, именам"
-              onChange={(e: any) => setGlobalFilter(e.target.value!)}
+              onChange={(e: any) => debSearch(e.target.value!)}
               value={globalFilter}
-              rightSection={<CloseButton aria-label="Clear input" onClick={() => setGlobalFilter("")} style={{ display: !isEmpty(globalFilter) ? undefined : "none" }} />}
+              rightSection={<CloseButton aria-label="Clear input" onClick={() => debSearch("")} style={{ display: !isEmpty(globalFilter) ? undefined : "none" }} />}
               leftSection={<IconSwitch icon="search" />}
             />
           </Box>
@@ -114,7 +114,7 @@ export function SnakeCollectionList() {
             columnFilters={filt}
             setColumnFilters={setFilt}
             globalFilter={globalFilter}
-            setGlobalFilter={debSearch}
+            setGlobalFilter={setGlobalFilter}
             estimateSize={276}
             initSort={[
               {
@@ -183,6 +183,7 @@ export function SnakeCollectionList() {
           },
         }}
         keepMounted
+        lockScroll={false}
       >
         {!isFilterNull ? (
           <>

@@ -160,6 +160,7 @@ export function Market() {
           },
         }}
         keepMounted
+        lockScroll={false}
       >
         {!isFilterNull && sqlFilt?.["owner_id"] ? (
           <>

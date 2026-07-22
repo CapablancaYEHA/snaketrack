@@ -57,7 +57,7 @@ export const GenesList = ({ genes }) => {
   return (
     <Flex wrap="wrap" gap={!isMwTablet ? "sm" : "xs"}>
       {sortSnakeGenes(genes).map((a) => (
-        <GenePill key={`${a.label}_${a.id}`} item={a} size={!isMwTablet ? "sm" : "xs"} />
+        <GenePill key={`${a.label}_${a.id}`} item={a} size={isMwTablet ? "xs" : "sm"} />
       ))}
     </Flex>
   );

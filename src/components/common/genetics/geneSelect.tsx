@@ -16,7 +16,7 @@ type IPill = {
   withWrap?: boolean;
   disabled?: boolean;
 };
-export const GenePill: FC<IPill> = ({ item, onRemove, size = "sm", onLeftClick, withWrap, disabled }) => {
+export const GenePill: FC<IPill> = ({ item, onRemove, size = "xs", onLeftClick, withWrap, disabled }) => {
   const isHet = (item.gene === "rec" || (item.gene === "inc-dom" && item.hasHet)) && item.label.toLowerCase().includes("het");
   const isPercent = item.label.startsWith("50%") || item.label.startsWith("66%");
 
@@ -94,7 +94,7 @@ export const GenesSelect: FC<IProp> = ({ keepMounted = true, onChange, view, ini
       return temp;
     });
 
-  const values = (value ?? []).map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} onLeftClick={handleAssignPos} />);
+  const values = (value ?? []).map((item) => <GenePill item={item} key={`${item.label}_${item.id}`} onRemove={handleValueRemove} onLeftClick={handleAssignPos} size="sm" />);
 
   const upg = upgradeOptions(traits ?? [], search, view);
 

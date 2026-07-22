@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/compat";
 import { Stack } from "@mantine/core";
 import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, RowSelectionState, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -75,6 +75,7 @@ export const StackTable = <T extends object>({ estimateSize, columns, data, setC
   }, []);
 
   const { rows } = table.getRowModel();
+  const memoRows = useMemo(() => rows, [table.options.data.length, rows.length]);
   const isEmpty = isMount.current && table.options.data.length === 0;
   const isFilteredOut = table.options.data.length > 0 && rows.length === 0;
 
@@ -84,13 +85,13 @@ export const StackTable = <T extends object>({ estimateSize, columns, data, setC
     <div className={styles.cont} style={{ height: `${tableHeight}px` }} ref={parentRef}>
       <table className={styles.table}>
         {headGroups[0]?.headers.length <= 1 ? null : (
-          <thead style={{ background: "#1c1c1c" }}>
+          <thead>
             {headGroups.map((headerGroup) => {
               return (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return header.column.columnDef.header ? (
-                      <th key={header.id} style={{ ...calcColumn(header as any), ...getCommonPinningStyles(header.column), minWidth: header.column.columnDef.minSize, background: header.column.getIsPinned() ? bgDark : "transparent" }}>
+                      <th key={header.id} style={{ ...calcColumn(header as any), ...getCommonPinningStyles(header.column), minWidth: header.column.columnDef.minSize, background: header.column.getIsPinned() ? bgDark : "#1c1c1c" }}>
                         {header.isPlaceholder ? null : (
                           <div className={header.column.getCanSort() ? styles.pointer : ""} onClick={header.column.getToggleSortingHandler()}>
                             {flexRender(header.column.columnDef.header, header.getContext())}
@@ -109,13 +110,13 @@ export const StackTable = <T extends object>({ estimateSize, columns, data, setC
             })}
           </thead>
         )}
-        <TableVirtual rows={rows} estimateSize={estimateSize} contRef={parentRef} isEmpty={isEmpty} isFilteredOut={isFilteredOut} onLongPress={onLongPress} onRowClick={onRowClick} />
+        <TableVirtual rows={memoRows} estimateSize={estimateSize} contRef={parentRef} isEmpty={isEmpty} isFilteredOut={isFilteredOut} onLongPress={onLongPress} onRowClick={onRowClick} />
       </table>
     </div>
   );
 };
 
-export const TableVirtual = ({ isEmpty, isFilteredOut, onLongPress, rows, contRef, estimateSize, onRowClick }) => {
+export const TableVirtual = memo(({ isEmpty, isFilteredOut, onLongPress, rows, contRef, estimateSize, onRowClick }: any) => {
   const handleLong = useLongPress((e) => onLongPress?.(e));
 
   const virtualizer = useVirtualizer({
@@ -123,9 +124,10 @@ export const TableVirtual = ({ isEmpty, isFilteredOut, onLongPress, rows, contRe
     getScrollElement: () => contRef.current,
     estimateSize: () => estimateSize,
     measureElement: typeof window !== "undefined" && navigator.userAgent.indexOf("Firefox") === -1 ? (element) => element?.getBoundingClientRect().height : undefined,
-    overscan: 6,
+    overscan: 5,
     horizontal: false,
   });
+
   return (
     <tbody
       style={{
@@ -174,4 +176,4 @@ export const TableVirtual = ({ isEmpty, isFilteredOut, onLongPress, rows, contRe
       )}
     </tbody>
   );
-};
+});

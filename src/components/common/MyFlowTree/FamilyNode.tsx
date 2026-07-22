@@ -48,7 +48,7 @@ export const FamilyNode: FC<IFamilyNode> = ({ data, targetId, onSelect, selected
           <Box mah={88} h="100%" p={2} className={css.overflowed}>
             <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="start">
               {sortSnakeGenes(data.genes as any).map((a) => (
-                <GenePill item={a} key={`${a.label}_${a.id}`} size="xs" />
+                <GenePill item={a} key={`${a.label}_${a.id}`} />
               ))}
             </Flex>
           </Box>

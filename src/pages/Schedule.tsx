@@ -38,7 +38,7 @@ export const Schedule = () => {
   const [rowSelection, setRowSelection] = useState<any>({});
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
-  const debSearch = debounce(setGlobalFilter, 400);
+  const debSearch = debounce(setGlobalFilter, 300);
 
   const handle = (a) => {
     sigCurCat.value = a;
@@ -137,9 +137,9 @@ export const Schedule = () => {
                 size="xs"
                 flex="1 1 auto"
                 placeholder="Поиск по примечаниям, именам"
-                onChange={(e: any) => setGlobalFilter(e.target.value!)}
+                onChange={(e: any) => debSearch(e.target.value!)}
                 value={globalFilter}
-                rightSection={<CloseButton aria-label="Clear input" onClick={() => setGlobalFilter("")} style={{ display: !isEmpty(globalFilter) ? undefined : "none" }} />}
+                rightSection={<CloseButton aria-label="Clear input" onClick={() => debSearch("")} style={{ display: !isEmpty(globalFilter) ? undefined : "none" }} />}
                 leftSection={<IconSwitch icon="search" />}
               />
             </Box>
@@ -151,7 +151,7 @@ export const Schedule = () => {
                 rowSelection={rowSelection}
                 estimateSize={140}
                 globalFilter={globalFilter}
-                setGlobalFilter={debSearch}
+                setGlobalFilter={setGlobalFilter}
                 additionalHeight={684}
                 initSort={[
                   {

@@ -121,7 +121,7 @@ export const FormEditSale = ({ init, info, category }) => {
       </Flex>
       <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
         {sortSnakeGenes(info.genes as any).map((a) => (
-          <GenePill item={a} key={`${a.label}_${a.id}`} />
+          <GenePill item={a} key={`${a.label}_${a.id}`} size="sm" />
         ))}
       </Flex>
       <Flex align="flex-start" maw="100%" className={styles.w70}>
