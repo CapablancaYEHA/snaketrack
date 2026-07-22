@@ -85,7 +85,7 @@ export const StackTable = <T extends object>({ estimateSize, columns, data, setC
     <div className={styles.cont} style={{ height: `${tableHeight}px` }} ref={parentRef}>
       <table className={styles.table}>
         {headGroups[0]?.headers.length <= 1 ? null : (
-          <thead>
+          <thead style={{ background: "#1c1c1c" }}>
             {headGroups.map((headerGroup) => {
               return (
                 <tr key={headerGroup.id}>
