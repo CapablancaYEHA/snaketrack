@@ -189,9 +189,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
         {ids?.map((a, ind) => (
           <Flex key={a} gap="sm" flex="0 1 160px" h={80} style={{ cursor: "pointer" }} onClick={() => (snakeId.value = ids?.[ind])} wrap="nowrap">
             <IconSwitch icon={ind === 0 ? "female" : "male"} width="16" height="16" />
-            <AspectRatio ratio={16 / 9}>
-              <Image src={urlProxyReplace(pics[ind])} fit="cover" radius="sm" w="auto" flex="0 0 160px" loading="lazy" fallbackSrc={fallback} />
-            </AspectRatio>
+            <Image src={urlProxyReplace(pics[ind])} fit="cover" radius="sm" w="auto" flex="0 0 160px" loading="lazy" fallbackSrc={fallback} />
           </Flex>
         ))}
       </Flex>
