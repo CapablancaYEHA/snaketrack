@@ -119,11 +119,16 @@ export const SInfo = ({ clutch, category }: { clutch: IResClutch; category: ECat
           </Flex>
         </Stack>
       </Stack>
-      {ids ? (
+      {ids && ids.length > 0 ? (
         <Flex wrap="nowrap" direction="column" align="flex-start">
           <div>
-            <Title order={6}>Змееныши</Title>
-            <Space h="xs" />
+            <Title order={6}>
+              Змееныши
+              <br />
+              <Text size="sm" fw={500}>
+                {ids.length}
+              </Text>
+            </Title>
           </div>
         </Flex>
       ) : null}
@@ -201,13 +206,19 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOn
           )}
         </Flex>
       )}
-      <Flex>
-        <Box w="100%" maw="100%">
-          <Progress.Root size="lg">
-            <Progress.Section value={getPercentage(daysIncubation[category], left)} color={calcAnim(curStatus, left) ? "yellow" : "green"} animated={calcAnim(curStatus, left)} striped={curStatus === EClSt.LA} />
-          </Progress.Root>
-        </Box>
-      </Flex>
+      {isClosed ? (
+        <Title order={6} ta="center" c="green">
+          Кладка закрыта
+        </Title>
+      ) : (
+        <Flex>
+          <Box w="100%" maw="100%">
+            <Progress.Root size="lg">
+              <Progress.Section value={getPercentage(daysIncubation[category], left)} color={curStatus === EClSt.LA ? "yellow" : "green"} animated={curStatus === EClSt.LA} striped={curStatus === EClSt.LA} />
+            </Progress.Root>
+          </Box>
+        </Flex>
+      )}
       {(isHatch || isClosed) && hatchDate ? null : (
         <Flex justify="center">
           <Title order={6} fw={500}>

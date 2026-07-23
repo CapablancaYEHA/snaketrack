@@ -3,7 +3,7 @@ import { FC } from "preact/compat";
 import { useEffect } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ActionIcon, AspectRatio, Box, Button, CopyButton, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Textarea, Title } from "@mantine/core";
+import { ActionIcon, Box, Button, CopyButton, Divider, Flex, Image, NumberInput, Progress, Select, Stack, Text, Textarea, Title } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
@@ -19,7 +19,6 @@ import { notif } from "@/utils/notif";
 import { declWord, urlProxyReplace } from "@/utils/other";
 import { dateAddDays, dateTimeDiff } from "@/utils/time";
 import { daysCriticalThr, daysIncubation, getPercentage } from "../../snakeBreed/breedUtils";
-import { calcAnim } from "../clutchUtils";
 import { IClutchEditScheme, clutchEditSchema, prepForClutchUpdate, prepForFinal, prepForHatch, stdErr } from "../common";
 import { FinalJuveniles, FormApprovedBabies, MiniInfo } from "../subcomponents";
 import style from "./styles.module.scss";
@@ -224,18 +223,26 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
               );
             }}
           />
-          <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%">
-            <Flex>
-              <Box w="100%" maw="100%">
-                <Progress.Root size="lg">
-                  <Progress.Section value={getPercentage(daysIncubation[category], left)} color={calcAnim(clutch.status, left) ? "yellow" : "green"} animated={calcAnim(clutch.status, left)} striped={clutch.status === EClSt.LA} />
-                </Progress.Root>
-              </Box>
-            </Flex>
-            <Flex justify="center">
-              <Title order={6}>{isHatch || isClosed ? finalName : `До конца ${incubName} ~${declWord(left, ["день", "дня", "дней"])}`}</Title>
-            </Flex>
-          </Stack>
+          {isClosed ? (
+            <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%" align="center">
+              <Title order={6} ta="center" c="green">
+                Кладка закрыта
+              </Title>
+            </Stack>
+          ) : (
+            <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%">
+              <Flex>
+                <Box w="100%" maw="100%">
+                  <Progress.Root size="lg">
+                    <Progress.Section value={getPercentage(daysIncubation[category], left)} color={isLaid ? "yellow" : "green"} animated={isLaid} striped={isLaid} />
+                  </Progress.Root>
+                </Box>
+              </Flex>
+              <Flex justify="center">
+                <Title order={6}>{isHatch ? finalName : `До конца ${incubName} ~${declWord(left, ["день", "дня", "дней"])}`}</Title>
+              </Flex>
+            </Stack>
+          )}
         </Flex>
         <Flex gap="lg" wrap="wrap">
           <Controller

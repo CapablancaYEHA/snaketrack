@@ -75,7 +75,8 @@ export const StackTable = <T extends object>({ estimateSize, columns, data, setC
   }, []);
 
   const { rows } = table.getRowModel();
-  const memoRows = useMemo(() => rows, [table.options.data.length, rows.length]);
+  const idsRef = rows.map((a) => a.id);
+  const memoRows = useMemo(() => rows, [JSON.stringify(idsRef)]);
   const isEmpty = isMount.current && table.options.data.length === 0;
   const isFilteredOut = table.options.data.length > 0 && rows.length === 0;
 
