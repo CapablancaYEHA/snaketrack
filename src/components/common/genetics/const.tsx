@@ -31,10 +31,12 @@ export const upgAlias = (arr: IGenesComp[]) =>
   }, [] as IGenesComp[]);
 
 export const upgradeOptions = (arr: IGenesComp[], search: string, view: EGenesView) => {
-  if (search.trim().length === 0) return arr;
+  const arrNoDis = arr.filter((h) => !h.isDisabled);
+  if (search.trim().length === 0) return arrNoDis;
   let inp = search.trim().toLowerCase();
   const isCalc = view === EGenesView.CALC;
-  return arr
+  return arrNoDis
+    .filter((h) => !(h.isDisabled ?? false))
     .reduce((tot, cur) => {
       if (isCalc && Boolean(cur.is_beauty_only)) {
         return tot;

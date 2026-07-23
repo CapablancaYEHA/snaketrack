@@ -4,6 +4,7 @@ import { CheckIcon, Combobox, Group, MantineSize, Pill, PillsInput, Text, useCom
 import { debounce, isEmpty, sortBy } from "lodash-es";
 import { ECategories, EGenesView, IGenesComp } from "@/api/common";
 import { useSnakeGenes } from "@/api/hooks";
+import { MaxSelectedMulti } from "../MaxSelectedMulti";
 import { checkGeneConflict, geneToColor, redef, upgradeOptions } from "./const";
 import styles from "./styles.module.scss";
 import { useLongPress } from "./useLongPress";
@@ -149,4 +150,25 @@ export const GenesSelect: FC<IProp> = ({ keepMounted = true, onChange, view, ini
       </Combobox.Dropdown>
     </Combobox>
   );
+};
+
+interface IGeneSimple {
+  onChange: (v: string[]) => void;
+  category: any;
+  initVal?: any[];
+}
+
+export const MaxMultiGenes = ({ onChange, initVal, category }: IGeneSimple) => {
+  const { data: traits } = useSnakeGenes(category);
+  const [search, setSearch] = useState("");
+
+  const upg = upgradeOptions(traits ?? [], search, EGenesView.STD);
+
+  const options = sortBy(upg, [
+    function (o) {
+      return o.label.length;
+    },
+  ]);
+
+  return <MaxSelectedMulti miw={0} middlewares={{ flip: false }} flex="1 1 50%" label="Гены" initVal={initVal} onChange={onChange} onSearchUpdate={setSearch} data={(options ?? [])?.map((g) => g.label)} />;
 };

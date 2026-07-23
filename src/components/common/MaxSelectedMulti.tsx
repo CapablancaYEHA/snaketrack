@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-import { CheckIcon, Combobox, Group, MantineStyleProps, Pill, PillsInput, useCombobox } from "@mantine/core";
+import { CheckIcon, Combobox, ComboboxProps, Group, MantineStyleProps, Pill, PillsInput, useCombobox } from "@mantine/core";
 import { debounce, isEmpty } from "lodash-es";
 
 type IDt = {
@@ -15,9 +15,11 @@ interface IProp {
   [key: string]: any;
   flex?: MantineStyleProps["flex"];
   initVal?: any[];
+  middlewares?: ComboboxProps["middlewares"];
+  onSearchUpdate?: (g: string) => void;
 }
 
-export function MaxSelectedMulti({ data, label, onChange, dataHasLabel, flex, initVal, ...rest }: IProp) {
+export function MaxSelectedMulti({ data, label, onChange, dataHasLabel, flex, initVal, onSearchUpdate, middlewares, ...rest }: IProp) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
@@ -85,8 +87,12 @@ export function MaxSelectedMulti({ data, label, onChange, dataHasLabel, flex, in
     else setValue(initVal as any);
   }, [initVal]);
 
+  useEffect(() => {
+    onSearchUpdate?.(search);
+  }, [search]);
+
   return (
-    <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false} position="bottom" keepMounted>
+    <Combobox store={combobox} onOptionSubmit={handleValueSelect} withinPortal={false} position="bottom" keepMounted middlewares={middlewares}>
       <Combobox.DropdownTarget>
         <PillsInput pointer onClick={() => combobox.openDropdown()} label={label} miw={150} flex={flex}>
           <Pill.Group>

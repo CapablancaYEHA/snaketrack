@@ -332,7 +332,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
             name="female_id"
             control={innerInstance.control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <Select data={regFems} value={value} onChange={onChange} error={error?.message} searchable required disabled={isClutchMade} />;
+              return <Select placeholder="Поиск" data={regFems} value={value} onChange={onChange} error={error?.message} searchable required disabled={isClutchMade} />;
             }}
           />
           <Box w="100%" maw="100%">
@@ -365,6 +365,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
                 return (
                   <Select
                     searchable
+                    placeholder="Поиск"
                     renderOption={(o) => renderSelectOption(o.option, fetchFields?.find((f) => f.snake === o.option.value) != null)}
                     data={regMales}
                     value={value}
@@ -422,6 +423,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
                           render={({ fieldState: { error } }) => {
                             return (
                               <Select
+                                placeholder="Поиск"
                                 disabled={isClutchMade}
                                 searchable
                                 renderOption={(o) => renderSelectOption(o.option, fetchFields?.find((f) => f.snake === o.option.value) != null)}

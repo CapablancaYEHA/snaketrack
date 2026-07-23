@@ -12,7 +12,7 @@ import { SkelTable } from "@/components/common/skeletons";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { IFeedReq, IResSnakesList, IUpdReq, categoryToBaseTable } from "@/api/common";
-import { useSnakeGenes, useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
+import { useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 import { catVisited } from "@/pages/SnakeCategories";
 import { declWord } from "@/utils/other";
@@ -21,6 +21,7 @@ import { makeListColumns } from "./const";
 import { ChangeStatus } from "./forms/changeStatus/formChangeStatus";
 import { sexHardcode } from "./forms/snakeBreed/common";
 import { SnakeTags } from "./forms/snakeTags/formSnakeTags";
+import { MaxMultiGenes } from "./genetics/geneSelect";
 import { categToConfigList, categToDeclTitle, categToTitle, maturityDict, statusDictionary } from "./utils";
 
 const curId = signal<string | undefined>(undefined);
@@ -54,7 +55,7 @@ export function SnakeCollectionList() {
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
   const { data: profile } = useProfile(userId, userId != null);
-  const { data: genes } = useSnakeGenes(catVisited.value);
+
   const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(categToConfigList[catVisited.value]?.(userId), userId != null);
   const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[catVisited.value]);
   const { mutate: upd, isPending: isUpdPend } = useSupaUpd<IUpdReq>(categoryToBaseTable[catVisited.value]);
@@ -202,7 +203,9 @@ export function SnakeCollectionList() {
           </>
         ) : null}
         <Flex gap="md" wrap="nowrap" align="end" flex="1 1 auto">
-          <MaxSelectedMulti miw={0} flex="1 1 50%" label="Гены" onChange={(a) => tableFiltMulti(setFilt, a, "genes")} initVal={filt?.find((a) => a.id === "genes")?.value} data={(genes ?? [])?.map((g) => g.label)} />
+          <Flex gap="md" wrap="nowrap" align="end" flex="1 1 auto">
+            <MaxMultiGenes onChange={(a) => tableFiltMulti(setFilt, a, "genes")} category={catVisited.value} initVal={filt?.find((a) => a.id === "genes")?.value} />
+          </Flex>
         </Flex>
         <Space h="md" />
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">

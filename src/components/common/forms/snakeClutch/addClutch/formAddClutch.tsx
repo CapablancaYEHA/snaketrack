@@ -102,7 +102,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
             name="female_id"
             control={control}
             render={({ field: { onChange, value }, fieldState: { error } }) => {
-              return <Select data={regFems} value={value} onChange={onChange} error={error?.message} required searchable />;
+              return <Select data={regFems} placeholder="Поиск" value={value} onChange={onChange} error={error?.message} required searchable />;
             }}
           />
           <Box w="100%" maw="100%">
@@ -130,6 +130,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
               render={({ field: { onChange, value }, fieldState: { error } }) => {
                 return (
                   <Select
+                    placeholder="Поиск"
                     searchable
                     renderOption={(o) => renderSelectOption(o.option, fetchFields?.find((f) => f.snake === o.option.value) != null)}
                     data={regMales}
@@ -166,6 +167,7 @@ export const FormAddClutch: FC<IProp> = ({ category }) => {
                           render={({ fieldState: { error } }) => {
                             return (
                               <Select
+                                placeholder="Поиск"
                                 searchable
                                 renderOption={(o) => renderSelectOption(o.option, fetchFields?.find((f) => f.snake === o.option.value) != null)}
                                 data={regMales}

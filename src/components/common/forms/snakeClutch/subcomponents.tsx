@@ -170,7 +170,7 @@ export const FinalJuveniles = ({ category, list, onPicClick }) => {
   );
 };
 
-export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOnly = false }) => {
+export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category }) => {
   const left = dateTimeDiff(dateAddDays(laidDate, daysIncubation[category]), "days");
   const isHatch = curStatus === EClSt.HA;
   const isClosed = curStatus === EClSt.CL;
@@ -181,34 +181,36 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category, barOn
 
   return (
     <>
-      {barOnly ? null : (
-        <Flex gap="sm" justify="space-between">
-          <Title order={6}>
-            {dateLabel}
+      <Flex gap="sm" justify="space-between">
+        <Title order={6}>
+          {dateLabel}
+          <Text size="sm" fw={500}>
+            {getDate(laidDate)}
+          </Text>
+        </Title>
+        {(isHatch || isClosed) && hatchDate ? (
+          <Title order={6} ta="right">
+            {clutchEnd}
             <Text size="sm" fw={500}>
-              {getDate(laidDate)}
+              {getDate(hatchDate)}
             </Text>
           </Title>
-          {(isHatch || isClosed) && hatchDate ? (
-            <Title order={6} ta="right">
-              {clutchEnd}
-              <Text size="sm" fw={500}>
-                {getDate(hatchDate)}
-              </Text>
-            </Title>
-          ) : (
-            <Title order={6} ta="right">
-              Ожидаем
-              <Text size="sm" fw={500}>
-                ~{getDate(dateAddDays(laidDate, daysIncubation[category]))}
-              </Text>
-            </Title>
-          )}
-        </Flex>
-      )}
+        ) : (
+          <Title order={6} ta="right">
+            Ожидаем
+            <Text size="sm" fw={500}>
+              ~{getDate(dateAddDays(laidDate, daysIncubation[category]))}
+            </Text>
+          </Title>
+        )}
+      </Flex>
       {isClosed ? (
         <Title order={6} ta="center" c="green">
           Кладка закрыта
+        </Title>
+      ) : isHatch ? (
+        <Title order={6} ta="center" c="yellow">
+          Инкубация закончена
         </Title>
       ) : (
         <Flex>

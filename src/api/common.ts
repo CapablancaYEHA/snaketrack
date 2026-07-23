@@ -224,6 +224,7 @@ export interface IGenesComp {
   hasHet: boolean;
   isPos?: boolean;
   is_beauty_only?: boolean | null;
+  isDisabled?: boolean;
 }
 
 export const enum EGenesView {

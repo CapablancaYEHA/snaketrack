@@ -10,10 +10,11 @@ import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { segmentedSnakes } from "@/components/common/const";
 import { sexHardcode } from "@/components/common/forms/snakeBreed/common";
+import { MaxMultiGenes } from "@/components/common/genetics/geneSelect";
 import { SkelTable } from "@/components/common/skeletons";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { ECategories, ESupabase, IMarketRes } from "@/api/common";
-import { useSnakeGenes, useSupaInfiniteGet } from "@/api/hooks";
+import { useSupaInfiniteGet } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 
 export function Market() {
@@ -36,7 +37,6 @@ export function Market() {
 
   const { data, isLoading, isRefetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useSupaInfiniteGet<IMarketRes[]>({ t: ESupabase.MRKT_V, f: filter, id: [cat, sort, sqlFilt, sqlMultFilt] }, Boolean(cat));
   const market = data?.pages.flatMap((p) => p.data);
-  const { data: genes } = useSnakeGenes(cat as any, Boolean(cat));
   const { data: profile } = useProfile(userId, userId != null);
 
   const share = async (func) => {
@@ -114,6 +114,7 @@ export function Market() {
         size="xs"
         value={cat as any}
         onChange={(a: any) => {
+          handleMultiContainsJson(undefined, "genes", setSqlMultFilt);
           setCat(a);
           localStorage.setItem("MARKET_VISITED", a);
         }}
@@ -213,13 +214,15 @@ export function Market() {
         <Space h="md" />
         <Flex gap="md" wrap="nowrap" align="end">
           <Select flex="1 1 50%" miw={0} data={sexHardcode} value={sqlFilt?.["sex"] ? sqlFilt["sex"].split("-")[1] : null} onChange={(a: any) => handleSingleSel(a, "sex", setSqlFilt)} label="Пол" placeholder="Любой" />
-          <MaxSelectedMulti
-            flex="1 1 50%"
-            label="Гены"
-            initVal={sqlMultFilt?.["genes"] ? sqlMultFilt["genes"].split("-")[1].split(",") : null}
-            onChange={(a: any) => handleMultiContainsJson(a, "genes", setSqlMultFilt)}
-            data={(genes ?? [])?.map((g) => g.label)}
-          />
+          <Box flex="1 1 50%">
+            <MaxMultiGenes
+              onChange={(a: any) => {
+                handleMultiContainsJson(a, "genes", setSqlMultFilt);
+              }}
+              category={cat as any}
+              initVal={sqlMultFilt?.["genes"] ? sqlMultFilt["genes"].split("-")[1].split(",") : null}
+            />
+          </Box>
         </Flex>
         <Space h="md" />
         <Flex gap="md" wrap="nowrap" align="end">

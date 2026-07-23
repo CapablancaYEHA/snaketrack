@@ -229,6 +229,12 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
                 Кладка закрыта
               </Title>
             </Stack>
+          ) : isHatch ? (
+            <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%" align="center">
+              <Title order={6} ta="center" c="yellow">
+                Инкубация закончена
+              </Title>
+            </Stack>
           ) : (
             <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%">
               <Flex>
@@ -353,7 +359,7 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
                   name="father_id"
                   control={control}
                   render={({ field: { onChange, value } }) => {
-                    return <Select searchable label="Отработавший самец" data={fathersToPick} value={value} onChange={onChange} error={wFather == null} disabled={clutch.males_ids.length === 1} />;
+                    return <Select placeholder="Поиск" searchable label="Отработавший самец" data={fathersToPick} value={value} onChange={onChange} error={wFather == null} disabled={clutch.males_ids.length === 1} />;
                   }}
                 />
               ) : null}

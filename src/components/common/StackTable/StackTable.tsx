@@ -75,7 +75,6 @@ export const StackTable = <T extends object>({ estimateSize, columns, data, setC
   }, []);
 
   const { rows } = table.getRowModel();
-  const memoRows = useMemo(() => rows, [JSON.stringify(rows)]);
   const isEmpty = isMount.current && table.options.data.length === 0;
   const isFilteredOut = table.options.data.length > 0 && rows.length === 0;
 
@@ -110,7 +109,7 @@ export const StackTable = <T extends object>({ estimateSize, columns, data, setC
             })}
           </thead>
         )}
-        <TableVirtual rows={memoRows} estimateSize={estimateSize} contRef={parentRef} isEmpty={isEmpty} isFilteredOut={isFilteredOut} onLongPress={onLongPress} onRowClick={onRowClick} />
+        <TableVirtual rows={rows} estimateSize={estimateSize} contRef={parentRef} isEmpty={isEmpty} isFilteredOut={isFilteredOut} onLongPress={onLongPress} onRowClick={onRowClick} />
       </table>
     </div>
   );
