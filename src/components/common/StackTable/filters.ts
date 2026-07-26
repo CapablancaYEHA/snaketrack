@@ -5,15 +5,15 @@ import { isEmpty } from "lodash-es";
 import { IResSnakesList } from "@/api/common";
 import { dateToSupabaseTime, isOlderThan, isYoungerThan } from "@/utils/time";
 
-export const tableFiltMulti = (handler: (value: StateUpdater<any[]>) => void, a: string[], accessor: string) => {
+export const tableFiltMulti = (handler: (value: StateUpdater<any[]>) => void, a: string[], accessor: string, filterName?: string) => {
   handler((s) => {
     let copy = [...s.filter((c) => c.id !== accessor)];
     if (isEmpty(a)) {
-      localStorage.setItem("SNAKES_FILTER", JSON.stringify(copy));
+      if (filterName) localStorage.setItem(filterName, JSON.stringify(copy));
       return copy;
     }
     copy.push({ id: accessor, value: a });
-    localStorage.setItem("SNAKES_FILTER", JSON.stringify(copy));
+    if (filterName) localStorage.setItem(filterName, JSON.stringify(copy));
     return copy;
   });
 };
@@ -27,15 +27,15 @@ export const tableFiltRange = (handler: (value: StateUpdater<any[]>) => void, a:
   });
 };
 
-export const tableFiltSingle = (handler: (value: StateUpdater<any[]>) => void, a: string, accessor: string) => {
+export const tableFiltSingle = (handler: (value: StateUpdater<any[]>) => void, a: string, accessor: string, filterName?: string) => {
   handler((s) => {
     let copy = [...s.filter((c) => c.id !== accessor)];
     if (isEmpty(a)) {
-      localStorage.setItem("SNAKES_FILTER", JSON.stringify(copy));
+      if (filterName) localStorage.setItem(filterName, JSON.stringify(copy));
       return copy;
     }
     copy.push({ id: accessor, value: a });
-    localStorage.setItem("SNAKES_FILTER", JSON.stringify(copy));
+    if (filterName) localStorage.setItem(filterName, JSON.stringify(copy));
     return copy;
   });
 };

@@ -22,17 +22,7 @@ export function SnakeCategories() {
           Змеи
         </Title>
       </Flex>
-      <SegmentedControl
-        size="xs"
-        value={catVisited.value}
-        onChange={(a) => {
-          localStorage.setItem("SNAKES_FILTER", JSON.stringify([]));
-          handle(a);
-        }}
-        w="100%"
-        maw={352}
-        data={segmentedSnakes}
-      />
+      <SegmentedControl size="xs" value={catVisited.value} onChange={handle} w="100%" maw={352} data={segmentedSnakes} />
       {catVisited.value ? (
         <SnakeCollectionList />
       ) : (

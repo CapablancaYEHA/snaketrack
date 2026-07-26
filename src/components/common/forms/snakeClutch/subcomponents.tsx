@@ -178,6 +178,8 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category }) => 
   const dateLabel = category === ECategories["BC"] ? "Дата" : "Дата кладки";
   const clutchEnd = category === ECategories["BC"] ? "Роды произошли" : "Кладка инкубирована";
   const tillEnd = category === ECategories["BC"] ? "До родов" : "До конца инкубации";
+  const isHatchTitle = ECategories["BC"] ? "Помёт родился" : "Инкубация закончена";
+  const isClosedTitle = ECategories["BC"] ? "Помёт закрыт" : "Кладка закрыта";
 
   return (
     <>
@@ -206,11 +208,11 @@ export const ClutchProgress = ({ laidDate, hatchDate, curStatus, category }) => 
       </Flex>
       {isClosed ? (
         <Title order={6} ta="center" c="green">
-          Кладка закрыта
+          {isClosedTitle}
         </Title>
       ) : isHatch ? (
         <Title order={6} ta="center" c="yellow">
-          Инкубация закончена
+          {isHatchTitle}
         </Title>
       ) : (
         <Flex>

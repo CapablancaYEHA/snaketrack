@@ -155,6 +155,8 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
   const incubName = isBc ? "беременности" : "инкубации";
   const closeClutch = isBc ? "Завершить помёт" : "Завершить кладку";
   const closeIncub = isBc ? "Записать помёт" : "Завершить инкубацию";
+  const isHatchTitle = isBc ? "Помёт родился" : "Инкубация закончена";
+  const isClosedTitle = isBc ? "Помёт закрыт" : "Кладка закрыта";
 
   return (
     <>
@@ -226,13 +228,13 @@ export const FormEditClutch: FC<IProp> = ({ initData, clutch, fathersToPick, cat
           {isClosed ? (
             <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%" align="center">
               <Title order={6} ta="center" c="green">
-                Кладка закрыта
+                {isClosedTitle}
               </Title>
             </Stack>
           ) : isHatch ? (
             <Stack w={{ base: "100%", xs: "50%" }} flex="1 1 50%" align="center">
               <Title order={6} ta="center" c="yellow">
-                Инкубация закончена
+                {isHatchTitle}
               </Title>
             </Stack>
           ) : (
