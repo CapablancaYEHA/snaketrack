@@ -1,5 +1,5 @@
-import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/compat";
-import { Stack } from "@mantine/core";
+import { ReactNode, memo, useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/compat";
+import { Flex, Loader, Stack } from "@mantine/core";
 import { ColumnDef, ColumnFiltersState, GlobalFilterTableState, OnChangeFn, RowSelectionState, SortingState, flexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { footer_height } from "@/components/navs/Footer";
@@ -22,9 +22,11 @@ interface IProp<T> {
   onLongPress?: (event: MouseEvent | TouchEvent) => void;
   estimateSize?: number;
   additionalHeight?: number;
+  isFetching?: boolean;
+  children?: ReactNode;
 }
 
-export const StackTable = <T extends object>({ estimateSize, columns, data, setColumnFilters, columnFilters, onRowClick, onLongPress, globalFilter, setGlobalFilter, initSort, rowSelection, onRowSelect, additionalHeight }: IProp<T>) => {
+export const StackTable = <T extends object>({ estimateSize, columns, data, setColumnFilters, columnFilters, onRowClick, onLongPress, globalFilter, setGlobalFilter, initSort, rowSelection, onRowSelect, additionalHeight, isFetching, children }: IProp<T>) => {
   const isMount = useRef(false);
   const parentRef = useRef<HTMLDivElement>(null);
   const [tableHeight, setHeight] = useState(684);
@@ -111,6 +113,12 @@ export const StackTable = <T extends object>({ estimateSize, columns, data, setC
         )}
         <TableVirtual rows={rows} estimateSize={estimateSize} contRef={parentRef} isEmpty={isEmpty} isFilteredOut={isFilteredOut} onLongPress={onLongPress} onRowClick={onRowClick} />
       </table>
+      {isFetching ? (
+        <Flex justify="center" maw="100%" w="100%" p="md">
+          <Loader size="sm" />
+        </Flex>
+      ) : null}
+      {children}
     </div>
   );
 };

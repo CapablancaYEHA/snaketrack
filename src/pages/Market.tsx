@@ -1,6 +1,6 @@
 import { useEffect } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Box, Button, Checkbox, Chip, CopyButton, Drawer, Flex, Loader, LoadingOverlay, Mark, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, Checkbox, Chip, CopyButton, Drawer, Flex, LoadingOverlay, Mark, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure, useInViewport, useMediaQuery } from "@mantine/hooks";
 import { isEmpty } from "lodash-es";
 import { useQueryState } from "nuqs";
@@ -19,6 +19,7 @@ import { useProfile } from "@/api/profile/hooks";
 
 export function Market() {
   const { ref, inViewport } = useInViewport();
+
   const dt = {
     title: "snaketrack.ru",
     text: "Подборка змей",
@@ -35,8 +36,9 @@ export function Market() {
 
   let filter = cat ? (b) => chaining.call(b.eq("category", cat), sort, sqlFilt, sqlMultFilt) : () => {};
 
-  const { data, isLoading, isRefetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useSupaInfiniteGet<IMarketRes[]>({ t: ESupabase.MRKT_V, f: filter, id: [cat, sort, sqlFilt, sqlMultFilt] }, Boolean(cat));
+  const { data, isLoading, isFetching, isRefetching, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useSupaInfiniteGet<IMarketRes[]>({ t: ESupabase.MRKT_V, f: filter, id: [cat, sort, sqlFilt, sqlMultFilt] }, Boolean(cat));
   const market = data?.pages.flatMap((p) => p.data);
+
   const { data: profile } = useProfile(userId, userId != null);
 
   const share = async (func) => {
@@ -59,11 +61,11 @@ export function Market() {
   }, []);
 
   useEffect(() => {
-    if (inViewport && hasNextPage && !isFetchingNextPage) {
+    if (inViewport && hasNextPage && !isFetching) {
       fetchNextPage();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inViewport, hasNextPage, isFetchingNextPage]);
+  }, [inViewport, hasNextPage, isFetching]);
 
   const isFilterNull = isEmpty(sqlFilt) && isEmpty(Object.keys(sqlMultFilt ?? {}));
   //   const isFilterNull = isEmpty(sqlFilt) && sqlMultFilt?.status === "in-on_sale" && isEmpty(Object.keys(sqlMultFilt ?? {})?.filter((k) => k !== "status"));
@@ -143,7 +145,6 @@ export function Market() {
           </Button>
         </Box>
       </Flex>
-
       <Drawer
         opened={opened}
         onClose={close}
@@ -267,22 +268,18 @@ export function Market() {
           <Text fw={500}>{isFilterNull ? "Нет предложений в категории" : "Не найдено предложений для заданной фильтрации"}</Text>
         </Box>
       ) : (
-        <StackTable data={market ?? []} columns={marketColumns} estimateSize={184} />
+        <StackTable data={market ?? []} columns={marketColumns as any} estimateSize={184} isFetching={isFetchingNextPage}>
+          <Box ref={ref} w="100%" h={2} />
+        </StackTable>
       )}
       {isRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
-      <Box ref={ref} w="100%" h={2} />
-      {isFetchingNextPage ? (
-        <Flex justify="center" maw="100%" w="100%">
-          <Loader size="sm" />
-        </Flex>
-      ) : null}
-      {data?.pages?.length > 1 && !hasNextPage ? (
+      {/* {data?.pages?.length > 1 && !hasNextPage ? (
         <Box maw="100%" w="100%">
           <Text size="xs" ta="center">
             Больше нет элементов для загрузки
           </Text>
         </Box>
-      ) : null}
+      ) : null} */}
     </Stack>
   );
 }

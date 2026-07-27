@@ -52,7 +52,8 @@ export const supaInfiniteGet = async (pageParam, config: IQueryConfig) => {
   const to = from + PAGE_SIZE - 1;
 
   const query = supabase.from(config.t).select(config?.s || "*");
-
+  // FIXME подумать над применением деструкт параметра {count}
+  // включаем через .select('*', { count: 'estimated'})
   const { data, error } = await config.f(query).range(from, to);
 
   if (error) {
