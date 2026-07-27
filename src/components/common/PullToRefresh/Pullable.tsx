@@ -6,6 +6,7 @@ import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import styles from "./styles.module.scss";
 
 const magicThr = 50;
+const magicStartThr = 140;
 const magicNmb = 220;
 
 type TPullStatus = "ready" | "pulling" | "aborted" | "refreshed";
@@ -60,7 +61,7 @@ export const Pullable: React.FC<IPullable> = ({ onRefresh = () => window.locatio
   };
 
   const onTouchStart = (e: TouchEvent): void => {
-    if (!isCan || ignoreTouches) return;
+    if (!isCan || e.touches[0].clientY > magicStartThr || ignoreTouches) return;
 
     setPullStartY(e.touches[0].screenY);
   };
