@@ -1,13 +1,13 @@
+import { FC } from "preact/compat";
+import { useLayoutEffect, useState } from "preact/hooks";
 import { Flex } from "@mantine/core";
 import { clsx } from "clsx";
-import { throttle } from "lodash-es";
-import React, { useLayoutEffect, useState } from "react";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import styles from "./styles.module.scss";
 
-const magicThr = 50;
-const magicStartThr = 140;
-const magicNmb = 220;
+// const magicThr = 50;
+const magicStartThr = 45;
+const magicNmb = 270;
 
 type TPullStatus = "ready" | "pulling" | "aborted" | "refreshed";
 
@@ -23,25 +23,12 @@ interface IPullable {
   disabled?: boolean;
 }
 
-export const Pullable: React.FC<IPullable> = ({ onRefresh = () => window.location.reload(), refreshDuration = 0 }) => {
-  const [isCan, setCan] = useState(false);
+export const Pullable: FC<IPullable> = ({ onRefresh = () => window.location.reload(), refreshDuration = 0 }) => {
   const [status, setStatus] = useState<TPullStatus>("ready");
   const [pullStartY, setPullStartY] = useState<number>(0);
   const [pullMoveY, setPullMoveY] = useState<number>(0);
   const [dist, setDist] = useState<number>(0);
   const [ignoreTouches, setIgnoreTouches] = useState<boolean>(false);
-
-  useLayoutEffect(() => {
-    const calcScrollDistance = throttle(() => {
-      const trg = document.querySelector("main.box-main")?.getBoundingClientRect()?.top;
-      setCan(!trg || trg === magicThr);
-    }, 500);
-
-    document.addEventListener("scroll", calcScrollDistance, { passive: true, capture: true });
-    return (): void => {
-      document.removeEventListener("scroll", calcScrollDistance);
-    };
-  }, []);
 
   const reset = (): void => {
     setStatus("ready");
@@ -61,16 +48,17 @@ export const Pullable: React.FC<IPullable> = ({ onRefresh = () => window.locatio
   };
 
   const onTouchStart = (e: TouchEvent): void => {
-    if (!isCan || e.touches[0].clientY > magicStartThr || ignoreTouches) return;
+    const nmb = e.touches[0].clientY;
+    if (nmb >= magicStartThr || ignoreTouches) return;
 
-    setPullStartY(e.touches[0].screenY);
+    setPullStartY(nmb);
   };
 
   const onTouchMove = (e: TouchEvent): void => {
-    if (!isCan || disabled || ignoreTouches || pullStartY === 0) return;
+    if (disabled || ignoreTouches || pullStartY === 0) return;
 
     setPullMoveY(e.touches[0].screenY);
-    if (pullMoveY > 100) {
+    if (pullMoveY > 130) {
       const distance = pullMoveY - pullStartY;
       setDist(distance > 0 ? distance : 0);
       setStatus("pulling");
@@ -90,14 +78,14 @@ export const Pullable: React.FC<IPullable> = ({ onRefresh = () => window.locatio
   };
 
   useLayoutEffect(() => {
-    document.addEventListener("touchstart", onTouchStart, { passive: true });
-    document.addEventListener("touchmove", onTouchMove, { passive: true });
-    document.addEventListener("touchend", onTouchEnd, { passive: true });
+    document.getElementById("layouthdr")?.addEventListener("touchstart", onTouchStart, { passive: true });
+    document.getElementById("layouthdr")?.addEventListener("touchmove", onTouchMove, { passive: true });
+    document.getElementById("layouthdr")?.addEventListener("touchend", onTouchEnd, { passive: true });
 
     return (): void => {
-      document.removeEventListener("touchstart", onTouchStart);
-      document.removeEventListener("touchmove", onTouchMove);
-      document.removeEventListener("touchend", onTouchEnd);
+      document.getElementById("layouthdr")?.removeEventListener("touchstart", onTouchStart);
+      document.getElementById("layouthdr")?.removeEventListener("touchmove", onTouchMove);
+      document.getElementById("layouthdr")?.removeEventListener("touchend", onTouchEnd);
     };
   });
 

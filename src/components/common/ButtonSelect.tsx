@@ -1,5 +1,6 @@
+import { FC } from "preact/compat";
+import { useState } from "preact/hooks";
 import { Button, CheckIcon, Combobox, Group, useCombobox } from "@mantine/core";
-import { FC, useState } from "react";
 
 export const ButtonSelect: FC<any> = ({ options, handleSelect, label }) => {
   const [selected, setSelectedItem] = useState<string | null>(null);
