@@ -191,7 +191,7 @@ export function reducer(state, action) {
 
 // FIXME сделать throw вместо notif ?
 // здесь нету нотифа на случай если граммовка из несуществующей категории вообще
-export const prepVivUpd = (current: IVivRes, feed_weight: number, viv: string) => {
+export const prepVivUpd = (current: IVivRes, feed_weight: number, viv: string, amount?: number) => {
   const ent = Object.entries(current[viv]);
 
   for (const diapason of ent) {
@@ -206,7 +206,7 @@ export const prepVivUpd = (current: IVivRes, feed_weight: number, viv: string) =
       return {
         [viv]: {
           ...current[viv],
-          [left]: Number(right) - 1,
+          [left]: Number(right) - (amount ?? 1),
         },
       };
     }

@@ -8,17 +8,16 @@ import { makeScheduleColumns, snakesWithRems } from "@/components/common/Schedul
 import { sigCurCat, sigCurDate, sigIsModOpen } from "@/components/common/Schedule/signals";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { segmentedSnakes } from "@/components/common/const";
-import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
+import { FeedSnakeSolo } from "@/components/common/forms/feedSnake/formFeedSolo";
 import { SkelShedule } from "@/components/common/skeletons";
-import { categToTitle } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { bpRemList } from "@/api/ballpythons/configs";
 import { bcRemList } from "@/api/boa-constrictors/configs";
-import { ECategories, IFeedReq, IRemResExt, IRemindersRes, IResSnakesList, categoryToBaseTable } from "@/api/common";
+import { ECategories, IRemResExt, IRemindersRes, IResSnakesList } from "@/api/common";
 import { remList, remsByDate } from "@/api/common_configs";
 import { csRemList } from "@/api/corn-snakes/configs";
 import { hnRemList } from "@/api/hognose-snakes/config";
-import { useSupaGet, useSupaUpd } from "@/api/hooks";
+import { useSupaGet } from "@/api/hooks";
 import { mvRemList } from "@/api/morelia_viridis/configs";
 import { rsRemList } from "@/api/rat-snakes/configs";
 import { getDateObj, getDateOfMonth, getIsSame } from "@/utils/time";
@@ -54,7 +53,6 @@ export const Schedule = () => {
   const { data: mvs, isPending: isMvPend, isRefetching: isMvRef, isError: isMvErr } = useSupaGet<IResSnakesList[]>(mvRemList(userId), sigCurCat.value === ECategories.MV);
   const { data: allRems, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
   const { data: remsThisDate, isFetching } = useSupaGet<IRemResExt[]>(remsByDate(sigCurDate.value), sigCurDate.value != null);
-  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[sigCurCat.value]);
 
   const eventDates = (allRems ?? [])?.map((a) => getDateObj(a.scheduled_time));
   const hasEvent = (date: string) => {
@@ -73,6 +71,7 @@ export const Schedule = () => {
             : sigCurCat.value === ECategories.HN
               ? (hns ?? [])
               : (mvs ?? []);
+
   const isSmthErr =
     (isBpErr && sigCurCat.value === ECategories.BP) ||
     (isBcErr && sigCurCat.value === ECategories.BC) ||
@@ -176,18 +175,15 @@ export const Schedule = () => {
         resetSelected={() => setRowSelection({})}
         remsThisDate={remsThisDate ?? []}
       />
-      <FeedSnake
+      <FeedSnakeSolo
         opened={isFeedOpen.value}
         close={() => {
           curId.value = undefined;
           isFeedOpen.value = false;
         }}
         snake={dataToUse?.find((b) => b.id === curId.value)}
-        title={categToTitle[sigCurCat.value]}
-        handleAction={feed}
-        isPend={isFeedPend}
+        category={sigCurCat.value}
       />
-
       {isBpRef || isBcRef || isCsRef || isRsRef || isHnRef || isMvRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </>
   );

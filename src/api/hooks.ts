@@ -23,6 +23,11 @@ interface IModif<T> extends Pick<IQueryConfig, "t" | "s"> {
   bulk?: boolean;
 }
 
+interface IMassModif<T> {
+  p: T;
+  t: ESupabase;
+}
+
 export const supaGet = async <T>(config: IQueryConfig): Promise<T> => {
   const query = supabase.from(config.t).select(config?.s || "*");
 
@@ -135,6 +140,29 @@ export function useSupaUpd<T>(table: ESupabase, invalWhat?: IInval) {
               exact: invalWhat.e,
             }
           : { queryKey: [table] }),
+      });
+    },
+  });
+}
+
+export const supaMassUpd = async <T>({ t, p }: IMassModif<T>) => {
+  const { upd } = p as any;
+
+  await supabase.from(t).upsert(upd).throwOnError();
+};
+
+export function useSupaMassUpd<T>(config: Pick<IMassModif<T>, "t">, invalWhat?: IInval) {
+  const queryClient = useQueryClient();
+  return useMutation<any, ISupabaseErr, T>({
+    mutationFn: (a) => supaMassUpd({ t: config.t, p: a }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        ...(invalWhat
+          ? {
+              queryKey: invalWhat.qk,
+              exact: invalWhat.e,
+            }
+          : { queryKey: [config.t] }),
       });
     },
   });

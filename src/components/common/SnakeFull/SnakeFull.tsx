@@ -4,19 +4,18 @@ import { Box, Button, CopyButton, Flex, Indicator, NumberFormatter, Paper, Remov
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
-import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
-import { categToTitle, detailsDict, sliceDict, subjectDict } from "@/components/common/utils";
+import { detailsDict, sliceDict, subjectDict } from "@/components/common/utils";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { ECategories, IFeed, IFeedReq, IResSnakesList, categoryToBaseTable } from "@/api/common";
-import { useSupaUpd } from "@/api/hooks";
+import { ECategories, IFeed, IResSnakesList, categoryToBaseTable } from "@/api/common";
 import { getAge, getDate } from "@/utils/time";
 import { disStats, snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
 import { FamilyTree } from "../MyFlowTree/FamilyTree";
 import { StackSimpleTable } from "../StackTable/StackSimpleTable";
 import { EditStats } from "../forms/editStats/formEditStats";
+import { FeedSnakeSolo } from "../forms/feedSnake/formFeedSolo";
 import { SnakeTags } from "../forms/snakeTags/formSnakeTags";
 import { ZoomImage } from "./ZoomImage";
 import css from "./styles.module.scss";
@@ -39,7 +38,6 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
   const [scale, setScale] = useState("weeks");
   const [view, setView] = useState<"ko" | "snake" | "both">("both");
   const [slice, setSlice] = useState<"all" | "2" | "6" | "12">("all");
-  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[category]);
 
   const feedTable = useMemo(() => data?.feeding?.filter((a) => Object.values(a)?.some((b) => b != null)), [toString(data?.feeding)]) as IFeed[];
 
@@ -181,15 +179,13 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             ]}
           />
           <Space h="lg" />
-          <FeedSnake
+          <FeedSnakeSolo
             opened={isFeedOpen.value}
             close={() => {
               isFeedOpen.value = false;
             }}
             snake={data}
-            title={categToTitle[category]}
-            handleAction={feed}
-            isPend={isFeedPend}
+            category={category}
           />
           <SnakeTags
             opened={isTagOpen.value}

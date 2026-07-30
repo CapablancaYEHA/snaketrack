@@ -6,23 +6,23 @@ import { computed, signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
 import { MaxSelectedMulti } from "@/components/common/MaxSelectedMulti";
 import { StackTable } from "@/components/common/StackTable/StackTable";
-import { FeedSnake } from "@/components/common/forms/feedSnake/formFeedSnake";
 import { TransferSnake } from "@/components/common/forms/transferSnake/formTransferSnake";
 import { SkelTable } from "@/components/common/skeletons";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { IFeedReq, IResSnakesList, IUpdReq, categoryToBaseTable } from "@/api/common";
+import { IResSnakesList, IUpdReq, categoryToBaseTable } from "@/api/common";
 import { useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
-import { catVisited } from "@/pages/SnakeCategories";
+import { catVisited, sigRowSelection } from "@/pages/SnakeCategories";
 import { declWord } from "@/utils/other";
 import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
 import { ChangeStatus } from "./forms/changeStatus/formChangeStatus";
+import { FeedSnakesUniversal } from "./forms/feedSnake/formFeedUniversal";
 import { sexHardcode } from "./forms/snakeBreed/common";
 import { SnakeTags } from "./forms/snakeTags/formSnakeTags";
 import { MaxMultiGenes } from "./genetics/geneSelect";
-import { categToConfigList, categToDeclTitle, categToTitle, maturityDict, statusDictionary } from "./utils";
+import { categToConfigList, categToDeclTitle, maturityDict, statusDictionary } from "./utils";
 
 const curId = signal<string | undefined>(undefined);
 const isTransOpen = signal<boolean>(false);
@@ -58,10 +58,10 @@ export function SnakeCollectionList() {
   const { data: profile } = useProfile(userId, userId != null);
 
   const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(categToConfigList[catVisited.value]?.(userId), userId != null);
-  const { mutate: feed, isPending: isFeedPend } = useSupaUpd<IFeedReq>(categoryToBaseTable[catVisited.value]);
   const { mutate: upd, isPending: isUpdPend } = useSupaUpd<IUpdReq>(categoryToBaseTable[catVisited.value]);
   const { mutate: trans, isPending: isTransPend } = useTransferSnake(catVisited.value);
   const [filt, setFilt] = useState<any[]>([]);
+
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
   const target = snakes?.find((b) => b.id === curId.value);
@@ -69,6 +69,7 @@ export function SnakeCollectionList() {
   const debSearch = debounce(setGlobalFilter, 300);
 
   const isFilterNull = isEmpty(filt) && globalFilter.length === 0;
+  const isNoSelection = isEmpty(sigRowSelection.value);
 
   useEffect(() => {
     setFilt(storageFilter);
@@ -115,6 +116,11 @@ export function SnakeCollectionList() {
             setColumnFilters={setFilt}
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
+            onRowSelect={(n: any) => {
+              const cur = sigRowSelection.value;
+              sigRowSelection.value = n(cur);
+            }}
+            rowSelection={sigRowSelection.value}
             estimateSize={276}
             initSort={[
               {
@@ -136,16 +142,16 @@ export function SnakeCollectionList() {
         handleTrans={trans}
         isPend={isTransPend}
       />
-      <FeedSnake
+      <FeedSnakesUniversal
         opened={isFeedOpen.value}
         close={() => {
           curId.value = undefined;
           isFeedOpen.value = false;
         }}
-        snake={target}
-        title={categToTitle[catVisited.value]}
-        handleAction={feed}
-        isPend={isFeedPend}
+        onSucc={() => (sigRowSelection.value = {})}
+        snakes={!isNoSelection ? snakes?.filter((s) => sigRowSelection.value[s.id]) : target ? [target] : undefined}
+        table={categoryToBaseTable[catVisited.value]}
+        category={catVisited.value}
       />
       <SnakeTags
         opened={isTagOpen.value && Boolean(curId.value)}

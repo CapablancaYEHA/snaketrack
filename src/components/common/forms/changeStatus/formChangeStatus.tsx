@@ -66,10 +66,6 @@ export const ChangeStatus: FC<IProp> = ({ opened, close, target, handleAction, i
         Статусы в данном меню не влияют на объявление со змеей на Маркете. Для изменения статусов Маркета редактируйте само объявление.
         <br />
         После присвоения статуса{" "}
-        <Text fw={500} size="md" c={snakeStatusToColor["deceased"]} component="span">
-          {snakeStatusToLabel["deceased"]}
-        </Text>{" "}
-        или{" "}
         <Text fw={500} size="md" c={snakeStatusToColor["archived"]} component="span">
           {snakeStatusToLabel["archived"]}
         </Text>{" "}

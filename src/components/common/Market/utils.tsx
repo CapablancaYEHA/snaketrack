@@ -103,7 +103,7 @@ export const snakeStatusToColor = {
   on_hold: "#808080",
   sold: "#af2e2e",
   reserved: "#ffd74a",
-  deceased: "#c4c4c4",
+  //   deceased: "#c4c4c4",
   archived: "#ff7c42",
 };
 
@@ -113,7 +113,6 @@ export const snakeStatusToLabel = {
   on_hold: "Зажаблена",
   sold: "Продана",
   reserved: "Бронь",
-  deceased: "Умерла",
   archived: "Архив",
 };
 
@@ -124,12 +123,11 @@ export const adStatsHardcode = [
   { label: "Продана", value: "sold" },
 ];
 
-export const disStats = ["deceased", "archived"];
+export const disStats = ["archived"];
 export const mrktActiveStats = ["on_sale", "reserved", "sold"];
 export const availMarketStats = ["collection", "on_hold"];
 
 export const snakeStatsHardcode = [
   { label: "Коллекция", value: "collection" },
   { label: "Архив", value: "archived" },
-  { label: "Умерла", value: "deceased" },
 ];

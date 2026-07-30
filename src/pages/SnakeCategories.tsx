@@ -5,10 +5,12 @@ import { segmentedSnakes } from "@/components/common/const";
 import { ECategories } from "@/api/common";
 
 export const catVisited = signal<ECategories>("" as any);
+export const sigRowSelection = signal({});
 
 const handle = (a) => {
   catVisited.value = a;
   localStorage.setItem("SNAKES_VISITED", a);
+  sigRowSelection.value = {};
 };
 
 export function SnakeCategories() {

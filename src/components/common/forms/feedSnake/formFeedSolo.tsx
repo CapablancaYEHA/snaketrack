@@ -8,13 +8,14 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 import { Feeder } from "@/components/common/Feeder/Feeder";
 import { codeToFeeder } from "@/components/common/Feeder/const";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { ESupabase, IFeedReq, IReqUpdViv, IResSnakesList, ISupabaseErr, IVivRes } from "@/api/common";
+import { ECategories, ESupabase, IFeedReq, IReqUpdViv, IResSnakesList, ISupabaseErr, IVivRes, categoryToBaseTable } from "@/api/common";
 import { useSupaGet, useSupaUpd } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 import { notif } from "../../../../utils/notif";
 import { getDate, getDateObj } from "../../../../utils/time";
 import { Btn } from "../../../navs/btn/Btn";
 import { SexName } from "../../sexName";
+import { categToTitle } from "../../utils";
 import { prepVivUpd } from "../Vivarium/const";
 import { calcSchema, defVals, prepareForSubmit } from "./const";
 
@@ -22,17 +23,16 @@ type IProp = {
   opened: boolean;
   close: () => void;
   snake?: IResSnakesList;
-  title: string;
-  handleAction: UseMutateFunction<any, ISupabaseErr, IFeedReq, unknown>;
-  isPend: boolean;
+  category: ECategories;
 };
 
-export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction, isPend }) => {
+export const FeedSnakeSolo: FC<IProp> = ({ opened, close, snake, category }) => {
   const userId = localStorage.getItem("USER");
   const { data: profile } = useProfile(userId, userId != null);
   const [isPop, func] = useDisclosure(false);
   const { data: viv, isError } = useSupaGet<IVivRes>({ t: ESupabase.VIV, f: (b) => b.eq("owner_id", userId).limit(1).single(), id: userId }, userId != null);
   const { mutate: updViv } = useSupaUpd<IReqUpdViv>(ESupabase.VIV);
+  const { mutate, isPending } = useSupaUpd<IFeedReq>(categoryToBaseTable[category]);
   const lastFeed = snake?.feeding?.sort((a, b) => getDateObj(a.feed_last_at!) - getDateObj(b.feed_last_at!))?.[snake?.feeding.length - 1];
   const lastWeight = snake?.weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[snake?.weight.length - 1];
   const {
@@ -49,6 +49,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
     reValidateMode: "onChange",
   });
 
+  const title = categToTitle[category];
   const isCln = useWatch({ name: "isClean", control });
 
   const fullClose = () => {
@@ -59,7 +60,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
   const onSub = async (sbm) => {
     const { feed, mass, shed, ko_cat } = prepareForSubmit(sbm);
 
-    handleAction(
+    mutate(
       {
         upd: {
           ...(mass ? { weight: (snake?.weight ?? []).concat(mass) } : {}),
@@ -106,7 +107,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
   const errObj = errors?.["shed"] || errors?.["refuse"] || errors?.["regurgitation"];
 
   return (
-    <Modal size="lg" opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={3}>{title}. Новое событие</Title>}>
+    <Modal size="lg" opened={opened} onClose={fullClose} centered transitionProps={{ transition: "fade", duration: 200 }} lockScroll={false} title={<Title order={4}>{title}. Соло Событие</Title>}>
       <Box>
         <SexName sex={snake?.sex!} name={snake?.snake_name ?? ""} />
       </Box>
@@ -256,7 +257,7 @@ export const FeedSnake: FC<IProp> = ({ opened, close, snake, title, handleAction
       </Accordion>
       <Space h="lg" />
       <Flex>
-        <Btn type="submit" ml="auto" size="xs" onClick={handleSubmit(onSub)} loading={isPend} disabled={isPend}>
+        <Btn type="submit" ml="auto" size="xs" onClick={handleSubmit(onSub)} loading={isPending} disabled={isPending}>
           Подтвердить
         </Btn>
       </Flex>

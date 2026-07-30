@@ -1,12 +1,12 @@
 import { useEffect, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
-import { AspectRatio, Box, Image, Indicator, Popover, Stack, Text } from "@mantine/core";
+import { AspectRatio, Box, Checkbox, Flex, Image, Indicator, Popover, Stack, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import confetti from "canvas-confetti";
 import { ECategories, IResSnakesList } from "@/api/common";
-import { catVisited } from "@/pages/SnakeCategories";
+import { catVisited, sigRowSelection } from "@/pages/SnakeCategories";
 import { urlProxyReplace } from "@/utils/other";
-import { getAge } from "@/utils/time";
+import { getAge, getDateObj } from "@/utils/time";
 import { Controls, GenesList, SnakeEventsBlock } from "../common/SnakeCard";
 import { SexName } from "../common/sexName";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
@@ -19,13 +19,19 @@ const colHelper = createColumnHelper<IResSnakesList>();
 export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) => {
   return [
     colHelper.accessor("picture", {
-      header: (content) => {
-        const totalCost = content.table
+      header: ({ table }) => {
+        const totalCost = table
           .getRowModel()
-          .rows.filter((d) => !["deceased", "archived"].includes(d.original.status))
+          .rows.filter((d) => !["archived"].includes(d.original.status))
           .map((a) => a.original.price ?? 0)
           .reduce((t, c) => t + c, 0);
-        return totalCost > 0 ? <CategoryCost totalCost={totalCost} /> : " ";
+
+        return (
+          <Flex maw="100%" w="100%" align="center" gap="xs" pl="8px">
+            <Checkbox size="xs" checked={table.getIsAllRowsSelected()} indeterminate={table.getIsSomeRowsSelected()} onChange={table.getToggleAllRowsSelectedHandler()} style={{ cursor: "pointer" }} />
+            {totalCost > 0 ? <CategoryCost totalCost={totalCost} /> : null}
+          </Flex>
+        );
       },
       cell: ({ cell, row }) => (
         <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openTag={openTag} openStatus={openStatus} category={catVisited.value} status={row.original.status}>
@@ -36,9 +42,12 @@ export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) =>
                 {row.original.tags.map((t) => `#${t}`).join(" ")}
               </Text>
             ) : null}
-            <AspectRatio ratio={16 / 9} maw="100%">
-              <Image src={urlProxyReplace(cell.getValue())} fit="cover" radius="md" w="100%" fallbackSrc={fallback} loading="lazy" />
-            </AspectRatio>
+            <Box pos="relative">
+              <Checkbox pos="absolute" size="xs" checked={sigRowSelection?.value?.[row.id] ?? false} onChange={row.getToggleSelectedHandler()} style={{ top: 8, left: 8, zIndex: 1, cursor: "pointer" }} />
+              <AspectRatio ratio={16 / 9} maw="100%">
+                <Image src={urlProxyReplace(cell.getValue())} fit="cover" radius="md" w="100%" fallbackSrc={fallback} loading="lazy" />
+              </AspectRatio>
+            </Box>
             <GenesList genes={row.original.genes} />
           </Stack>
         </Controls>
@@ -80,6 +89,7 @@ export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) =>
       size: 9,
       maxSize: 3,
       minSize: 150,
+      sortingFn: (rowA: any, rowB: any, columnId: any) => getDateObj(rowB.getValue(columnId)) - getDateObj(rowA.getValue(columnId)),
       filterFn: hatchFiltFn,
     }),
     colHelper.accessor((row: any) => row.tags, {
@@ -193,7 +203,7 @@ const CategoryCost = ({ totalCost }) => {
   }, [isOpen]);
 
   return (
-    <Popover position="bottom" withArrow shadow="md" opened={isOpen} onDismiss={() => setOpen(false)} offset={{ mainAxis: 10, crossAxis: 85 }} keepMounted={false}>
+    <Popover position="bottom" withArrow shadow="md" opened={isOpen} onDismiss={() => setOpen(false)} offset={{ mainAxis: 10, crossAxis: 50 }} keepMounted={false}>
       <Popover.Target>
         <Box onClick={() => setOpen((o) => !o)} style={{ cursor: "pointer", position: "relative" }} h={20} mah={20} miw={40}>
           <Indicator position="top-end" inline size={6} color="teal" processing offset={8} style={{ position: "absolute", top: -4 }}>

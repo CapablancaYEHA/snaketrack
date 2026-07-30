@@ -80,6 +80,7 @@ export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isS
 export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTag, status, children }) => {
   const isDisabled = disStats.includes(status ?? "");
   const isStatusDis = disStats.concat(mrktActiveStats).includes(status ?? "");
+
   return (
     <Menu
       openDelay={200}
@@ -112,7 +113,7 @@ export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTa
           }}
           style={{ whiteSpace: "nowrap" }}
         >
-          Добавить событие
+          Добавить Событие
         </Menu.Item>
         <Menu.Item component="a" href={`/snakes/edit/${category}?id=${id}`} disabled={isDisabled}>
           Редактировать

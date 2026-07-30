@@ -129,7 +129,7 @@ export interface ISupabaseErr {
   hint?: string | null;
 }
 
-export type ISnakeStatuses = "collection" | "on_sale" | "sold" | "on_hold" | "reserved" | "deceased" | "archived";
+export type ISnakeStatuses = "collection" | "on_sale" | "sold" | "on_hold" | "reserved" | "archived";
 
 export interface IReqCreateSnake {
   snake_name: string;
@@ -170,18 +170,25 @@ export type IFeed = {
   regurgitation?: boolean;
 };
 
+type IFeedUpdContent = {
+  feeding: IFeed[] | null;
+  weight: { date: string; weight: number; is_clean?: boolean | null } | null;
+  shed: string | null;
+  last_action: "create" | "transfer" | "update" | "archive";
+};
+
 export type IFeedReq = Omit<IUpdReq, "feeding" | "weight" | "shed"> & {
-  upd: {
-    feeding: IFeed[] | null;
-    weight: { date: string; weight: number; is_clean?: boolean | null } | null;
-    shed: string | null;
-    last_action: "create" | "transfer" | "update" | "archive";
-  };
+  upd: IFeedUpdContent;
   id: string;
+};
+
+export type IFeedMassReq = {
+  upd: (Partial<IFeedUpdContent> & { id?: string; pre_id?: string })[];
 };
 
 export interface IResSnakesList extends Pick<IReqCreateSnake, "snake_name" | "sex" | "genes" | "weight" | "date_hatch" | "origin" | "price" | "picture" | "notes" | "last_action" | "from_clutch" | "mother_id" | "father_id" | "tags"> {
   id: string;
+  pre_id?: string;
   owner_name: string;
   status: string;
   feeding: IFeed[] | null;

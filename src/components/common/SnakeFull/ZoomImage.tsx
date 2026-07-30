@@ -6,7 +6,7 @@ import "glightbox/dist/css/glightbox.css";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
 import { urlProxyReplace } from "@/utils/other";
 
-export const ZoomImage = ({ pic, radius = "md", w = "auto" }) => {
+export const ZoomImage = ({ pic, radius = "md" }) => {
   const lightRef = useRef<any>(null);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export const ZoomImage = ({ pic, radius = "md", w = "auto" }) => {
           src={urlProxyReplace(pic)}
           fit="cover"
           radius={radius}
-          w={w}
+          w="100%"
           maw="100%"
           fallbackSrc={fallback}
           loading="lazy"
