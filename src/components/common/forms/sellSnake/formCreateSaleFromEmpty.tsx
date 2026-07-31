@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Flex, Mark, NumberInput, Select, Text, TextInput, Textarea } from "@mantine/core";
+import { Alert, Box, Flex, NumberInput, Select, Text, TextInput, Textarea } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -241,10 +241,12 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
           }}
         />
       </Flex>
-      {(!emptyInit.contacts_group && !emptyInit.contacts_telegram) || !emptyInit.contacts_city_code ? (
-        <Text size="sm" fs="italic">
-          Заполните <Mark color="orange">Контакты</Mark> в Аккаунте (Профиле), они будут автоматически подтягиваться в каждую форму объявления
-        </Text>
+      {!emptyInit.city_code || (!emptyInit.contacts_group && !emptyInit.contacts_telegram) ? (
+        <Alert variant="light" color="blue" title="VK группа и/или Телега, Город">
+          <Text size="sm" fs="italic">
+            Заполните эти данные один раз в разделе Контакты в Аккаунте (Профиле), они будут автоматически подтягиваться в каждую форму объявления и данная подсказка больше не будет отображаться
+          </Text>
+        </Alert>
       ) : null}
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
         <Controller

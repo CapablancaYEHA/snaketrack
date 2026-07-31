@@ -10,8 +10,8 @@ import { TransferSnake } from "@/components/common/forms/transferSnake/formTrans
 import { SkelTable } from "@/components/common/skeletons";
 import { Btn } from "@/components/navs/btn/Btn";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { IResSnakesList, IUpdReq, categoryToBaseTable } from "@/api/common";
-import { useSupaGet, useSupaUpd, useTransferSnake } from "@/api/hooks";
+import { IResSnakesList, categoryToBaseTable } from "@/api/common";
+import { useSupaGet, useTransferSnake } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 import { catVisited, sigRowSelection } from "@/pages/SnakeCategories";
 import { declWord } from "@/utils/other";
@@ -56,12 +56,10 @@ export function SnakeCollectionList() {
   const [opened, { open, close }] = useDisclosure();
   const userId = localStorage.getItem("USER");
   const { data: profile } = useProfile(userId, userId != null);
-
   const { data: snakes, isPending, isRefetching, isError } = useSupaGet<IResSnakesList[]>(categToConfigList[catVisited.value]?.(userId), userId != null);
-  const { mutate: upd, isPending: isUpdPend } = useSupaUpd<IUpdReq>(categoryToBaseTable[catVisited.value]);
   const { mutate: trans, isPending: isTransPend } = useTransferSnake(catVisited.value);
-  const [filt, setFilt] = useState<any[]>([]);
 
+  const [filt, setFilt] = useState<any[]>([]);
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
   const target = snakes?.find((b) => b.id === curId.value);
@@ -168,9 +166,10 @@ export function SnakeCollectionList() {
           curId.value = undefined;
           isStatusOpen.value = false;
         }}
-        target={target}
-        handleAction={upd}
-        isPend={isUpdPend}
+        onSucc={() => (sigRowSelection.value = {})}
+        table={categoryToBaseTable[catVisited.value]}
+        snakes={!isNoSelection ? snakes?.filter((s) => sigRowSelection.value[s.id]) : target ? [target] : undefined}
+        category={catVisited.value}
       />
       <Drawer
         opened={opened}

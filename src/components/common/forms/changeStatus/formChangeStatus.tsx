@@ -1,42 +1,64 @@
 import { FC, useEffect } from "preact/compat";
-import { Box, Button, Flex, Modal, Select, Space, Text, Title } from "@mantine/core";
-import { UseMutateFunction } from "@tanstack/react-query";
+import { Button, Flex, Modal, Select, Space, Text, Title } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { SexName } from "@/components/common/sexName";
-import { IResSnakesList, ISupabaseErr, IUpdReq } from "@/api/common";
+import { ECategories, ESupabase, IReqCreateSnake, IResSnakesList } from "@/api/common";
+import { useSupaMassUpd } from "@/api/hooks";
 import { notif } from "@/utils/notif";
-import { snakeStatsHardcode, snakeStatusToColor, snakeStatusToLabel } from "../../Market/utils";
+import { declWord } from "@/utils/other";
+import { disStats, mrktActiveStats, snakeStatsHardcode, snakeStatusToColor, snakeStatusToLabel } from "../../Market/utils";
+import { categToDeclTitle } from "../../utils";
 
 type IProp = {
   opened: boolean;
   close: () => void;
-  target?: IResSnakesList;
-  handleAction: UseMutateFunction<any, ISupabaseErr, IUpdReq, unknown>;
-  isPend: boolean;
+  snakes: IResSnakesList[] | undefined;
+  onSucc: Function;
+  table: ESupabase;
+  category: ECategories;
 };
 
-export const ChangeStatus: FC<IProp> = ({ opened, close, target, handleAction, isPend }) => {
+type IUpd = {
+  upd: (Partial<Partial<IReqCreateSnake>> & { id?: string; pre_id?: string })[];
+};
+
+export const ChangeStatus: FC<IProp> = ({ opened, close, snakes, category, table, onSucc }) => {
+  const { mutate, isPending } = useSupaMassUpd<IUpd>({
+    t: table,
+  });
+
+  const title = declWord(5, categToDeclTitle[category], true, true);
+  const filtered = snakes?.filter((f) => !disStats.concat(mrktActiveStats).includes(f.status));
+  const isDisabled = filtered?.length === 0;
+
   const {
     reset,
     formState: { isDirty },
     control,
     handleSubmit,
   } = useForm<any>({
-    defaultValues: { status: target?.status },
+    defaultValues: { status: "collection" },
   });
 
+  const fullClose = () => {
+    reset();
+    close();
+  };
+
   const onSub = (sb) => {
-    handleAction(
+    mutate(
       {
-        id: target!.id,
-        upd: {
+        upd: (filtered ?? []).map((b) => ({
+          ...(category === ECategories.BP ? { pre_id: b.pre_id } : { id: b.id }),
           status: sb.status,
-        },
+          last_action: "update",
+        })) as any,
       },
       {
         onSuccess: () => {
           notif({ c: "green", m: "Статус изменён" });
-          close();
+          onSucc();
+          fullClose();
         },
         onError: (e) => {
           notif({ c: "red", t: "Ошибка", m: e.message, code: e.code });
@@ -46,14 +68,39 @@ export const ChangeStatus: FC<IProp> = ({ opened, close, target, handleAction, i
   };
 
   useEffect(() => {
-    reset({ status: target?.status }, { keepDirty: true });
-  }, [target?.status, reset]);
+    reset({ status: "collection" }, { keepDirty: true });
+  }, [reset]);
 
   return (
-    <Modal opened={opened} onClose={close} centered transitionProps={{ transition: "fade", duration: 200 }} title={<Title order={5}>Изменить статус</Title>}>
-      <Box>
-        <SexName sex={target?.sex!} name={target?.snake_name ?? ""} />
-      </Box>
+    <Modal
+      opened={opened}
+      onClose={fullClose}
+      centered
+      transitionProps={{ transition: "fade", duration: 200 }}
+      title={
+        <Title order={5}>
+          {title}. {filtered && filtered?.length > 1 ? "Массовая смена статуса" : "Смена статуса"}
+        </Title>
+      }
+    >
+      {isDisabled ? (
+        <Text component="span" size="sm">
+          Ваш массовый выбор змей содержит только статус{" "}
+          <Text fw={500} size="md" c={snakeStatusToColor["archived"]} component="span">
+            {snakeStatusToLabel["archived"]}
+          </Text>
+          , его нельзя поменять на другой. Скорректируйте выборку до змей в статусе{" "}
+          <Text fw={500} size="md" c={snakeStatusToColor["collection"]} component="span">
+            {snakeStatusToLabel["collection"]}
+          </Text>{" "}
+          , либо снимите все чекбосы и работайте с каждой змеей индивидуально.
+        </Text>
+      ) : (
+        <Flex gap="xs" maw="100%" w="100%" wrap="wrap">
+          {filtered?.map((a) => <SexName sex={a.sex!} name={a.snake_name ?? ""} key={a?.id} size={filtered?.length > 1 ? "xs" : "md"} />)}
+        </Flex>
+      )}
+      <Space h="sm" />
       <Controller
         name={"status"}
         control={control}
@@ -69,14 +116,14 @@ export const ChangeStatus: FC<IProp> = ({ opened, close, target, handleAction, i
         <Text fw={500} size="md" c={snakeStatusToColor["archived"]} component="span">
           {snakeStatusToLabel["archived"]}
         </Text>{" "}
-        вы больше не сможете вносить какие-либо изменения в информацию по змее и переводить её в другие статусы
+        вы больше не сможете вносить какие-либо изменения в информацию по змее, передавать её и менять статус.
       </Text>
       <Space h="lg" />
       <Flex gap="sm" wrap="nowrap" justify="space-between">
         <Button variant="default" onClick={close}>
           Отмена
         </Button>
-        <Button variant="filled" loading={isPend} onClick={handleSubmit(onSub)} disabled={!isDirty || isPend}>
+        <Button variant="filled" loading={isPending} onClick={handleSubmit(onSub)} disabled={!isDirty || isPending}>
           Подтвердить
         </Button>
       </Flex>

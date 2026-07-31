@@ -41,7 +41,6 @@ export const FeedSnakesUniversal: FC<IProp> = ({ opened, close, snakes, table, c
 
   const title = declWord(5, categToDeclTitle[category], true, true);
   const filtered = snakes?.filter((f) => f.status !== "archived");
-  const idsToUpdate = filtered?.map((h) => h?.id);
   const isDisabled = filtered?.length === 0;
 
   const lastFeed = filtered && filtered?.length > 1 ? undefined : filtered?.[0]?.feeding?.sort((a, b) => getDateObj(a.feed_last_at!) - getDateObj(b.feed_last_at!))?.[filtered?.[0]?.feeding.length - 1];
@@ -87,7 +86,7 @@ export const FeedSnakesUniversal: FC<IProp> = ({ opened, close, snakes, table, c
           fullClose();
           onSucc();
           if (profile?.is_vivarium_on && !isError && viv?.[ko_cat ?? ""]) {
-            const kek = prepVivUpd(viv, feed?.feed_weight!, ko_cat!, idsToUpdate?.length) as any;
+            const kek = prepVivUpd(viv, feed?.feed_weight!, ko_cat!, filtered?.length) as any;
             if (kek != null)
               updViv(
                 {
@@ -127,7 +126,7 @@ export const FeedSnakesUniversal: FC<IProp> = ({ opened, close, snakes, table, c
       transitionProps={{ transition: "fade", duration: 200 }}
       lockScroll={false}
       title={
-        <Title order={4}>
+        <Title order={5}>
           {title}. {filtered && filtered?.length > 1 ? "Массовое событие" : "Событие"}
         </Title>
       }
@@ -137,7 +136,7 @@ export const FeedSnakesUniversal: FC<IProp> = ({ opened, close, snakes, table, c
           Ваш массовый выбор змей содержит только статус{" "}
           <Text fw={500} size="md" c={snakeStatusToColor["archived"]} component="span">
             {snakeStatusToLabel["archived"]}
-          </Text>{" "}
+          </Text>
           , для него нельзя вносить какие-либо изменения в информацию. Скорректируйте выборку до змей в статусе{" "}
           <Text fw={500} size="md" c={snakeStatusToColor["collection"]} component="span">
             {snakeStatusToLabel["collection"]}
