@@ -1,7 +1,7 @@
 import { useLocation } from "preact-iso";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Alert, Box, Flex, NumberInput, Stack, Text, TextInput, Textarea } from "@mantine/core";
+import { Alert, Box, Flex, NumberInput, Select, Stack, Text, TextInput, Textarea } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { debounce, isEmpty } from "lodash-es";
 import { Controller, useForm } from "react-hook-form";
@@ -15,6 +15,7 @@ import { httpUldSnPic } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressMulti } from "@/utils/supabaseImg";
 import { dateToSupabaseTime, getAge, getDate } from "@/utils/time";
+import { adStatsHardcode } from "../../Market/utils";
 import { sortSnakeGenes } from "../../genetics/const";
 import { SexName } from "../../sexName";
 import { categToTitle } from "../../utils";
@@ -71,13 +72,13 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
         snake_id: info.snake_id,
         pictures: pics?.flat() as any,
         country: "RU",
-        status: "on_sale",
+        status: sbm.status as any,
       },
       {
         onSuccess: () => {
           mutate({
             upd: {
-              status: "on_sale",
+              status: sbm.status as any,
               last_action: "update",
             },
             id: info.snake_id,
@@ -159,6 +160,15 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
           }}
         />
       </Flex>
+      <Flex align="flex-start" maw="100%" gap="lg" className={styles.w70}>
+        <Controller
+          name="status"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <Select allowDeselect={false} required data={adStatsHardcode} value={value} onChange={onChange} label={"Статус"} error={error?.message} size="sm" flex="0 0 50%" />;
+          }}
+        />
+      </Flex>
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
         <Controller
           name="sale_price"
@@ -198,7 +208,7 @@ export const FormCreateSaleFromColection = ({ init, category, info }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DateInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
+                <DateInput label="Скидка действует до" placeholder="Бессрочно" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
               </>
             );
           }}

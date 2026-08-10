@@ -11,8 +11,9 @@ interface IProp {
   err?: string | null;
   clearFile: (a?: any) => void;
   clearAll: () => void;
+  size?: "xs" | "sm";
 }
-export const FileUploadMulti = forwardRef<any, IProp>(({ onUpload, url, err, clearFile, clearAll }, ref) => {
+export const FileUploadMulti = forwardRef<any, IProp>(({ onUpload, url, err, clearFile, clearAll, size = "sm" }, ref) => {
   const [innerFiles, setInner] = useState<string[] | null>(null);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export const FileUploadMulti = forwardRef<any, IProp>(({ onUpload, url, err, cle
                     <Flex gap="sm" wrap="wrap">
                       {innerFiles?.map((u, ind) => (
                         <Box key={`${u?.slice(0, 4)}_${ind}`} pos="relative" style={{ maxHeight: 110 }}>
-                          <AspectRatio ratio={16 / 9} maw={196}>
+                          <AspectRatio ratio={16 / 9} maw={size === "sm" ? 196 : 110}>
                             <Image src={urlProxyReplace(u)} width="100%" alt="uploaded_snake_pic" fit="cover" />
                           </AspectRatio>
                           <Box

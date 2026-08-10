@@ -159,7 +159,7 @@ interface IGeneSimple {
 }
 
 export const MaxMultiGenes = ({ onChange, initVal, category }: IGeneSimple) => {
-  const { data: traits } = useSnakeGenes(category);
+  const { data: traits } = useSnakeGenes(category, Boolean(category));
   const [search, setSearch] = useState("");
 
   const upg = upgradeOptions(traits ?? [], search, EGenesView.STD);

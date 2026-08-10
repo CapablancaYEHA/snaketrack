@@ -64,7 +64,7 @@ export const SnakeRem: FC<IProp> = ({ rem, handleDel, isPend }) => {
   );
 };
 
-const labels = ["Региусы", "Удавы", "Маисы", "Хондры"];
+const labels = ["Региусы", "Удавы", "Маисы", "Обсолеты", "Свинки", "Хондры"];
 interface IRemContentProp {
   remsThisDate?: IRemResExt[];
   del: (id: string) => void;

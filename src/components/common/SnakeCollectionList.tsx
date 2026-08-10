@@ -19,6 +19,7 @@ import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
 import { ChangeStatus } from "./forms/changeStatus/formChangeStatus";
 import { FeedSnakesUniversal } from "./forms/feedSnake/formFeedUniversal";
+import { FormMassSale } from "./forms/sellSnake/formMassSale";
 import { sexHardcode } from "./forms/snakeBreed/common";
 import { SnakeTags } from "./forms/snakeTags/formSnakeTags";
 import { MaxMultiGenes } from "./genetics/geneSelect";
@@ -29,6 +30,7 @@ const isTransOpen = signal<boolean>(false);
 const isFeedOpen = signal<boolean>(false);
 const isTagOpen = signal<boolean>(false);
 const isStatusOpen = signal<boolean>(false);
+const isSaleOpen = signal<boolean>(false);
 
 const base = {
   openFeed: (uuid) => {
@@ -45,6 +47,10 @@ const base = {
   },
   openStatus: (uuid) => {
     isStatusOpen.value = true;
+    curId.value = uuid;
+  },
+  openSale: (uuid) => {
+    isSaleOpen.value = true;
     curId.value = uuid;
   },
 };
@@ -119,7 +125,7 @@ export function SnakeCollectionList() {
               sigRowSelection.value = n(cur);
             }}
             rowSelection={sigRowSelection.value}
-            estimateSize={276}
+            estimateSize={274}
             initSort={[
               {
                 id: "names",
@@ -170,6 +176,18 @@ export function SnakeCollectionList() {
         table={categoryToBaseTable[catVisited.value]}
         snakes={!isNoSelection ? snakes?.filter((s) => sigRowSelection.value[s.id]) : target ? [target] : undefined}
         category={catVisited.value}
+      />
+      <FormMassSale
+        opened={isSaleOpen.value}
+        close={() => {
+          curId.value = undefined;
+          isSaleOpen.value = false;
+        }}
+        onSucc={() => (sigRowSelection.value = {})}
+        table={categoryToBaseTable[catVisited.value]}
+        snakes={!isNoSelection ? snakes?.filter((s) => sigRowSelection.value[s.id]) : target ? [target] : undefined}
+        category={catVisited.value}
+        profile={profile}
       />
       <Drawer
         opened={opened}

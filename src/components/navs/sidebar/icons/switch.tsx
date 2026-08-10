@@ -30,6 +30,7 @@ import { TelegramIcon } from "./Telegram";
 import { UnisexIcon } from "./Unisex";
 import { VivariumIcon } from "./Vivarium";
 import { VkIcon } from "./Vk";
+import { WarningIcon } from "./Warning";
 import { ZoomIcon } from "./Zoom";
 
 interface IProp {
@@ -104,6 +105,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <VivariumIcon width={width} height={height} />;
     case "vk":
       return <VkIcon width={width} height={height} />;
+    case "warning":
+      return <WarningIcon width={width} height={height} />;
     case "zoom":
       return <ZoomIcon width={width} height={height} />;
     default:

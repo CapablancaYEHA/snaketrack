@@ -12,6 +12,7 @@ export const makeEmptyInit = (profile) => ({
   contacts_telegram: profile?.contacts_telegram,
   contacts_website: profile?.contacts_website,
   description: "Самовывоз и доставка обсуждаемы",
+  status: "on_sale",
   sex: null,
   snake_name: "",
   date_hatch: undefined,
@@ -22,6 +23,7 @@ export const makeEmptyInit = (profile) => ({
 
 export const makeInit = (raw, profile) => {
   return {
+    status: "on_sale",
     sale_price: undefined,
     pictures: raw.pictures,
     city_code: profile?.contacts_city_code,
@@ -46,23 +48,7 @@ export const makeInitEdit = (raw) => {
   };
 };
 
-type Schema = {
-  file: File[];
-};
-
-export const schemaBase = yup.object<Schema>().shape({
-  sale_price: yup
-    .number()
-    .transform((v) => (!v || Number.isNaN(v) ? undefined : v))
-    .required("Обязательно к заполнению"),
-  pictures: yup
-    .mixed<File[]>()
-    .required("Минимум 1 фото")
-    .test("fileSize", "Вес сжатого фото более 1Мb", (v) => !isEmpty(v) && v && v?.every((a) => a.size <= 1048576)),
-  description: yup.string().required("Обязательно к заполнению").min(20, "Ожидаем контент объявления от 20 символов"),
-  city_code: yup.string().required("Обязательно к заполнению"),
-  city_name: yup.string().notRequired(),
-  status: yup.string().nullable(),
+const schemaContacts = yup.object().shape({
   contacts_group: yup
     .string()
     .nullable()
@@ -75,6 +61,21 @@ export const schemaBase = yup.object<Schema>().shape({
     .string()
     .nullable()
     .test("test_group", "Должно быть https://...", (v) => (!v ? true : v.startsWith("http"))),
+  city_code: yup.string().required("Обязательно к заполнению"),
+  city_name: yup.string().notRequired(),
+});
+
+export const schemaBase = schemaContacts.shape({
+  sale_price: yup
+    .number()
+    .transform((v) => (!v || Number.isNaN(v) ? undefined : v))
+    .required("Обязательно к заполнению"),
+  pictures: yup
+    .mixed<File[]>()
+    .required("Минимум 1 фото")
+    .test("fileSize", "Вес сжатого фото более 1Мb", (v) => !isEmpty(v) && v && v?.every((a) => a.size <= 1048576)),
+  description: yup.string().required("Обязательно к заполнению").min(20, "Ожидаем контент объявления от 20 символов"),
+  status: yup.string().required("Обязательно к заполнению"),
   discount_until: yup.string().optional().nullable(),
   discount_price: yup
     .number()
@@ -106,8 +107,40 @@ export const prepareEmpty = (a): IReqCreateSnakeForAdv => {
     picture: null,
     sex: a.sex,
     snake_name: a.snake_name || genes?.map((h) => h.label).join(", "),
-    status: "on_sale",
+    status: a.status,
     genes: genes as IGenesComp[],
     date_hatch: dateToSupabaseTime(a.date_hatch),
   };
+};
+
+export const schemaMassSale = schemaContacts.shape({
+  future_advertisments: yup
+    .array()
+    .of(
+      yup.object({
+        id: yup.string(),
+        sale_price: yup
+          .number()
+          .transform((v) => (!v || Number.isNaN(v) ? undefined : v))
+          .required("Обязательно к заполнению"),
+        pictures: yup
+          .mixed<File[]>()
+          .required("Минимум 1 фото")
+          .test("fileSize", "Вес сжатого фото более 1Мb", (v) => !isEmpty(v) && v && v?.every((a) => a?.size <= 1048576)),
+        description: yup.string().required("Обязательно к заполнению").min(20, "Ожидаем контент объявления от 20 символов"),
+        adv_status: yup.string().required("Обязательно к заполнению"),
+        discount_until: yup.string().optional().nullable(),
+        discount_price: yup
+          .number()
+          .transform((v) => (!v || Number.isNaN(v) ? 0 : v))
+          .optional(),
+      }),
+    )
+    .required(),
+});
+
+export type IMassSale = yup.InferType<typeof schemaMassSale>;
+
+export type IMassUpd = {
+  upd: (Partial<Partial<IReqCreateSnake>> & { id?: string; pre_id?: string })[];
 };

@@ -6,7 +6,7 @@ import { DateInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { signal } from "@preact/signals";
 import { isEmpty } from "lodash-es";
-import { Controller, FormProvider, useFormContext, useWatch } from "react-hook-form";
+import { Controller, FormProvider, useFormContext, useFormState, useWatch } from "react-hook-form";
 import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill, GenesSelect } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
@@ -22,7 +22,6 @@ import { dateAddDays, dateTimeDiff, getAge, getDate, getDateObj } from "@/utils/
 import { OddsGenesOnly } from "../../genetics/OddsCalc";
 import { daysIncubation, getPercentage } from "../snakeBreed/breedUtils";
 import { prepForMm, sexHardcode } from "../snakeBreed/common";
-import { calcAnim } from "./clutchUtils";
 import { IClutchEditScheme, statusHardcode } from "./common";
 
 const sigBabyGenesId = signal<number | undefined>(undefined);
@@ -272,7 +271,7 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
   const isMinMd = useMediaQuery(startMd);
   const isMwTablet = useMediaQuery(tabletThreshold);
   const innerInstance = useFormContext<IClutchEditScheme>();
-  const { errors } = innerInstance.formState;
+
   const { data: fatherData } = useSupaGet<IResSnakesList>(categToConfig[category](selectedFatherId), Boolean(selectedFatherId));
   const { mutate, data: oddsData, isError: isOddsErr, isPending: isOddPending } = useCalcMmOdds(category);
 
@@ -294,11 +293,16 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
     }
   }, [selectedFatherId, mutate, JSON.stringify(fatherData?.genes)]);
 
-  const renderItems = (ind, isLabel, size = "sm", withMargin = false) => {
+  const SRenderItems = ({ ind, isLabel, size = "sm", withMargin = false }) => {
+    const { errors } = useFormState({
+      name: `future_animals.${ind}` as const,
+    });
+    const itemErrors = errors?.future_animals?.[ind];
+
     const isDefaultGenetics = isEmpty(innerInstance.getValues(`future_animals.${ind}.genes`)?.filter((d) => d.label !== "Normal"));
     return (
       <>
-        <TextInput {...innerInstance.register(`future_animals.${ind}.snake_name`)} required={ind === 0} label={isLabel ? "Кличка/Идентификатор" : undefined} error={errors?.future_animals?.[ind]?.snake_name?.message} size={size} />
+        <TextInput {...innerInstance.register(`future_animals.${ind}.snake_name`)} required={ind === 0} label={isLabel ? "Кличка/Идентификатор" : undefined} error={itemErrors?.snake_name?.message} size={size} />
         <Controller
           name={`future_animals.${ind}.date_hatch`}
           control={innerInstance.control}
@@ -322,13 +326,13 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
         />
         <Box maw="100%" style={{ alignSelf: "end" }}>
           {withMargin ? <Space h="xs" /> : null}
-          <Button variant="default" onClick={() => (sigBabyGenesId.value = ind)} size="sm" w="100%" disabled={selectedFatherId == null} rightSection={isDefaultGenetics ? undefined : <IconSwitch icon="check" style={{ stroke: "lime", opacity: 0.6 }} />}>
+          <Button variant="default" onClick={() => (sigBabyGenesId.value = ind)} size={size} w="100%" disabled={selectedFatherId == null} rightSection={isDefaultGenetics ? undefined : <IconSwitch icon="check" style={{ stroke: "lime", opacity: 0.6 }} />}>
             Генетика
           </Button>
         </Box>
         <Box>
           <Text size="xs" c="var(--mantine-color-error)">
-            {errors?.future_animals?.[ind]?.genes?.message || ""}
+            {itemErrors?.genes?.message || ""}
           </Text>
         </Box>
       </>
@@ -340,14 +344,16 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
       {isMinMd ? (
         futureSnakes.map((f, ind) => (
           <SimpleGrid cols={5} spacing="xs" verticalSpacing="xs" key={f.id}>
-            {renderItems(ind, ind === 0, "sm")}
+            <SRenderItems ind={ind} isLabel={ind === 0} size="sm" />
           </SimpleGrid>
         ))
       ) : (
         <Grid gutter="sm" align="baseline">
           {futureSnakes.map((f, ind) => (
             <Grid.Col key={f.id} span={isMinSm ? 3 : 4}>
-              <Box>{renderItems(ind, true, "xs", true)}</Box>
+              <Box>
+                <SRenderItems ind={ind} isLabel size="xs" withMargin />
+              </Box>
             </Grid.Col>
           ))}
         </Grid>

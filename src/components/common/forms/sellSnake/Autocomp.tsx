@@ -53,8 +53,8 @@ export const Autocomp = ({ data, onChange, value, onOptionSubmit, error, require
       </Combobox.Target>
       <Combobox.Dropdown mah={180} style={{ overflowY: "auto" }} hidden={isPending || data === null}>
         <Combobox.Options>
-          {value.trim().length === 0 ? <Combobox.Empty>Начните печатать</Combobox.Empty> : opts}
-          {value.trim().length > 0 && isEmpty(opts) ? <Combobox.Empty>Нет совпадений</Combobox.Empty> : null}
+          {(value ?? " ").trim().length === 0 ? <Combobox.Empty>Начните печатать</Combobox.Empty> : opts}
+          {(value ?? " ").trim().length > 0 && isEmpty(opts) ? <Combobox.Empty>Нет совпадений</Combobox.Empty> : null}
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>

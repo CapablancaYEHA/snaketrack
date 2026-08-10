@@ -15,6 +15,7 @@ import { httpUldSnPic } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
 import { calcImgUrl, compressMulti } from "@/utils/supabaseImg";
 import { dateToSupabaseTime } from "@/utils/time";
+import { adStatsHardcode } from "../../Market/utils";
 import { uplErr } from "../const";
 import { sexHardcode } from "../snakeBreed/common";
 import styles from "../styles.module.scss";
@@ -81,7 +82,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
               snake_id: res.data.id,
               pictures: pics?.flat() as any,
               country: "RU",
-              status: "on_sale",
+              status: sbm.status as any,
             },
             {
               onSuccess: () => {
@@ -196,6 +197,15 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
           }}
         />
       </Flex>
+      <Flex align="flex-start" maw="100%" gap="lg" className={styles.w70}>
+        <Controller
+          name="status"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <Select allowDeselect={false} required data={adStatsHardcode} value={value} onChange={onChange} label={"Статус"} error={error?.message} size="sm" flex="0 0 50%" />;
+          }}
+        />
+      </Flex>
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
         <Controller
           name="sale_price"
@@ -235,7 +245,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DateInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
+                <DateInput label="Скидка действует до" placeholder="Бессрочно" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
               </>
             );
           }}

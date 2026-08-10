@@ -85,15 +85,11 @@ export const ChangeStatus: FC<IProp> = ({ opened, close, snakes, category, table
     >
       {isDisabled ? (
         <Text component="span" size="sm">
-          Ваш массовый выбор змей содержит только статус{" "}
-          <Text fw={500} size="md" c={snakeStatusToColor["archived"]} component="span">
-            {snakeStatusToLabel["archived"]}
-          </Text>
-          , его нельзя поменять на другой. Скорректируйте выборку до змей в статусе{" "}
+          Ваш массовый выбор не содержит змей в статусе{" "}
           <Text fw={500} size="md" c={snakeStatusToColor["collection"]} component="span">
             {snakeStatusToLabel["collection"]}
           </Text>{" "}
-          , либо снимите все чекбосы и работайте с каждой змеей индивидуально.
+          , скорректируйте выборку, либо снимите все чекбосы и работайте с каждой змеей индивидуально.
         </Text>
       ) : (
         <Flex gap="xs" maw="100%" w="100%" wrap="wrap">

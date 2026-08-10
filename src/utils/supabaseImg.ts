@@ -33,7 +33,22 @@ export const compressMulti = async (pic: File, handleChange, handleState) => {
   } catch (e) {
     notif({
       c: "red",
-      t: "Ошибка загрузки файла",
+      t: "Ошибка обработки файла",
+      m: e?.message,
+      code: e.code || e.statusCode,
+    });
+  }
+};
+
+export const compressNoHandlers = async (pic: File) => {
+  try {
+    const rar = await imageCompression(pic, options);
+    let shit = await imageCompression.getDataUrlFromFile(rar);
+    return shit;
+  } catch (e) {
+    notif({
+      c: "red",
+      t: "Ошибка обработки файла",
       m: e?.message,
       code: e.code || e.statusCode,
     });

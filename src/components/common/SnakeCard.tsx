@@ -4,6 +4,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { IFeed } from "@/api/common";
 import { getDate, getDateObj } from "../../utils/time";
 import { codeToFeeder } from "../common/Feeder/const";
+import { IconSwitch } from "../navs/sidebar/icons/switch";
 import { disStats, mrktActiveStats } from "./Market/utils";
 import { sortSnakeGenes } from "./genetics/const";
 import { GenePill } from "./genetics/geneSelect";
@@ -77,7 +78,7 @@ export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isS
   );
 };
 
-export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTag, status, children }) => {
+export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTag, status, openSale, children }) => {
   const isDisabled = disStats.includes(status ?? "");
   const isStatusDis = disStats.concat(mrktActiveStats).includes(status ?? "");
 
@@ -86,8 +87,8 @@ export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTa
       openDelay={200}
       shadow="md"
       width={164}
-      transitionProps={{ transition: "rotate-left", duration: 150 }}
       trigger="click-hover"
+      transitionProps={{ transition: "rotate-left", duration: 150 }}
       loop={false}
       withinPortal
       trapFocus={false}
@@ -119,6 +120,17 @@ export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTa
           Редактировать
         </Menu.Item>
         <Menu.Item
+          c={isStatusDis ? undefined : "var(--mantine-color-yellow-8)"}
+          onClick={(e) => {
+            e.stopPropagation();
+            openStatus(id);
+          }}
+          disabled={isStatusDis}
+          style={{ whiteSpace: "nowrap" }}
+        >
+          Сменить статус
+        </Menu.Item>
+        <Menu.Item
           onClick={(e) => {
             e.stopPropagation();
             openTrans(id);
@@ -133,19 +145,21 @@ export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTa
             e.stopPropagation();
             openTag(id);
           }}
-          style={{ whiteSpace: "nowrap" }}
         >
           Тэги
         </Menu.Item>
         <Menu.Item
-          c="var(--mantine-color-yellow-8)"
+          c={isStatusDis ? undefined : "violet"}
           onClick={(e) => {
             e.stopPropagation();
-            openStatus(id);
+            openSale(id);
           }}
           disabled={isStatusDis}
         >
-          Статус
+          <Flex wrap="nowrap" gap="xs">
+            <IconSwitch icon="market" width="20" height="20" />
+            <span>Продать</span>
+          </Flex>
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

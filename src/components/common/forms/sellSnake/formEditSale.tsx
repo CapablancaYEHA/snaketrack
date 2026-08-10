@@ -165,14 +165,21 @@ export const FormEditSale = ({ init, info, category }) => {
           name={"status"}
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <Select allowDeselect={false} required data={adStatsHardcode} value={value} onChange={onChange} label={"Статус"} error={error?.message} size="sm" flex="1 1 50%" />;
-          }}
-        />
-        <Controller
-          name="sale_price"
-          control={control}
-          render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <NumberInput required rightSection="₽" label="Цена продажи" flex="1 1 50%" hideControls thousandSeparator=" " error={error?.message} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} />;
+            return (
+              <Select
+                description="Редактируйте для снятия с продажи"
+                descriptionProps={{ style: { color: "var(--mantine-color-yellow-8)", opacity: 0.7 } }}
+                allowDeselect={false}
+                required
+                data={adStatsHardcode}
+                value={value}
+                onChange={onChange}
+                label={"Статус"}
+                error={error?.message}
+                size="sm"
+                flex="0 0 50%"
+              />
+            );
           }}
         />
       </Flex>
@@ -193,6 +200,13 @@ export const FormEditSale = ({ init, info, category }) => {
             error={errors?.city_code?.message}
           />
         </Box>
+        <Controller
+          name="sale_price"
+          control={control}
+          render={({ field: { onChange, value }, fieldState: { error } }) => {
+            return <NumberInput required rightSection="₽" label="Цена продажи" flex="1 1 50%" hideControls thousandSeparator=" " error={error?.message} value={value} onChange={onChange} allowDecimal={false} allowLeadingZeros={false} allowNegative={false} />;
+          }}
+        />
       </Flex>
       <Flex align="flex-start" maw="100%" className={styles.w70} gap="lg">
         <Controller
@@ -208,7 +222,7 @@ export const FormEditSale = ({ init, info, category }) => {
           render={({ field: { onChange, value }, fieldState: { error } }) => {
             return (
               <>
-                <DateInput label="Скидка валидна до" value={value as any} onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
+                <DateInput label="Скидка действует до" value={value as any} placeholder="Бессрочно" onChange={onChange} valueFormat="DD MMMM YYYY" highlightToday locale="ru" error={error?.message} flex="1 1 50%" />
               </>
             );
           }}

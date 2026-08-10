@@ -16,7 +16,7 @@ import { hatchFiltFn } from "./StackTable/filters";
 
 const colHelper = createColumnHelper<IResSnakesList>();
 
-export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) => {
+export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag, openSale }) => {
   return [
     colHelper.accessor("picture", {
       header: ({ table }) => {
@@ -34,7 +34,7 @@ export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag }) =>
         );
       },
       cell: ({ cell, row }) => (
-        <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openTag={openTag} openStatus={openStatus} category={catVisited.value} status={row.original.status}>
+        <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openTag={openTag} openStatus={openStatus} openSale={openSale} category={catVisited.value} status={row.original.status}>
           <Stack gap="xs" maw="100%" w="100%">
             <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
             {row.original.tags ? (
