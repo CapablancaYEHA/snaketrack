@@ -11,7 +11,7 @@ import { notif } from "@/utils/notif";
 import { declWord } from "@/utils/other";
 import { dateToSupabaseTime, getDate, getIsSame } from "@/utils/time";
 import { makeSubmit } from "./const";
-import { sigCurDate, sigDeletedId, sigIsModOpen } from "./signals";
+import { sigCurDate, sigIsModOpen } from "./signals";
 import { RemContentCateg } from "./subcomponents";
 
 interface IProp {
@@ -35,7 +35,7 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
     qk: [ESupabase.REM_V],
     e: false,
   });
-  const { mutate: makeNew } = useSupaCreate<IRemindersReq[]>(
+  const { mutate: makeNew, isPending: isCrPending } = useSupaCreate<IRemindersReq[]>(
     ESupabase.REM,
     {
       qk: [ESupabase.REM_V],
@@ -45,7 +45,6 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
   );
 
   const closeAndRes = () => {
-    sigDeletedId.value = undefined;
     close();
     formInstance.reset();
   };
@@ -53,9 +52,9 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
   const handleCreate = (payload: IRemindersReq[]) => {
     makeNew(payload, {
       onSuccess: () => {
-        notif({ c: "green", t: "Успешно", m: "Напоминание создано" });
         closeAndRes();
         resetSelected();
+        notif({ c: "green", t: "Успешно", m: "Напоминание создано" });
       },
       onError: async (err) => {
         notif({
@@ -73,8 +72,8 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
       { id },
       {
         onSuccess: () => {
-          notif({ c: "green", t: "Успешно", m: "Напоминание удалено" });
           closeAndRes();
+          notif({ c: "green", t: "Успешно", m: "Напоминание удалено" });
         },
         onError: async (err) => {
           notif({
@@ -109,7 +108,7 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
                     <Text size="sm">Для создания нового напоминания на эту дату, нужно выбрать хотя бы одну Змею, для которой еще не существует напоминания</Text>
                   ) : (
                     <FormProvider {...formInstance}>
-                      <CreateRem handleCreate={handleCreate} creationIds={forCreate} category={category} />
+                      <CreateRem handleCreate={handleCreate} isPending={isCrPending} creationIds={forCreate} category={category} />
                     </FormProvider>
                   )}
                 </>
@@ -129,7 +128,7 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
                     <Text size="sm">Для создания нового напоминания на эту дату, нужно выбрать хотя бы одну Змею, для которой еще не существует напоминания</Text>
                   ) : (
                     <FormProvider {...formInstance}>
-                      <CreateRem handleCreate={handleCreate} creationIds={forCreate} category={category} />
+                      <CreateRem handleCreate={handleCreate} creationIds={forCreate} category={category} isPending={isCrPending} />
                     </FormProvider>
                   )}
                 </>
@@ -144,11 +143,12 @@ export const Reminder: FC<IProp> = ({ snakesInRems, close, selected, category, r
 
 interface ICrRem {
   handleCreate: (arg: IRemindersReq[]) => void;
+  isPending: boolean;
   creationIds: string[];
   category: ECategories;
 }
 
-const CreateRem: FC<ICrRem> = ({ handleCreate, creationIds, category }) => {
+const CreateRem: FC<ICrRem> = ({ handleCreate, creationIds, category, isPending }) => {
   const innerInstance = useFormContext<any>();
 
   const { data: list } = useSupaGet<IResSnakesList[]>({ t: categoryToBaseTable[category], s: ["snake_name", "id", "sex"].join(", "), f: (b) => b.in("id", creationIds), id: { ids: creationIds } }, !isEmpty(creationIds));
@@ -186,9 +186,10 @@ const CreateRem: FC<ICrRem> = ({ handleCreate, creationIds, category }) => {
           );
         }}
       />
-
       <Btn
         fullWidth={false}
+        loading={isPending}
+        disabled={isPending}
         w="min-content"
         style={{ alignSelf: "end" }}
         onClick={() => {

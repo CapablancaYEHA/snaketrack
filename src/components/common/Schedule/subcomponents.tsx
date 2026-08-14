@@ -8,7 +8,6 @@ import { ECategories, IRemResExt } from "@/api/common";
 import { declWord } from "@/utils/other";
 import { dateAddDays, getDateCustom } from "@/utils/time";
 import { listReminderContents } from "./const";
-import { sigDeletedId } from "./signals";
 
 interface IProp {
   rem?: IRemResExt;
@@ -79,7 +78,7 @@ export const RemContentCateg: FC<IRemContentProp> = ({ remsThisDate, del, isDelP
         <Divider w="100%" maw="100%" label={labels[index]} labelPosition="center" mt={index > 0 && !isEmpty(arr[index - 1]) ? "xs" : undefined} />
         {r?.map((a, ind, self) => (
           <Fragment key={a.id}>
-            <SnakeRem rem={a} handleDel={del} key={a.id} isPend={isDelPend && a.id === sigDeletedId.value} />
+            <SnakeRem rem={a} handleDel={del} key={a.id} isPend={isDelPend} />
             {ind !== self.length - 1 ? <Divider w="100%" maw="100%" opacity={0.5} variant="dashed" /> : null}
           </Fragment>
         ))}

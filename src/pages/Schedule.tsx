@@ -89,6 +89,8 @@ export const Schedule = () => {
     (isMvPend && sigCurCat.value === ECategories.MV) ||
     isRemPending;
 
+  const isSmthRefetching = isBpRef || isBcRef || isCsRef || isRsRef || isHnRef || isMvRef || isRemRefetching;
+
   useEffect(() => {
     snakesWithRems.value = allRems?.map((c) => c.snake);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -184,7 +186,7 @@ export const Schedule = () => {
         snake={dataToUse?.find((b) => b.id === curId.value)}
         category={sigCurCat.value}
       />
-      {isBpRef || isBcRef || isCsRef || isRsRef || isHnRef || isMvRef || isRemRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+      {isSmthRefetching ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
     </>
   );
 };

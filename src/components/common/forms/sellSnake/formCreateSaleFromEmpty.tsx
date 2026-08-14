@@ -150,7 +150,7 @@ export const FormCreateSaleFromEmpty = ({ category, emptyInit }) => {
           name="snake_name"
           control={control}
           render={({ field: { onChange, value }, fieldState: { error } }) => {
-            return <TextInput required onChange={onChange} value={value || wGenes?.map((h) => h.label).join(", ")} label="Кличка/Идентификатор" error={error?.message} flex="1 1 50%" />;
+            return <TextInput required onChange={onChange} value={value || wGenes?.map((h) => h.label).join(", ")} label="Кличка/Id" error={error?.message} flex="1 1 50%" />;
           }}
         />
         <Controller

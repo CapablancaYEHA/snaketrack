@@ -302,7 +302,7 @@ export const FormApprovedBabies = ({ futureSnakes, isShow, category, femaleGenes
     const isDefaultGenetics = isEmpty(innerInstance.getValues(`future_animals.${ind}.genes`)?.filter((d) => d.label !== "Normal"));
     return (
       <>
-        <TextInput {...innerInstance.register(`future_animals.${ind}.snake_name`)} required={ind === 0} label={isLabel ? "Кличка/Идентификатор" : undefined} error={itemErrors?.snake_name?.message} size={size} />
+        <TextInput {...innerInstance.register(`future_animals.${ind}.snake_name`)} required={ind === 0} label={isLabel ? "Кличка/Id" : undefined} error={itemErrors?.snake_name?.message} size={size} />
         <Controller
           name={`future_animals.${ind}.date_hatch`}
           control={innerInstance.control}

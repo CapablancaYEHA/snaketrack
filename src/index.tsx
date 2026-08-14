@@ -22,12 +22,14 @@ import { Register } from "./pages/auth/Register";
 import { Reset } from "./pages/auth/Reset";
 import { Landing } from "./pages/Landing";
 import { Terms } from "./pages/Terms";
+import { Cookies } from "./pages/Cookies";
 import { tabletThreshold, theme } from "./styles/theme";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
 import '@mantine/carousel/styles.css';
 import "./styles/global.scss";
+
 
 const isPending = signal(true);
 
@@ -90,6 +92,7 @@ export function App() {
               <Route path="/register" component={Register} />
               <Route path="/reset" component={Reset} />
 			  <Route path="/terms" component={Terms} />
+			  <Route path="/cookies" component={Cookies} />
               {isPending.value ? (
                 <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 1.0 }} />
               ) : (

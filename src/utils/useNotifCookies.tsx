@@ -5,9 +5,13 @@ import { notifications } from "@mantine/notifications";
 const Agr = ({ handle }) => (
   <Stack gap="sm" align="center">
     <Text size="xs" fw={500}>
-      Оставаясь на&nbsp;сайте, вы соглашаетесь с&nbsp;данным фактом и&nbsp;
+      Оставаясь на&nbsp;сайте, вы соглашаетесь с&nbsp;данным фактом. Приглашаем более подробно ознакомиться с{" "}
+      <Anchor href="/cookies" underline="always" c="inherit" fw={500} target="_blank" rel="noreferrer">
+        политикой cookies
+      </Anchor>{" "}
+      и{" "}
       <Anchor href="/terms" underline="always" c="inherit" fw={500} target="_blank" rel="noreferrer">
-        условиями
+        условиями использования сайта
       </Anchor>
     </Text>
     <Button size="compact-xs" onClick={handle}>
