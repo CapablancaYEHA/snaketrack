@@ -14,7 +14,7 @@ import { getAge, getDate } from "@/utils/time";
 import { disStats, snakeStatusToColor, snakeStatusToLabel } from "../Market/utils";
 import { FamilyTree } from "../MyFlowTree/FamilyTree";
 import { StackSimpleTable } from "../StackTable/StackSimpleTable";
-import { EditStats } from "../forms/editStats/formEditStats";
+import { EditShed, EditStats } from "../forms/editStats/formEditStats";
 import { FeedSnakeSolo } from "../forms/feedSnake/formFeedSolo";
 import { SnakeTags } from "../forms/snakeTags/formSnakeTags";
 import { ZoomImage } from "./ZoomImage";
@@ -23,7 +23,8 @@ import { snakeFeedColumns } from "./utils";
 
 const isFeedOpen = signal<boolean>(false);
 const isTagOpen = signal<boolean>(false);
-const isEditMode = signal<boolean>(false);
+const isEditStats = signal<boolean>(false);
+const isEditShed = signal<boolean>(false);
 
 interface IProp {
   title: string;
@@ -164,7 +165,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
               <ChartLine weightData={data?.weight} feedData={data?.feeding} scaleX={scale} view={view} dateSlice={slice} dateHatch={data.date_hatch} />
             </>
           )}
-          <Button variant="default" rightSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditMode.value = true)} disabled={(isEmpty(data?.feeding) && isEmpty(data?.weight)) || isDisabled} size="compact-xs" ml="auto">
+          <Button variant="default" leftSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditStats.value = true)} disabled={(isEmpty(data?.feeding) && isEmpty(data?.weight)) || isDisabled} size="compact-xs" ml="auto">
             Корректировать данные
           </Button>
           <StackSimpleTable
@@ -195,9 +196,13 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             snake={data}
             snakeTable={categoryToBaseTable[category]}
           />
+          <Button variant="default" leftSection={<IconSwitch icon="edit" width="16" height="16" />} onClick={() => (isEditShed.value = true)} disabled={isEmpty(data?.shed) || isDisabled} size="compact-xs" ml="auto">
+            Линьки
+          </Button>
           <ChartBubble shedData={data.shed} />
           <Space h="lg" />
-          <EditStats table={categoryToBaseTable[category]} opened={isEditMode.value} close={() => (isEditMode.value = false)} weight={data?.weight ?? []} feeding={data?.feeding ?? []} id={location.query.id} />
+          <EditStats table={categoryToBaseTable[category]} opened={isEditStats.value} close={() => (isEditStats.value = false)} weight={data?.weight ?? []} feeding={data?.feeding ?? []} id={location.query.id} />
+          <EditShed table={categoryToBaseTable[category]} opened={isEditShed.value} close={() => (isEditShed.value = false)} shed={data?.shed ?? []} id={location.query.id} />
         </>
       )}
     </Stack>
