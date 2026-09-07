@@ -65,6 +65,7 @@ export const breedSchema = yup.object().shape({
   female_prelay_shed_date: yup.string().nullable(),
   female_ovulation_date: yup.string().nullable(),
   breed_status: yup.string().nullable().optional(),
+  notes: yup.string().nullable().optional(),
 });
 
 export type IBreedScheme = yup.InferType<typeof breedSchema>;
@@ -75,6 +76,7 @@ export const defaultVals = {
   malesEvents: {},
   female_prelay_shed_date: undefined,
   female_ovulation_date: undefined,
+  notes: null,
 };
 
 export const eventsOpts = [
@@ -98,6 +100,7 @@ export const prepForCreate = (submit, status?: IBreedStat): IReqCreateBreed => {
     female_id: submit.female_id,
     males_ids: submit.males_ids.map((a) => a.snake),
     status: status || calcStatus(submit),
+    notes: submit.notes,
   };
 };
 

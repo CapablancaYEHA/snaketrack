@@ -3,7 +3,7 @@ import { useEffect, useState } from "preact/hooks";
 import { Fragment } from "preact/jsx-runtime";
 import { tabletThreshold } from "@/styles/theme";
 import fallback from "@assets/placeholder.webp";
-import { Accordion, Anchor, Box, Button, Divider, Drawer, Flex, Group, Image, Loader, LoadingOverlay, Menu, Modal, Progress, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Accordion, Anchor, Box, Button, Divider, Drawer, Flex, Group, Image, Loader, LoadingOverlay, Menu, Modal, Progress, Select, Space, Stack, Text, Textarea, Title } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 import { Controller, FormProvider, useFieldArray, useFormContext, useWatch } from "react-hook-form";
@@ -325,6 +325,16 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
   return (
     <>
       {isListPen || isQuePen ? <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} /> : null}
+      <Box maw="100%" w="100%">
+        <Accordion variant="separated" radius="md">
+          <Accordion.Item value="combos">
+            <Accordion.Control fz="xs">Заметки, примечания</Accordion.Control>
+            <Accordion.Panel>
+              <Textarea {...innerInstance.register("notes")} placeholder="Наблюдения о спариваниях и т.д." w="100%" maw="100%" autosize id="txarea_helper_breedNotes" />
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+      </Box>
       <Group maw="100%" w="100%" align="start" gap="xl" grow>
         <Flex gap="md" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
           <Text size="md">Самка для проекта</Text>

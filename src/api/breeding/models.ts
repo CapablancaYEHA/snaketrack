@@ -54,6 +54,7 @@ export interface IResBreedingList {
   female_prelay_shed_date?: string;
   female_ovulation_date?: string;
   clutch_id?: string | null; // uuid кладки, если проект завершился ей
+  notes?: string | null;
 }
 
 export type IUpdBreedReq = {
