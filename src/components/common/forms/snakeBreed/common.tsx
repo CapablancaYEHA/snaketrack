@@ -80,7 +80,8 @@ export const defaultVals = {
 };
 
 export const eventsOpts = [
-  { label: "Ссаживание", value: "pairing" },
+  { label: "Ссадили", value: "pairing" },
+  { label: "Рассадили", value: "dispairing" },
   { label: "Лок", value: "lock" },
 ];
 

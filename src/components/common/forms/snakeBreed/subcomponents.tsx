@@ -89,8 +89,8 @@ export const MaleEvent = ({ id, disabled }) => {
               />
             </Stack>
             {disabled ? null : (
-              <Flex justify="center" align="center" flex="1 0 auto" style={{ alignSelf: "center" }} onClick={() => remove(ind)}>
-                <Box p="sm" style={{ opacity: 0.4, cursor: "pointer" }}>
+              <Flex justify="center" align="center" flex="1 0 auto" style={{ alignSelf: "center" }}>
+                <Box p="sm" style={{ opacity: 0.4, cursor: "pointer" }} onClick={() => remove(ind)}>
                   <IconSwitch icon="bin" width="24" height="24" />
                 </Box>
               </Flex>
@@ -316,6 +316,11 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
     name: "males_ids",
   });
 
+  const clearMale = (indx, id) => {
+    innerInstance.setValue(`malesEvents.${id}` as any, undefined);
+    removeFetch(indx);
+  };
+
   const { isListPen, isQuePen, isAddAllowed, femData, malesData, regFems, regMales } = useUtilsBreed({ fem: selectedFem, fetchFields, category });
 
   const isClutchMade = innerInstance.getValues("breed_status") === "clutch" && existingClutchId != null;
@@ -335,9 +340,11 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
           </Accordion.Item>
         </Accordion>
       </Box>
-      <Group maw="100%" w="100%" align="start" gap="xl" grow>
-        <Flex gap="md" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
-          <Text size="md">Самка для проекта</Text>
+      <Flex maw="100%" w="100%" align="start" gap="xl" className={css.group}>
+        <Flex gap="md" maw="100%" w="100%" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
+          <Text size="md" fw="500">
+            Самка для проекта
+          </Text>
           <Controller
             name="female_id"
             control={innerInstance.control}
@@ -345,7 +352,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
               return <Select placeholder="Поиск" data={regFems} value={value} onChange={onChange} error={error?.message} searchable required disabled={isClutchMade} />;
             }}
           />
-          <Box w="100%" maw="100%">
+          <Box w="100%" maw="100%" className={css.info}>
             {selectedFem ? (
               <>
                 {!regFems?.map((a) => a.label).includes(femData?.snake_name) ? (
@@ -357,16 +364,19 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
                   </>
                 ) : null}
                 <BriefInfo snake={femData} />
-                <Space h="md" />
-                <FormProvider {...innerInstance}>
-                  <FemaleEvent isClutchMade={isClutchMade} ovul={wOvul} shed={wShed} category={category} />
-                </FormProvider>
+                <Box className={css.event}>
+                  <FormProvider {...innerInstance}>
+                    <FemaleEvent isClutchMade={isClutchMade} ovul={wOvul} shed={wShed} category={category} />
+                  </FormProvider>
+                </Box>
               </>
             ) : null}
           </Box>
         </Flex>
-        <Flex gap="md" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
-          <Text size="md">Самцы для проекта</Text>
+        <Flex maw="100%" w="100%" gap="md" justify="flex-start" align="flex-start" direction="column" wrap="nowrap">
+          <Text size="md" fw="500">
+            Самцы для проекта
+          </Text>
           <Stack align="flex-start" w="100%" maw="100%">
             <Controller
               name={`males_ids.0.snake`}
@@ -392,7 +402,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
             />
             {malesData?.map((male, ind) => (
               <Fragment key={male?.id}>
-                <Box style={{ width: "100%", maxWidth: "100%" }}>
+                <Box maw="100%" w="100%" className={css.info}>
                   {!regMales?.map((a) => a.label).includes(male?.snake_name) ? (
                     <>
                       <Text size="sm" fw={500}>
@@ -402,65 +412,64 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
                     </>
                   ) : null}
                   <BriefInfo snake={male} />
-                  <Space h="md" />
-                  {isClutchMade ? null : (
-                    <>
-                      <ButtonSelect
-                        options={eventsOpts}
-                        label="Добавить событие"
-                        handleSelect={(v) => {
-                          const newArr = [
-                            {
-                              event: v,
-                              date: null,
-                            },
-                          ].concat(malesEvents?.[male?.id] || []);
-                          innerInstance.setValue(`malesEvents.${male?.id}` as any, newArr);
-                        }}
-                      />
-                      <Space h="md" />
-                    </>
-                  )}
-                  <FormProvider {...innerInstance}>{malesEvents && malesEvents.hasOwnProperty(male?.id) ? <MaleEvent id={male?.id} disabled={isClutchMade} /> : null}</FormProvider>
-                  {category !== ECategories.MV ? <OddsInfo female={femData} male={male} category={category} /> : null}
-                  <div>
-                    {fetchFields?.slice(1)[ind] != null ? (
-                      <Group justify="space-between">
-                        {ind >= 0 ? <Divider my="lg" w="100%" /> : null}
-                        <Controller
-                          name={`males_ids.${ind + 1}.snake`}
-                          control={innerInstance.control}
-                          render={({ fieldState: { error } }) => {
-                            return (
-                              <Select
-                                placeholder="Поиск"
-                                disabled={isClutchMade}
-                                searchable
-                                renderOption={(o) => renderSelectOption(o.option, fetchFields?.find((f) => f.snake === o.option.value) != null)}
-                                data={regMales}
-                                value={fetchFields?.[ind + 1]?.snake}
-                                error={error?.message}
-                                comboboxProps={{
-                                  onOptionSubmit: (v) =>
-                                    fetchFields?.find((f) => f.snake === v) != null
-                                      ? notif({
-                                          c: "red",
-                                          t: "Ошибка",
-                                          m: "Этот самец уже выбран в данном проекте",
-                                        })
-                                      : updateFetch(ind + 1, { snake: v }),
-                                }}
-                              />
-                            );
+                  <Box className={css.event}>
+                    {isClutchMade ? null : (
+                      <>
+                        <ButtonSelect
+                          options={eventsOpts}
+                          label="Добавить событие"
+                          handleSelect={(v) => {
+                            const newArr = [
+                              {
+                                event: v,
+                                date: null,
+                              },
+                            ].concat(malesEvents?.[male?.id] || []);
+                            innerInstance.setValue(`malesEvents.${male?.id}` as any, newArr);
                           }}
                         />
-                        <Button size="compact-xs" onClick={() => removeFetch(ind + 1)} disabled={isClutchMade}>
-                          Удалить
-                        </Button>
-                      </Group>
-                    ) : null}
-                  </div>
+                        <Space h="md" />
+                      </>
+                    )}
+                    <FormProvider {...innerInstance}>{malesEvents && malesEvents.hasOwnProperty(male?.id) ? <MaleEvent id={male?.id} disabled={isClutchMade} /> : null}</FormProvider>
+                    {category !== ECategories.MV ? <OddsInfo female={femData} male={male} category={category} /> : null}
+                  </Box>
                 </Box>
+                {fetchFields?.slice(1)[ind] != null ? (
+                  <Group justify="space-between" component="aside" maw="100%" w="100%">
+                    {ind >= 0 ? <Divider my="lg" w="100%" /> : null}
+                    <Controller
+                      name={`males_ids.${ind + 1}.snake`}
+                      control={innerInstance.control}
+                      render={({ fieldState: { error } }) => {
+                        return (
+                          <Select
+                            placeholder="Поиск"
+                            disabled={isClutchMade}
+                            searchable
+                            renderOption={(o) => renderSelectOption(o.option, fetchFields?.find((f) => f.snake === o.option.value) != null)}
+                            data={regMales}
+                            value={fetchFields?.[ind + 1]?.snake}
+                            error={error?.message}
+                            comboboxProps={{
+                              onOptionSubmit: (v) =>
+                                fetchFields?.find((f) => f.snake === v) != null
+                                  ? notif({
+                                      c: "red",
+                                      t: "Ошибка",
+                                      m: "Этот самец уже выбран в данном проекте",
+                                    })
+                                  : updateFetch(ind + 1, { snake: v }),
+                            }}
+                          />
+                        );
+                      }}
+                    />
+                    <Button size="compact-xs" onClick={() => clearMale(ind + 1, fetchFields?.[ind + 1]?.snake)} disabled={isClutchMade}>
+                      Удалить
+                    </Button>
+                  </Group>
+                ) : null}
               </Fragment>
             ))}
             {isAddAllowed && !isClutchMade ? (
@@ -473,7 +482,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
             ) : null}
           </Stack>
         </Flex>
-      </Group>
+      </Flex>
       {innerInstance.formState.errors?.["malesEvents"] ? <span>{JSON.stringify(innerInstance.formState.errors?.["malesEvents"].message)}</span> : null}
       <Flex gap="xl" align="center" mt="lg" maw="100%" w="100%">
         <Button type="submit" onClick={innerInstance.handleSubmit(onSub)} disabled={!innerInstance.formState.isDirty || isClutchMade} size="xs" ml="auto">

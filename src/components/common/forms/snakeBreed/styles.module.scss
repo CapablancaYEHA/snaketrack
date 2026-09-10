@@ -4,3 +4,34 @@
     flex-wrap: nowrap;
   }
 }
+
+.group {
+  display: flex;
+  flex-flow: column nowrap;
+
+  & > div {
+    flex: 1 1 50%;
+  }
+
+  & .info {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: var(--mantine-spacing-sm);
+    & > div {
+      flex: 1 1 50%;
+    }
+    & .event {
+    }
+  }
+
+  @media (min-width: 48em) {
+    flex-flow: row nowrap;
+
+    & .info {
+      flex-flow: column nowrap;
+      & .event {
+        margin-top: var(--mantine-spacing-md);
+      }
+    }
+  }
+}
