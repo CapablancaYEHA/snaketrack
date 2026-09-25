@@ -18,7 +18,7 @@ export const compressImage = async (pic: File, handleChange, handleState) => {
     notif({
       c: "red",
       t: "Ошибка загрузки файла",
-      m: e?.message,
+      m: e?.message || JSON.stringify(e),
       code: e.code || e.statusCode,
     });
   }
