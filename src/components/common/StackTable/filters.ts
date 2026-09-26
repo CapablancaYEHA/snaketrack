@@ -18,6 +18,18 @@ export const tableFiltMulti = (handler: (value: StateUpdater<any[]>) => void, a:
   });
 };
 
+export const tableFiltArchive = (handler: (value: StateUpdater<any[]>) => void, a: string[], accessor: string, filterName: string) => {
+  handler(() => {
+    const pl = [{ id: accessor, value: a }];
+    if (isEmpty(a)) {
+      localStorage.setItem(filterName, JSON.stringify([]));
+      return pl;
+    }
+    localStorage.setItem(filterName, JSON.stringify(pl));
+    return pl;
+  });
+};
+
 export const tableFiltRange = (handler: (value: StateUpdater<any[]>) => void, a: DatesRangeValue<string>, accessor: string) => {
   handler((s) => {
     let copy = [...s.filter((c) => c.id !== accessor)];

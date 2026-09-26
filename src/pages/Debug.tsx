@@ -17,7 +17,7 @@ const prep = (g: IGenesComp[]) => {
 export const calculateHash = (v) => md5(prep(v)).toString();
 
 export function Debug() {
-  const { data, isFetching, isError } = useSupaGet<any>({ t: "corn_snakes" as any, f: (b) => b.contains("genes", '[{"label":"Amel"}]'), id: "Hypo" }, true);
+  const { data, isFetching, isError } = useSupaGet<any>({ t: "ballpythons" as any, f: (b) => b.contains("genes", '[{"label":"210 Hypo"}]'), id: "Hypo" }, true);
 
   if (isFetching) return <LoadingOverlay visible zIndex={30} overlayProps={{ radius: "sm", blur: 2, backgroundOpacity: 0.5 }} />;
 

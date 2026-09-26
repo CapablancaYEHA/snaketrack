@@ -1,6 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import { startSm } from "@/styles/theme";
-import { Box, Button, CloseButton, Drawer, Flex, LoadingOverlay, Select, Space, Text, TextInput, Title } from "@mantine/core";
+import { Box, Button, CloseButton, Drawer, Flex, LoadingOverlay, Select, Space, Switch, Text, TextInput, Title } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { computed, signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
@@ -15,7 +15,8 @@ import { useSupaGet, useTransferSnake } from "@/api/hooks";
 import { useProfile } from "@/api/profile/hooks";
 import { catVisited, sigRowSelection } from "@/pages/SnakeCategories";
 import { declWord } from "@/utils/other";
-import { tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
+import { snakeStatusToColor, snakeStatusToLabel } from "./Market/utils";
+import { tableFiltArchive, tableFiltMulti, tableFiltSingle } from "./StackTable/filters";
 import { makeListColumns } from "./const";
 import { ChangeStatus } from "./forms/changeStatus/formChangeStatus";
 import { FeedSnakesUniversal } from "./forms/feedSnake/formFeedUniversal";
@@ -69,6 +70,7 @@ export function SnakeCollectionList() {
   const [globalFilter, setGlobalFilter] = useState<any>([]);
 
   const target = snakes?.find((b) => b.id === curId.value);
+  const filteredSnakes = filt?.find((a) => a.id === "status")?.value.includes("archived") ? snakes : snakes?.filter((c) => c.status !== "archived");
 
   const debSearch = debounce(setGlobalFilter, 300);
 
@@ -78,6 +80,10 @@ export function SnakeCollectionList() {
   useEffect(() => {
     setFilt(storageFilter);
   }, [JSON.stringify(storageFilter)]);
+
+  useEffect(() => {
+    sigRowSelection.value = {};
+  }, [globalFilter, JSON.stringify(filt)]);
 
   return (
     <>
@@ -92,7 +98,6 @@ export function SnakeCollectionList() {
           Добавить
         </Btn>
       </Flex>
-
       {isPending ? <SkelTable /> : null}
       {isError ? (
         <Text fw={500} c="var(--mantine-color-error)">
@@ -102,6 +107,28 @@ export function SnakeCollectionList() {
         <Text fw={500}>{declWord(5, categToDeclTitle[catVisited.value], true)} у вас нет</Text>
       ) : (
         <>
+          <Box maw="100%" w="100%">
+            <Switch
+              size="xs"
+              color="blue"
+              label={
+                <>
+                  <Text size="xs" component="span">
+                    показать только{" "}
+                  </Text>
+                  <Text fw={500} size="xs" c={snakeStatusToColor["archived"]} component="span">
+                    {snakeStatusToLabel["archived"]}
+                  </Text>
+                </>
+              }
+              onChange={() => {
+                const cur = filt?.find((a) => a.id === "status")?.value?.length === 1 && filt?.find((a) => a.id === "status")?.value.includes("archived");
+                tableFiltArchive(setFilt, cur ? [] : ["archived"], "status", filtName);
+                sigRowSelection.value = {};
+              }}
+              checked={filt?.find((a) => a.id === "status")?.value?.length === 1 && filt?.find((a) => a.id === "status")?.value.includes("archived")}
+            />
+          </Box>
           <Box style={{ alignSelf: "start" }} maw="100%" w="100%">
             <TextInput
               size="xs"
@@ -114,7 +141,7 @@ export function SnakeCollectionList() {
             />
           </Box>
           <StackTable
-            data={snakes ?? []}
+            data={filteredSnakes ?? []}
             columns={makeListColumns(base)}
             columnFilters={filt}
             setColumnFilters={setFilt}
