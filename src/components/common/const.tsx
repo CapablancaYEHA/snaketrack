@@ -1,6 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import fallback from "@assets/placeholder.webp";
-import { AspectRatio, Box, Checkbox, Flex, Image, Indicator, Popover, Stack, Text } from "@mantine/core";
+import { AspectRatio, Box, Checkbox, ColorSwatch, Flex, Image, Indicator, Popover, Stack, Text } from "@mantine/core";
 import { createColumnHelper } from "@tanstack/react-table";
 import confetti from "canvas-confetti";
 import { ECategories, IResSnakesList } from "@/api/common";
@@ -37,10 +37,17 @@ export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag, open
         <Controls id={row.original.id} openTrans={openTrans} openFeed={openFeed} openTag={openTag} openStatus={openStatus} openSale={openSale} category={catVisited.value} status={row.original.status}>
           <Stack gap="xs" maw="100%" w="100%">
             <SexName sex={row.original.sex} name={row.original.snake_name} size="md" />
-            {row.original.tags ? (
+            {row.original.tags != null && row.original.tags.length > 0 ? (
               <Text fw={500} size="xs" c="pink">
                 {row.original.tags.map((t) => `#${t}`).join(" ")}
               </Text>
+            ) : null}
+            {row.original.stickers != null && row.original.stickers.length > 0 ? (
+              <Flex gap="4px">
+                {row.original.stickers.map((st) => (
+                  <ColorSwatch size="8" withShadow={false} key={st} color={st} />
+                ))}
+              </Flex>
             ) : null}
             <Box pos="relative">
               <Checkbox pos="absolute" size="xs" checked={sigRowSelection?.value?.[row.id] ?? false} onChange={row.getToggleSelectedHandler()} style={{ top: 8, left: 8, zIndex: 1, cursor: "pointer" }} />
@@ -94,6 +101,13 @@ export const makeListColumns = ({ openTrans, openFeed, openStatus, openTag, open
     }),
     colHelper.accessor((row: any) => row.tags, {
       id: "tags",
+      header: undefined,
+      cell: undefined,
+      enableSorting: false,
+      filterFn: "arrIncludesSome",
+    }),
+    colHelper.accessor((row: any) => row.stickers, {
+      id: "stickers",
       header: undefined,
       cell: undefined,
       enableSorting: false,

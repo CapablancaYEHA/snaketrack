@@ -31,10 +31,10 @@ export const getDateShort = (a: string) => dayjs(a).locale("ru").format("D.MM.YY
 export const getDateHours = (a: string) => dayjs(a).locale("ru").format("D MMMM YYYY HH:mm:ss");
 export const dateToSupabaseTime = (a: any): string => dayjs(a).locale("ru").format("YYYY-MM-DD HH:mm:ss.SSSZZ");
 
-export const getAge = (a: string) => {
-  const years = dayjs().diff(dayjs(a), "year");
-  const months = dayjs().diff(dayjs(a), "month") - years * 12;
-  const days = dayjs().diff(dayjs(a).add(years, "year").add(months, "month"), "day");
+export const getAge = (a: string, trg: string | Dayjs | undefined = undefined) => {
+  const years = dayjs(trg).diff(dayjs(a), "year");
+  const months = dayjs(trg).diff(dayjs(a), "month") - years * 12;
+  const days = dayjs(trg).diff(dayjs(a).add(years, "year").add(months, "month"), "day");
 
   return `${years ? `${declWord(years, ["год", "года", "лет"])}` : ""}
   ${months ? `${declWord(months, ["месяц", "месяца", "месяцев"])}` : ""}

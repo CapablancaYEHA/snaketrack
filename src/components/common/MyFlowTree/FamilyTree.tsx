@@ -125,11 +125,12 @@ export const FamilyTree: FC<IFamTree> = ({ targetId, category, currentMother, cu
 const SnakeAnchor = ({ selected, category }) => {
   const userId: string = localStorage.getItem("USER")!;
   const isOwnerView = selected.owner_id === userId;
+
   return (
     <Flex>
       {isOwnerView ? (
         <Stack gap="xs">
-          <Anchor href={`/snakes/${category}?id=${selected.id}`} display="flex" c="inherit" underline="always" style={{ flexFlow: "row wrap" }}>
+          <Anchor href={`/snakes/${category}?id=${selected.id}`} display="flex" c="inherit" underline="always" style={{ flexFlow: "row wrap", gap: "8px" }}>
             <Text td="underline" style={{ whiteSpace: "nowrap", marginRight: "auto" }}>
               {selected.id}
             </Text>
@@ -151,12 +152,13 @@ const SnakeAnchor = ({ selected, category }) => {
           ) : null}
         </Stack>
       ) : (
-        <Box display="flex">
-          <Text style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: category === ECategories.BP ? 52 : 200 }}>{selected.id}</Text>
-          {`\u00a0`}
-          <IconSwitch icon={selected.sex} width="20" height="20" />
-        </Box>
+        <IconSwitch icon={selected.sex} width="20" height="20" />
       )}
+      {/* <Box display="flex">
+           <Text style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: category === ECategories.BP ? 52 : 200 }}>{selected.id}</Text>
+           {`\u00a0`}
+           <IconSwitch icon={selected.sex} width="20" height="20" />
+         </Box> */}
     </Flex>
   );
 };

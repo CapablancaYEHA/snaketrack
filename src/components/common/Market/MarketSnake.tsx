@@ -39,6 +39,8 @@ export function MarketSnake({ category, data }: IProp) {
     }
   };
 
+  const pubicationAge = getAge(data.date_hatch, data.created_at);
+
   return (
     <Stack align="flex-start" justify="flex-start" gap="lg" component="section">
       <Flex maw="100%" w="100%" align="center" gap="sm">
@@ -60,7 +62,6 @@ export function MarketSnake({ category, data }: IProp) {
           )}
         </CopyButton>
       </Flex>
-
       <Box m="0 auto">
         <SegmentedControl
           size="xs"
@@ -80,12 +81,28 @@ export function MarketSnake({ category, data }: IProp) {
               <Carousel images={data.pictures} />
             </Stack>
             <Stack gap="xs" flex="1">
-              <Flex maw="100%" w="100%" align="center" gap="4px">
+              <Flex maw="100%" w="100%" align="center" gap="6px">
                 <IconSwitch icon={data.sex!} width="24" height="24" style={{ minWidth: 0, minHeight: 0 }} />
                 <Title order={4}>{categToTitle[category]}</Title>
-                <Text ml="auto" size="sm">
-                  <strong>Возраст:</strong> {getAge(data.date_hatch)}
+              </Flex>
+              <Box maw="100%" w="100%">
+                <Text size="md" fw={700} ta="center">
+                  Возраст
                 </Text>
+              </Box>
+              <Flex flex="1 1 auto" miw={0} gap="xs">
+                <Stack gap="xs" flex="1 1 50%">
+                  <Text size="sm" fw={500}>
+                    На момент публикации
+                  </Text>
+                  <Text size="sm">{pubicationAge}</Text>
+                </Stack>
+                <Stack gap="xs" flex="1 1 50%" align="end">
+                  <Text size="sm" fw={500}>
+                    Сейчас
+                  </Text>
+                  <Text size="sm">{getAge(data.date_hatch)}</Text>
+                </Stack>
               </Flex>
               <Flex gap="sm" style={{ flexFlow: "row wrap" }}>
                 {sortSnakeGenes(data.genes as any)?.map((a) => <GenePill item={a} key={`${a.label}_${a.id}`} size="sm" />)}

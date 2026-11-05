@@ -1,6 +1,6 @@
 import { useLocation } from "preact-iso";
 import { useMemo, useState } from "preact/hooks";
-import { Box, Button, CopyButton, Flex, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
+import { Box, Button, ColorSwatch, CopyButton, Flex, Indicator, NumberFormatter, Paper, RemoveScroll, SegmentedControl, Select, Space, Stack, Text, Title } from "@mantine/core";
 import { signal } from "@preact/signals";
 import { isEmpty, toString } from "lodash-es";
 import { ChartBubble, ChartLine } from "@/components/common/Chart/Line";
@@ -55,10 +55,17 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             <Text>{title}</Text>
             <SexName sex={data.sex} name={data.snake_name} />
           </Flex>
-          {data.tags ? (
+          {data.tags != null && data.tags.length > 0 ? (
             <Text fw={500} size="xs" c="pink">
               {data.tags.map((t) => `#${t}`).join(" ")}
             </Text>
+          ) : null}
+          {data.stickers != null && data.stickers.length > 0 ? (
+            <Flex gap="4px">
+              {data.stickers.map((st) => (
+                <ColorSwatch size="12" withShadow={false} key={st} color={st} />
+              ))}
+            </Flex>
           ) : null}
         </Stack>
         <Button leftSection="< " size="compact-xs" flex="0 0 81px" variant="default" ml="auto" component="a" href="/snakes">
@@ -79,7 +86,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             </Flex>
             <Flex gap="sm">
               <Button size="compact-xs" onClick={() => (isTagOpen.value = true)} color="pink">
-                Тэги
+                Тэги/Стикеры
               </Button>
               {!["on_sale", "reserved", "sold"].concat(disStats).includes(data.status) ? (
                 <Button size="compact-xs" variant="default" component="a" href={`/market/add/${category}?id=${location.query.id}`}>

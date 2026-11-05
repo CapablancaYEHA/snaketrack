@@ -2,6 +2,7 @@ import { tabletThreshold } from "@/styles/theme";
 import { Flex, Menu, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IFeed } from "@/api/common";
+import { useProfile } from "@/api/profile/hooks";
 import { getDate, getDateObj } from "../../utils/time";
 import { codeToFeeder } from "../common/Feeder/const";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
@@ -79,8 +80,11 @@ export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isS
 };
 
 export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTag, status, openSale, children }) => {
+  const userId = localStorage.getItem("USER");
+  const { data: profile } = useProfile(userId, userId != null);
   const isDisabled = disStats.includes(status ?? "");
   const isStatusDis = disStats.concat(mrktActiveStats).includes(status ?? "");
+  const isNoname = profile?.username == null;
 
   return (
     <Menu
@@ -146,7 +150,7 @@ export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTa
             openTag(id);
           }}
         >
-          Тэги
+          Тэги и Стикеры
         </Menu.Item>
         <Menu.Item
           c={isStatusDis ? undefined : "violet"}
@@ -154,7 +158,7 @@ export const Controls = ({ id, openFeed, openTrans, openStatus, category, openTa
             e.stopPropagation();
             openSale(id);
           }}
-          disabled={isStatusDis}
+          disabled={isStatusDis || isNoname}
         >
           <Flex wrap="nowrap" gap="xs">
             <IconSwitch icon="market" width="20" height="20" />

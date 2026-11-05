@@ -6,7 +6,6 @@ import { AspectRatio, Box, Flex, Image, Stack, Text } from "@mantine/core";
 import { Handle, Position } from "@xyflow/react";
 import { clsx } from "clsx";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { ECategories } from "@/api/common";
 import { urlProxyReplace } from "@/utils/other";
 import { sortSnakeGenes } from "../genetics/const";
 import { GenePill } from "../genetics/geneSelect";
@@ -34,8 +33,8 @@ export const FamilyNode: FC<IFamilyNode> = ({ data, targetId, onSelect, selected
       <Box className={css.root}>
         <Stack gap="sm" className={clsx(css.inner, isTraget && css.isTarget)} onClick={() => onSelect(data?.id)} style={{ transform: "translate3d(0, 0, 0)" }}>
           <Flex component="section" gap="xs" style={{ flexFlow: "row nowrap" }} align="center" maw="100%">
-            <Text size="xs" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: category === ECategories.BP ? 52 : "auto" }}>
-              {isOwnerView ? data?.snake_name : data?.id}
+            <Text size="xs" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "auto" }}>
+              {isOwnerView ? data?.snake_name : null}
             </Text>
             <Box style={{ flex: "0 0 20px", minWidth: 20 }}>
               <IconSwitch icon={data?.gender} width="20" height="20" />
@@ -44,7 +43,6 @@ export const FamilyNode: FC<IFamilyNode> = ({ data, targetId, onSelect, selected
           <AspectRatio ratio={16 / 9} maw={196}>
             <Image radius="sm" src={urlProxyReplace(data.picture)} width="100%" alt="snake_in_tree" fit="cover" fallbackSrc={fallback} loading="lazy" />
           </AspectRatio>
-
           <Box mah={88} h="100%" p={2} className={css.overflowed}>
             <Flex gap="xs" style={{ flexFlow: "row wrap" }} align="start">
               {sortSnakeGenes(data.genes as any).map((a) => (

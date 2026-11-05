@@ -22,6 +22,7 @@ import { ChangeStatus } from "./forms/changeStatus/formChangeStatus";
 import { FeedSnakesUniversal } from "./forms/feedSnake/formFeedUniversal";
 import { FormMassSale } from "./forms/sellSnake/formMassSale";
 import { sexHardcode } from "./forms/snakeBreed/common";
+import { stickersForFilter } from "./forms/snakeTags/const";
 import { SnakeTags } from "./forms/snakeTags/formSnakeTags";
 import { MaxMultiGenes } from "./genetics/geneSelect";
 import { categToConfigList, categToDeclTitle, maturityDict, statusDictionary } from "./utils";
@@ -263,6 +264,9 @@ export function SnakeCollectionList() {
         </Flex>
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
           <MaxSelectedMulti miw={0} flex="1 1 50%" label="Тэги" onChange={(a) => tableFiltMulti(setFilt, a, "tags", filtName)} initVal={filt?.find((a) => a.id === "tags")?.value} data={profile?.snake_tags ?? []} />
+        </Flex>
+        <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
+          <MaxSelectedMulti miw={0} flex="1 1 auto" label="Стикеры" onChange={(a) => tableFiltMulti(setFilt, a, "stickers", filtName)} initVal={filt?.find((a) => a.id === "stickers")?.value} data={stickersForFilter} dataHasLabel />
         </Flex>
         <Flex wrap="nowrap" align="flex-start" flex="1 1 auto" miw={0} gap="md">
           <MaxSelectedMulti miw={0} flex="1 1 50%" label="Статус" onChange={(a) => tableFiltMulti(setFilt, a, "status", filtName)} initVal={filt?.find((a) => a.id === "status")?.value} data={statusDictionary} dataHasLabel />
