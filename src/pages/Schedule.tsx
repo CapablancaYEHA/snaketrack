@@ -4,7 +4,7 @@ import { Calendar } from "@mantine/dates";
 import { signal } from "@preact/signals";
 import { debounce, isEmpty } from "lodash-es";
 import { Reminder } from "@/components/common/Schedule/Reminder";
-import { makeScheduleColumns, snakesWithRems } from "@/components/common/Schedule/const";
+import { makeScheduleColumns, remSnakes, remSnakesMini } from "@/components/common/Schedule/const";
 import { sigCurCat, sigCurDate, sigIsModOpen } from "@/components/common/Schedule/signals";
 import { StackTable } from "@/components/common/StackTable/StackTable";
 import { segmentedSnakes } from "@/components/common/const";
@@ -54,9 +54,8 @@ export const Schedule = () => {
   const { data: allRems, isPending: isRemPending, isRefetching: isRemRefetching, isError: isRemError } = useSupaGet<IRemindersRes[]>(remList(userId), userId != null);
   const { data: remsThisDate, isFetching } = useSupaGet<IRemResExt[]>(remsByDate(sigCurDate.value), sigCurDate.value != null);
 
-  const eventDates = (allRems ?? [])?.map((a) => getDateObj(a.scheduled_time));
   const hasEvent = (date: string) => {
-    return eventDates.some((eventDate) => getIsSame(eventDate, date));
+    return (allRems ?? [])?.map((a) => getDateObj(a.scheduled_time)).some((el) => getIsSame(el, date));
   };
 
   const dataToUse =
@@ -92,7 +91,8 @@ export const Schedule = () => {
   const isSmthRefetching = isBpRef || isBcRef || isCsRef || isRsRef || isHnRef || isMvRef || isRemRefetching;
 
   useEffect(() => {
-    snakesWithRems.value = allRems?.map((c) => c.snake);
+    remSnakes.value = allRems?.map((c) => c.snake);
+    remSnakesMini.value = allRems?.map((c) => ({ snake: c.snake, date: c.scheduled_time }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allRems?.length]);
 

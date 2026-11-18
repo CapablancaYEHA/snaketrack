@@ -3,7 +3,7 @@ import { Flex, Menu, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IFeed } from "@/api/common";
 import { useProfile } from "@/api/profile/hooks";
-import { getDate, getDateObj } from "../../utils/time";
+import { getDate, getDateCustom, getDateObj } from "../../utils/time";
 import { codeToFeeder } from "../common/Feeder/const";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
 import { disStats, mrktActiveStats } from "./Market/utils";
@@ -65,7 +65,7 @@ export const GenesList = ({ genes }) => {
   );
 };
 
-export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isShowShed = true, isShowWeight = true }) => {
+export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isShowShed = true, isShowWeight = true, scheduledTime = undefined }) => {
   const lastWeight = weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[weight?.length - 1];
   const lastFeed = feeding?.sort((a, b) => getDateObj(a.feed_last_at) - getDateObj(b.feed_last_at))?.[feeding.length - 1];
   const lastShed = shed?.sort((a, b) => getDateObj(a) - getDateObj(b))?.[shed.length - 1];
@@ -74,6 +74,11 @@ export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isS
     <Stack gap="xs">
       {isShowWeight ? <Text size="sm">Вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text> : null}
       {isShowFeed ? <Text size="sm">Последнее кормление: {calcFeedEvent(lastFeed)}</Text> : null}
+      {scheduledTime ? (
+        <Text size="sm" fw={500} td="underline">
+          Следующее {getDateCustom(scheduledTime, "D MMMM")}
+        </Text>
+      ) : null}
       {isShowShed ? <Text size="sm">Последняя линька: {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text> : null}
     </Stack>
   );

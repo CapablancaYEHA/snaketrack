@@ -9,7 +9,12 @@ import { urlProxyReplace } from "@/utils/other";
 import { SnakeEventsBlock } from "../SnakeCard";
 import { RemControls } from "./remControls";
 
-export const snakesWithRems = signal<string[]>([]);
+type IKek = {
+  snake: string;
+  date: string;
+};
+export const remSnakesMini = signal<IKek[]>([]);
+export const remSnakes = signal<string[]>([]);
 const columnHelper = createColumnHelper<IResSnakesList>();
 
 export const makeScheduleColumns = ({ openFeed }) => [
@@ -19,8 +24,8 @@ export const makeScheduleColumns = ({ openFeed }) => [
       <Flex gap="sm" w="100%">
         <Checkbox
           size="sm"
-          checked={snakesWithRems.value?.includes(row.original.id) || row.getIsSelected()}
-          disabled={snakesWithRems.value?.includes(row.original.id) || !row.getCanSelect()}
+          checked={remSnakes?.value?.includes(row.original.id) || row.getIsSelected()}
+          disabled={remSnakes?.value?.includes(row.original.id) || !row.getCanSelect()}
           onChange={() => {
             const sel = row.getIsSelected();
             row.toggleSelected(!sel);
@@ -51,13 +56,13 @@ export const makeScheduleColumns = ({ openFeed }) => [
     ),
     size: 1,
     maxSize: 3,
-    minSize: 190,
+    minSize: 180,
     enableSorting: false,
     enableColumnFilter: false,
   }),
   columnHelper.accessor("feeding", {
     header: () => "События",
-    cell: ({ cell, row }) => <SnakeEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} isShowShed={false} />,
+    cell: ({ cell, row }) => <SnakeEventsBlock feeding={cell.getValue()} weight={row.original.weight} shed={row.original.shed} isShowShed={false} scheduledTime={remSnakesMini?.value?.find((rem) => rem.snake === row.original.id)?.date as any} />,
     enableSorting: false,
     enableColumnFilter: false,
     size: 4,

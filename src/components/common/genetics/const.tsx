@@ -58,6 +58,10 @@ const fullHet = ["Het", "66% Het", "50% Het"];
 const reHet = /(?<=het\s)[\w\s]+/i;
 
 export const checkGeneConflict = (current: IGenesComp[], val: IGenesComp) => {
+  if (current.some((k) => k.label.includes(val.label) || k.alias?.includes(val.label))) {
+    notifHetAlias();
+    return current;
+  }
   if (val.hasSuper) {
     if (current.some((x) => x.label === `Super ${val.label}` || val.label === `Super ${x.label}`)) {
       notifExcessSuper();
@@ -70,10 +74,6 @@ export const checkGeneConflict = (current: IGenesComp[], val: IGenesComp) => {
     return [...current, val];
   }
   if (val.hasHet) {
-    if (current.some((a) => a.label.includes(val.label) || a.alias?.includes(val.label))) {
-      notifHetAlias();
-      return current;
-    }
     if (reHet.test(val.label)) {
       let trg = val.label.match(reHet);
       if (current.some((a) => a.label?.replace("Albino", "")?.includes(trg?.[0] ?? ""))) {
@@ -117,7 +117,7 @@ const notifSameHet = () =>
   notif({
     c: "red",
     t: "Конфликт генов",
-    m: "Уже добавлен визуал или Het для данного гена",
+    m: "Визуал или Het данного гена уже выбран",
     p: "top-right",
   });
 

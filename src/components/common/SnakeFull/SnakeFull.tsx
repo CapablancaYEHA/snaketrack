@@ -17,6 +17,7 @@ import { StackSimpleTable } from "../StackTable/StackSimpleTable";
 import { EditShed, EditStats } from "../forms/editStats/formEditStats";
 import { FeedSnakeSolo } from "../forms/feedSnake/formFeedSolo";
 import { SnakeTags } from "../forms/snakeTags/formSnakeTags";
+import { ClutchInvolv } from "./ClutchInvolv";
 import { ZoomImage } from "./ZoomImage";
 import css from "./styles.module.scss";
 import { snakeFeedColumns } from "./utils";
@@ -151,6 +152,7 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
               <GenePill item={a} key={`${a.label}_${a.id}`} size="sm" />
             ))}
           </Flex>
+          <ClutchInvolv category={category} snakeId={snakeId} sex={data.sex} />
           <Paper shadow="sm" radius="md" p="sm" w="100%">
             <Text size="xs" c="dark.3">
               Ваше примечание
