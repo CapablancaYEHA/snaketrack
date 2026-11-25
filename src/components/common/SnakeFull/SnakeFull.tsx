@@ -69,8 +69,8 @@ export function SnakeFull({ title, category, data, snakeId }: IProp) {
             </Flex>
           ) : null}
         </Stack>
-        <Button leftSection="< " size="compact-xs" flex="0 0 81px" variant="default" ml="auto" component="a" href="/snakes">
-          К списку
+        <Button leftSection="< " size="compact-xs" flex="0 0 81px" variant="default" ml="auto" onClick={() => window.history.back()}>
+          Назад
         </Button>
       </Flex>
 

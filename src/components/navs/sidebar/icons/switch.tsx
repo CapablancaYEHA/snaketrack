@@ -17,6 +17,7 @@ import { GlobalIcon } from "./Global";
 import { ImgIcon } from "./Img";
 import { InfoIcon } from "./Info";
 import { KebabIcon } from "./Kebab";
+import { LinkIcon } from "./Link";
 import { MaleIcon } from "./Male";
 import { MarketIcon } from "./Market";
 import { NoDataIcon } from "./NoData";
@@ -75,6 +76,8 @@ export const IconSwitch: FC<IProp> = ({ icon, width = "20", height = "20", style
       return <UnisexIcon width={width} height={height} style={{ ...style }} />;
     case "kebab":
       return <KebabIcon width={width} height={height} />;
+    case "link":
+      return <LinkIcon width={width} height={height} style={style} />;
     case "clutches":
       return <EggIcon width={width} height={height} />;
     case "breeding":

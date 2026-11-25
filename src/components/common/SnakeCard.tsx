@@ -3,7 +3,7 @@ import { Flex, Menu, Stack, Text } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { IFeed } from "@/api/common";
 import { useProfile } from "@/api/profile/hooks";
-import { getDate, getDateCustom, getDateObj } from "../../utils/time";
+import { dateDiffDecl, getDate, getDateCustom, getDateObj } from "../../utils/time";
 import { codeToFeeder } from "../common/Feeder/const";
 import { IconSwitch } from "../navs/sidebar/icons/switch";
 import { disStats, mrktActiveStats } from "./Market/utils";
@@ -16,7 +16,7 @@ export const calcFeedEvent = (feed?: IFeed, size = "sm") => {
   }
   let temp = "";
   if (feed?.feed_last_at != null) {
-    temp = `${temp + getDate(feed?.feed_last_at!)}\n${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г\n` : ""}${feed?.feed_ko ? `${codeToFeeder(feed.feed_ko)}` : ""}`;
+    temp = `${temp + dateDiffDecl(feed?.feed_last_at!)}\n${feed?.feed_weight ? `Вес КО ${feed.feed_weight}г\n` : ""}${feed?.feed_ko ? `${codeToFeeder(feed.feed_ko)}` : ""}`;
   }
 
   if (feed?.regurgitation) {
@@ -72,14 +72,14 @@ export const SnakeEventsBlock = ({ feeding, weight, shed, isShowFeed = true, isS
 
   return (
     <Stack gap="xs">
-      {isShowWeight ? <Text size="sm">Вес: {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text> : null}
-      {isShowFeed ? <Text size="sm">Последнее кормление: {calcFeedEvent(lastFeed)}</Text> : null}
+      {isShowWeight ? <Text size="sm">Вес - {lastWeight?.weight != null ? `${lastWeight.weight}г` : "Нет данных"}</Text> : null}
+      {isShowFeed ? <Text size="sm">Покормлена - {calcFeedEvent(lastFeed)}</Text> : null}
       {scheduledTime ? (
         <Text size="sm" fw={500} td="underline">
-          Следующее {getDateCustom(scheduledTime, "D MMMM")}
+          В плане на {getDateCustom(scheduledTime, "D MMMM")}
         </Text>
       ) : null}
-      {isShowShed ? <Text size="sm">Последняя линька: {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text> : null}
+      {isShowShed ? <Text size="sm">Линька - {lastShed != null ? `${getDate(lastShed)}` : "Нет данных"}</Text> : null}
     </Stack>
   );
 };

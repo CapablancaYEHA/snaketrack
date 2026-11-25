@@ -7,10 +7,12 @@ import { useSupaGet } from "@/api/hooks";
 import { getDateObj, getDateShort } from "@/utils/time";
 import { StackSimpleTable } from "../StackTable/StackSimpleTable";
 
+const forSelect = ["date_laid", "id", "males_names", "female_name"].join(", ");
+
 export const ClutchInvolv = ({ category, sex, snakeId }) => {
   const [value, setValue] = useState<string | null>(null);
   const filterExp = sex === "male" ? (b) => b.filter("males_ids", "cs", `{${snakeId}}`) : (b) => b.eq("female_id", snakeId);
-  const { data: involvment, isPending, isError } = useSupaGet<any[]>({ t: ESupaBreed[`${categoryToShort[category].toUpperCase()}_CL_V`], f: filterExp, id: snakeId }, sex != null && value != null);
+  const { data: involvment, isPending, isError } = useSupaGet<any[]>({ t: ESupaBreed[`${categoryToShort[category].toUpperCase()}_CL_V`], s: forSelect, f: filterExp, id: snakeId }, sex != null && value != null);
 
   return (
     <Accordion variant="separated" radius="md" value={value} onChange={setValue} w="100%" maw="100%">
@@ -54,7 +56,7 @@ const makeInvColumns = ({ sex, cat }) => [
     cell: ({ cell }) => getDateShort(cell.getValue()!),
     size: 1,
     maxSize: 1,
-    minSize: 112,
+    minSize: 120,
     sortingFn: (rowA: any, rowB: any, k: any) => getDateObj(rowA.getValue("date_laid")) - getDateObj(rowB.getValue("date_laid")),
   }),
   columnHelper.accessor("id", {
@@ -74,8 +76,8 @@ const makeInvColumns = ({ sex, cat }) => [
     header: () => "Партнер(ы)",
     cell: ({ row }) => <Text>{sex === "female" ? row.original.males_names.join(", ") : row.original.female_name}</Text>,
     size: 4,
-    maxSize: 8,
-    minSize: 100,
+    maxSize: 13,
+    minSize: 180,
     enableSorting: false,
   }),
 ];

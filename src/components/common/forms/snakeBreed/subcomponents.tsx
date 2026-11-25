@@ -13,7 +13,7 @@ import { sortSnakeGenes } from "@/components/common/genetics/const";
 import { GenePill } from "@/components/common/genetics/geneSelect";
 import { SexName } from "@/components/common/sexName";
 import { IconSwitch } from "@/components/navs/sidebar/icons/switch";
-import { ECategories, ESupaBreed, categoryToShort } from "@/api/common";
+import { ECategories, ESupaBreed, IResSnakesList, categoryToShort } from "@/api/common";
 import { useSupaDel } from "@/api/hooks";
 import { useCalcMmOdds } from "@/api/misc/hooks";
 import { notif } from "@/utils/notif";
@@ -215,11 +215,21 @@ const TimeLeft = ({ shedDate, ovulDate, category }) => {
   );
 };
 
-export const BriefInfo = ({ snake }) => {
+type IBr = {
+  snake: IResSnakesList;
+  category?: ECategories;
+};
+
+export const BriefInfo = ({ snake, category }: IBr) => {
   const lastWeight = snake?.weight?.sort((a, b) => getDateObj(a.date) - getDateObj(b.date))?.[snake?.weight.length - 1];
 
   return (
-    <Stack>
+    <Stack pos="relative">
+      {category ? (
+        <Anchor href={`/snakes/${category}?id=${snake?.id}`} style={{ position: "absolute", top: 8, right: 8 }} pos="absolute" c="grey">
+          <IconSwitch icon="link" />
+        </Anchor>
+      ) : null}
       <Flex wrap="nowrap" gap="md" direction={{ base: "column", md: "row" }}>
         <Image src={urlProxyReplace(snake?.picture)} flex="1 1 0px" fit="cover" radius="md" w="auto" maw="100%" h={110} fallbackSrc={fallback} loading="lazy" />
         <Stack gap="xs" flex="0 1 auto">
@@ -363,7 +373,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
                     <Space h="sm" />
                   </>
                 ) : null}
-                <BriefInfo snake={femData} />
+                <BriefInfo snake={femData} category={category} />
                 <Box className={css.event}>
                   <FormProvider {...innerInstance}>
                     <FemaleEvent isClutchMade={isClutchMade} ovul={wOvul} shed={wShed} category={category} />
@@ -411,7 +421,7 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
                       <Space h="sm" />
                     </>
                   ) : null}
-                  <BriefInfo snake={male} />
+                  <BriefInfo snake={male} category={category} />
                   <Box className={css.event}>
                     {isClutchMade ? null : (
                       <>
@@ -484,8 +494,8 @@ export const FormComposedBody: FC<ICltForm> = ({ onSub, btnText = "Сохран�
         </Flex>
       </Flex>
       {innerInstance.formState.errors?.["malesEvents"] ? <span>{JSON.stringify(innerInstance.formState.errors?.["malesEvents"].message)}</span> : null}
-      <Flex gap="xl" align="center" mt="lg" maw="100%" w="100%">
-        <Button type="submit" onClick={innerInstance.handleSubmit(onSub)} disabled={!innerInstance.formState.isDirty || isClutchMade} size="xs" ml="auto">
+      <Flex gap="md" align="center" mt="lg" maw="100%" w="100%" justify="end">
+        <Button type="submit" onClick={innerInstance.handleSubmit(onSub)} disabled={!innerInstance.formState.isDirty || isClutchMade} size="xs">
           {btnText}
         </Button>
         {left <= daysCriticalThr[category] && !isClutchMade ? (

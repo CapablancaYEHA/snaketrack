@@ -46,6 +46,13 @@ export const dateTimeDiff = (trg: string | Dayjs, unit: UnitType) => {
   return res <= 0 ? 0 : res;
 };
 
+export const dateDiffDecl = (trg: string | Dayjs) => {
+  const res = dayjs(trg).diff(dayjs(), "days");
+  const su = Math.abs(res);
+  if (su) return `${declWord(su, ["день", "дня", "дней"])} назад`;
+  return "Сегодня";
+};
+
 export const dateAddDays = (a: string | Dayjs, days: number) => dayjs(a).add(days, "day");
 export const dateAddYears = (a: string | Dayjs, years: number) => dayjs(a).add(years, "year");
 

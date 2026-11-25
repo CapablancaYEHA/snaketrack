@@ -153,7 +153,7 @@ export const Schedule = () => {
                 estimateSize={140}
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}
-                additionalHeight={684}
+                additionalHeight={228}
                 initSort={[
                   {
                     id: "names",
